@@ -1,0 +1,254 @@
+import { test, expect } from '@playwright/test';
+import type { Page, TestInfo } from '@playwright/test';
+import ExcelJS from 'exceljs';
+import path from 'node:path';
+
+// Every test uses a fresh browser context and the application's synthetic initial
+// state. Fixed Date leaves the real processing timers running.
+test.beforeEach(async ({ page, baseURL }) => {
+  await page.clock.setFixedTime(new Date('2026-10-02T02:00:00Z'));
+  await page.route('**/*', async route => {
+    const url = route.request().url();
+    if (url.startsWith(baseURL!) || url.startsWith('blob:') || url.startsWith('data:')) await route.continue();
+    else await route.abort('blockedbyclient');
+  });
+});
+
+async function click(page: Page, name: string) {
+  await page.getByRole('button', { name, exact: true }).click();
+}
+async function tab(page: Page, name: string) {
+  await page.getByRole('tab', { name, exact: true }).click();
+}
+async function capture(page: Page, name: string) {
+  await expect(page.getByText('Menyiapkan ruang kerja', { exact: true })).toHaveCount(0);
+  if (name === 'review') await expect(page.getByLabel('TKDN jasa (%)')).toBeVisible();
+  if (name === 'dashboard') {
+    await expect(page.locator('.dashboard-procurements .table-toolbar')).toHaveCSS('padding-left', '24px');
+  }
+  const close = page.getByRole('button', { name: 'Tutup pemberitahuan' });
+  if (await close.count()) await close.click();
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await expect(page).toHaveScreenshot(`prism-${name}.png`, { fullPage: true });
+}
+async function confirm(page: Page) {
+  await click(page, 'Konfirmasi data');
+  await page.getByRole('dialog').getByRole('button', { name: 'Konfirmasi data', exact: true }).click();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+}
+async function exportWorkbook(page: Page, info: TestInfo, name: string) {
+  const pending = page.waitForEvent('download');
+  await click(page, 'Ekspor Excel');
+  const download = await pending;
+  expect(download.suggestedFilename()).toMatch(/^PRISM-.*\.xlsx$/);
+  const filename = info.outputPath(`${name}.xlsx`);
+  await download.saveAs(filename);
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.readFile(filename);
+  expect(workbook.worksheets.map(sheet => sheet.name)).toEqual(['Keterangan', 'Ringkasan', 'Rincian', 'Jejak Sumber']);
+  return workbook;
+}
+
+test('desktop shell, sidebar, keyboard dialog and unsaved correction protection', async ({ page }) => {
+  await page.goto('/');
+  await capture(page, 'dashboard');
+  await click(page, 'Ringkas navigasi');
+  await expect(page.getByRole('button', { name: 'Perluas navigasi' })).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.getByRole('navigation', { name: 'Navigasi utama' }).getByRole('link', { name: 'Bank Data OE' })).toBeVisible();
+  await capture(page, 'dashboard-collapsed');
+  await click(page, 'Perluas navigasi');
+  await page.getByRole('link', { name: 'Penggantian Jalur Pipa Terminal', exact: true }).click();
+  await capture(page, 'procurement-detail');
+  await tab(page, 'HEA');
+  await page.getByRole('link', { name: 'Periksa dokumen' }).first().click();
+  await expect(page.getByRole('navigation', { name: 'Navigasi utama' })).toHaveCount(0);
+  await capture(page, 'review');
+  const confirmationRect = await page.getByRole('button', { name: 'Konfirmasi data', exact: true }).boundingBox();
+  expect(confirmationRect).not.toBeNull();
+  expect(confirmationRect!.y + confirmationRect!.height).toBeLessThanOrEqual(page.viewportSize()!.height);
+  await page.getByLabel('TKDN jasa (%)').fill('31');
+  await expect(page.getByRole('button', { name: 'Konfirmasi data', exact: true })).toBeDisabled();
+  await click(page, 'Kembali ke pengadaan');
+  const dialog = page.getByRole('dialog', { name: 'Perubahan belum disimpan' });
+  await expect(dialog).toBeVisible();
+  for (let index = 0; index < 8; index++) {
+    await page.keyboard.press('Tab');
+    expect(await dialog.evaluate(element => element.contains(document.activeElement))).toBe(true);
+  }
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect(page.getByLabel('TKDN jasa (%)')).toHaveValue('31');
+  await click(page, 'Kembali ke pengadaan');
+  await dialog.getByRole('button', { name: 'Buang perubahan' }).click();
+  await page.getByRole('link', { name: 'Periksa dokumen' }).first().click();
+  await expect(page.getByLabel('TKDN jasa (%)')).toHaveValue('30');
+  await page.getByLabel('TKDN jasa (%)').fill('31');
+  await click(page, 'Kembali ke pengadaan');
+  await dialog.getByRole('button', { name: 'Simpan & kembali' }).click();
+  await page.getByRole('link', { name: 'Periksa dokumen' }).first().click();
+  await expect(page.getByLabel('TKDN jasa (%)')).toHaveValue('31');
+  await expect(page.getByText('Dikoreksi', { exact: true })).toBeVisible();
+  await page.getByLabel('TKDN jasa (%)').fill('32');
+  await page.goBack();
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole('button', { name: 'Tetap di halaman' }).click();
+  await expect(page.getByLabel('TKDN jasa (%)')).toHaveValue('32');
+  await page.goBack();
+  await dialog.getByRole('button', { name: 'Buang perubahan' }).click();
+  await page.getByRole('link', { name: 'Periksa dokumen' }).first().click();
+  await expect(page.getByLabel('TKDN jasa (%)')).toHaveValue('31');
+});
+
+test('confirmed HEA and explicit price sources preserve results and XLSX traceability', async ({ page }, info) => {
+  const errors: string[] = [];
+  const outbound: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('request', request => {
+    if (!request.url().startsWith(info.project.use.baseURL as string) && !/^(blob:|data:)/.test(request.url())) outbound.push(request.url());
+  });
+  await page.goto('/pengadaan/proc-terminal?tab=hea');
+  await expect(page.getByRole('button', { name: 'Evaluasi HEA', exact: true })).toBeDisabled();
+  await page.getByRole('link', { name: 'Periksa dokumen' }).first().click();
+  await confirm(page);
+  await page.getByRole('link', { name: 'Periksa dokumen' }).nth(1).click();
+  await expect(page.getByRole('button', { name: 'Konfirmasi data', exact: true })).toBeDisabled();
+  await page.getByLabel('TKDN jasa (%)').fill('35');
+  await click(page, 'Simpan perubahan');
+  await page.getByRole('checkbox').check();
+  await confirm(page);
+  await page.getByLabel('Preferensi barang (%)').fill('15');
+  await page.getByLabel('Preferensi jasa (%)').fill('7.5');
+  await click(page, 'Simpan preferensi');
+  await click(page, 'Konfirmasi preferensi');
+  for (const checkbox of await page.getByRole('checkbox').all()) await checkbox.check();
+  await click(page, 'Evaluasi HEA');
+  await expect(page.getByRole('heading', { name: 'Leaderboard HEA' })).toBeVisible();
+  await expect(page.locator('td[title="1261794759.4224293029478248835170918485030216358352"]')).toBeVisible();
+  await capture(page, 'hea-result');
+  await click(page, 'Lihat input dan jejak sumber');
+  await expect(page.getByText('Harga penawaran barang', { exact: true }).first()).toBeVisible();
+  const hea = await exportWorkbook(page, info, 'hea');
+  expect(JSON.stringify(hea.getWorksheet('Rincian')!.getSheetValues())).toContain('1261794759.4224293029478248835170918485030216358352');
+  expect(JSON.stringify(hea.getWorksheet('Jejak Sumber')!.getSheetValues())).toContain('35%');
+  await tab(page, 'Harga Timpang');
+  for (const [label, filename] of [['OE pengadaan', 'OE_Terminal.xlsx'], ['Penawaran vendor', 'Penawaran_Nusa.xlsx']]) {
+    await page.getByLabel(label, { exact: true }).selectOption({ label: `${filename} · Perlu ditinjau` });
+    await page.getByRole('link', { name: 'Periksa sumber dan kelompok harga' }).click();
+    await expect(page.getByRole('button', { name: 'Konfirmasi data', exact: true })).toBeDisabled();
+    await page.getByLabel('Kelompok harga yang digunakan').selectOption('Harga satuan material dan jasa');
+    await click(page, 'Simpan perubahan');
+    const warning = page.getByRole('checkbox', { name: /Saya telah memeriksa/ });
+    if (await warning.count()) await warning.check();
+    await confirm(page);
+  }
+  await page.getByLabel('OE pengadaan', { exact: true }).selectOption({ label: 'OE_Terminal.xlsx · Terkonfirmasi' });
+  await page.getByLabel('Penawaran vendor', { exact: true }).selectOption({ label: 'Penawaran_Nusa.xlsx · Terkonfirmasi' });
+  await click(page, 'Evaluasi harga');
+  await expect(page.getByRole('heading', { name: 'Hasil Harga Timpang' })).toBeVisible();
+  await expect(page.getByText('Hasil parsial · Belum dievaluasi:', { exact: false })).toBeVisible();
+  await capture(page, 'price-result');
+  const price = await exportWorkbook(page, info, 'price');
+  const rows = JSON.stringify(price.getWorksheet('Rincian')!.getSheetValues());
+  expect(rows).toContain('125%');
+  expect(rows).toContain('110%');
+  expect(rows).toContain('Tidak timpang');
+  expect(rows).not.toContain('Katup gate');
+  expect(JSON.stringify(price.getWorksheet('Ringkasan')!.getSheetValues())).toContain('Katup gate');
+  await page.getByRole('link', { name: 'Bank Data OE', exact: true }).click();
+  await capture(page, 'bank-documents');
+  await tab(page, 'Pencarian Referensi');
+  for (const checkbox of await page.getByRole('checkbox').all()) await checkbox.check();
+  await capture(page, 'bank-references');
+  await click(page, 'Lihat statistik');
+  await capture(page, 'bank-statistics');
+  const bank = await exportWorkbook(page, info, 'bank');
+  expect(JSON.stringify(bank.getWorksheet('Ringkasan')!.getSheetValues())).toContain('90000');
+  await click(page, 'Lanjut ke bantuan estimasi');
+  await page.getByLabel('Uraian pekerjaan').fill('Pengecatan tangki');
+  await page.getByLabel('Kuantitas', { exact: true }).fill('10');
+  await click(page, 'Buat estimasi');
+  await expect(page.getByRole('heading', { name: /Hasil estimasi/ })).toBeVisible();
+  await capture(page, 'bank-estimate');
+  await page.getByRole('link', { name: 'Riwayat & Statistik', exact: true }).click();
+  await tab(page, 'Hasil Evaluasi');
+  await capture(page, 'history-results');
+  await tab(page, 'Statistik Aktivitas');
+  await capture(page, 'history-statistics');
+  expect(errors).toEqual([]);
+  expect(outbound).toEqual([]);
+});
+
+test('real file upload rejects unsupported bytes and accepts registered PDF through review', async ({ page }) => {
+  await page.goto('/pengadaan/proc-terminal?tab=dokumen');
+  await page.getByLabel('Pemilik dokumen').selectOption({ label: 'PT Nusa Teknik Mandiri' });
+  const upload = page.getByLabel('Pilih berkas dokumen');
+  await upload.setInputFiles({ name: 'invalid.pdf', mimeType: 'application/pdf', buffer: Buffer.from('not a supported PDF') });
+  await expect(page.getByRole('alert')).toBeVisible();
+  await upload.setInputFiles(path.resolve('public/files/Form-A5-Nusa.pdf'));
+  await expect(page.getByText('Dokumen selesai dibaca. Periksa data sebelum konfirmasi.')).toBeVisible();
+  const row = page.getByRole('row').filter({ hasText: 'Form-A5-Nusa.pdf' });
+  await expect(row.getByText('Perlu ditinjau', { exact: true })).toBeVisible();
+  await row.getByRole('link', { name: 'Periksa' }).click();
+  await expect(page.getByLabel('Harga Penawaran Barang (Rp)')).toHaveValue('1000000000');
+  await expect(page.getByText('Halaman 1 · Harga Penawaran Barang', { exact: true })).toBeVisible();
+  await confirm(page);
+});
+
+test('motion preference removes nonessential movement and active motion preserves navigation', async ({ page }) => {
+  await page.goto('/');
+  expect(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches)).toBe(true);
+  const durations = await page.locator('.sidebar, .page').evaluateAll(elements => elements.map(element => {
+    const style = getComputedStyle(element);
+    return [...style.transitionDuration.split(','), ...style.animationDuration.split(',')].map(value => parseFloat(value));
+  }).flat());
+  expect(durations.every(duration => duration <= 0.001)).toBe(true);
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await click(page, 'Ringkas navigasi');
+  await page.getByRole('navigation', { name: 'Navigasi utama' }).getByRole('link', { name: 'Bank Data OE' }).click();
+  await expect(page.getByRole('heading', { name: 'Bank Data OE', exact: true })).toBeVisible();
+  await tab(page, 'Pencarian Referensi');
+  await expect(page.getByRole('tab', { name: 'Pencarian Referensi' })).toBeFocused();
+  await expect(page.getByRole('tab', { name: 'Pencarian Referensi' })).toHaveAttribute('aria-selected', 'true');
+});
+
+test('historical XLSX upload requires metadata and confirmation before publication', async ({ page }) => {
+  await page.goto('/bank');
+  await click(page, 'Tambah dokumen historis');
+  await page.getByLabel('Pilih OE historis').setInputFiles(path.resolve('public/files/OE-Historis-2024.xlsx'));
+  await expect(page.getByRole('heading', { name: 'Review dokumen historis' })).toBeVisible();
+  await expect(page.getByText('Harga · E5', { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Publikasikan', exact: true })).toBeDisabled();
+  await page.getByLabel('Fungsi', { exact: true }).first().fill('Maintenance');
+  await click(page, 'Simpan metadata');
+  await click(page, 'Konfirmasi');
+  await click(page, 'Publikasikan');
+  await expect(page.getByText('Dokumen telah ditambahkan ke Bank Data OE.')).toBeVisible();
+  await tab(page, 'Bantuan Estimasi');
+  await page.getByLabel('Uraian pekerjaan').fill('Pengecatan tangki');
+  await page.getByLabel('Kuantitas', { exact: true }).fill('10');
+  await expect(page.getByRole('button', { name: 'Buat estimasi', exact: true })).toBeDisabled();
+});
+
+test('procurement search, sorting and pagination reflect created records', async ({ page }) => {
+  await page.goto('/pengadaan');
+  for (let index = 1; index <= 4; index++) {
+    await click(page, 'Tambah pengadaan');
+    await page.getByLabel('Nama pengadaan', { exact: true }).fill(`Pengadaan acceptance ${index}`);
+    await page.getByLabel('Nomor pengadaan', { exact: true }).fill(`ACCEPTANCE-${index}`);
+    await page.getByLabel('Fungsi / unit kerja', { exact: true }).fill('Maintenance');
+    await click(page, 'Buat pengadaan');
+    await page.getByRole('navigation', { name: 'Navigasi utama' }).getByRole('link', { name: 'Pengadaan', exact: true }).click();
+  }
+  await page.getByRole('combobox', { name: 'Jumlah pengadaan per halaman' }).click();
+  await page.getByRole('option', { name: '5', exact: true }).click();
+  await expect(page.getByText('Menampilkan 1–5 dari 6 pengadaan')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Sebelumnya', exact: true })).toBeDisabled();
+  await click(page, 'Selanjutnya');
+  await expect(page.getByText('Menampilkan 6–6 dari 6 pengadaan')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Selanjutnya', exact: true })).toBeDisabled();
+  await page.locator('.table-toolbar').getByRole('textbox', { name: 'Cari pengadaan', exact: true }).fill('acceptance');
+  await expect(page.getByText('Menampilkan 1–4 dari 4 pengadaan')).toBeVisible();
+  await page.getByRole('columnheader').getByRole('button', { name: 'Pengadaan', exact: true }).click();
+  await expect(page.locator('tbody tr').first().getByRole('link', { name: 'Pengadaan acceptance 4', exact: true })).toBeVisible();
+});
