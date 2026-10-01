@@ -1,0 +1,188 @@
+import { lazy, Suspense, useEffect, useState } from "react";
+import {
+  NavLink,
+  Route,
+  Routes,
+  Link,
+  useLocation,
+  useNavigate,
+} from "react-router";
+import { SquaresFour } from "@phosphor-icons/react/dist/csr/SquaresFour";
+import { Folder } from "@phosphor-icons/react/dist/csr/Folder";
+import { Database } from "@phosphor-icons/react/dist/csr/Database";
+import { ClockCounterClockwise } from "@phosphor-icons/react/dist/csr/ClockCounterClockwise";
+import { CaretLeft } from "@phosphor-icons/react/dist/csr/CaretLeft";
+import { CaretRight } from "@phosphor-icons/react/dist/csr/CaretRight";
+import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+const ProcurementList = lazy(() =>
+  import("./pages/Procurement").then((m) => ({ default: m.ProcurementList })),
+);
+const ProcurementDetail = lazy(() =>
+  import("./pages/Procurement").then((m) => ({ default: m.ProcurementDetail })),
+);
+import { Dashboard } from "./pages/Dashboard";
+const Review = lazy(() =>
+  import("./pages/Review").then((m) => ({ default: m.Review })),
+);
+const Bank = lazy(() => import("./pages/Bank"));
+const HistoryPage = lazy(() => import("./pages/History"));
+import { demoService } from "./domain";
+import { Empty, useDemo } from "./ui";
+import { Hint, LoadingState } from "./components";
+const links = [
+  ["/", "Ringkasan", SquaresFour],
+  ["/pengadaan", "Pengadaan", Folder],
+  ["/bank", "Bank Data OE", Database],
+  ["/riwayat", "Riwayat & Statistik", ClockCounterClockwise],
+] as const;
+const descriptions: Record<string, string> = {
+  "/": "Pantau pengadaan, pemeriksaan dokumen, dan pekerjaan yang perlu ditindaklanjuti.",
+  "/pengadaan":
+    "Kelola vendor, dokumen, dan hasil evaluasi dalam satu ruang kerja.",
+  "/bank":
+    "Telusuri dokumen OE historis, bandingkan referensi, dan susun estimasi.",
+  "/riwayat":
+    "Tinjau aktivitas, hasil tersimpan, dan jejak perubahan pengadaan.",
+};
+export default function App() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const state = useDemo();
+  const [collapsed, setCollapsed] = useState(false);
+  const [search, setSearch] = useState("");
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+  const focus = location.pathname.includes("/review/");
+  const procurement = state.procurements.find(
+    (p) => location.pathname === `/pengadaan/${p.id}`,
+  );
+  const active = links.find(([url]) =>
+    url === "/" ? location.pathname === url : location.pathname.startsWith(url),
+  );
+  const title = procurement?.name || active?.[1] || "Halaman tidak ditemukan";
+  const description = procurement
+    ? `${procurement.number} · ${procurement.functionName}`
+    : descriptions[active?.[0] || ""];
+  const content = (
+    <Suspense
+      fallback={
+        <div className="page">
+          <LoadingState label="Menyiapkan ruang kerja" />
+        </div>
+      }
+    >
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/pengadaan" element={<ProcurementList />} />
+        <Route
+          path="/pengadaan/:id"
+          element={<ProcurementDetail key={location.pathname} />}
+        />
+        <Route
+          path="/pengadaan/:id/review/:documentId"
+          element={<Review key={location.pathname} />}
+        />
+        <Route path="/bank" element={<Bank service={demoService} />} />
+        <Route
+          path="/riwayat"
+          element={<HistoryPage service={demoService} />}
+        />
+        <Route
+          path="*"
+          element={
+            <div className="page">
+              <Empty title="Halaman tidak ditemukan">
+                Kembali ke <Link to="/">Ringkasan</Link> untuk melanjutkan.
+              </Empty>
+            </div>
+          }
+        />
+      </Routes>
+    </Suspense>
+  );
+  if (focus) return content;
+  return (
+    <div className={`app ${collapsed ? "nav-collapsed" : ""}`}>
+      <a className="skip-link" href="#main-content">
+        Lewati navigasi
+      </a>
+      <aside className="sidebar">
+        <Link className="brand" to="/" aria-label="PRISM Ringkasan">
+          <img className="logo-full" src="/pertamina.svg" alt="Pertamina Patra Niaga" />
+          <img
+            className="logo-symbol"
+            src="/pertamina-symbol.png"
+            alt="Pertamina"
+          />
+        </Link>
+        <div className="brand-title">
+          PRISM<small>Evaluasi pengadaan</small>
+        </div>
+        <Hint label={collapsed ? "Perluas navigasi" : "Ringkas navigasi"}>
+          <button
+            className="sidebar-toggle"
+            onClick={() => setCollapsed((v) => !v)}
+            aria-label={collapsed ? "Perluas navigasi" : "Ringkas navigasi"}
+            aria-expanded={!collapsed}
+          >
+            {collapsed ? <CaretRight size={16} /> : <CaretLeft size={16} />}
+          </button>
+        </Hint>
+        <nav className="nav" aria-label="Navigasi utama">
+          {links.map(([url, label, Icon]) => (
+            <Hint key={url} label={label}>
+              <NavLink to={url} end={url === "/"} aria-label={label}>
+                {({ isActive }) => (
+                  <>
+                    <Icon
+                      size={21}
+                      weight={isActive ? "fill" : "regular"}
+                      aria-hidden="true"
+                    />
+                    <span>{label}</span>
+                  </>
+                )}
+              </NavLink>
+            </Hint>
+          ))}
+        </nav>
+        <div className="sidebar-foot">
+          PT Pertamina Patra Niaga
+          <br />
+          Regional Kalimantan
+        </div>
+      </aside>
+      <main className="workspace" id="main-content" tabIndex={-1}>
+        <header className="topbar">
+          <div className="shell-heading">
+            {procurement && (
+              <Link className="shell-back" to="/pengadaan">
+                <CaretLeft size={13} /> Semua pengadaan
+              </Link>
+            )}
+            <h1>{title}</h1>
+            <p>{description}</p>
+          </div>
+          <form
+            className="shell-search"
+            onSubmit={(e) => {
+              e.preventDefault();
+              navigate(`/pengadaan?cari=${encodeURIComponent(search)}`);
+            }}
+          >
+            <MagnifyingGlass size={18} aria-hidden="true" />
+            <input
+              aria-label="Cari pengadaan"
+              name="cari"
+              placeholder="Cari pengadaan…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </form>
+        </header>
+        {content}
+      </main>
+    </div>
+  );
+}
