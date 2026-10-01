@@ -1,0 +1,350 @@
+[
+  {
+    "id": "a5-nusa",
+    "name": "Form-A5-Nusa.pdf",
+    "path": "/files/Form-A5-Nusa.pdf",
+    "kind": "FORM_A5",
+    "scenario": "normal",
+    "vendorName": "PT Nusa Teknik Mandiri",
+    "values": {
+      "hpb": "1000000000",
+      "hpj": "300000000",
+      "knb": "25000000",
+      "tkdn_barang": ".4",
+      "tkdn_jasa": ".3"
+    },
+    "sources": [
+      {
+        "field": "hpb",
+        "location": "Halaman 1 · Harga Penawaran Barang",
+        "quote": "Harga Penawaran Barang: Rp 1.000.000.000"
+      },
+      {
+        "field": "hpj",
+        "location": "Halaman 1 · Harga Penawaran Jasa",
+        "quote": "Harga Penawaran Jasa: Rp 300.000.000"
+      },
+      {
+        "field": "tkdn_barang",
+        "location": "Halaman 1 · TKDN Barang",
+        "quote": "TKDN Barang: 40%"
+      },
+      {
+        "field": "tkdn_jasa",
+        "location": "Halaman 1 · TKDN Jasa",
+        "quote": "TKDN Jasa: 30%"
+      },
+      {
+        "field": "knb",
+        "location": "Halaman 1 · Komponen Bukan Biaya",
+        "quote": "Komponen Bukan Biaya: Rp 25.000.000"
+      }
+    ],
+    "warnings": [],
+    "groups": [],
+    "sha256": "bba96f6eccfb7be56759ad77d8df47b280882f320c1db4955de071da29358a10"
+  },
+  {
+    "id": "a5-borneo",
+    "name": "Form-A5-Borneo.pdf",
+    "path": "/files/Form-A5-Borneo.pdf",
+    "kind": "FORM_A5",
+    "scenario": "correction",
+    "vendorName": "PT Borneo Teknik Nusantara",
+    "values": {
+      "hpb": "1040000000",
+      "hpj": "320000000",
+      "knb": "18000000",
+      "tkdn_barang": ".5",
+      "tkdn_jasa": ".35"
+    },
+    "sources": [
+      {
+        "field": "hpb",
+        "location": "Halaman 1 · Harga Penawaran Barang",
+        "quote": "Harga Penawaran Barang: Rp 1.040.000.000"
+      },
+      {
+        "field": "hpj",
+        "location": "Halaman 1 · Harga Penawaran Jasa",
+        "quote": "Harga Penawaran Jasa: Rp 320.000.000"
+      },
+      {
+        "field": "tkdn_barang",
+        "location": "Halaman 1 · TKDN Barang",
+        "quote": "TKDN Barang: 50%"
+      },
+      {
+        "field": "tkdn_jasa",
+        "location": "Halaman 1 · TKDN Jasa",
+        "quote": "TKDN Jasa: 35%"
+      },
+      {
+        "field": "knb",
+        "location": "Halaman 1 · Komponen Bukan Biaya",
+        "quote": "Komponen Bukan Biaya: Rp 18.000.000"
+      }
+    ],
+    "warnings": ["Periksa kembali TKDN jasa pada bukti sumber."],
+    "groups": [],
+    "sha256": "407cf243de920906b5cd66543e7b2d5becfc934b052fb63796cbf58eeb2a2593"
+  },
+  {
+    "id": "oe-terminal",
+    "name": "OE-Terminal.xlsx",
+    "path": "/files/OE-Terminal.xlsx",
+    "kind": "OE",
+    "scenario": "normal",
+    "vendorName": null,
+    "rows": [
+      {
+        "id": "pipe",
+        "description": "Pipa baja 4 inci",
+        "category": "MATERIAL",
+        "unit": "m",
+        "oe": "100000",
+        "offer": "125000",
+        "source": "Harga · E5/F5"
+      },
+      {
+        "id": "install",
+        "description": "Pemasangan pipa",
+        "category": "SERVICE",
+        "unit": "m",
+        "oe": "50000",
+        "offer": "55000",
+        "source": "Harga · E6/F6"
+      },
+      {
+        "id": "valve",
+        "description": "Katup gate 4 inci",
+        "category": "MATERIAL",
+        "unit": "unit",
+        "oe": "850000",
+        "offer": "680000",
+        "source": "Harga · E7/F7"
+      }
+    ],
+    "sources": [
+      {
+        "field": "pipe",
+        "location": "Harga · E5/F5",
+        "quote": "Pipa baja 4 inci · m"
+      },
+      {
+        "field": "install",
+        "location": "Harga · E6/F6",
+        "quote": "Pemasangan pipa · m"
+      },
+      {
+        "field": "valve",
+        "location": "Harga · E7/F7",
+        "quote": "Katup gate 4 inci · unit"
+      }
+    ],
+    "warnings": [],
+    "groups": ["Harga satuan material dan jasa"],
+    "sha256": "9c2714a0ca5d704b0e950d24feebb2f3520b45668720d349941794ac8c9d210d"
+  },
+  {
+    "id": "bid-nusa",
+    "name": "Penawaran-Nusa.xlsx",
+    "path": "/files/Penawaran-Nusa.xlsx",
+    "kind": "OFFER",
+    "scenario": "normal",
+    "vendorName": "PT Nusa Teknik Mandiri",
+    "rows": [
+      {
+        "id": "pipe",
+        "description": "Pipa baja 4 inci",
+        "category": "MATERIAL",
+        "unit": "m",
+        "oe": "100000",
+        "offer": "125000",
+        "source": "Harga · E5/F5"
+      },
+      {
+        "id": "install",
+        "description": "Pemasangan pipa",
+        "category": "SERVICE",
+        "unit": "m",
+        "oe": "50000",
+        "offer": "55000",
+        "source": "Harga · E6/F6"
+      },
+      {
+        "id": "valve",
+        "description": "Katup gate 4 inci",
+        "category": "MATERIAL",
+        "unit": "unit",
+        "oe": "850000",
+        "offer": "680000",
+        "source": "Harga · E7/F7"
+      }
+    ],
+    "sources": [
+      {
+        "field": "pipe",
+        "location": "Harga · E5/F5",
+        "quote": "Pipa baja 4 inci · m"
+      },
+      {
+        "field": "install",
+        "location": "Harga · E6/F6",
+        "quote": "Pemasangan pipa · m"
+      },
+      {
+        "field": "valve",
+        "location": "Harga · E7/F7",
+        "quote": "Katup gate 4 inci · unit"
+      }
+    ],
+    "warnings": [],
+    "groups": ["Harga satuan material dan jasa"],
+    "sha256": "9be9b93aaa551494a008e60d70218579bdb66e99832c8f04e58199d3ec0a1c72"
+  },
+  {
+    "id": "bid-borneo",
+    "name": "Penawaran-Borneo.xlsx",
+    "path": "/files/Penawaran-Borneo.xlsx",
+    "kind": "OFFER",
+    "scenario": "ambiguous",
+    "vendorName": "PT Borneo Teknik Nusantara",
+    "rows": [
+      {
+        "id": "pipe",
+        "description": "Pipa baja 4 inci",
+        "category": "MATERIAL",
+        "unit": "m",
+        "oe": "100000",
+        "offer": "125000",
+        "source": "Harga · E5/F5"
+      },
+      {
+        "id": "install",
+        "description": "Pemasangan pipa",
+        "category": "SERVICE",
+        "unit": "m",
+        "oe": "50000",
+        "offer": "55000",
+        "source": "Harga · E6/F6"
+      },
+      {
+        "id": "valve",
+        "description": "Katup gate 4 inci",
+        "category": "MATERIAL",
+        "unit": "unit",
+        "oe": "850000",
+        "offer": "680000",
+        "source": "Harga · E7/F7"
+      }
+    ],
+    "sources": [
+      {
+        "field": "pipe",
+        "location": "Harga · E5/F5",
+        "quote": "Pipa baja 4 inci · m"
+      },
+      {
+        "field": "install",
+        "location": "Harga · E6/F6",
+        "quote": "Pemasangan pipa · m"
+      },
+      {
+        "field": "valve",
+        "location": "Harga · E7/F7",
+        "quote": "Katup gate 4 inci · unit"
+      }
+    ],
+    "warnings": ["Dua kelompok harga tersedia; pilih sumber secara eksplisit."],
+    "groups": ["Harga satuan material dan jasa", "Ringkasan total"],
+    "sha256": "cb50c39bfe2cf8534c65372d796b7a3732ccfb508d1049514e88dc4c48e45a31"
+  },
+  {
+    "id": "history-2024",
+    "name": "OE-Historis-2024.xlsx",
+    "path": "/files/OE-Historis-2024.xlsx",
+    "kind": "HISTORICAL_OE",
+    "scenario": "insufficient",
+    "period": "2024",
+    "rows": [
+      {
+        "id": "painting-2024",
+        "description": "Pengecatan tangki",
+        "category": "SERVICE",
+        "unit": "m²",
+        "oe": "85000",
+        "offer": "",
+        "source": "Harga · E5"
+      }
+    ],
+    "sources": [
+      {
+        "field": "painting-2024",
+        "location": "Harga · E5",
+        "quote": "Pengecatan tangki · m² · Rp 85.000"
+      }
+    ],
+    "warnings": [],
+    "groups": [],
+    "sha256": "d8d028c6ce4244021381e015e78b4754b189d6f244745fab30d2ff06b6816725"
+  },
+  {
+    "id": "history-2025",
+    "name": "OE-Historis-2025.xlsx",
+    "path": "/files/OE-Historis-2025.xlsx",
+    "kind": "HISTORICAL_OE",
+    "scenario": "normal",
+    "period": "2025",
+    "rows": [
+      {
+        "id": "painting-2025",
+        "description": "Pengecatan tangki",
+        "category": "SERVICE",
+        "unit": "m²",
+        "oe": "90000",
+        "offer": "",
+        "source": "Harga · E5"
+      }
+    ],
+    "sources": [
+      {
+        "field": "painting-2025",
+        "location": "Harga · E5",
+        "quote": "Pengecatan tangki · m² · Rp 90.000"
+      }
+    ],
+    "warnings": [],
+    "groups": [],
+    "sha256": "4908e3d7168d2fa579e8bc895778e11bd3906caafab8096f6dc37b06dab69356"
+  },
+  {
+    "id": "history-2026",
+    "name": "OE-Historis-2026.xlsx",
+    "path": "/files/OE-Historis-2026.xlsx",
+    "kind": "HISTORICAL_OE",
+    "scenario": "normal",
+    "period": "2026",
+    "rows": [
+      {
+        "id": "painting-2026",
+        "description": "Pengecatan tangki",
+        "category": "SERVICE",
+        "unit": "m²",
+        "oe": "95000",
+        "offer": "",
+        "source": "Harga · E5"
+      }
+    ],
+    "sources": [
+      {
+        "field": "painting-2026",
+        "location": "Harga · E5",
+        "quote": "Pengecatan tangki · m² · Rp 95.000"
+      }
+    ],
+    "warnings": [],
+    "groups": [],
+    "sha256": "95babba8bb6b2c3a3465d45d1aadcdf9a9601916c9960ad809eeaff118c69c5f"
+  }
+]
