@@ -1,6 +1,10 @@
 <div align="center">
 
-<img src="public/pertamina-symbol.png" alt="PRISM logo" width="180" />
+<p>
+  <img src="docs/images/prism-logo.png" alt="PRISM logo" width="360" />
+  &nbsp;&nbsp;&nbsp;
+  <img src="public/pertamina.svg" alt="Pertamina Patra Niaga logo" width="240" />
+</p>
 
 # PRISM
 
