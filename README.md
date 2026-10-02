@@ -127,6 +127,13 @@ frontend/
 
 Open the URL printed by Vite, usually `http://127.0.0.1:5173`.
 
+### Presentasi demo
+
+Jalankan `npm run demo:prepare` untuk menyiapkan delapan berkas PDF/XLSX
+sintetis dan salinan panduan dalam `demo-kit/`. Ikuti [panduan demo](DEMO-GUIDE.md)
+untuk alur presentasi, angka skenario, dan pemulihan sesi. Dengan dev server aktif,
+jalankan `npm run demo:verify` untuk rehearsal browser pada dua ukuran desktop.
+
 ### Verification commands
 
 ```sh

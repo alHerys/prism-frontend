@@ -8,3 +8,5 @@ test-results/
 playwright-report/
 
 debug-storybook.log
+demo-kit/
+DEMO-GUIDE.md

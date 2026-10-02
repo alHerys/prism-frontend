@@ -90,10 +90,8 @@ export function BankPage({ service = demoService, onExport }: BankPageProps) {
   const upload = async (file?: File) => {
     if (!file) return;
     await run("Membaca dokumen", async () => {
-      const { recognizeFile } = await import("../services/registry");
-      const registered = await recognizeFile(file, "HISTORICAL_OE");
-      await pause(650);
-      setBusy("Memeriksa data");
+      const { processDemoDocument } = await import("../services/document-processing");
+      const registered = await processDemoDocument(file, "HISTORICAL_OE", setBusy);
       const record = await service.uploadRegisteredDocument({
         procurementId,
         kind: "HISTORICAL_OE",

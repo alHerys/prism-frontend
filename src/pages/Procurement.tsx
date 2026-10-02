@@ -22,7 +22,7 @@ import type {
   Snapshot,
   Procurement,
 } from "../domain";
-import { recognizeFile } from "../services/registry";
+import { processDemoDocument } from "../services/document-processing";
 import { SnapshotInputs } from "./History";
 import { downloadSnapshot } from "../export/workbook";
 import {
@@ -467,6 +467,7 @@ export function UploadPanel({
   const [kind, setKind] = useState<DocumentKind>(scope === "procurement" ? "OE" : "FORM_A5");
   const vendor = vendorId || "";
   const [busy, setBusy] = useState(false);
+  const [processing, setProcessing] = useState("");
   const [failure, setFailure] = useState("");
   async function upload(file: File) {
     setFailure("");
@@ -477,8 +478,7 @@ export function UploadPanel({
     }
     setBusy(true);
     try {
-      const fixture = await recognizeFile(file, kind);
-      await new Promise((r) => setTimeout(r, 650));
+      const fixture = await processDemoDocument(file, kind, setProcessing);
       const document = await demoService.uploadRegisteredDocument({
         procurementId,
         kind,
@@ -492,6 +492,7 @@ export function UploadPanel({
       setFailure(errorMessage(e));
     } finally {
       setBusy(false);
+      setProcessing("");
     }
   }
   return (
@@ -528,12 +529,12 @@ export function UploadPanel({
         <p>
           <strong>
             {busy
-              ? "Membaca dan memeriksa dokumen…"
+              ? `${processing}…`
               : "Tarik dokumen ke sini atau pilih berkas"}
           </strong>
         </p>
         <small>Dokumen akan diperiksa sebelum digunakan untuk evaluasi.</small>
-        {busy && <LoadingState label="Memeriksa data dokumen" />}
+        {busy && <LoadingState label={processing} />}
       </UploadZone>
       {failure && (
         <ErrorState
@@ -586,7 +587,7 @@ export function HEAPanel({ procurement: p }: { procurement: Procurement }) {
     state.snapshots.find((s) => s.procurementId === p.id && s.module === "HEA");
   async function save() {
     try {
-      await demoService.setPreferences(
+      const saved = await demoService.setPreferences(
         p.id,
         {
           preferensi_barang: ratioInput(prefs.barang),
@@ -594,6 +595,12 @@ export function HEAPanel({ procurement: p }: { procurement: Procurement }) {
         },
         p.preferenceRevision,
       );
+      if (saved.preferences) {
+        setPrefs({
+          barang: percentInput(saved.preferences.preferensi_barang),
+          jasa: percentInput(saved.preferences.preferensi_jasa),
+        });
+      }
       toast("Preferensi disimpan. Konfirmasikan nilai yang akan digunakan.");
     } catch (e) {
       toast(errorMessage(e), true);
