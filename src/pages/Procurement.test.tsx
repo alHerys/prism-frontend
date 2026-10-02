@@ -7,6 +7,7 @@ import {
 } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { MemoryRouter } from "react-router";
+import { ProcurementTable } from "./ProcurementTable";
 import { HEAPanel } from "./Procurement";
 import { demoService } from "../domain";
 import { ToastProvider } from "../ui";
@@ -41,5 +42,21 @@ describe("Preferensi evaluasi", () => {
     expect(
       demoService.getState().procurements[0].preferences?.preferensi_barang,
     ).toBe("0.15");
+  });
+});
+
+
+describe("Pencarian pengadaan", () => {
+  it("menemukan pengadaan melalui vendor dan dokumen tanpa menampilkan pengadaan lain", () => {
+    const state = demoService.getState();
+    render(<MemoryRouter><ProcurementTable items={state.procurements} /></MemoryRouter>);
+    const search = screen.getByRole("textbox", { name: "Cari pengadaan" });
+    for (const query of [state.vendors[0].name, state.documents[0].name]) {
+      fireEvent.change(search, { target: { value: query } });
+      expect(screen.getByRole("link", { name: state.procurements[0].name })).toBeInTheDocument();
+      expect(screen.queryByRole("link", { name: state.procurements[1].name })).not.toBeInTheDocument();
+    }
+    fireEvent.change(search, { target: { value: "tidak-ada-hasil" } });
+    expect(screen.getByText("Pengadaan tidak ditemukan")).toBeInTheDocument();
   });
 });

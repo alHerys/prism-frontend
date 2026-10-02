@@ -1,3 +1,4 @@
+import { HeaderAction } from "../components";
 import { useState, useSyncExternalStore } from "react";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
 import { CloudArrowUp } from "@phosphor-icons/react/dist/csr/CloudArrowUp";
@@ -152,10 +153,7 @@ export function BankPage({ service = demoService, onExport }: BankPageProps) {
   };
   return (
     <div className="page bank-page">
-      <header className="bank-page-toolbar">
-        <p className="muted">
-          Dokumen, referensi dan bantuan penyusunan OE dalam satu ruang kerja.
-        </p>
+      <HeaderAction>
         <button
           className="btn primary"
           onClick={() => {
@@ -167,7 +165,7 @@ export function BankPage({ service = demoService, onExport }: BankPageProps) {
           <Plus size={17} />
           Tambah dokumen historis
         </button>
-      </header>
+      </HeaderAction>
       <PageTabs
         ariaLabel="Bagian Bank Data OE"
         value={tab}

@@ -266,3 +266,21 @@
 .page.dashboard-page .dashboard-procurements .table-toolbar {
   padding-inline: 24px;
 }
+
+.dashboard-overview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+.dashboard-overview > div, .dashboard-overview > div:first-child {
+  padding: 20px 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.dashboard-overview > div:last-child { border: 1px solid var(--border); }
+.dashboard-overview dd { margin: 12px 0 0; font-size: 32px; font-variant-numeric: tabular-nums; }
+.dashboard-overview > div:first-child dd { color: var(--ink); }

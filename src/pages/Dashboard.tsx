@@ -10,58 +10,21 @@ import "./dashboard.css";
 export function Dashboard() {
   const state = useDemo();
   const pending = state.documents.filter((d) => d.status !== "CONFIRMED");
-  const next = pending[0];
   return (
     <div className="page dashboard-page">
-      <section className="dashboard-banner">
-        <div>
-          <h2>
-            {next
-              ? "Lanjutkan pemeriksaan dokumen"
-              : "Siapkan evaluasi pengadaan berikutnya"}
-          </h2>
-          <p>
-            {next
-              ? `${next.name} menunggu pemeriksaan nilai dan sumber sebelum dikonfirmasi.`
-              : "Semua dokumen telah ditinjau. Buka pengadaan untuk melanjutkan evaluasi."}
-          </p>
-          <Link
-            className="btn"
-            to={
-              next
-                ? `/pengadaan/${next.procurementId}/review/${next.id}`
-                : "/pengadaan"
-            }
-          >
-            {next ? "Periksa dokumen" : "Buka pengadaan"}{" "}
-            <ArrowRight size={17} />
-          </Link>
-        </div>
-        <div className="banner-context">
-          <strong>{next ? kindLabel[next.kind] : "Evaluasi pengadaan"}</strong>
-          <span>
-            {next
-              ? state.procurements.find((p) => p.id === next.procurementId)
-                  ?.name
-              : "HEA dan Harga Timpang"}
-          </span>
-        </div>
-      </section>
       <dl className="dashboard-overview" aria-label="Ringkasan ruang kerja">
         {[
-          ["Pengadaan aktif", state.procurements.length, "Dalam ruang kerja"],
-          ["Dokumen", state.documents.length, "Tercatat pada pengadaan"],
-          ["Perlu ditinjau", pending.length, "Menunggu konfirmasi"],
+          ["Pengadaan aktif", state.procurements.length],
+          ["Dokumen", state.documents.length],
+          ["Perlu ditinjau", pending.length],
           [
             "Evaluasi tersimpan",
             state.snapshots.length,
-            "Hasil dan jejak sumber",
           ],
-        ].map(([label, value, detail]) => (
+        ].map(([label, value]) => (
           <div key={label}>
             <dt>{label}</dt>
             <dd>{value}</dd>
-            <small>{detail}</small>
           </div>
         ))}
       </dl>

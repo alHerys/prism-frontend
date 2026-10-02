@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ProcurementTable } from "./ProcurementTable";
 import {
+  HeaderAction,
   PageTabs,
   UploadZone,
   Button,
@@ -65,13 +66,12 @@ export function ProcurementList() {
   }
   return (
     <div className="page">
-      <div className="page-title">
-        <p className="muted">Kelola dokumen dan evaluasi setiap pengadaan.</p>
+      <HeaderAction>
         <Button variant="primary" onClick={() => setOpen(true)}>
           <Plus />
           Tambah pengadaan
         </Button>
-      </div>
+      </HeaderAction>
       <section className="panel">
         <ProcurementTable
           items={state.procurements}

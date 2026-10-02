@@ -372,7 +372,7 @@
   border: 1px solid #d7e0e9;
   border-radius: 9px;
   padding: 0 12px;
-  background: var(--surface);
+  background-color: var(--surface);
   font: inherit;
   font-size: 13px;
   font-weight: 400;
@@ -561,3 +561,6 @@
 .bank-page .page-tab-content > .bank-stat-strip {
   padding: 22px 24px;
 }
+
+.bank-page .bank-search input:focus-visible { outline: none; box-shadow: none; }
+.bank-page .field select { padding-right: 38px; }

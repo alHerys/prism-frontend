@@ -161,7 +161,8 @@ export default function App() {
             <h1>{title}</h1>
             <p>{description}</p>
           </div>
-          <form
+          <div id="page-header-actions" />
+          {location.pathname === "/" && <form
             className="shell-search"
             onSubmit={(e) => {
               e.preventDefault();
@@ -176,7 +177,7 @@ export default function App() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-          </form>
+          </form>}
         </header>
         {content}
       </main>

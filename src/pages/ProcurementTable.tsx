@@ -31,7 +31,7 @@ export function ProcurementTable({
       const docs = state.documents.filter((d) => d.procurementId === p.id);
       const pending = docs.some((d) => d.status !== "CONFIRMED");
       return (
-        `${p.name} ${p.number} ${p.functionName}`
+        `${p.name} ${p.number} ${p.functionName} ${state.vendors.filter((v) => v.procurementId === p.id).map((v) => v.name).join(" ")} ${docs.map((d) => d.name).join(" ")}`
           .toLowerCase()
           .includes(search.toLowerCase()) &&
         (status === "all" ||
@@ -54,7 +54,7 @@ export function ProcurementTable({
           <MagnifyingGlass aria-hidden="true" />
           <input
             aria-label={searchLabel}
-            placeholder="Cari nama, nomor, atau fungsi pengadaan"
+            placeholder="Cari nama, nomor, vendor, fungsi, atau dokumen"
             value={search}
             onChange={(e) => {
               (onSearchChange || setOwnSearch)(e.target.value);

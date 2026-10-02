@@ -1,4 +1,5 @@
-import { useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { useEffect, useId, useRef, useState } from "react";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import * as Select from "@radix-ui/react-select";
@@ -336,4 +337,10 @@ export function ErrorState({
       {onRetry ? <Button onClick={onRetry}>Coba lagi</Button> : null}
     </div>
   );
+}
+
+export function HeaderAction({ children }: { children: ReactNode }) {
+  const [target, setTarget] = useState<HTMLElement | null>(null);
+  useEffect(() => { setTarget(document.getElementById("page-header-actions")); }, []);
+  return target ? createPortal(children, target) : children;
 }
