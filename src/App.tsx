@@ -109,16 +109,13 @@ export default function App() {
       </a>
       <aside className="sidebar">
         <Link className="brand" to="/" aria-label="PRISM Ringkasan">
-          <img className="logo-full" src="/pertamina.svg" alt="Pertamina Patra Niaga" />
+          <img className="logo-full" src="/prism_expand.svg" alt="PRISM" />
           <img
             className="logo-symbol"
-            src="/pertamina-symbol.png"
-            alt="Pertamina"
+            src="/prism_shrink.svg"
+            alt="PRISM"
           />
         </Link>
-        <div className="brand-title">
-          PRISM<small>Evaluasi pengadaan</small>
-        </div>
         <Hint label={collapsed ? "Perluas navigasi" : "Ringkas navigasi"}>
           <button
             className="sidebar-toggle"

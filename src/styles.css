@@ -1479,3 +1479,16 @@ body {
 .page-number {
   background: var(--blue-deep);
 }
+
+/* Supplied PRISM identity: full and compact SVG marks. */
+.brand .logo-full {
+  width: 168px;
+  height: 56px;
+  margin-bottom: 32px;
+}
+.nav-collapsed .brand .logo-symbol {
+  width: 34px;
+  height: 41px;
+  object-fit: contain;
+  margin-bottom: 47px;
+}
