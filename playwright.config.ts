@@ -8,8 +8,8 @@ export default defineConfig({
   workers: 1,
   retries: 0,
   reporter: 'list',
-  outputDir: '.impeccable/review/playwright-results',
-  snapshotPathTemplate: '{testDir}/../.impeccable/review/snapshots/{projectName}/{arg}{ext}',
+  outputDir: 'test-results/playwright',
+  snapshotPathTemplate: '{testDir}/../test-results/snapshots/{projectName}/{arg}{ext}',
   expect: { timeout: 10_000, toHaveScreenshot: { animations: 'disabled', maxDiffPixelRatio: 0.001 } },
   use: {
     baseURL: process.env.PRISM_PREVIEW_URL || 'http://127.0.0.1:5175',

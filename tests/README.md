@@ -16,8 +16,8 @@ partial exclusions and source values. These checks verify the prepared frontend
 scenario, not a backend parser, financial implementation or evaluator acceptance.
 
 Screenshots use Playwright `expect(page).toHaveScreenshot`. Local baselines live
-in `.impeccable/review/snapshots/{project}/prism-*.png`; traces, failed captures and
-XLSX downloads live in `.impeccable/review/playwright-results/`. Those folders are
+in `test-results/snapshots/{project}/prism-*.png`; traces, failed captures and
+XLSX downloads live in `test-results/playwright/`. Those folders are
 ignored by Git. Create a first local baseline with `npm run test:desktop:update`,
 inspect the images, then rerun `npm run test:desktop` to verify comparison. Updating
 an image is not evidence of visual acceptance; changes still require inspection.

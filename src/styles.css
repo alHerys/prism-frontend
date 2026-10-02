@@ -964,7 +964,7 @@ textarea::placeholder {
   opacity: 1;
 }
 
-/* PRISM reference: source-oriented rows and explicit review readiness. */
+/* Source-oriented rows and explicit review readiness. */
 .procurement-name {
   display: flex;
   align-items: center;
@@ -1005,7 +1005,7 @@ textarea::placeholder {
   white-space: nowrap;
 }
 
-/* PRISM desktop workspace — shared visual and motion tokens. */
+/* Desktop workspace — shared visual and motion tokens. */
 :root {
   --blue: #10528c;
   --blue-deep: #104f88;

@@ -183,7 +183,7 @@
   padding: 24px 24px 0;
 }
 
-/* A working surface rather than PRISM's full blue hero. */
+/* A focused working surface for the procurement overview. */
 .dashboard-banner {
   background: white;
   color: var(--blue-deep);

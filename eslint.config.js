@@ -1,7 +1,7 @@
 import tseslint from "typescript-eslint";
 import hooks from "eslint-plugin-react-hooks";
 export default tseslint.config(
-  { ignores: ["dist", "node_modules", ".impeccable", "scripts", "storybook-static", "test-results", "playwright-report"] },
+  { ignores: ["dist", "node_modules", "scripts", "storybook-static", "test-results", "playwright-report"] },
   ...tseslint.configs.recommended,
   {
     files: ["src/**/*.{ts,tsx}"],

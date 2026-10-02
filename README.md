@@ -1,111 +1,148 @@
-# PRISM Frontend
+<div align="center">
 
-Demo produk desktop berbahasa Indonesia. Frontend berjalan mandiri dengan data
-sintetis, pengenalan berkas lokal, dan hasil yang telah disiapkan. **Belum terintegrasi
-dengan backend, parser, atau provider AI.** State hanya berada di memori; reload
-memulai sesi baru. Tidak ada file/nilai finansial di localStorage.
+<img src="public/pertamina-symbol.png" alt="PRISM logo" width="180" />
 
-## Menjalankan
+# PRISM
 
-Dengan Node.js 22+ dan npm:
+**A desktop procurement evaluation workspace for reviewing documents, comparing prices, and preserving traceable results.**
+
+<br />
+
+![Platform](https://img.shields.io/badge/Platform-Desktop%20Web-086DB5?style=for-the-badge)
+![Frontend](https://img.shields.io/badge/Frontend-React%20%2B%20TypeScript-102D45?style=for-the-badge)
+![Build](https://img.shields.io/badge/Build-Vite-65C466?style=for-the-badge)
+![Backend](https://img.shields.io/badge/Backend-Offline%20Demo-7B8794?style=for-the-badge)
+
+</div>
+
+---
+
+## Table of contents
+
+- [Project overview](#project-overview)
+- [Key features](#key-features)
+- [Technology stack](#technology-stack)
+- [Project structure](#project-structure)
+- [Getting started](#getting-started)
+- [Team](#team)
+
+## Project overview
+
+| Item | Details |
+| --- | --- |
+| Application Type | Desktop web application |
+| Primary Platform | Web browser |
+| Operating mode | Offline frontend demonstration |
+| Interface language | Indonesian |
+
+PRISM membantu tim pengadaan memeriksa dokumen, meninjau kandidat data, mengonfirmasi nilai yang digunakan untuk evaluasi, membandingkan harga, dan menyimpan hasil yang dapat ditelusuri. Frontend ini menggunakan skenario lokal yang realistis agar seluruh alur dapat diperagakan tanpa koneksi layanan eksternal.
+
+## Key features
+
+| Feature | What the user can do |
+| --- | --- |
+| Procurement workspace | Membuat pengadaan, menambahkan vendor, dan melihat progres setiap tahap. |
+| Document review | Mengunggah berkas lokal, memeriksa metadata, meninjau kandidat, menangani peringatan, dan mengulang proses. |
+| HEA evaluation | Meninjau Form A5, mengoreksi nilai, mengonfirmasi preferensi, dan melihat hasil evaluasi. |
+| Unequal price review | Memilih sumber harga, memeriksa pasangan item, mengoreksi data, dan melihat hasil per kategori. |
+| OE data bank | Mempublikasikan data historis, mencari referensi, memeriksa kesebandingan, dan melihat statistik harga. |
+| Estimation assistance | Memasukkan kebutuhan, memilih referensi, dan melihat estimasi beserta sumbernya. |
+| History and snapshots | Melihat koreksi, konfirmasi, publikasi, aktivitas, dan snapshot hasil. |
+| Workbook export | Mengunduh ringkasan dan rincian dari snapshot yang sedang dibuka dalam format XLSX. |
+
+## Technology stack
+
+| Category | Technology | Purpose |
+| --- | --- | --- |
+| Frontend | React 19 + TypeScript | Membangun antarmuka dan alur kerja desktop. |
+| Build tool | Vite | Development server dan production build. |
+| Routing | React Router | Navigasi antar modul dan tahap pengadaan. |
+| UI primitives | Radix Primitives | Dialog, tab, select, dan tooltip yang dapat diakses. |
+| Icons | Phosphor Icons | Ikon antarmuka yang konsisten. |
+| State model | In-memory session services | Menjaga state demo selama satu sesi browser. |
+| Workbook | ExcelJS | Membuat ekspor XLSX dari snapshot lokal. |
+| Testing | Vitest, React Testing Library, Playwright, Storybook | Unit, interaction, browser, dan component verification. |
+| Backend | Belum terhubung | Frontend mengikuti batas kontrak yang disiapkan untuk integrasi berikutnya. |
+| Database | Tidak digunakan | Data demo berasal dari fixture lokal. |
+| Authentication | Tidak digunakan | Login berada di luar cakupan frontend demo. |
+
+## Project structure
+
+```text
+frontend/
+├── public/
+│   ├── files/              # Berkas fixture yang dapat dipilih pengguna
+│   └── pertamina*.{svg,png} # Identitas visual aplikasi
+├── src/
+│   ├── domain/              # Tipe, aturan sesi, revisi, konfirmasi, dan snapshot
+│   ├── export/              # Pembuatan workbook XLSX
+│   ├── fixtures/            # Registri berkas, bukti, dan skenario lokal
+│   ├── pages/               # Dashboard dan halaman modul pengadaan
+│   ├── services/            # Pengenalan berkas dan layanan simulasi
+│   ├── components.tsx       # Komponen UI bersama
+│   └── App.tsx              # Shell dan routing aplikasi
+├── tests/                   # Browser dan Storybook acceptance tests
+├── scripts/                 # Generator fixture dan helper acceptance
+├── package.json
+└── vite.config.ts
+```
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 22 atau versi lebih baru.
+- npm 10 atau versi lebih baru.
+- Browser desktop modern.
+
+### Installation
+
+1. **Clone the repository**
+
+   ```sh
+   git clone https://github.com/[PROFILE]/[REPOSITORY].git
+   ```
+
+2. **Navigate to the frontend**
+
+   ```sh
+   cd [REPOSITORY]/frontend
+   ```
+
+3. **Install dependencies**
+
+   ```sh
+   npm ci
+   ```
+
+4. **Run the development server**
+
+   ```sh
+   npm run dev
+   ```
+
+Open the URL printed by Vite, usually `http://127.0.0.1:5173`.
+
+### Verification commands
 
 ```sh
-npm ci
-npm run dev
 npm run typecheck
 npm run lint
 npm test
 npm run build
+npm run test:desktop
+npm run storybook
 ```
 
-Preview lokal: http://127.0.0.1:5173. Pada mesin Codex ini Node/npm berasal dari
-runtime bundel; tidak ada instalasi Node global. Vite development membutuhkan
-izin membuka port lokal. Build berada di `dist/`; belum dideploy.
+All data and processing in the submitted frontend are local scenarios. File selection performs metadata and SHA-256 registry checks in the browser; it does not upload files or parse arbitrary documents at runtime. Reloading the page starts a new in-memory session. Financial calculations are not recomputed by the frontend export flow.
 
-## Mencoba alur
+## Team
 
-1. Buka **Penggantian Jalur Pipa Terminal** → **HEA**. Periksa Form A5 Nusa lalu
-   konfirmasi. Pada Borneo, cocokkan bukti dan koreksi TKDN jasa menjadi **35%**,
-   simpan, verifikasi peringatan, lalu konfirmasi.
-2. Isi preferensi barang **15%**, jasa **7,5%**; simpan dan konfirmasi. Pilih kedua
-   Form A5 lalu evaluasi. Buka input/jejak sumber dan ekspor Excel.
-3. Di **Harga Timpang**, pilih OE dan penawaran Nusa. Periksa kedua dokumen,
-   pilih **Harga satuan material dan jasa**, simpan dan konfirmasi. Dua pasangan
-   valid menghasilkan hasil parsial; katup belum dipasangkan. Centang katup pada
-   review untuk mencoba hasil lengkap. Input koreksi di luar skenario ditolak.
-4. **Bank Data OE → Pencarian Referensi**: pilih tiga OE historis 2024–2026 dan
-   nyatakan sebanding setelah memeriksa sumber. Buka statistik dan ekspor.
-5. **Bantuan Estimasi**: uraian **Pengecatan tangki**, satuan **m²**, kuantitas
-   **1**, **10**, atau **100**. Hasil memakai referensi terpilih dan nilai siap saji.
-6. Tambah pengadaan/vendor dan unggah berkas nyata dari `public/files/`. File
-   dikenal melalui SHA-256; pengubahan nama tidak mengubah hasil pengenalan.
-   Nama sama dengan isi berbeda tidak diterima. PDF Form A5, XLSX OE/penawaran,
-   maksimal 10 MiB. File di luar registri ditolak tanpa hasil dokumen lain.
-7. Tambah OE historis dari `public/files/`, lengkapi fungsi/periode sesuai sumber,
-   simpan, konfirmasi, publikasi. Lihat draft, sumber, aktivitas, dan snapshot di
-   **Riwayat & Statistik**.
+| Name | Role | Responsibilities | Contact |
+| --- | --- | --- | --- |
+| Hery | Project Coordinator | Product direction, review, and acceptance. | Project owner |
+| Alvianto Hery Sarborn | Software Engineer | Frontend architecture, implementation, testing, and documentation. | Repository maintainer |
 
-Berkas dapat disalin ke folder lain untuk pemilih file/drag-and-drop. Delapan
-berkas disiapkan secara sintetis; tidak berisi dokumen internal Pertamina.
-Registry dan asal berkas: `src/fixtures/README.md`.
+---
 
-## Batas dan struktur
-
-- `src/pages/`: shell dan flow UI, formulir/review.
-- `src/domain/`: state sesi, revisi/konfirmasi, skenario, snapshot immutable.
-- `src/services/registry.ts`: validasi metadata dan SHA-256 lokal.
-- `src/fixtures/`: registri/bukti sintetis.
-- `src/export/`: XLSX dari snapshot yang dibuka; tanpa mesin finansial/formula.
-- `DESIGN.md`: sistem tampilan; `BACKEND-BOUNDARY.md`: batas kontrak/migrasi.
-
-Semua proses pembacaan, pencocokan, evaluasi, statistik dan bantuan estimasi adalah
-skenario lokal. Tidak ada parser runtime. Pemeriksaan metadata bukan validasi
-keamanan dokumen lengkap. Angka disimpan sebagai string desimal; pembulatan
-rupiah hanya untuk presentasi, nilai penuh dipertahankan dalam snapshot/ekspor.
-
-Model daftar pengadaan, fungsi/nomor, Bank Data, estimasi, riwayat lintas modul dan
-ekspor bersifat sementara. Domain simulation mengikuti prinsip kontrak backend,
-namun **bukan adapter wire API**. Integrasi perlu paket tersendiri dan izin Hery.
-Backend tetap dibekukan pada `a29aaa6`. Tidak ada merge/push/deployment.
-
-## Verifikasi
-
-Vitest/RTL mencakup hash, batas unggah, revisi, konfirmasi, peringatan, skenario,
-snapshot, preferensi, sumber PD, Bank/statistik dan round-trip XLSX. Acceptance
-browser menguji pengadaan/upload/review/HEA/PD/Bank/estimasi/riwayat dan download
-XLSX, serta memantau tidak adanya request backend/provider. Screenshot desktop
-1366×768 dan 1920×1080 disimpan lokal di `.impeccable/review/` (gitignored).
-Lihat `ACCEPTANCE.md` untuk hasil aktual dan batas verifikasi.
-
-### Tampilan ruang kerja
-
-Navigasi dapat diringkas melalui tombol pada tepi sidebar. Pencarian header membuka
-daftar pengadaan yang sesuai tanpa memulai ulang sesi. Dalam detail pengadaan,
-bilah alur memberi akses vendor, dokumen, evaluasi dan hasil. Antrean pemeriksaan
-pada Ringkasan membuka review sumber/nilai langsung.
-
-## Redesign PRISM dan workbench komponen
-
-Tampilan desktop mengikuti komposisi PRISM: header kontekstual, banner pekerjaan
-berikutnya, status, antrean/aktivitas, tabel dengan pencarian, kesiapan, sorting dan
-pagination. Review memakai halaman fokus; hasil HEA/Harga Timpang tampil sebelum
-persiapan ketika snapshot tersedia. SourcePanel, UploadZone, Field, Button, Badge,
-PageTabs, SelectField, Hint dan state UI digunakan bersama. Ikon Phosphor diimpor
-melalui subpath bertipe; Radix menangani dialog/tab/select/tooltip. Halaman dimuat
-secara lazy dan ExcelJS tetap dimuat saat ekspor. Motion CSS mengikuti reduced motion.
-
-```sh
-npm run dev -- --port 5175 --strictPort
-npm run test:desktop:update  # baseline lokal pertama; periksa gambarnya
-npm run test:desktop         # perbandingan terhadap baseline lokal
-npm run storybook            # http://127.0.0.1:6006
-npm run build-storybook
-npm run test:storybook:browser
-```
-
-Playwright memakai Chrome macOS yang sudah tersedia; `PRISM_BROWSER_PATH` dapat
-mengganti executable. `PRISM_PREVIEW_URL` mengganti origin pengujian. Lihat
-`tests/README.md`; goldens/traces tidak masuk repository. Script acceptance lama
-dipertahankan sebagai bukti historis, sedangkan runner `tests/desktop.spec.ts`
-adalah entry point untuk redesign terbaru. Storybook hanya perangkat pengembangan,
-bukan navigasi aplikasi. Tidak ada target mobile.
+PRISM is a frontend demonstration project. Backend integration, authentication, deployment configuration, and production data services are separate workstreams.
