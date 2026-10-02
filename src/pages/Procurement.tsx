@@ -2,7 +2,6 @@ import { useState } from "react";
 import { ProcurementTable } from "./ProcurementTable";
 import {
   HeaderAction,
-  PageTabs,
   UploadZone,
   Button,
   Field,
@@ -12,6 +11,8 @@ import {
 import { Link, useNavigate, useParams, useSearchParams } from "react-router";
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
+import { ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft";
+import "./review.css";
 import { DownloadSimple as Download } from "@phosphor-icons/react/dist/csr/DownloadSimple";
 import { CheckCircle as CheckCircle2 } from "@phosphor-icons/react/dist/csr/CheckCircle";
 import { demoService } from "../domain";
@@ -56,8 +57,8 @@ export function ProcurementList() {
     setBusy(true);
     try {
       const p = await demoService.createProcurement(form);
-      navigate(`/pengadaan/${p.id}?tab=dokumen`);
-      toast("Pengadaan berhasil dibuat. Tambahkan vendor dan dokumen.");
+      navigate(`/pengadaan/${p.id}`);
+      toast("Pengadaan berhasil dibuat. Mulai dengan menambahkan vendor.");
     } catch (e) {
       toast(errorMessage(e), true);
     } finally {
@@ -154,23 +155,22 @@ export function ProcurementDetail() {
   }
   return (
     <div className="page">
-      <div className="page-title detail-actions">
-        <p className="muted">
-          Dibuat {date(p.createdAt)} · {vendors.length} vendor · {docs.length}{" "}
-          dokumen
-        </p>
-        <button className="btn" onClick={() => setVendorOpen(true)}>
-          <Plus /> Tambah vendor
-        </button>
-      </div>
-      <nav className="procurement-path" aria-label="Alur pengadaan">
-        <button onClick={() => setVendorOpen(true)}>
+      <nav className="procurement-path" aria-label="Tahap pengadaan">
+        <button
+          className={tab === "ringkasan" ? "current" : ""}
+          aria-current={tab === "ringkasan" ? "step" : undefined}
+          onClick={() => setParams({ tab: "ringkasan" })}
+        >
           <span>1</span>
           <div>
             Identitas & vendor<small>{vendors.length} vendor terdaftar</small>
           </div>
         </button>
-        <button onClick={() => setParams({ tab: "dokumen" })}>
+        <button
+          className={tab === "dokumen" ? "current" : ""}
+          aria-current={tab === "dokumen" ? "step" : undefined}
+          onClick={() => setParams({ tab: "dokumen" })}
+        >
           <span>2</span>
           <div>
             Unggah & verifikasi
@@ -180,176 +180,115 @@ export function ProcurementDetail() {
             </small>
           </div>
         </button>
-        <button onClick={() => setParams({ tab: "hea" })}>
+        <button
+          className={tab === "hea" || tab === "harga" ? "current" : ""}
+          aria-current={tab === "hea" || tab === "harga" ? "step" : undefined}
+          onClick={() => setParams({ tab: "hea" })}
+        >
           <span>3</span>
           <div>
             Evaluasi<small>HEA atau Harga Timpang</small>
           </div>
         </button>
-        <button onClick={() => setParams({ tab: "riwayat" })}>
+        <button
+          className={tab === "riwayat" ? "current" : ""}
+          aria-current={tab === "riwayat" ? "step" : undefined}
+          onClick={() => setParams({ tab: "riwayat" })}
+        >
           <span>4</span>
           <div>
             Hasil & jejak sumber<small>{results.length} hasil tersimpan</small>
           </div>
         </button>
       </nav>
-      <PageTabs
-        ariaLabel="Bagian pengadaan"
-        value={tab}
-        onValueChange={(value) => setParams({ tab: value })}
-        items={[
-          { value: "ringkasan", label: "Ringkasan" },
-          { value: "dokumen", label: "Vendor & Dokumen" },
-          { value: "hea", label: "HEA" },
-          { value: "harga", label: "Harga Timpang" },
-          { value: "riwayat", label: "Riwayat" },
-        ]}
-      >
+      <div className="procurement-stage-content">
         {tab === "ringkasan" && (
           <>
-            <div className="stats">
-              {[
-                ["Vendor", vendors.length],
-                ["Dokumen", docs.length],
-                [
-                  "Terkonfirmasi",
-                  docs.filter((d) => d.status === "CONFIRMED").length,
-                ],
-                ["Evaluasi", results.length],
-              ].map(([label, n]) => (
-                <div className="stat" key={label}>
-                  <span>{label}</span>
-                  <strong>{n}</strong>
+            <section className="panel stage-vendors">
+              <div className="panel-header">
+                <div>
+                  <h2>Identitas & vendor</h2>
+                  <p className="muted">Daftarkan peserta pengadaan sebelum mengaitkan dokumen penawaran.</p>
                 </div>
-              ))}
-            </div>
-            <div className="grid">
-              <section className="panel">
-                <div className="panel-header">
-                  <h2>Langkah berikutnya</h2>
+                <button className="btn primary" onClick={() => setVendorOpen(true)}>
+                  <Plus /> Tambah vendor
+                </button>
+              </div>
+              {vendors.length ? vendors.map((v) => (
+                <div className="queue-row" key={v.id}>
+                  <strong>{v.name}</strong>
+                  <small>{docs.filter((d) => d.vendorId === v.id).length} dokumen</small>
                 </div>
-                {!vendors.length ? (
-                  <Empty title="Tambahkan vendor">
-                    Vendor diperlukan untuk Form A5 dan rincian penawaran.
-                  </Empty>
-                ) : (
-                  <>
-                    <div className="queue-row">
-                      <div>
-                        <strong>Periksa dokumen pengadaan</strong>
-                        <small>
-                          Unggah OE, Form A5, dan penawaran sesuai kebutuhan.
-                        </small>
-                      </div>
-                      <button
-                        className="btn small"
-                        onClick={() => setParams({ tab: "dokumen" })}
-                      >
-                        Buka dokumen
-                      </button>
-                    </div>
-                    <div className="queue-row">
-                      <div>
-                        <strong>Evaluasi Harga Akhir</strong>
-                        <small>
-                          Konfirmasi Form A5 dan preferensi per pengadaan.
-                        </small>
-                      </div>
-                      <button
-                        className="btn small"
-                        onClick={() => setParams({ tab: "hea" })}
-                      >
-                        Buka HEA
-                      </button>
-                    </div>
-                    <div className="queue-row">
-                      <div>
-                        <strong>Pemeriksaan harga satuan</strong>
-                        <small>
-                          Pilih kelompok harga dan periksa pasangan item.
-                        </small>
-                      </div>
-                      <button
-                        className="btn small"
-                        onClick={() => setParams({ tab: "harga" })}
-                      >
-                        Harga Timpang
-                      </button>
-                    </div>
-                  </>
-                )}
-              </section>
-              <section className="panel">
-                <h2>Hasil tersimpan</h2>
-                {results.length ? (
-                  results.map((s) => (
-                    <div className="queue-row" key={s.id}>
-                      <div>
-                        {s.module === "HEA"
-                          ? "HEA / Leaderboard"
-                          : "Harga Timpang"}
-                        <small>{dateTime(s.createdAt)}</small>
-                      </div>
-                      <button
-                        className="btn small"
-                        onClick={() =>
-                          setParams({
-                            tab: s.module === "HEA" ? "hea" : "harga",
-                            hasil: s.id,
-                          })
-                        }
-                      >
-                        Buka hasil
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <Empty title="Belum ada hasil evaluasi">
-                    Hasil muncul setelah data dikonfirmasi dan evaluasi
-                    dijalankan.
-                  </Empty>
-                )}
-              </section>
+              )) : <Empty title="Belum ada vendor">Tambahkan vendor untuk memulai pengadaan.</Empty>}
+            </section>
+            <div className="stage-navigation">
+              <button className="btn primary" onClick={() => setParams({ tab: "dokumen" })}>
+                Lanjut ke dokumen <ArrowRight />
+              </button>
             </div>
           </>
         )}
         {tab === "dokumen" && (
           <>
-            <section className="panel">
-              <div className="panel-header">
-                <h2>Vendor pengadaan</h2>
-                <button
-                  className="inline-link"
-                  onClick={() => setVendorOpen(true)}
-                >
-                  Tambah vendor
-                </button>
-              </div>
-              {vendors.length ? (
-                vendors.map((v) => (
-                  <div className="queue-row" key={v.id}>
-                    <strong>{v.name}</strong>
-                    <small>
-                      {docs.filter((d) => d.vendorId === v.id).length} dokumen
-                    </small>
+              <>
+                <section className="panel">
+                  <div className="panel-header">
+                    <div>
+                      <h2>Dokumen per vendor</h2>
+                      <p>Pilih vendor untuk mengunggah Form A5 atau dokumen penawarannya.</p>
+                    </div>
                   </div>
-                ))
-              ) : (
-                <Empty title="Belum ada vendor">
-                  Tambahkan vendor untuk mengaitkan dokumen penawaran.
-                </Empty>
-              )}
-            </section>
-            <UploadPanel procurementId={p.id} />
-            <DocumentTable documents={docs} />
+                  {vendors.length ? vendors.map((v) => {
+                    const vendorDocs = docs.filter((d) => d.vendorId === v.id);
+                    return (
+                      <Link className="vendor-document-row" key={v.id} to={`/pengadaan/${p.id}/vendor/${v.id}`}>
+                        <span><strong>{v.name}</strong><small>{vendorDocs.length} dokumen · {vendorDocs.filter((d) => d.status === "CONFIRMED").length} terkonfirmasi</small></span>
+                        <span className="vendor-document-action">Buka dokumen <ArrowRight /></span>
+                      </Link>
+                    );
+                  }) : (
+                    <Empty title="Belum ada vendor">Kembali ke tahap identitas & vendor untuk menambahkan vendor.</Empty>
+                  )}
+                </section>
+                <UploadPanel procurementId={p.id} scope="procurement" />
+                {docs.some((d) => d.kind === "OE") && (
+                  <DocumentTable documents={docs.filter((d) => d.kind === "OE")} title="Dokumen OE" />
+                )}
+                <DocumentTable documents={docs.filter((d) => d.vendorId)} title="Daftar Dokumen Vendor" />
+              </>
+            <div className="stage-navigation">
+              <button className="btn" onClick={() => setParams({ tab: "ringkasan" })}>Kembali</button>
+              <button className="btn primary" onClick={() => setParams({ tab: "hea" })}>Lanjut ke evaluasi <ArrowRight /></button>
+            </div>
           </>
         )}
-        {tab === "hea" && <HEAPanel procurement={p} />}
-        {tab === "harga" && <PDPanel procurement={p} />}
+        {(tab === "hea" || tab === "harga") && (
+          <>
+            <div className="evaluation-switch" role="group" aria-label="Pilih modul evaluasi">
+              <button className={tab === "hea" ? "selected" : ""} aria-pressed={tab === "hea"} onClick={() => setParams({ tab: "hea" })}>HEA</button>
+              <button className={tab === "harga" ? "selected" : ""} aria-pressed={tab === "harga"} onClick={() => setParams({ tab: "harga" })}>Harga Timpang</button>
+            </div>
+            {tab === "hea" ? <HEAPanel procurement={p} /> : <PDPanel procurement={p} />}
+            <div className="stage-navigation">
+              <button className="btn" onClick={() => setParams({ tab: "dokumen" })}>Kembali ke dokumen</button>
+              <button className="btn primary" onClick={() => setParams({ tab: "riwayat" })}>Lihat hasil & riwayat <ArrowRight /></button>
+            </div>
+          </>
+        )}
         {tab === "riwayat" && (
-          <section className="panel">
-            <h2>Riwayat pengadaan</h2>
-            {state.events
+          <>
+            <section className="panel">
+              <div className="panel-header"><h2>Hasil evaluasi tersimpan</h2></div>
+              {results.length ? results.map((s) => (
+                <div className="queue-row" key={s.id}>
+                  <div>{s.module === "HEA" ? "HEA / Leaderboard" : "Harga Timpang"}<small>{dateTime(s.createdAt)}</small></div>
+                  <button className="btn small" onClick={() => setParams({ tab: s.module === "HEA" ? "hea" : "harga", hasil: s.id })}>Buka hasil</button>
+                </div>
+              )) : <Empty title="Belum ada hasil evaluasi">Hasil muncul setelah data dikonfirmasi dan evaluasi dijalankan.</Empty>}
+            </section>
+            <section className="panel">
+              <h2>Riwayat pengadaan</h2>
+              {state.events
               .filter((e) => e.procurementId === p.id)
               .map((e) => (
                 <div className="queue-row" key={e.id}>
@@ -368,7 +307,11 @@ export function ProcurementDetail() {
                   </span>
                 </div>
               ))}
-          </section>
+            </section>
+            <div className="stage-navigation">
+              <button className="btn" onClick={() => setParams({ tab: "hea" })}>Kembali ke evaluasi</button>
+            </div>
+          </>
         )}
         <Modal
           open={vendorOpen}
@@ -399,16 +342,64 @@ export function ProcurementDetail() {
             </div>
           </form>
         </Modal>
-      </PageTabs>
+      </div>
     </div>
   );
 }
-export function DocumentTable({ documents }: { documents: DocumentRecord[] }) {
+export function VendorDocuments() {
+  const { id, vendorId } = useParams();
+  const state = useDemo();
+  const procurement = state.procurements.find((p) => p.id === id);
+  const vendor = state.vendors.find((v) => v.id === vendorId && v.procurementId === id);
+  const backUrl = `/pengadaan/${id}?tab=dokumen`;
+
+  if (!procurement || !vendor) {
+    return (
+      <div className="page">
+        <Empty title="Vendor tidak ditemukan">
+          <Link to={backUrl}>Kembali ke unggah & verifikasi</Link>
+        </Empty>
+      </div>
+    );
+  }
+
+  return (
+    <div className="focus-shell vendor-focus-shell">
+      <header className="focus-head">
+        <div className="review-header-context">
+          <Link className="btn quiet review-back" to={backUrl} aria-label="Kembali ke tahap Unggah & verifikasi">
+            <ArrowLeft /> Kembali
+          </Link>
+          <div className="review-heading">
+            <h1>{vendor.name}</h1>
+            <p>{procurement.number} · {procurement.name}</p>
+          </div>
+        </div>
+      </header>
+      <main className="focus-content">
+        <section className="panel vendor-workspace">
+          <UploadPanel procurementId={procurement.id} vendorId={vendor.id} embedded />
+          <DocumentTable documents={state.documents.filter((d) => d.procurementId === id && d.vendorId === vendor.id)} embedded />
+        </section>
+      </main>
+    </div>
+  );
+}
+
+export function DocumentTable({
+  documents,
+  embedded = false,
+  title = "Daftar Dokumen Vendor",
+}: {
+  documents: DocumentRecord[];
+  embedded?: boolean;
+  title?: string;
+}) {
   const state = useDemo();
   return (
-    <section className="panel">
+    <section className={embedded ? "document-table-embedded" : "panel"}>
       <div className="panel-header">
-        <h2>Dokumen pengadaan</h2>
+        <h2>{title}</h2>
         <span className="muted">{documents.length} dokumen</span>
       </div>
       <div className="table-wrap">
@@ -460,16 +451,23 @@ export function DocumentTable({ documents }: { documents: DocumentRecord[] }) {
     </section>
   );
 }
-export function UploadPanel({ procurementId }: { procurementId: string }) {
-  const state = useDemo();
+export function UploadPanel({
+  procurementId,
+  vendorId,
+  scope = "vendor",
+  embedded = false,
+}: {
+  procurementId: string;
+  vendorId?: string;
+  scope?: "vendor" | "procurement";
+  embedded?: boolean;
+}) {
   const toast = useToast();
-  const [kind, setKind] = useState<DocumentKind>("FORM_A5");
-  const [vendor, setVendor] = useState("");
+  const navigate = useNavigate();
+  const [kind, setKind] = useState<DocumentKind>(scope === "procurement" ? "OE" : "FORM_A5");
+  const vendor = vendorId || "";
   const [busy, setBusy] = useState(false);
   const [failure, setFailure] = useState("");
-  const vendors = state.vendors.filter(
-    (v) => v.procurementId === procurementId,
-  );
   async function upload(file: File) {
     setFailure("");
     if (busy) return;
@@ -481,7 +479,7 @@ export function UploadPanel({ procurementId }: { procurementId: string }) {
     try {
       const fixture = await recognizeFile(file, kind);
       await new Promise((r) => setTimeout(r, 650));
-      await demoService.uploadRegisteredDocument({
+      const document = await demoService.uploadRegisteredDocument({
         procurementId,
         kind,
         vendorId: kind === "OE" ? undefined : vendor,
@@ -489,6 +487,7 @@ export function UploadPanel({ procurementId }: { procurementId: string }) {
         name: file.name,
       });
       toast("Dokumen selesai dibaca. Periksa data sebelum konfirmasi.");
+      navigate(`/pengadaan/${procurementId}/review/${document.id}`);
     } catch (e) {
       setFailure(errorMessage(e));
     } finally {
@@ -496,47 +495,28 @@ export function UploadPanel({ procurementId }: { procurementId: string }) {
     }
   }
   return (
-    <section className="panel">
+    <section className={embedded ? "upload-panel-embedded" : "panel"}>
       <div className="panel-header">
         <div>
-          <h2>Unggah dokumen</h2>
-          <p>Tentukan jenis dan pemilik dokumen terlebih dahulu.</p>
+          <h2>{scope === "procurement" ? "Unggah Owner Estimate (OE)" : "Unggah dokumen"}</h2>
+          <p>{scope === "vendor" ? "Pilih Form A5 atau penawaran untuk vendor ini." : "Owner Estimate ditautkan ke seluruh pengadaan."}</p>
         </div>
         <span className="badge">PDF / XLSX · maks. 10 MiB</span>
       </div>
-      <div className="form-grid">
-        <div className="field">
-          <label htmlFor="doc-kind">Jenis dokumen</label>
-          <select
-            id="doc-kind"
-            disabled={busy}
-            value={kind}
-            onChange={(e) => setKind(e.target.value as DocumentKind)}
-          >
-            <option value="FORM_A5">Form A5 · PDF</option>
-            <option value="OE">Owner Estimate · XLSX</option>
-            <option value="OFFER">Penawaran vendor · XLSX</option>
-          </select>
+      {scope === "vendor" ? (
+        <div className="field document-kind-field">
+          <span className="field-label">Jenis dokumen</span>
+          <div className="document-kind-actions" role="group" aria-label="Jenis dokumen">
+            <button type="button" className={`btn ${kind === "FORM_A5" ? "selected" : ""}`} aria-pressed={kind === "FORM_A5"} disabled={busy} onClick={() => setKind("FORM_A5")}>Form A5 · PDF</button>
+            <button type="button" className={`btn ${kind === "OFFER" ? "selected" : ""}`} aria-pressed={kind === "OFFER"} disabled={busy} onClick={() => setKind("OFFER")}>Penawaran vendor · XLSX</button>
+          </div>
         </div>
-        <div className="field">
-          <label htmlFor="doc-vendor">Pemilik dokumen</label>
-          <select
-            id="doc-vendor"
-            disabled={kind === "OE" || busy}
-            value={vendor}
-            onChange={(e) => setVendor(e.target.value)}
-          >
-            <option value="">
-              {kind === "OE" ? "Pengadaan" : "Pilih vendor"}
-            </option>
-            {vendors.map((v) => (
-              <option key={v.id} value={v.id}>
-                {v.name}
-              </option>
-            ))}
-          </select>
+      ) : (
+        <div className="procurement-document-kind">
+          <span>Jenis dokumen</span>
+          <strong>Owner Estimate · XLSX</strong>
         </div>
-      </div>
+      )}
       <UploadZone
         ariaLabel="Pilih berkas dokumen"
         accept={kind === "FORM_A5" ? ".pdf" : ".xlsx"}

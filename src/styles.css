@@ -1323,9 +1323,188 @@ body {
   background: white;
   padding: 6px;
   gap: 6px;
+  position: relative;
+  overflow: hidden;
 }
 .procurement-path button {
   padding: 16px 12px;
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  border-radius: 8px;
+}
+.procurement-path button > div {
+  min-width: 0;
+}
+.procurement-path button.complete > span,
+.procurement-path button.current > span {
+  color: #fff;
+  border-color: var(--blue);
+  background: var(--blue);
+}
+.procurement-path button.current {
+  color: var(--blue-deep);
+  background: #eaf4fb;
+  box-shadow: inset 0 -3px 0 var(--blue);
+}
+.procurement-path button.current small {
+  color: #365f7e;
+}
+.procurement-stage-content {
+  display: grid;
+  gap: 20px;
+}
+.stage-vendors .panel-header > div {
+  min-width: 0;
+}
+.stage-vendors .panel-header p {
+  margin: 6px 0 0;
+}
+.stage-navigation {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.stage-navigation > .btn:only-child {
+  margin-left: auto;
+}
+.vendor-document-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+  color: var(--ink);
+  background: transparent;
+  text-align: left;
+}
+.vendor-document-row > span:first-child {
+  display: grid;
+  gap: 5px;
+}
+.vendor-document-row small {
+  color: var(--muted);
+}
+.vendor-document-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--blue);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.vendor-document-row:hover .vendor-document-action {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.vendor-document-row:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.vendor-workspace > .upload-panel-embedded {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.vendor-focus-shell .vendor-workspace > .upload-panel-embedded:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+.vendor-document-row:hover {
+  text-decoration: none;
+}
+.vendor-workspace .upload-panel-embedded .panel-header {
+  align-items: flex-start;
+}
+.vendor-workspace .upload-panel-embedded .upload-zone {
+  margin-bottom: 0;
+}
+.vendor-workspace > .document-table-embedded {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.vendor-workspace > .document-table-embedded .panel-header {
+  padding-top: 0;
+}
+.document-kind-field {
+  margin: 0 0 18px;
+}
+.field-label,
+.procurement-document-kind > span {
+  font-size: 12px;
+  font-weight: 550;
+}
+.document-kind-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.document-kind-actions .btn.selected {
+  color: white;
+  border-color: var(--blue);
+  background: var(--blue);
+}
+.document-kind-actions .btn.selected:hover {
+  background: var(--blue-deep);
+}
+.procurement-document-kind {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.procurement-document-kind strong {
+  padding: 8px 12px;
+  border-radius: 7px;
+  background: var(--blue-soft);
+  color: var(--blue-deep);
+  font-size: 13px;
+}
+.evaluation-switch {
+  display: inline-flex;
+  width: fit-content;
+  padding: 4px;
+  gap: 4px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: white;
+}
+.evaluation-switch button {
+  border: 0;
+  border-radius: 7px;
+  padding: 9px 14px;
+  color: var(--muted);
+  background: transparent;
+  font-weight: 600;
+}
+.evaluation-switch button.selected {
+  color: white;
+  background: var(--blue);
+}
+.evaluation-switch button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+@media (max-width: 760px) {
+  .procurement-path {
+    grid-template-columns: 1fr;
+  }
+  .procurement-path button {
+    padding: 12px;
+  }
+  .stage-vendors .panel-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .stage-navigation {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
 }
 .tabs {
   margin-bottom: 24px;

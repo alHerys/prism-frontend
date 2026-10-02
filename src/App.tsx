@@ -20,6 +20,9 @@ const ProcurementList = lazy(() =>
 const ProcurementDetail = lazy(() =>
   import("./pages/Procurement").then((m) => ({ default: m.ProcurementDetail })),
 );
+const VendorDocuments = lazy(() =>
+  import("./pages/Procurement").then((m) => ({ default: m.VendorDocuments })),
+);
 import { Dashboard } from "./pages/Dashboard";
 const Review = lazy(() =>
   import("./pages/Review").then((m) => ({ default: m.Review })),
@@ -30,7 +33,7 @@ import { demoService } from "./domain";
 import { Empty, useDemo } from "./ui";
 import { Hint, LoadingState } from "./components";
 const links = [
-  ["/", "Ringkasan", SquaresFour],
+  ["/", "Dashboard", SquaresFour],
   ["/pengadaan", "Pengadaan", Folder],
   ["/bank", "Bank Data OE", Database],
   ["/riwayat", "Riwayat & Statistik", ClockCounterClockwise],
@@ -53,7 +56,7 @@ export default function App() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
-  const focus = location.pathname.includes("/review/");
+  const focus = location.pathname.includes("/review/") || location.pathname.includes("/vendor/");
   const procurement = state.procurements.find(
     (p) => location.pathname === `/pengadaan/${p.id}`,
   );
@@ -80,6 +83,10 @@ export default function App() {
           element={<ProcurementDetail key={location.pathname} />}
         />
         <Route
+          path="/pengadaan/:id/vendor/:vendorId"
+          element={<VendorDocuments key={location.pathname} />}
+        />
+        <Route
           path="/pengadaan/:id/review/:documentId"
           element={<Review key={location.pathname} />}
         />
@@ -93,7 +100,7 @@ export default function App() {
           element={
             <div className="page">
               <Empty title="Halaman tidak ditemukan">
-                Kembali ke <Link to="/">Ringkasan</Link> untuk melanjutkan.
+                Kembali ke <Link to="/">Dashboard</Link> untuk melanjutkan.
               </Empty>
             </div>
           }
@@ -108,7 +115,7 @@ export default function App() {
         Lewati navigasi
       </a>
       <aside className="sidebar">
-        <Link className="brand" to="/" aria-label="PRISM Ringkasan">
+        <Link className="brand" to="/" aria-label="PRISM Dashboard">
           <img className="logo-full" src="/prism_expand.svg" alt="PRISM" />
           <img
             className="logo-symbol"

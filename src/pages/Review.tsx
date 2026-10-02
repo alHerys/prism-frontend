@@ -4,9 +4,10 @@ import { ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft";
 import { CheckCircle as CheckCircle2 } from "@phosphor-icons/react/dist/csr/CheckCircle";
 import { Eye } from "@phosphor-icons/react/dist/csr/Eye";
 import { EyeSlash as EyeOff } from "@phosphor-icons/react/dist/csr/EyeSlash";
-import { Sidebar as PanelLeft } from "@phosphor-icons/react/dist/csr/Sidebar";
 import { FloppyDisk as Save } from "@phosphor-icons/react/dist/csr/FloppyDisk";
 import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
+import { ArrowsOut } from "@phosphor-icons/react/dist/csr/ArrowsOut";
+import { CurrencyInput } from "../currency-input";
 import "./review.css";
 import { SourcePanel } from "../components";
 import { demoService } from "../domain";
@@ -16,7 +17,6 @@ import {
   useToast,
   kindLabel,
   Status,
-  Stepper,
   Modal,
   Empty,
   money,
@@ -50,7 +50,6 @@ export function Review() {
   const navigate = useNavigate();
   const toast = useToast();
   const [showSource, setShowSource] = useState(true);
-  const [showNav, setShowNav] = useState(false);
   const [ack, setAck] = useState(false);
   const [busy, setBusy] = useState(false);
   const [confirm, setConfirm] = useState(false);
@@ -71,14 +70,12 @@ export function Review() {
   const [group, setGroup] = useState(d?.selectedGroup || "");
   const [dirty, setDirty] = useState(false);
   const [failure, setFailure] = useState("");
-  const [leaveTarget, setLeaveTarget] = useState<string>();
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
       dirty && currentLocation.pathname !== nextLocation.pathname,
   );
   const leavePage = () => {
     if (blocker.state === "blocked") blocker.proceed();
-    else if (leaveTarget) navigate(leaveTarget);
     else back();
   };
   useEffect(() => {
@@ -107,7 +104,9 @@ export function Review() {
   const fixture = availableDocuments().find((f) => f.id === d.fixtureId);
   const back = () =>
     navigate(
-      `/pengadaan/${id}?tab=${d.kind === "FORM_A5" ? "hea" : d.kind === "HISTORICAL_OE" ? "dokumen" : "harga"}`,
+      d.vendorId
+        ? `/pengadaan/${id}/vendor/${d.vendorId}`
+        : `/pengadaan/${id}?tab=dokumen`,
     );
   function changeValue(key: keyof A5Values, value: string) {
     setValues((v) => (v ? { ...v, [key]: value } : v));
@@ -195,45 +194,7 @@ export function Review() {
             </p>
           </div>
         </div>
-        <div className="review-header-actions">
-          <button
-            className="btn quiet"
-            aria-expanded={showNav}
-            aria-controls="review-navigation"
-            onClick={() => setShowNav((shown) => !shown)}
-          >
-            <PanelLeft />
-            Navigasi
-          </button>
-        </div>
       </header>
-      {showNav && (
-        <nav
-          id="review-navigation"
-          className="review-navigation"
-          aria-label="Navigasi ruang kerja"
-        >
-          {[
-            ["/", "Ringkasan"],
-            ["/pengadaan", "Pengadaan"],
-            ["/bank", "Bank Data OE"],
-            ["/riwayat", "Riwayat & Statistik"],
-          ].map(([url, label]) => (
-            <button
-              className="btn quiet"
-              key={url}
-              onClick={() => {
-                if (dirty) {
-                  setLeaveTarget(url);
-                  setLeave(true);
-                } else navigate(url);
-              }}
-            >
-              {label}
-            </button>
-          ))}
-        </nav>
-      )}
       <main className="focus-content">
         <div className="review-document-bar">
           <div className="review-document-identity">
@@ -258,7 +219,6 @@ export function Review() {
             {showSource ? "Tutup bukti sumber" : "Tampilkan bukti sumber"}
           </button>
         </div>
-        <Stepper stage={d.status === "CONFIRMED" && !dirty ? 2 : 1} />
         <div
           className="review-grid"
           style={!showSource ? { gridTemplateColumns: "1fr" } : undefined}
@@ -270,12 +230,27 @@ export function Review() {
               title="Bukti sumber"
               action={
                 fixture && (
-                  <a className="btn small" href={fixture.path} download>
-                    <FileText /> Buka berkas
+                  <a
+                    className="btn small"
+                    href={fixture.path}
+                    target={d.kind === "FORM_A5" ? "_blank" : undefined}
+                    rel={d.kind === "FORM_A5" ? "noreferrer" : undefined}
+                    download={d.kind === "FORM_A5" ? undefined : true}
+                    aria-label={d.kind === "FORM_A5" ? "Perbesar PDF di tab baru" : "Buka berkas"}
+                    title={d.kind === "FORM_A5" ? "Perbesar PDF" : "Buka berkas"}
+                  >
+                    {d.kind === "FORM_A5" ? <ArrowsOut aria-hidden="true" /> : <><FileText /> Buka berkas</>}
                   </a>
                 )
               }
             >
+              {d.kind === "FORM_A5" && fixture ? (
+                <iframe
+                  className="review-pdf-preview"
+                  src={fixture.path}
+                  title={`Preview PDF ${d.name}`}
+                />
+              ) : (
               <div className="paper">
                 <div className="paper-header">
                   <h3>
@@ -339,6 +314,7 @@ export function Review() {
                     </div>
                   ))}
               </div>
+              )}
             </SourcePanel>
           )}
           <section className="panel review-editor">
@@ -362,13 +338,18 @@ export function Review() {
                     <label htmlFor={key}>
                       {fields[key]} {key.startsWith("tkdn") ? "(%)" : "(Rp)"}
                     </label>
-                    <input
+                    {key.startsWith("tkdn") ? <input
                       id={key}
                       value={values[key]}
                       inputMode="decimal"
                       onFocus={() => setFocused(key)}
                       onChange={(e) => changeValue(key, e.target.value)}
-                    />
+                    /> : <CurrencyInput
+                      id={key}
+                      value={values[key]}
+                      onFocus={() => setFocused(key)}
+                      onValueChange={(value) => changeValue(key, value)}
+                    />}
                     <small>
                       Nilai awal:{" "}
                       {key.startsWith("tkdn")
