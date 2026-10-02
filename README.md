@@ -140,8 +140,9 @@ All data and processing in the submitted frontend are local scenarios. File sele
 
 | Name | Role | Responsibilities | Contact |
 | --- | --- | --- | --- |
-| Hery | Project Coordinator | Product direction, review, and acceptance. | Project owner |
-| Alvianto Hery Sarborn | Software Engineer | Frontend architecture, implementation, testing, and documentation. | Repository maintainer |
+| Trisha Malina Hanim | Product Manager | Product direction, scope, and stakeholder alignment. | Project contact |
+| Novita Azka Maghfira | Software Engineer | Software implementation, technical review, and integration support. | Project contact |
+| Alvianto Hery Sarborn | Software Engineer | Frontend architecture, implementation, testing, and documentation. | [@alHerys](https://github.com/alHerys) |
 
 ---
 
