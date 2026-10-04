@@ -41,5 +41,24 @@ export function useProcurementTable({
   const pages = Math.max(1, Math.ceil(filtered.length / count));
   const current = Math.min(page, pages);
   const shown = filtered.slice((current - 1) * count, current * count);
-  return { items, onSearchChange, searchLabel, state, setOwnSearch, search, status, setStatus, ascending, setAscending, setPage, size, setSize, filtered, count, pages, current, shown };
+  return {
+    items,
+    onSearchChange,
+    searchLabel,
+    state,
+    setOwnSearch,
+    search,
+    status,
+    setStatus,
+    ascending,
+    setAscending,
+    setPage,
+    size,
+    setSize,
+    filtered,
+    count,
+    pages,
+    current,
+    shown,
+  };
 }

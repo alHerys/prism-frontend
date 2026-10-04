@@ -10,7 +10,20 @@ import { DocumentTable } from "./DocumentTable";
 import { UploadPanel } from "./UploadPanel";
 import type { useProcurementDetail } from "./useProcurementDetail";
 
-export function ProcurementDetailView({ state, setParams, tab, p, vendorOpen, setVendorOpen, vendorName, setVendorName, docs, vendors, results, addVendor }: ReturnType<typeof useProcurementDetail>) {
+export function ProcurementDetailView({
+  state,
+  setParams,
+  tab,
+  p,
+  vendorOpen,
+  setVendorOpen,
+  vendorName,
+  setVendorName,
+  docs,
+  vendors,
+  results,
+  addVendor,
+}: ReturnType<typeof useProcurementDetail>) {
   if (!p)
     return (
       <div className="page">

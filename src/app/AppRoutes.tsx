@@ -21,8 +21,8 @@ const VendorDocuments = lazy(() =>
 const Review = lazy(() =>
   import("../features/review/Review").then((m) => ({ default: m.Review })),
 );
-const Bank = lazy(() => import("../pages/Bank"));
-const HistoryPage = lazy(() => import("../pages/History"));
+const Bank = lazy(() => import("../features/bank/BankPage"));
+const HistoryPage = lazy(() => import("../features/history/HistoryPage"));
 
 export function AppRoutes() {
   const location = useLocation();

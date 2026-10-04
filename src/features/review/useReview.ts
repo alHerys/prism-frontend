@@ -120,5 +120,37 @@ export function useReview() {
     setDirty(true);
     setAck(false);
   }
-  return { id, state, d, showSource, setShowSource, ack, setAck, busy, confirm, setConfirm, leave, setLeave, focused, setFocused, values, pairs, group, setGroup, dirty, setDirty, failure, blocker, leavePage, p, vendor, fixture, back, changeValue, save, confirmDocument, editPair };
+  return {
+    id,
+    state,
+    d,
+    showSource,
+    setShowSource,
+    ack,
+    setAck,
+    busy,
+    confirm,
+    setConfirm,
+    leave,
+    setLeave,
+    focused,
+    setFocused,
+    values,
+    pairs,
+    group,
+    setGroup,
+    dirty,
+    setDirty,
+    failure,
+    blocker,
+    leavePage,
+    p,
+    vendor,
+    fixture,
+    back,
+    changeValue,
+    save,
+    confirmDocument,
+    editPair,
+  };
 }

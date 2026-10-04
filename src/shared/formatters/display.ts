@@ -58,3 +58,14 @@ export const exactMoney = (value?: string) => {
   const [whole, fraction] = value.split(".");
   return `Rp ${whole.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}${fraction ? "," + fraction : ""}`;
 };
+
+export const localDay = (date: string) =>
+  new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(date));
+
+export const bankDateTime = (value: string) => new Date(value).toLocaleString("id-ID");
+export const historyChartDay = (day: string) => new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(new Date(`${day}T12:00:00`));

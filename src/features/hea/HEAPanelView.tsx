@@ -6,7 +6,21 @@ import { Empty, Status, Stepper } from "../../shared/ui/feedback";
 import { ResultPanel } from "../procurement/ResultPanel";
 import type { useHEAPanel } from "./useHEAPanel";
 
-export function HEAPanelView({ p, state, docs, selected, setSelected, prefs, setPrefs, busy, prefDirty, chosen, save, confirm, evaluate }: ReturnType<typeof useHEAPanel>) {
+export function HEAPanelView({
+  p,
+  state,
+  docs,
+  selected,
+  setSelected,
+  prefs,
+  setPrefs,
+  busy,
+  prefDirty,
+  chosen,
+  save,
+  confirm,
+  evaluate,
+}: ReturnType<typeof useHEAPanel>) {
 
   return (
     <>

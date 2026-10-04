@@ -29,5 +29,19 @@ export function useProcurementDetail() {
       toast(errorMessage(e), true);
     }
   }
-  return { id, state, setParams, tab, p, vendorOpen, setVendorOpen, vendorName, setVendorName, docs, vendors, results, addVendor };
+  return {
+    id,
+    state,
+    setParams,
+    tab,
+    p,
+    vendorOpen,
+    setVendorOpen,
+    vendorName,
+    setVendorName,
+    docs,
+    vendors,
+    results,
+    addVendor,
+  };
 }

@@ -1,0 +1,21 @@
+import { act, cleanup, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { afterEach, expect, it, vi } from "vitest";
+import { createDemoService } from "../../services/demo/service";
+import HistoryPage from "./HistoryPage";
+afterEach(cleanup);
+it("keeps displayed and exported snapshot inputs after its source document is corrected", async () => {
+  const service = createDemoService(true, true);
+  const snapshot = service.getState().snapshots.find(s => s.module === "HEA")!;
+  const doc = service.getState().documents.find(d => d.procurementId === snapshot.procurementId && d.kind === "FORM_A5")!;
+  const onExport = vi.fn();
+  render(<HistoryPage service={service} onExport={onExport} />);
+  await userEvent.click(screen.getByRole("tab", { name: "Hasil Evaluasi" }));
+  const row = screen.getByRole("cell", { name: /^HEA$/ }).closest("tr")!;
+  await userEvent.click(within(row).getByRole("button", { name: /Lihat hasil/ }));
+  await act(async () => { await service.reviewDocument(doc.id, { ...doc.reviewed!, hpb: "1" }, doc.revision); });
+  expect(screen.getByTitle("Rp 1.261.794.759,4224293029478248835170918485030216358352")).toHaveTextContent("Rp1.261.794.759");
+  await userEvent.click(screen.getByRole("button", { name: /Ekspor Excel/ }));
+  expect(onExport).toHaveBeenCalledWith(snapshot);
+  expect(service.getState().snapshots.find(s => s.id === snapshot.id)).toEqual(snapshot);
+});

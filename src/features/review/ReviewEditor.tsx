@@ -7,7 +7,24 @@ import "../../shared/styles/focus.css";
 import { CurrencyInput } from "../../shared/ui/currency-input";
 import { fields } from "./review-fields";
 import type { useReview } from "./useReview";
-export function ReviewEditor({ d, ack, setAck, busy, setConfirm, setFocused, values, pairs, group, setGroup, dirty, setDirty, failure, changeValue, save, editPair }: Pick<ReturnType<typeof useReview>, "d" | "ack" | "setAck" | "busy" | "setConfirm" | "setFocused" | "values" | "pairs" | "group" | "setGroup" | "dirty" | "setDirty" | "failure" | "changeValue" | "save" | "editPair"> & { d: DocumentRecord }) {
+export function ReviewEditor({
+  d,
+  ack,
+  setAck,
+  busy,
+  setConfirm,
+  setFocused,
+  values,
+  pairs,
+  group,
+  setGroup,
+  dirty,
+  setDirty,
+  failure,
+  changeValue,
+  save,
+  editPair,
+}: Pick<ReturnType<typeof useReview>, "d" | "ack" | "setAck" | "busy" | "setConfirm" | "setFocused" | "values" | "pairs" | "group" | "setGroup" | "dirty" | "setDirty" | "failure" | "changeValue" | "save" | "editPair"> & { d: DocumentRecord }) {
   return (
     <section className="panel review-editor">
       <div className="panel-header">

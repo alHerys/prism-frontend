@@ -8,7 +8,26 @@ import { SelectField } from "../../shared/ui/components";
 import { Empty } from "../../shared/ui/feedback";
 
 import type { useProcurementTable } from "./useProcurementTable";
-export function ProcurementTableView({ items, onSearchChange, searchLabel, state, setOwnSearch, search, status, setStatus, ascending, setAscending, setPage, size, setSize, filtered, count, pages, current, shown }: ReturnType<typeof useProcurementTable>) {
+export function ProcurementTableView({
+  items,
+  onSearchChange,
+  searchLabel,
+  state,
+  setOwnSearch,
+  search,
+  status,
+  setStatus,
+  ascending,
+  setAscending,
+  setPage,
+  size,
+  setSize,
+  filtered,
+  count,
+  pages,
+  current,
+  shown,
+}: ReturnType<typeof useProcurementTable>) {
 
   return (
     <>

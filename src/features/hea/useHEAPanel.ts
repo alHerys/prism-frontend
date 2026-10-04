@@ -76,5 +76,19 @@ export function useHEAPanel({ procurement: p }: { procurement: Procurement }) {
       setBusy(false);
     }
   }
-  return { p, state, docs, selected, setSelected, prefs, setPrefs, busy, prefDirty, chosen, save, confirm, evaluate };
+  return {
+    p,
+    state,
+    docs,
+    selected,
+    setSelected,
+    prefs,
+    setPrefs,
+    busy,
+    prefDirty,
+    chosen,
+    save,
+    confirm,
+    evaluate,
+  };
 }

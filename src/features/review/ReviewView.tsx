@@ -12,7 +12,37 @@ import { ReviewLeaveDialog } from "./ReviewLeaveDialog";
 import { ReviewSource } from "./ReviewSource";
 
 import type { useReview } from "./useReview";
-export function ReviewView({ d, showSource, setShowSource, ack, setAck, busy, confirm, setConfirm, leave, setLeave, focused, setFocused, values, pairs, group, setGroup, dirty, setDirty, failure, blocker, leavePage, p, vendor, fixture, back, changeValue, save, confirmDocument, editPair }: ReturnType<typeof useReview>) {
+export function ReviewView({
+  d,
+  showSource,
+  setShowSource,
+  ack,
+  setAck,
+  busy,
+  confirm,
+  setConfirm,
+  leave,
+  setLeave,
+  focused,
+  setFocused,
+  values,
+  pairs,
+  group,
+  setGroup,
+  dirty,
+  setDirty,
+  failure,
+  blocker,
+  leavePage,
+  p,
+  vendor,
+  fixture,
+  back,
+  changeValue,
+  save,
+  confirmDocument,
+  editPair,
+}: ReturnType<typeof useReview>) {
   if (!d)
     return (
       <div className="page">
