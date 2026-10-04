@@ -1,3 +1,4 @@
+import { ResultPanel } from "../../evaluations/presentation/ResultPanel";
 import { createTestSession } from "../../../infrastructure/local/test-session";
 import {
   act,
@@ -33,7 +34,7 @@ describe("Preferensi evaluasi", () => {
     render(
       <MemoryRouter>
         <ApplicationProviders application={createApplication(runtime)}><ToastProvider>
-          <HEAPanel procurement={service.getState().procurements[0]} />
+          <HEAPanel procurement={service.getState().procurements[0]} ResultView={ResultPanel} />
         </ToastProvider></ApplicationProviders>
       </MemoryRouter>,
     );

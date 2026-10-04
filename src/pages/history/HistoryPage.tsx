@@ -1,6 +1,7 @@
+import type { HistoryPageProps } from "./history-page.types";
 import { HistoryPageView } from "./HistoryPageView";
 import { useHistoryPage } from "./useHistoryPage";
-export function HistoryPage(props: Parameters<typeof useHistoryPage>[0]) {
+export function HistoryPage(props: HistoryPageProps) {
   const model = useHistoryPage(props);
   return <HistoryPageView {...model} />;
 }

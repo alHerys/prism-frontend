@@ -1,3 +1,4 @@
+import { ResultPanel } from "../../modules/evaluations/presentation/ResultPanel";
 import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { Link } from "react-router";
@@ -148,7 +149,7 @@ export function ProcurementDetailView({
               <button className={tab === "hea" ? "selected" : ""} aria-pressed={tab === "hea"} onClick={() => setParams({ tab: "hea" })}>HEA</button>
               <button className={tab === "harga" ? "selected" : ""} aria-pressed={tab === "harga"} onClick={() => setParams({ tab: "harga" })}>Harga Timpang</button>
             </div>
-            {tab === "hea" ? <HEAPanel procurement={p} /> : <PDPanel procurement={p} />}
+            {tab === "hea" ? <HEAPanel procurement={p} ResultView={ResultPanel} /> : <PDPanel procurement={p} ResultView={ResultPanel} />}
             <div className="stage-navigation">
               <button className="btn" onClick={() => setParams({ tab: "dokumen" })}>Kembali ke dokumen</button>
               <button className="btn primary" onClick={() => setParams({ tab: "riwayat" })}>Lihat hasil & riwayat <ArrowRight /></button>

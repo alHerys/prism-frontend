@@ -1,16 +1,16 @@
+import type { PDPanelProps } from "./input-models";
 import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
 import { Link } from "react-router";
 import "../../../shared/styles/focus.css";
 import { Stepper } from "../../../shared/ui/stepper";
-import { ResultPanel } from "../../evaluations/presentation/ResultPanel";
 import type { PDPanelModel } from "./view-models";
 
-export function PDPanelView({ p, docs, oe, setOe, offer, setOffer, busy, chosen, evaluate }: PDPanelModel) {
+export function PDPanelView({ ResultView, p, docs, oe, setOe, offer, setOffer, busy, chosen, evaluate }: PDPanelModel & Pick<PDPanelProps, "ResultView">) {
 
   return (
     <>
       <Stepper stage={chosen ? 4 : oe && offer ? 2 : 0} />
-      {chosen && <ResultPanel snapshot={chosen} procurement={p} />}
+      {chosen && <ResultView snapshot={chosen} procurement={p} />}
       <section className="panel">
         <div className="panel-header">
           <div>
