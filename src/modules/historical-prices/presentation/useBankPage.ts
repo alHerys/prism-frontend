@@ -41,7 +41,7 @@ export function useBankPage() : BankPageModel {
   const selected = state.historicalItems.filter((item) =>
     selectedIds.includes(item.id),
   );
-  const statistics = service.getPreparedStatistics(selectedIds);
+  const statistics = service.getHistoricalStatistics(selectedIds);
   const statsReady = !!statistics;
   const years = [
     ...new Set(state.historicalItems.map((item) => item.period)),

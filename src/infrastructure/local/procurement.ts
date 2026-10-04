@@ -1,16 +1,13 @@
 import type { Procurement } from "../../modules/procurement/domain/models";
 import type { LocalStore } from "./store";
-import { DomainError, copy, requireText } from "./validation";
+import { copy } from "./validation";
+import { validateProcurement, validateVendor } from "../../modules/procurement/domain/validation";
 export async function createProcurement(store: LocalStore, input: {
   name: string;
   number: string;
   functionName: string;
 }) {
-  requireText(input.name, "Nama pengadaan");
-  requireText(input.number, "Nomor pengadaan");
-  requireText(input.functionName, "Fungsi");
-  if (store.state.procurements.some((p) => p.number === input.number.trim()))
-    throw new DomainError("DUPLICATE", "Nomor pengadaan sudah digunakan.");
+  validateProcurement(input, store.state.procurements.map((p) => p.number));
   const p: Procurement = {
     ...input,
     id: store.id("proc"),
@@ -30,15 +27,7 @@ export async function createProcurement(store: LocalStore, input: {
 }
 export async function addVendor(store: LocalStore, procurementId: string, name: string) {
   store.proc(procurementId);
-  requireText(name, "Nama vendor");
-  if (
-    store.state.vendors.some(
-      (v) =>
-        v.procurementId === procurementId &&
-        v.name.toLowerCase() === name.trim().toLowerCase(),
-    )
-  )
-    throw new DomainError("DUPLICATE", "Vendor sudah terdaftar.");
+  validateVendor(name, store.state.vendors.filter((v) => v.procurementId === procurementId).map((v) => v.name));
   const v = { id: store.id("vendor"), procurementId, name: name.trim() };
   store.state.vendors.push(v);
   store.event({

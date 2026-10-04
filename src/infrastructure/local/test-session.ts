@@ -16,6 +16,7 @@ export function createTestSession(seed = true, prepared = false, runtime = creat
     selectGroup: async (...args: Parameters<typeof runtime.priceDeviation.gateway.selectGroup>) => toLocalDocument(await runtime.priceDeviation.gateway.selectGroup(...args)),
     reviewPairs: async (...args: Parameters<typeof runtime.priceDeviation.gateway.reviewPairs>) => toLocalDocument(await runtime.priceDeviation.gateway.reviewPairs(...args)),
     confirmPairs: async (...args: Parameters<typeof runtime.priceDeviation.gateway.confirmPairs>) => toLocalDocument(await runtime.priceDeviation.gateway.confirmPairs(...args)),
+    getPreparedStatistics: runtime.historicalPrices.gateway.getHistoricalStatistics,
     subscribe: runtime.procurement.queries.subscribe,
     getState: () => {
       if (version !== seen) {

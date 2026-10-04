@@ -74,7 +74,6 @@ export function createLocalRuntime(seed = true, prepared = false) {
     publishHistory: async (...args: Parameters<HistoricalPricesGateway["publishHistory"]>) => toDocument(await publishHistory(store, ...args)),
     setComparable: (...args: Parameters<HistoricalPricesGateway["setComparable"]>) => setComparable(store, ...args),
     estimate: (...args: Parameters<HistoricalPricesGateway["estimate"]>) => estimate(store, ...args),
-    getPreparedStatistics: (...args: Parameters<HistoricalPricesGateway["getPreparedStatistics"]>) => getPreparedStatistics(store, ...args),
     getHistoricalStatistics: (...args: Parameters<HistoricalPricesGateway["getHistoricalStatistics"]>) => getPreparedStatistics(store, ...args),
     createBankSnapshot: (...args: Parameters<HistoricalPricesGateway["createBankSnapshot"]>) => createBankSnapshot(store, ...args),
   };

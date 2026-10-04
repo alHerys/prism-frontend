@@ -1,3 +1,4 @@
+import { reviewedMetadata, assertPublishable } from "../../modules/historical-prices/domain/publication";
 import type { Estimate, HistoricalStatistics } from "../../modules/historical-prices/domain/models";
 import {
   HISTORICAL_FIXTURES
@@ -11,39 +12,16 @@ export async function setHistoricalMetadata(store: LocalStore, id: string, input
 }, expectedRevision: number) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
-  requireText(input.functionName, "Fungsi");
-  if (!/^\d{4}$/.test(input.period))
-    throw new DomainError(
-      "INVALID_PERIOD",
-      "Periode harus berupa tahun empat digit.",
-    );
-  if (d.kind !== "HISTORICAL_OE")
-    throw new DomainError("WRONG_KIND", "Pilih dokumen historis.");
-  if (d.functionName === input.functionName && d.period === input.period)
-    return copy(d);
-  d.functionName = input.functionName;
-  d.period = input.period;
-  d.revision++;
-  d.status = "REVIEW_REQUIRED";
-  d.published = false;
+  const patch = reviewedMetadata(d, input);
+  if (!patch) return copy(d);
+  Object.assign(d, patch);
   store.emit();
   return copy(d);
 }
 export async function publishHistory(store: LocalStore, id: string, expectedRevision: number) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
-  if (
-    d.kind !== "HISTORICAL_OE" ||
-    d.status !== "CONFIRMED" ||
-    !d.functionName ||
-    !d.period
-  )
-    throw new DomainError(
-      "CONFIRMATION_REQUIRED",
-      "Lengkapi fungsi/periode dan konfirmasi dokumen.",
-    );
-  if (d.published)
-    throw new DomainError("DUPLICATE", "Dokumen sudah dipublikasikan.");
+  assertPublishable(d);
   const base = HISTORICAL_FIXTURES.find(
     (i) => d.fixtureId === `history-${i.period}`,
   );

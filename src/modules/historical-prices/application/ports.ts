@@ -16,7 +16,6 @@ export interface HistoricalPricesGateway {
     quantity: string;
     referenceIds: string[];
   }): Promise<Estimate>;
-  getPreparedStatistics(referenceIds: string[]): HistoricalStatistics | undefined;
   getHistoricalStatistics: (referenceIds: string[]) => HistoricalStatistics | undefined;
   createBankSnapshot(referenceIds: string[]): Promise<Snapshot>;
 }
