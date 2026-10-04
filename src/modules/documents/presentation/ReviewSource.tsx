@@ -6,17 +6,17 @@ import "../../../shared/styles/focus.css";
 import { SourcePanel } from "../../../shared/ui/source-panel";
 import { fields } from "./review-fields";
 import type { ReviewModel } from "./view-models";
-export function ReviewSource({ d, focused, p, vendor, fixture }: Pick<ReviewModel, "d" | "focused" | "p" | "vendor" | "fixture"> & { d: DocumentRecord }) {
+export function ReviewSource({ d, focused, p, vendor, source }: Pick<ReviewModel, "d" | "focused" | "p" | "vendor" | "source"> & { d: DocumentRecord }) {
   return (
     <SourcePanel
       id="review-source"
       className="review-source"
       title="Bukti sumber"
       action={
-        fixture && (
+        source && (
           <a
             className="btn small"
-            href={fixture.path}
+            href={source.path}
             target={d.kind === "FORM_A5" ? "_blank" : undefined}
             rel={d.kind === "FORM_A5" ? "noreferrer" : undefined}
             download={d.kind === "FORM_A5" ? undefined : true}
@@ -28,10 +28,10 @@ export function ReviewSource({ d, focused, p, vendor, fixture }: Pick<ReviewMode
         )
       }
     >
-      {d.kind === "FORM_A5" && fixture ? (
+      {d.kind === "FORM_A5" && source ? (
         <iframe
           className="review-pdf-preview"
-          src={fixture.path}
+          src={source.path}
           title={`Preview PDF ${d.name}`}
         />
       ) : (

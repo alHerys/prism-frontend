@@ -5,24 +5,24 @@ import {
   Routes,
   useLocation
 } from "react-router";
-import { Dashboard } from "../pages/dashboard/Dashboard";
-import { LoadingState } from "../shared/ui/loading-state";
-import { EmptyState as Empty } from "../shared/ui/empty-state";
+import { Dashboard } from "../../pages/dashboard/Dashboard";
+import { LoadingState } from "../../shared/ui/loading-state";
+import { EmptyState as Empty } from "../../shared/ui/empty-state";
 
 const ProcurementList = lazy(() =>
-  import("../modules/procurement/presentation/ProcurementList").then((m) => ({ default: m.ProcurementList })),
+  import("../../modules/procurement/presentation/ProcurementList").then((m) => ({ default: m.ProcurementList })),
 );
 const ProcurementDetail = lazy(() =>
-  import("../pages/procurement/ProcurementDetail").then((m) => ({ default: m.ProcurementDetail })),
+  import("../../pages/procurement/ProcurementDetail").then((m) => ({ default: m.ProcurementDetail })),
 );
 const VendorDocuments = lazy(() =>
-  import("../pages/procurement/VendorDocuments").then((m) => ({ default: m.VendorDocuments })),
+  import("../../pages/procurement/VendorDocuments").then((m) => ({ default: m.VendorDocuments })),
 );
 const Review = lazy(() =>
-  import("../modules/documents/presentation/Review").then((m) => ({ default: m.Review })),
+  import("../../modules/documents/presentation/Review").then((m) => ({ default: m.Review })),
 );
-const Bank = lazy(() => import("../modules/historical-prices/presentation/BankPage"));
-const HistoryPage = lazy(() => import("../pages/history/HistoryPage"));
+const Bank = lazy(() => import("../../modules/historical-prices/presentation/BankPage"));
+const HistoryPage = lazy(() => import("../../pages/history/HistoryPage"));
 
 export function AppRoutes() {
   const location = useLocation();

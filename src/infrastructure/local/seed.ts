@@ -7,7 +7,7 @@ import { buildHEA } from "./hea";
 import { buildBankSnapshot, buildEstimate } from "./historical";
 import { buildDeviation } from "./price-deviation";
 import type { LocalStore } from "./store";
-import { copy } from "./validation";
+import { copy } from "../../shared/kernel/validation";
 // Prepared records only seed the fixture session; new uploads still require confirmation.
 export function prepareShowcase(store: LocalStore) {
   const procurementId = "proc-showcase";

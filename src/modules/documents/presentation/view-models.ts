@@ -37,7 +37,7 @@ export interface ReviewModel {
   leavePage: () => void;
   p: import("../../procurement/domain/models").Procurement;
   vendor: import("../../procurement/domain/models").Vendor | undefined;
-  fixture: import("../application/ports").DocumentSource | undefined;
+  source: import("../application/ports").DocumentSource | undefined;
   back: () => void | Promise<void>;
   changeValue: (key: keyof import("../domain/models").A5Values, value: string) => void;
   save: () => Promise<boolean>;

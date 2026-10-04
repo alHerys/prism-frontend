@@ -63,5 +63,5 @@ for id_, filename, kind, vendor in [('oe-terminal','OE-Terminal.xlsx','OE',None)
 for year, price in [('2024','85000'),('2025','90000'),('2026','95000')]:
     filename = 'OE-Historis-'+year+'.xlsx'
     registry.append({'id':'history-'+year,'name':filename,'path':'/files/'+filename,'kind':'HISTORICAL_OE','scenario':'insufficient' if year=='2024' else 'normal','period':year,'rows':[{'id':'painting-'+year,'description':'Pengecatan tangki','category':'SERVICE','unit':'m²','oe':price,'offer':'','source':'Harga · E5'}],'sources':[{'field':'painting-'+year,'location':'Harga · E5','quote':'Pengecatan tangki · m² · Rp '+f'{int(price):,}'.replace(',','.')}],'warnings':[],'groups':[]})
-(ROOT/'src/fixtures/file-registry.json').write_text(json.dumps(registry,indent=2,ensure_ascii=False)+'\n')
+(ROOT/'src/infrastructure/local/fixtures/file-registry.json').write_text(json.dumps(registry,indent=2,ensure_ascii=False)+'\n')
 print('Created 2 PDF assets and metadata for 8 source files.')

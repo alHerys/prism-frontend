@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto';
 import { Workbook, SpreadsheetFile } from '@oai/artifact-tool';
 
 const root = path.resolve(process.argv[2] || 'frontend');
-const registryPath = path.join(root, 'src/fixtures/file-registry.json');
+const registryPath = path.join(root, 'src/infrastructure/local/fixtures/file-registry.json');
 const registry = JSON.parse(await fs.readFile(registryPath, 'utf8'));
 const previews = '/private/tmp/prism-fixture-previews';
 await fs.mkdir(previews, { recursive: true });

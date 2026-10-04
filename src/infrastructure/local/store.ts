@@ -3,7 +3,7 @@ import type { LocalState } from "./state";
 import {
   HISTORICAL_FIXTURES
 } from "./fixtures";
-import { copy, DomainError } from "./validation";
+import { copy, DomainError } from "../../shared/kernel/validation";
 // Only the facade owns this mutable store; React receives frozen copies.
 export class LocalStore {
   private view!: LocalState;

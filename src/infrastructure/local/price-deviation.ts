@@ -7,7 +7,7 @@ import {
 } from "./fixtures";
 import { snapshot } from "./snapshots";
 import type { LocalStore } from "./store";
-import { DomainError, copy, equalValues } from "./validation";
+import { DomainError, copy, equalValues } from "../../shared/kernel/validation";
 export async function selectGroup(store: LocalStore, id: string, group: string, expectedRevision: number) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);

@@ -1,6 +1,6 @@
 import type { Snapshot } from "../../modules/evaluations/domain/models";
 import type { LocalStore } from "./store";
-import { DomainError, copy } from "./validation";
+import { DomainError, copy } from "../../shared/kernel/validation";
 export function snapshot(store: LocalStore, input: Omit<Snapshot, "id" | "createdAt">) {
   const s: Snapshot = {
     ...copy(input),

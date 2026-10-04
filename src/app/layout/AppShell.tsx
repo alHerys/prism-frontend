@@ -12,9 +12,9 @@ import {
   useLocation,
   useNavigate
 } from "react-router";
-import { useProcurementData } from "../modules/procurement/presentation/binding";
-import { Hint } from "../shared/ui/hint";
-import { AppRoutes } from "./AppRoutes";
+import { useProcurementData } from "../../modules/procurement/presentation/binding";
+import { Hint } from "../../shared/ui/hint";
+import { AppRoutes } from "../router/AppRoutes";
 const links = [
   ["/", "Dashboard", SquaresFour],
   ["/pengadaan", "Pengadaan", Folder],

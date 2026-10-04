@@ -7,7 +7,7 @@ import {
 } from "./fixtures";
 import { snapshot } from "./snapshots";
 import type { LocalStore } from "./store";
-import { DomainError, copy, equalValues } from "./validation";
+import { DomainError, copy, equalValues } from "../../shared/kernel/validation";
 export async function setPreferences(store: LocalStore, procurementId: string, values: Preferences, expectedRevision: number) {
   const p = store.proc(procurementId);
   store.check(p.preferenceRevision, expectedRevision);

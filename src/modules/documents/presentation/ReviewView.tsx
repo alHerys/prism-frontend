@@ -37,7 +37,7 @@ export function ReviewView({
   leavePage,
   p,
   vendor,
-  fixture,
+  source,
   back,
   changeValue,
   save,
@@ -103,7 +103,7 @@ export function ReviewView({
           style={!showSource ? { gridTemplateColumns: "1fr" } : undefined}
         >
           {showSource && (
-            <ReviewSource d={d} focused={focused} p={p} vendor={vendor} fixture={fixture} />
+            <ReviewSource d={d} focused={focused} p={p} vendor={vendor} source={source} />
           )}
           <ReviewEditor d={d} ack={ack} setAck={setAck} busy={busy} setConfirm={setConfirm} setFocused={setFocused} values={values} pairs={pairs} group={group} setGroup={setGroup} dirty={dirty} setDirty={setDirty} failure={failure} changeValue={changeValue} save={save} editPair={editPair} />
         </div>

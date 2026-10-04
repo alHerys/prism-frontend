@@ -5,7 +5,7 @@ import {
 } from "./fixtures";
 import { snapshot } from "./snapshots";
 import type { LocalStore } from "./store";
-import { DomainError, copy, requireText } from "./validation";
+import { DomainError, copy, requireText } from "../../shared/kernel/validation";
 export async function setHistoricalMetadata(store: LocalStore, id: string, input: {
   functionName: string;
   period: string;

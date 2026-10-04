@@ -8,7 +8,7 @@ import {
   PAIR_FIXTURES
 } from "./fixtures";
 import type { LocalStore } from "./store";
-import { DomainError, copy } from "./validation";
+import { DomainError, copy } from "../../shared/kernel/validation";
 export function makeDocument(store: LocalStore, input: UploadInput): DocumentRecord {
   const candidate = A5_FIXTURES[input.fixtureId];
   const file = registry.find((f) => f.id === input.fixtureId);

@@ -1,6 +1,6 @@
 import type { Procurement } from "../../modules/procurement/domain/models";
 import type { LocalStore } from "./store";
-import { copy } from "./validation";
+import { copy } from "../../shared/kernel/validation";
 import { validateProcurement, validateVendor } from "../../modules/procurement/domain/validation";
 export async function createProcurement(store: LocalStore, input: {
   name: string;
