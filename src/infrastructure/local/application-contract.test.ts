@@ -33,3 +33,25 @@ it("keeps historical estimation delay before adapter validation and does not cre
   expect(runtime.historicalPrices.queries.getSnapshot().estimates).toEqual([]);
   expect(runtime.evaluations.queries.getSnapshot().events).toEqual([]);
 });
+it("preserves uploaded snapshot field order and historical document field omission", async () => {
+  const runtime = createLocalRuntime(false);
+  const application = createApplication({ ...runtime, delay: async () => {}, processing: {
+    process: async (_file, kind) => ({ id: kind === "HISTORICAL_OE" ? "history-2024" : "a5-nusa", name: "Source", path: "/source", kind }),
+    availableSources: () => [],
+  } }, { download: async () => {} });
+  const procurement = await application.procurement.commands.createProcurement({ name: "Test", number: "T-1", functionName: "Maintenance" });
+  const vendor = await application.procurement.commands.addVendor(procurement.id, "Nusa");
+  const file = { name: "Original.pdf", size: 1, arrayBuffer: async () => new ArrayBuffer(1) };
+  const document = await application.documents.commands.upload({ file, procurementId: procurement.id, kind: "FORM_A5", vendorId: vendor.id }, () => {});
+  await application.documents.commands.confirmDocument(document.id, document.revision);
+  await application.hea.commands.setPreferences(procurement.id, { preferensi_barang: "0.15", preferensi_jasa: "0.075" }, 0);
+  await application.hea.commands.confirmPreferences(procurement.id, 1);
+  const snapshot = await application.hea.commands.evaluateHEA(procurement.id, [document.id]);
+  const inputs = snapshot.inputs as { documents: Record<string, unknown>[] };
+  expect(Object.keys(inputs.documents[0]).slice(0, 6)).toEqual(["procurementId", "kind", "vendorId", "fixtureId", "name", "id"]);
+  expect(inputs.documents[0].fixtureId).toBe("a5-nusa");
+  expect(inputs.documents[0]).not.toHaveProperty("sourceId");
+  const historical = await application.documents.commands.upload({ file, procurementId: procurement.id, kind: "HISTORICAL_OE" }, () => {});
+  expect(historical).not.toHaveProperty("vendorId");
+  expect(Object.keys(historical).slice(0, 5)).toEqual(["procurementId", "kind", "sourceId", "name", "id"]);
+});

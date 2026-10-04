@@ -22,11 +22,15 @@ it.each([
   ["src/modules/documents/application/bad.ts", 'import { reviewedMetadata } from "../../historical-prices/domain/publication";'],
   ["src/modules/documents/application/bad.ts", 'const read = () => globalThis.document;'],
   ["src/modules/documents/presentation/bad.ts", 'const read = (name: string) => import(name);'],
+  ["src/pages/dashboard/bad.ts", 'import { createLocalRuntime } from "../../infrastructure/local/runtime";'],
+  ["src/app/bootstrap/bad.ts", 'import { LocalStore } from "../../infrastructure/local/store";'],
+  ["src/modules/documents/presentation/bad.ts", 'import { value } from "../../hea/application/internal";'],
 ])("rejects a forbidden dependency in %s", (file, code) => {
   expect(inspect(file, code).some((message) => message.ruleId === "prism/architecture")).toBe(true);
 });
 it.each([
   ["src/modules/documents/application/valid.ts", 'import type { DocumentRecord } from "../domain/models";'],
+  ["src/modules/documents/application/valid.ts", 'import { workflow } from "./internal-workflow";'],
   ["src/modules/documents/domain/valid.ts", 'export const id = (document: { id: string }) => document.id;'],
   ["src/pages/procurement/valid.ts", 'import { HEAPanel } from "../../modules/hea/presentation/HEAPanel";'],
   ["src/app/bootstrap/valid.ts", 'import { createLocalRuntime } from "../../infrastructure/local/runtime";'],

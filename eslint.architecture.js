@@ -71,9 +71,11 @@ export const architecture = {
       if (to.endsWith("/test-session")) reason = "the regression harness is only accessible from tests.";
       else if (from.startsWith("src/shared/") && !to.startsWith("src/shared/")) reason = "shared cannot depend on business modules, pages, bootstrap or adapters.";
       else if (from.startsWith("src/shared/kernel/") && !to.startsWith("src/shared/kernel/")) reason = "kernel cannot import UI or formatting adapters.";
-      else if (match && target && target[1] !== match[1] && target[2] === "domain" && !to.endsWith("/models")) reason = "other modules expose domain models and application contracts, not internal rules.";
+      else if (from.startsWith("src/pages/") && (/^src\/(app|infrastructure)\//.test(to) || target?.[2] === "infrastructure")) reason = "pages compose application/presentation contracts, not bootstrap or adapters.";
+      else if (from.startsWith("src/app/") && (to.startsWith("src/infrastructure/") || target?.[2] === "infrastructure") && !["src/infrastructure/local/runtime", "src/modules/evaluations/infrastructure/workbook"].includes(to)) reason = "bootstrap uses declared adapter factories, not mutable implementation internals.";
+      else if (match && target && target[1] !== match[1] && !((target[2] === "domain" && to.endsWith("/models")) || (target[2] === "application" && /\/(ports|queries|use-cases)$/.test(to)))) reason = "other modules expose domain models and application contracts, not internal implementation.";
       else if (isCore) {
-        const allowed = to.startsWith("src/shared/kernel/") || target?.[2] === "domain" || (match[2] === "application" && target?.[2] === "application" && /\/(ports|queries|use-cases)$/.test(to));
+        const allowed = to.startsWith("src/shared/kernel/") || target?.[2] === "domain" || (match[2] === "application" && target?.[2] === "application" && (target[1] === match[1] || /\/(ports|queries|use-cases)$/.test(to)));
         if (!allowed) reason = "domain/application cannot depend on React, presentation, bootstrap or infrastructure.";
       } else if (from.startsWith("src/infrastructure/") || match?.[2] === "infrastructure") {
         if (/^src\/(app|pages)\//.test(to) || target?.[2] === "presentation" || to.startsWith("src/shared/ui/")) reason = "adapters implement application ports and never import React presentation.";

@@ -1,4 +1,4 @@
-import { toDocument } from "./document-mapping";
+import { toDocument, toLocalUpload } from "./document-mapping";
 import { LocalStore } from "./store";
 import { initializeSession } from "./seed";
 import { createProcurement, addVendor } from "./procurement";
@@ -54,7 +54,7 @@ export function createLocalRuntime(seed = true, prepared = false) {
     addVendor: (...args: Parameters<ProcurementGateway["addVendor"]>) => addVendor(store, ...args),
   };
   const documentsGateway: DocumentsGateway = {
-    uploadDocument: async ({ sourceId, ...input }) => toDocument(await uploadRegisteredDocument(store, { ...input, fixtureId: sourceId })),
+    uploadDocument: async (input) => toDocument(await uploadRegisteredDocument(store, toLocalUpload(input))),
     reviewDocument: async (...args: Parameters<DocumentsGateway["reviewDocument"]>) => toDocument(await reviewDocument(store, ...args)),
     confirmDocument: async (...args: Parameters<DocumentsGateway["confirmDocument"]>) => toDocument(await confirmDocument(store, ...args)),
   };
