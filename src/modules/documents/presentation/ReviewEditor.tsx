@@ -1,10 +1,10 @@
 import { CheckCircle as CheckCircle2 } from "@phosphor-icons/react/dist/csr/CheckCircle";
 import { FloppyDisk as Save } from "@phosphor-icons/react/dist/csr/FloppyDisk";
-import { money, pct } from "../../shared/formatters/display";
-import { toPercent } from "../../shared/formatters/review-input";
-import type { A5Values, DocumentRecord } from "../../shared/model/session";
-import "../../shared/styles/focus.css";
-import { CurrencyInput } from "../../shared/ui/currency-input";
+import { money, pct } from "../../../shared/formatters/display";
+import { toPercent } from "../../../shared/formatters/review-input";
+import type { A5Values, DocumentRecord } from "../../../shared/model/session";
+import "../../../shared/styles/focus.css";
+import { CurrencyInput } from "../../../shared/ui/currency-input";
 import { fields } from "./review-fields";
 import type { useReview } from "./useReview";
 export function ReviewEditor({

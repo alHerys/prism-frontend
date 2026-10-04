@@ -1,4 +1,4 @@
-import type { A5Values } from "../../shared/model/session";
+import type { A5Values } from "../../../shared/model/session";
 export const fields: Record<keyof A5Values, string> = {
   hpb: "Harga Penawaran Barang",
   hpj: "Harga Penawaran Jasa",

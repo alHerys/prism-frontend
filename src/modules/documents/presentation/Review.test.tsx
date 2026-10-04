@@ -2,20 +2,23 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { transferableAbortController } from "node:util";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { createLocalSession } from "../../infrastructure/local/service";
-import { SessionProvider } from "../../services/session-context";
-import { ToastProvider } from "../../shared/ui/feedback";
+
+import { ApplicationProviders } from "../../../app/providers/ApplicationProviders";
+import { createApplication } from "../../../app/bootstrap/application";
+import { createLocalRuntime } from "../../../infrastructure/local/runtime";
+import { ToastProvider } from "../../../shared/ui/feedback";
 import { Review } from "./Review";
 // The Node Request constructor requires a Node AbortSignal rather than jsdom's.
 beforeEach(() => vi.stubGlobal("AbortController", transferableAbortController().constructor));
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 function openReview(documentId: string) {
-  const service = createLocalSession();
+  const runtime = createLocalRuntime();
+    const service = runtime.session;
   const router = createMemoryRouter([
     { path: "/pengadaan/:id/review/:documentId", element: <Review /> },
     { path: "/pengadaan/:id/vendor/:vendorId", element: <p>Dokumen vendor</p> },
   ], { initialEntries: [`/pengadaan/proc-terminal/review/${documentId}`] });
-  render(<SessionProvider service={service}><ToastProvider><RouterProvider router={router} /></ToastProvider></SessionProvider>);
+  render(<ApplicationProviders application={createApplication(runtime)}><ToastProvider><RouterProvider router={router} /></ToastProvider></ApplicationProviders>);
   return service;
 }
 it("renders unavailable document routes without initializing an editor", () => {

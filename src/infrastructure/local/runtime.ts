@@ -75,11 +75,11 @@ export function createLocalRuntime(seed = true, prepared = false) {
     // Temporary migration bridge; removed with legacy consumers.
     session, processing,
     delay: (milliseconds: number) => new Promise<void>((resolve) => setTimeout(resolve, milliseconds)),
-    procurement: { gateway: procurementGateway, queries: projection<ProcurementData>(session, (state) => ({ procurements: state.procurements, vendors: state.vendors })) },
-    documents: { gateway: documentsGateway, queries: projection<DocumentsData>(session, (state) => ({ documents: state.documents })) },
-    hea: { gateway: heaGateway, queries: projection<HEAData>(session, (state) => ({ procurements: state.procurements })) },
-    priceDeviation: { gateway: priceDeviationGateway, queries: projection<PriceDeviationData>(session, (state) => ({ documents: state.documents })) },
-    historicalPrices: { gateway: historicalPricesGateway, queries: projection<HistoricalPricesData>(session, (state) => ({ historicalItems: state.historicalItems, estimates: state.estimates })) },
-    evaluations: { gateway: evaluationsGateway, queries: projection<EvaluationsData>(session, (state) => ({ snapshots: state.snapshots, events: state.events })) },
+    procurement: { gateway: procurementGateway, queries: projection<ProcurementData>(session, (state) => ({ procurements: state.procurements, vendors: state.vendors, documents: state.documents, snapshots: state.snapshots, events: state.events })) },
+    documents: { gateway: documentsGateway, queries: projection<DocumentsData>(session, (state) => ({ documents: state.documents, procurements: state.procurements, vendors: state.vendors })) },
+    hea: { gateway: heaGateway, queries: projection<HEAData>(session, (state) => ({ documents: state.documents, vendors: state.vendors, snapshots: state.snapshots })) },
+    priceDeviation: { gateway: priceDeviationGateway, queries: projection<PriceDeviationData>(session, (state) => ({ documents: state.documents, snapshots: state.snapshots })) },
+    historicalPrices: { gateway: historicalPricesGateway, queries: projection<HistoricalPricesData>(session, (state) => ({ historicalItems: state.historicalItems, estimates: state.estimates, procurements: state.procurements, documents: state.documents })) },
+    evaluations: { gateway: evaluationsGateway, queries: projection<EvaluationsData>(session, (state) => ({ snapshots: state.snapshots, events: state.events, procurements: state.procurements })) },
   };
 }

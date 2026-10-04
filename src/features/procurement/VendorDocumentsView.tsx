@@ -2,8 +2,8 @@ import { ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft";
 import { Link } from "react-router";
 import "../../shared/styles/focus.css";
 import { Empty } from "../../shared/ui/feedback";
-import { DocumentTable } from "./DocumentTable";
-import { UploadPanel } from "./UploadPanel";
+import { DocumentTable } from "../../modules/documents/presentation/DocumentTable";
+import { UploadPanel } from "../../modules/documents/presentation/UploadPanel";
 import type { useVendorDocuments } from "./useVendorDocuments";
 
 export function VendorDocumentsView({ id, state, procurement, vendor, backUrl }: ReturnType<typeof useVendorDocuments>) {

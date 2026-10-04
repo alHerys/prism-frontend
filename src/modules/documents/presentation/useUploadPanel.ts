@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { processLocalDocument } from "../../infrastructure/local/process-document";
-import { useSessionService } from "../../services/session-context";
-import { errorMessage } from "../../shared/errors/message";
-import type { DocumentKind } from "../../shared/model/session";
-import { useToast } from "../../shared/ui/feedback";
+
+import { useDocumentsCommands } from "./binding";
+import { errorMessage } from "../../../shared/errors/message";
+import type { DocumentKind } from "../../../shared/model/session";
+import { useToast } from "../../../shared/ui/feedback";
 
 export function useUploadPanel({
   procurementId,
@@ -17,7 +17,7 @@ export function useUploadPanel({
   scope?: "vendor" | "procurement";
   embedded?: boolean;
 }) {
-  const service = useSessionService();
+  const service = useDocumentsCommands();
   const toast = useToast();
   const navigate = useNavigate();
   const [kind, setKind] = useState<DocumentKind>(scope === "procurement" ? "OE" : "FORM_A5");
@@ -34,14 +34,8 @@ export function useUploadPanel({
     }
     setBusy(true);
     try {
-      const fixture = await processLocalDocument(file, kind, setProcessing);
-      const document = await service.uploadRegisteredDocument({
-        procurementId,
-        kind,
-        vendorId: kind === "OE" ? undefined : vendor,
-        fixtureId: fixture.id,
-        name: file.name,
-      });
+      const document = await service.upload({ file, procurementId, kind,
+        vendorId: kind === "OE" ? undefined : vendor }, setProcessing);
       toast("Dokumen selesai dibaca. Periksa data sebelum konfirmasi.");
       navigate(`/pengadaan/${procurementId}/review/${document.id}`);
     } catch (e) {

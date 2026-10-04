@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { availableDocuments } from "../../infrastructure/local/file-registry";
-import { useSessionService, useSessionState } from "../../services/session-context";
-import { toPercent, toRatio } from "../../shared/formatters/review-input";
-import type { A5Values, PricePair } from "../../shared/model/session";
-import { useToast } from "../../shared/ui/feedback";
+
+import { useDocumentsCommands, useDocumentsData } from "./binding";
+
+import { toPercent, toRatio } from "../../../shared/formatters/review-input";
+import type { A5Values, PricePair } from "../../../shared/model/session";
+import { useToast } from "../../../shared/ui/feedback";
 import { useUnsavedReview } from "./useUnsavedReview";
 
 export function useReview() {
   const { id, documentId } = useParams();
-  const service = useSessionService();
-  const state = useSessionState();
+  const service = useDocumentsCommands();
+  const state = useDocumentsData();
   const d = state.documents.find(
     (d) => d.id === documentId && d.procurementId === id,
   );
@@ -44,7 +45,7 @@ export function useReview() {
   };
   const p = state.procurements.find((p) => p.id === id)!;
   const vendor = state.vendors.find((v) => v.id === d?.vendorId);
-  const fixture = availableDocuments().find((f) => f.id === d?.fixtureId);
+  const fixture = service.availableSources().find((f) => f.id === d?.fixtureId);
   const back = () =>
     navigate(
       d?.vendorId
@@ -60,23 +61,9 @@ export function useReview() {
     setFailure("");
     setBusy(true);
     try {
-      if (values) {
-        await service.reviewDocument(
-          d!.id,
-          {
-            ...values,
-            tkdn_barang: toRatio(values.tkdn_barang),
-            tkdn_jasa: toRatio(values.tkdn_jasa),
-          },
-          d!.revision,
-        );
-      } else {
-        let current = d!;
-        if (group && group !== d!.selectedGroup)
-          current = await service.selectGroup(d!.id, group, d!.revision);
-        if (current.kind === "OFFER")
-          await service.reviewPairs(current.id, pairs, current.revision);
-      }
+      await service.saveReview({ document: d!, values: values ? {
+        ...values, tkdn_barang: toRatio(values.tkdn_barang), tkdn_jasa: toRatio(values.tkdn_jasa),
+      } : undefined, group, pairs });
       setDirty(false);
       toast(
         "Perubahan disimpan. Konfirmasi diperlukan untuk data yang berubah.",
@@ -95,9 +82,7 @@ export function useReview() {
     setFailure("");
     setBusy(true);
     try {
-      if (d!.kind === "OFFER")
-        await service.confirmPairs(d!.id, d!.revision, ack);
-      else await service.confirmDocument(d!.id, d!.revision, ack);
+      await service.confirmReview(d!, ack);
       setConfirm(false);
       toast("Data terkonfirmasi dan siap dievaluasi.");
       back();

@@ -1,9 +1,10 @@
 import { Link } from "react-router";
-import { useSessionState } from "../../services/session-context";
-import { date, kindLabel } from "../../shared/formatters/display";
-import type { DocumentRecord } from "../../shared/model/session";
-import "../../shared/styles/focus.css";
-import { Empty, Status } from "../../shared/ui/feedback";
+import { useDocumentsData } from "./binding";
+
+import { date, kindLabel } from "../../../shared/formatters/display";
+import type { DocumentRecord } from "../../../shared/model/session";
+import "../../../shared/styles/focus.css";
+import { Empty, Status } from "../../../shared/ui/feedback";
 
 export function DocumentTable({
   documents,
@@ -14,7 +15,7 @@ export function DocumentTable({
   embedded?: boolean;
   title?: string;
 }) {
-  const state = useSessionState();
+  const state = useDocumentsData();
   return (
     <section className={embedded ? "document-table-embedded" : "panel"}>
       <div className="panel-header">

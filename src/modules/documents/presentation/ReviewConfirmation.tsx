@@ -1,5 +1,5 @@
-import "../../shared/styles/focus.css";
-import { Modal } from "../../shared/ui/feedback";
+import "../../../shared/styles/focus.css";
+import { Modal } from "../../../shared/ui/feedback";
 import type { useReview } from "./useReview";
 export function ReviewConfirmation({ busy, confirm, setConfirm, confirmDocument }: Pick<ReturnType<typeof useReview>, "busy" | "confirm" | "setConfirm" | "confirmDocument">) {
   return (
