@@ -1,0 +1,88 @@
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #25313e;
+  background: #f7f8fa;
+  font-synthesis: none;
+  font-size: 14px;
+  --blue: #006cb8;
+  --blue-deep: #254c83;
+  --blue-soft: #edf3fc;
+  --ink: #25313e;
+  --muted: #626c77;
+  --border: #e4e8ed;
+  --surface: #fff;
+  --bg: #f7f8fa;
+  --sidebar-width: 232px;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button,
+a,
+input,
+select {
+  outline-offset: 3px;
+}
+a {
+  color: var(--blue);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+::selection {
+  background: #d5eaff;
+}
+input {
+  caret-color: var(--blue);
+}
+:focus-visible {
+  outline: 2px solid var(--blue);
+}
+svg {
+  flex-shrink: 0;
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+h1 {
+  font-size: 28px;
+  letter-spacing: -0.025em;
+  line-height: 1.3;
+}
+h2 {
+  font-size: 17px;
+  letter-spacing: -0.015em;
+}
+h3 {
+  font-size: 15px;
+}
+p {
+  line-height: 1.6;
+}
+small,
+.muted {
+  color: var(--muted);
+}
+small {
+  font-size: 12px;
+}

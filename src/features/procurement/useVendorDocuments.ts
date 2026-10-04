@@ -1,6 +1,5 @@
 import { useParams } from "react-router";
 import { useSessionState } from "../../services/session-context";
-import "../../shared/styles/focus.css";
 
 export function useVendorDocuments() {
   const { id, vendorId } = useParams();

@@ -1,0 +1,27 @@
+.bank-snapshot-values {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.bank-snapshot-values > div {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 16px;
+}
+.bank-snapshot-values dt {
+  color: var(--muted);
+  font-size: 13px;
+}
+.bank-snapshot-values dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.bank-snapshot-group {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+.bank-snapshot-group:last-child {
+  border: 0;
+}

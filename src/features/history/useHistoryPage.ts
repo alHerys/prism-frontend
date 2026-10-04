@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { useSessionService, useSessionState } from "../../services/session-context";
 import { localDay } from "../../shared/formatters/display";
 import type { Snapshot } from "../../shared/model/session";
-import "../../shared/styles/bank.css";
 import { moduleLabel } from "./history-labels";
 import type { HistoryPageProps } from "./history-page.types";
 

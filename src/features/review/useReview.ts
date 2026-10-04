@@ -4,7 +4,6 @@ import { availableDocuments } from "../../services/registry";
 import { useSessionService, useSessionState } from "../../services/session-context";
 import { toPercent, toRatio } from "../../shared/formatters/review-input";
 import type { A5Values, PricePair } from "../../shared/model/session";
-import "../../shared/styles/focus.css";
 import { useToast } from "../../shared/ui/feedback";
 import { useUnsavedReview } from "./useUnsavedReview";
 

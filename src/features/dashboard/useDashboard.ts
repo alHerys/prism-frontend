@@ -1,5 +1,4 @@
 import { useSessionState } from "../../services/session-context";
-import "./dashboard.css";
 
 export function useDashboard() {
   const state = useSessionState();

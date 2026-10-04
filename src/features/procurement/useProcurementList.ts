@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { useSessionService, useSessionState } from "../../services/session-context";
 import { errorMessage } from "../../shared/errors/message";
-import "../../shared/styles/focus.css";
 import { useToast } from "../../shared/ui/feedback";
 
 export function useProcurementList() {

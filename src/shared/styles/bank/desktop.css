@@ -1,0 +1,134 @@
+/* Desktop surface: wide tables scroll within panels rather than shrinking values. */
+.bank-page-toolbar .btn {
+  flex-shrink: 0;
+}
+.bank-page .bank-filters .field {
+  min-width: 130px;
+}
+.bank-history .bank-filters {
+  display: grid;
+  grid-template-columns: minmax(200px, 1.5fr) repeat(4, minmax(115px, 1fr));
+  gap: 14px;
+}
+.bank-history .bank-search {
+  min-width: 0;
+}
+.bank-page .table td {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.bank-page .table td:first-child,
+.bank-page .table th:first-child {
+  padding-left: 24px;
+}
+.bank-page .table td:last-child,
+.bank-page .table th:last-child {
+  padding-right: 24px;
+}
+.bank-document-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 230px;
+}
+.bank-document-icon {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  color: var(--blue-deep);
+  background: var(--blue-soft);
+}
+.bank-document-identity > div {
+  min-width: 0;
+}
+.bank-document-identity strong {
+  display: block;
+  line-height: 1.5;
+}
+.bank-source-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bank-source-title svg {
+  color: var(--blue-deep);
+}
+.bank-publication-stages {
+  display: flex;
+  list-style: none;
+  counter-reset: stage;
+  padding: 0 24px 22px;
+  margin: 0;
+  gap: 16px;
+}
+.bank-publication-stages li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.bank-publication-stages li::before {
+  counter-increment: stage;
+  content: counter(stage);
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 650;
+  background: var(--bg);
+}
+.bank-publication-stages li[data-complete="true"] {
+  color: var(--blue-deep);
+}
+.bank-publication-stages li[data-complete="true"]::before {
+  border-color: var(--blue-deep);
+  color: white;
+  background: var(--blue-deep);
+}
+.bank-notice[role="status"] {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.bank-dropzone {
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+.bank-dropzone svg {
+  color: var(--blue-deep);
+}
+.bank-bars .bank-bar {
+  background: var(--blue-deep);
+}
+.bank-chart path {
+  stroke: var(--blue-deep);
+}
+.bank-chart circle {
+  fill: var(--blue-deep);
+}
+.bank-page .bank-price-stats strong {
+  color: var(--blue-deep);
+}
+.bank-page .bank-result-detail {
+  border-color: #bdcfe2;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bank-dropzone {
+    transition: none;
+  }
+}
+
+.bank-page .page-tab-content > .bank-stat-strip {
+  padding: 22px 24px;
+}
+
+.bank-page .bank-search input:focus-visible { outline: none; box-shadow: none; }
+.bank-page .field select { padding-right: 38px; }

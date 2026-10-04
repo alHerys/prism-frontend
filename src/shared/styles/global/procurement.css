@@ -1,0 +1,182 @@
+/* Compact application chrome; content owns the visual hierarchy. */
+.shell-context {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.icon-button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 7px;
+  color: var(--muted);
+}
+.icon-button:hover {
+  background: var(--bg);
+  color: var(--ink);
+}
+.shell-search {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: min(300px, 30vw);
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  background: var(--bg);
+}
+.shell-search input {
+  min-width: 0;
+  width: 100%;
+  min-height: 34px;
+  padding: 7px 0;
+  background: transparent;
+  border: 0;
+  font-size: 12px;
+}
+.shell-search:focus-within {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.shell-search input:focus-visible {
+  outline: 0;
+}
+.nav-caption {
+  margin: 0 14px 12px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.logo-symbol {
+  display: none !important;
+}
+.nav-collapsed .sidebar {
+  padding: 28px 12px 20px;
+}
+.nav-collapsed .logo-full {
+  display: none;
+}
+.nav-collapsed .logo-symbol {
+  display: block !important;
+  width: 32px;
+  margin: 0 auto 28px;
+}
+.nav-collapsed .brand-title,
+.nav-collapsed .nav-caption,
+.nav-collapsed .nav span,
+.nav-collapsed .sidebar-foot {
+  display: none;
+}
+.nav-collapsed .nav a {
+  justify-content: center;
+  padding: 12px;
+}
+.skip-link {
+  position: fixed;
+  z-index: 200;
+  top: 8px;
+  left: 8px;
+  transform: translateY(-150%);
+  background: white;
+  border: 1px solid var(--blue);
+  border-radius: 6px;
+  padding: 10px 16px;
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+.procurement-path {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0 0 24px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.procurement-path button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  color: var(--ink);
+  background: transparent;
+  padding: 20px 12px;
+  border: 0;
+  border-radius: 6px;
+  font-size: 12px;
+}
+.procurement-path button:hover {
+  background: #edf4f9;
+}
+.procurement-path button > span {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  border: 1px solid #cdd5de;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+.procurement-path small {
+  display: block;
+  font-size: 11px;
+  margin-top: 5px;
+  line-height: 1.5;
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c7cfd8 transparent;
+}
+a {
+  text-underline-offset: 3px;
+}
+input::placeholder,
+textarea::placeholder {
+  color: #697481;
+  opacity: 1;
+}
+
+/* Source-oriented rows and explicit review readiness. */
+.procurement-name {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 220px;
+}
+.procurement-name > div {
+  min-width: 0;
+}
+.procurement-name a {
+  color: var(--ink);
+}
+.procurement-name a:hover {
+  color: var(--blue);
+}
+.procurement-folder {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: var(--blue-soft);
+  color: var(--blue-deep);
+}
+.procurement-table td {
+  padding-top: 22px;
+  padding-bottom: 22px;
+}
+.readiness-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.readiness-badges .badge {
+  border-radius: 20px;
+  padding: 5px 9px;
+  white-space: nowrap;
+}

@@ -3,7 +3,6 @@ import { downloadSnapshot } from "../../services/export/workbook";
 import { useSessionService } from "../../services/session-context";
 import { errorMessage } from "../../shared/errors/message";
 import type { Procurement, Snapshot } from "../../shared/model/session";
-import "../../shared/styles/focus.css";
 import { useToast } from "../../shared/ui/feedback";
 
 export function useResultPanel({

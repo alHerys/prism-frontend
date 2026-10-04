@@ -267,3 +267,38 @@ test('procurement search, sorting and pagination reflect created records', async
   await page.getByRole('columnheader').getByRole('button', { name: 'Pengadaan', exact: true }).click();
   await expect(page.locator('tbody tr').first().getByRole('link', { name: 'Pengadaan acceptance 4', exact: true })).toBeVisible();
 });
+
+test('direct routes and navigation load the same styles and preserve tab drafts', async ({ page, context }) => {
+  const direct = await context.newPage();
+  async function compareStyles(url: string, ready: string, selectors: string[]) {
+    await expect(page.getByRole('heading', { name: ready, exact: true })).toBeVisible();
+    await direct.goto(url);
+    await expect(direct.getByRole('heading', { name: ready, exact: true })).toBeVisible();
+    const read = (target: Page) => target.evaluate(selectors => selectors.map(selector => {
+      const element = document.querySelector(selector);
+      if (!element) throw new Error(`Missing style probe: ${selector}`);
+      const css = getComputedStyle(element);
+      return [css.fontFamily, css.fontSize, css.color, css.backgroundColor, css.borderRadius, css.padding, css.display];
+    }), selectors);
+    expect(await read(page)).toEqual(await read(direct));
+  }
+  await page.goto('/');
+  await page.getByRole('navigation', { name: 'Navigasi utama' }).getByRole('link', { name: 'Bank Data OE' }).click();
+  await compareStyles('/bank', 'Perkembangan harga referensi', ['.topbar', '.bank-page .panel', '.bank-chart']);
+  await tab(page, 'Bantuan Estimasi');
+  await page.getByLabel('Kuantitas', { exact: true }).fill('100');
+  await tab(page, 'Statistik Harga');
+  await tab(page, 'Bantuan Estimasi');
+  await expect(page.getByLabel('Kuantitas', { exact: true })).toHaveValue('100');
+  await page.getByRole('navigation', { name: 'Navigasi utama' }).getByRole('link', { name: 'Riwayat & Statistik' }).click();
+  await compareStyles('/riwayat', 'Catatan aktivitas', ['.topbar', '.bank-history .panel', '.bank-history .table']);
+  await page.getByRole('link', { name: 'Dashboard', exact: true }).click();
+  await page.getByRole('link', { name: 'Penggantian Jalur Pipa — Siap Evaluasi', exact: true }).click();
+  await compareStyles('/pengadaan/proc-showcase?tab=hea', 'Leaderboard HEA', ['.procurement-path', '.panel', '.table']);
+  await page.getByRole('link', { name: 'Dashboard', exact: true }).click();
+  await page.getByRole('link', { name: 'Penggantian Jalur Pipa Terminal', exact: true }).click();
+  await tab(page, 'HEA');
+  await page.getByRole('link', { name: 'Periksa dokumen' }).first().click();
+  await compareStyles('/pengadaan/proc-terminal/review/doc-21', 'Periksa Form A5', ['.focus-head', '.review-editor', '.review-source']);
+  await direct.close();
+});

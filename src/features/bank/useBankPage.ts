@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useSessionService, useSessionState } from "../../services/session-context";
 import type { HistoricalItem } from "../../shared/model/session";
-import "../../shared/styles/bank.css";
 import type { BankPageProps } from "./bank-page.types";
 import { pause } from "./simulation";
 
