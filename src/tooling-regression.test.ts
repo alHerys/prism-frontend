@@ -1,13 +1,14 @@
 // @vitest-environment node
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { tmpdir } from "node:os";
 import { expect, it } from "vitest";
 import registry from "./infrastructure/local/fixtures/file-registry.json";
 const root = fileURLToPath(new URL("../", import.meta.url));
-const markdown = ["README.md", "PRODUCT.md", "DESIGN.md", "ACCEPTANCE.md", "BACKEND-BOUNDARY.md", "WORKFLOW-GUIDE.md", "tests/README.md", "docs/ARCHITECTURE.md", "src/infrastructure/local/fixtures/README.md"];
+const markdown = ["README.md", "tests/README.md", "src/infrastructure/local/fixtures/README.md"];
 it("keeps active Markdown links and npm commands valid without obsolete framing", () => {
   const scripts = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8")).scripts as Record<string, string>;
   for (const name of markdown) {
@@ -21,8 +22,14 @@ it("keeps active Markdown links and npm commands valid without obsolete framing"
     }
   }
 });
-it("prepares the renamed fixture kit with original bytes and the current workflow guide", () => {
-  execFileSync(process.execPath, ["scripts/prepare-fixtures.mjs"], { cwd: root });
+it("prepares the fixture kit with original bytes and an optional external guide", () => {
+  const temporary = mkdtempSync(path.join(tmpdir(), "prism-external-guide-"));
+  const guidePath = path.join(temporary, "workflow.md");
+  const expectedGuide = "# Workflow fixture\n";
+  writeFileSync(guidePath, expectedGuide);
+  try {
+    execFileSync(process.execPath, ["scripts/prepare-fixtures.mjs"], { cwd: root, env: { ...process.env, PRISM_WORKFLOW_GUIDE: guidePath } });
+  } finally { rmSync(temporary, { recursive: true, force: true }); }
   const manifest = JSON.parse(readFileSync(path.join(root, "fixture-kit/manifest.json"), "utf8")) as { files: { name: string; sha256: string; folder: string }[] };
   expect(manifest.files).toHaveLength(8);
   for (const file of manifest.files) {
@@ -32,6 +39,8 @@ it("prepares the renamed fixture kit with original bytes and the current workflo
     expect(copied.equals(readFileSync(path.join(root, "public", original.path)))).toBe(true);
   }
   const guide = readFileSync(path.join(root, "fixture-kit/PANDUAN-WORKFLOW.md"), "utf8");
-  expect(guide).toBe(readFileSync(path.join(root, "WORKFLOW-GUIDE.md"), "utf8"));
+  expect(guide).toBe(expectedGuide);
   expect(guide).not.toMatch(/\bdemo\b|\bpresenter\b/i);
+  execFileSync(process.execPath, ["scripts/prepare-fixtures.mjs"], { cwd: root, env: { ...process.env, PRISM_WORKFLOW_GUIDE: "" } });
+  expect(existsSync(path.join(root, "fixture-kit/PANDUAN-WORKFLOW.md"))).toBe(false);
 });

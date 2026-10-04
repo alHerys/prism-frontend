@@ -64,5 +64,7 @@ Verified on 4 October 2026: typecheck, ESLint, 71 unit/interaction/Node tests,
 application build and Storybook build; 14 desktop, four local-workflow and two
 Storybook browser tests pass at both sizes without updating screenshots.
 `npm run fixtures:prepare` validates eight originals and creates the ignored
-`fixture-kit/` with `PANDUAN-WORKFLOW.md`. Tooling tests validate commands, links,
-output names and copied fingerprints. See [architecture](../docs/ARCHITECTURE.md).
+`fixture-kit/`. `PRISM_WORKFLOW_GUIDE` dapat menambahkan panduan lokal eksternal
+sebagai `PANDUAN-WORKFLOW.md`; panduan tidak diperlukan untuk menyiapkan bytes. Tooling tests validate commands, links,
+output names and copied fingerprints. Konfigurasi Storybook memakai `PRISM_STORYBOOK_CONFIG_DIR` atau pengaturan Git
+lokal `prism.storybookConfigDir`; konfigurasi tidak disertakan dalam repository.

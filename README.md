@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/prism-logo.png" alt="PRISM" width="300" />
+  <img src="public/prism_expand.svg" alt="PRISM" width="300" />
   <img src="public/pertamina.svg" alt="Pertamina Patra Niaga" width="210" />
 </p>
 
@@ -26,7 +26,7 @@ aturan domain dan adapter. Modul memiliki `domain`, `application`, `presentation
 serta `infrastructure` ketika diperlukan. Satu runtime lokal menyediakan query
 immutable per modul melalui `useSyncExternalStore`; tes menyuntikkan runtime
 terisolasi. Shared tidak mengimpor modul bisnis. ESLint menjaga batas import dan
-siklus. Rincian di [arsitektur](docs/ARCHITECTURE.md).
+siklus.
 
 ## Menjalankan dan memeriksa
 
@@ -43,19 +43,19 @@ npm run build
 
 Untuk browser: jalankan `npm run preview -- --port 5175`, lalu
 `npm run test:desktop` dan `npm run test:local-regression`. Untuk komponen:
-`npm run build-storybook`, `npm run storybook`, lalu
+konfigurasi Storybook lokal eksternal, `npm run build-storybook`, `npm run storybook`, lalu
 `npm run test:storybook:browser`. Ukuran yang diverifikasi: 1366×768 dan 1920×1080.
 Petunjuk dan ukuran bundle di [pengujian](tests/README.md).
 `npm run fixtures:prepare` menyiapkan paket pengujian dari bytes asli
-`public/files/`; lihat [workflow](WORKFLOW-GUIDE.md).
+`public/files/`.
 
 ## Status integrasi
 
 State masih dalam memori dan dimulai ulang saat reload. Adapter lokal mengenali
 berkas terdaftar melalui SHA-256 dan menyediakan kandidat/hasil yang disiapkan;
 parser umum dan backend belum terhubung. Persistensi dan autentikasi belum tersedia.
-Perhitungan finansial otoritatif tetap berada di backend. [Batas integrasi](BACKEND-BOUNDARY.md)
-mencatat perbedaan kontrak lokal dan server.
+Perhitungan finansial otoritatif tetap berada di backend; model lokal belum
+mengimplementasikan wire contract server.
 
 Snapshot menyimpan input, sumber, revisi, hasil, dan pengecualian saat evaluasi;
 koreksi berikutnya tidak mengubah hasil lama. Ekspor memakai snapshot tersebut,

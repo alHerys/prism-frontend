@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { readFile, mkdir, copyFile, writeFile } from 'node:fs/promises';
+import { readFile, mkdir, copyFile, writeFile, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -21,9 +21,13 @@ for (const file of registry) {
   await mkdir(folder, {recursive: true});
   await copyFile(path.join(root, 'public', file.path), path.join(folder, file.name));
 }
-await copyFile(path.join(root, 'WORKFLOW-GUIDE.md'), path.join(kit, 'PANDUAN-WORKFLOW.md'));
+if (process.env.PRISM_WORKFLOW_GUIDE) {
+  await copyFile(path.resolve(process.env.PRISM_WORKFLOW_GUIDE), path.join(kit, 'PANDUAN-WORKFLOW.md'));
+} else {
+  await rm(path.join(kit, 'PANDUAN-WORKFLOW.md'), { force: true });
+}
 await writeFile(path.join(kit, 'manifest.json'), JSON.stringify({
   mode: 'offline-synthetic',
   files: registry.map(({name, kind, sha256}) => ({name, kind, sha256, folder: groups[kind]})),
 }, null, 2));
-console.log(`Paket fixture siap: ${kit}\n${registry.length} berkas PDF/XLSX terverifikasi. Panduan: PANDUAN-WORKFLOW.md`);
+console.log(`Paket fixture siap: ${kit}\n${registry.length} berkas PDF/XLSX terverifikasi.`);
