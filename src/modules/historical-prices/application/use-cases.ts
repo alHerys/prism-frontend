@@ -1,8 +1,13 @@
+import type { EvaluationsUseCases } from "../../evaluations/application/use-cases";
+import type { DocumentsUseCases } from "../../documents/application/use-cases";
 import type { HistoricalPricesGateway } from "./ports";
 import type { Delay } from "../../../shared/kernel/binary-source";
 
-export function createHistoricalPricesUseCases(gateway: HistoricalPricesGateway, delay: Delay) {
+export function createHistoricalPricesUseCases(gateway: HistoricalPricesGateway, delay: Delay, documents: DocumentsUseCases, evaluations: EvaluationsUseCases) {
   return {
+    recordExport: evaluations.recordExport,
+    upload: documents.upload,
+    confirmDocument: documents.confirmDocument,
     setHistoricalMetadata: (...args: Parameters<HistoricalPricesGateway["setHistoricalMetadata"]>) => gateway.setHistoricalMetadata(...args),
     publishHistory: (...args: Parameters<HistoricalPricesGateway["publishHistory"]>) => gateway.publishHistory(...args),
     setComparable: (...args: Parameters<HistoricalPricesGateway["setComparable"]>) => gateway.setComparable(...args),

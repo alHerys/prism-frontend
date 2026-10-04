@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useSessionService, useSessionState } from "../../services/session-context";
-import type { HistoricalItem } from "../../shared/model/session";
+import { useHistoricalPricesCommands, useHistoricalPricesData } from "./binding";
+import type { HistoricalItem } from "../../../shared/model/session";
 import type { BankPageProps } from "./bank-page.types.ts";
-import { pause } from "./simulation";
 
-export function useBankPage({ service: serviceOverride, onExport }: BankPageProps) {
-  const service = useSessionService(serviceOverride);
-  const state = useSessionState(service);
+
+export function useBankPage({ onExport }: BankPageProps) {
+  const service = useHistoricalPricesCommands();
+  const state = useHistoricalPricesData();
   const preparedEstimate = state.estimates[0];
   const [tab, setTab] = useState(preparedEstimate ? "Statistik Harga" : "Dokumen Historis");
   const [query, setQuery] = useState("");
@@ -72,14 +72,7 @@ export function useBankPage({ service: serviceOverride, onExport }: BankPageProp
   const upload = async (file?: File) => {
     if (!file) return;
     await run("Membaca dokumen", async () => {
-      const { processLocalDocument } = await import("../../infrastructure/local/process-document");
-      const registered = await processLocalDocument(file, "HISTORICAL_OE", setBusy);
-      const record = await service.uploadRegisteredDocument({
-        procurementId,
-        kind: "HISTORICAL_OE",
-        fixtureId: registered.id,
-        name: file.name,
-      });
+      const record = await service.upload({ file, procurementId, kind: "HISTORICAL_OE" }, setBusy);
       setDraftId(record.id);
       setPeriod(record.period ?? "");
       setFunctionName("");
@@ -120,7 +113,7 @@ export function useBankPage({ service: serviceOverride, onExport }: BankPageProp
       const result = await service.createBankSnapshot(selectedIds);
       if (onExport) await onExport(result);
       else {
-        const { downloadSnapshot } = await import("../../services/export/workbook.ts");
+        const { downloadSnapshot } = await import("../../../services/export/workbook.ts");
         const p = state.procurements.find((p) => p.id === result.procurementId);
         await downloadSnapshot(
           result,
@@ -132,7 +125,6 @@ export function useBankPage({ service: serviceOverride, onExport }: BankPageProp
     });
   };
   const createEstimate = () => run("Menelaah referensi dan kebutuhan", async () => {
-    await pause(800);
     const result = await service.estimate({
       description: need,
       unit,

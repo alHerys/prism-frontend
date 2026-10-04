@@ -1,5 +1,5 @@
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
-import "../../shared/styles/bank.css";
+import "../../../shared/styles/bank.css";
 import { Empty } from "./Empty";
 import { ReferenceTable } from "./ReferenceTable";
 import type { useBankPage } from "./useBankPage";

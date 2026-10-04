@@ -1,5 +1,5 @@
-import { bankMoney as money } from "../../shared/formatters/display";
-import "../../shared/styles/bank.css";
+import { bankMoney as money } from "../../../shared/formatters/display";
+import "../../../shared/styles/bank.css";
 import type { useBankPage } from "./useBankPage";
 export function ReferenceDetail({ state, detail, setDetail, compareReference }: Pick<ReturnType<typeof useBankPage>, "state" | "detail" | "setDetail" | "compareReference">) {
   return (

@@ -7,13 +7,15 @@ import { createHistoricalPricesUseCases } from "../../modules/historical-prices/
 import { createEvaluationsUseCases } from "../../modules/evaluations/application/use-cases";
 
 export function createApplication(runtime = createLocalRuntime(true, true)) {
+  const documents = createDocumentsUseCases(runtime.documents.gateway, runtime.processing, runtime.priceDeviation.gateway);
+  const evaluations = createEvaluationsUseCases(runtime.evaluations.gateway);
   return {
     procurement: { commands: createProcurementUseCases(runtime.procurement.gateway), queries: runtime.procurement.queries },
-    documents: { commands: createDocumentsUseCases(runtime.documents.gateway, runtime.processing, runtime.priceDeviation.gateway), queries: runtime.documents.queries },
+    documents: { commands: documents, queries: runtime.documents.queries },
     hea: { commands: createHEAUseCases(runtime.hea.gateway, runtime.delay), queries: runtime.hea.queries },
     priceDeviation: { commands: createPriceDeviationUseCases(runtime.priceDeviation.gateway, runtime.delay), queries: runtime.priceDeviation.queries },
-    historicalPrices: { commands: createHistoricalPricesUseCases(runtime.historicalPrices.gateway, runtime.delay), queries: runtime.historicalPrices.queries },
-    evaluations: { commands: createEvaluationsUseCases(runtime.evaluations.gateway), queries: runtime.evaluations.queries },
+    historicalPrices: { commands: createHistoricalPricesUseCases(runtime.historicalPrices.gateway, runtime.delay, documents, evaluations), queries: runtime.historicalPrices.queries },
+    evaluations: { commands: evaluations, queries: runtime.evaluations.queries },
   };
 }
 export type Application = ReturnType<typeof createApplication>;

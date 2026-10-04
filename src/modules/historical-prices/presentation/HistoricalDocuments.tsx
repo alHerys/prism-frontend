@@ -1,6 +1,6 @@
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
 import { FileXls } from "@phosphor-icons/react/dist/csr/FileXls";
-import "../../shared/styles/bank.css";
+import "../../../shared/styles/bank.css";
 import type { useBankPage } from "./useBankPage";
 export function HistoricalDocuments({ state, tab, setDraftId, setFunctionName, setPeriod }: Pick<ReturnType<typeof useBankPage>, "state" | "tab" | "setDraftId" | "setFunctionName" | "setPeriod">) {
   return (

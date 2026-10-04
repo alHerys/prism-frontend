@@ -7,17 +7,21 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
-import { FIXTURE_PREFERENCES } from "../../infrastructure/local/fixtures";
-import { createLocalSession } from "../../infrastructure/local/service";
+import { FIXTURE_PREFERENCES } from "../../../infrastructure/local/fixtures";
+import { createLocalSession } from "../../../infrastructure/local/service";
+import { createLocalRuntime } from "../../../infrastructure/local/runtime";
+import { createApplication } from "../../../app/bootstrap/application";
+import { ApplicationProviders } from "../../../app/providers/ApplicationProviders";
 
-import { A5_FIXTURES, HEA_RESULTS } from "../../infrastructure/local/fixtures";
-import HistoryPage from "../history/HistoryPage";
+import { A5_FIXTURES, HEA_RESULTS } from "../../../infrastructure/local/fixtures";
+import HistoryPage from "../../../features/history/HistoryPage";
 import BankPage from "./BankPage";
 afterEach(cleanup);
 describe("Bank Data and history workflows", () => {
   it("requires selection and comparability before descriptive statistics are shown", async () => {
-    const service = createLocalSession();
-    render(<BankPage service={service} />);
+    const runtime = createLocalRuntime();
+    const service = runtime.session;
+    render(<ApplicationProviders application={createApplication(runtime)}><BankPage /></ApplicationProviders>);
     await userEvent.click(screen.getByRole("tab", { name: "Statistik Harga" }));
     expect(
       screen.getByText("Pilih referensi yang sebanding"),
@@ -49,8 +53,9 @@ describe("Bank Data and history workflows", () => {
     ).toBeInTheDocument();
   });
   it("keeps reference selections while filtering and distinguishes a single observation", async () => {
-    const service = createLocalSession();
-    render(<BankPage service={service} />);
+    const runtime = createLocalRuntime();
+    const service = runtime.session;
+    render(<ApplicationProviders application={createApplication(runtime)}><BankPage /></ApplicationProviders>);
     await userEvent.click(
       screen.getByRole("tab", { name: "Pencarian Referensi" }),
     );
@@ -80,7 +85,8 @@ describe("Bank Data and history workflows", () => {
     expect(screen.queryAllByText("Pengadaan dibuat")).toHaveLength(0);
   });
   it("keeps full precision on the snapshot while presenting rounded rupiah and Indonesian labels", async () => {
-    const service = createLocalSession();
+    const runtime = createLocalRuntime();
+    const service = runtime.session;
     const docs = service
       .getState()
       .documents.filter((d) => d.kind === "FORM_A5");

@@ -1,8 +1,8 @@
 import { CircleNotch } from "@phosphor-icons/react/dist/csr/CircleNotch";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
-import "../../shared/styles/bank.css";
-import { HeaderAction, PageTabs } from "../../shared/ui/components";
+import "../../../shared/styles/bank.css";
+import { HeaderAction, PageTabs } from "../../../shared/ui/components";
 import { BankReferences } from "./BankReferences";
 import { HistoricalDocuments } from "./HistoricalDocuments";
 import { HistoricalDraft } from "./HistoricalDraft";

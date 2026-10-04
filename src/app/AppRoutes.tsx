@@ -21,7 +21,7 @@ const VendorDocuments = lazy(() =>
 const Review = lazy(() =>
   import("../modules/documents/presentation/Review").then((m) => ({ default: m.Review })),
 );
-const Bank = lazy(() => import("../features/bank/BankPage"));
+const Bank = lazy(() => import("../modules/historical-prices/presentation/BankPage"));
 const HistoryPage = lazy(() => import("../features/history/HistoryPage"));
 
 export function AppRoutes() {
