@@ -1,9 +1,9 @@
 import { useParams } from "react-router";
-import { useSessionState } from "../../services/session-context";
+import { useProcurementData } from "../../modules/procurement/presentation/binding";
 
 export function useVendorDocuments() {
   const { id, vendorId } = useParams();
-  const state = useSessionState();
+  const state = useProcurementData();
   const procurement = state.procurements.find((p) => p.id === id);
   const vendor = state.vendors.find((v) => v.id === vendorId && v.procurementId === id);
   const backUrl = `/pengadaan/${id}?tab=dokumen`;

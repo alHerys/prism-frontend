@@ -4,8 +4,8 @@ import { CaretRight } from "@phosphor-icons/react/dist/csr/CaretRight";
 import { Folder } from "@phosphor-icons/react/dist/csr/Folder";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
 import { Link } from "react-router";
-import { SelectField } from "../../shared/ui/components";
-import { Empty } from "../../shared/ui/feedback";
+import { SelectField } from "../../../shared/ui/components";
+import { Empty } from "../../../shared/ui/feedback";
 
 import type { useProcurementTable } from "./useProcurementTable";
 export function ProcurementTableView({

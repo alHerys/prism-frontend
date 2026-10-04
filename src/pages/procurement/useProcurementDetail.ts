@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useParams, useSearchParams } from "react-router";
-import { useSessionService, useSessionState } from "../../services/session-context";
+import { useProcurementCommands, useProcurementData } from "../../modules/procurement/presentation/binding";
 import { errorMessage } from "../../shared/errors/message";
 import { useToast } from "../../shared/ui/feedback";
 
 export function useProcurementDetail() {
   const { id } = useParams();
-  const service = useSessionService();
-  const state = useSessionState();
+  const service = useProcurementCommands();
+  const state = useProcurementData();
   const [params, setParams] = useSearchParams();
   const tab = params.get("tab") || (state.snapshots.some((s) => s.procurementId === id && s.module === "HEA") ? "hea" : "ringkasan");
   const p = state.procurements.find((p) => p.id === id);

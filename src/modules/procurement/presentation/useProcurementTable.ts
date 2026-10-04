@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useSessionState } from "../../services/session-context";
-import type { Procurement } from "../../shared/model/session";
+import { useProcurementData } from "./binding";
+import type { Procurement } from "../../../shared/model/session";
 
 export function useProcurementTable({
   items,
@@ -13,7 +13,7 @@ export function useProcurementTable({
   onSearchChange?: (s: string) => void;
   searchLabel?: string;
 }) {
-  const state = useSessionState();
+  const state = useProcurementData();
   const [ownSearch, setOwnSearch] = useState("");
   const search = controlledSearch ?? ownSearch;
   const [status, setStatus] = useState("all");

@@ -1,11 +1,11 @@
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
-import "../../shared/styles/focus.css";
+import "../../../shared/styles/focus.css";
 import {
   Button,
   Field,
   HeaderAction
-} from "../../shared/ui/components";
-import { Modal } from "../../shared/ui/feedback";
+} from "../../../shared/ui/components";
+import { Modal } from "../../../shared/ui/feedback";
 import { ProcurementTable } from "./ProcurementTable";
 import type { useProcurementList } from "./useProcurementList";
 

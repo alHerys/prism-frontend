@@ -6,7 +6,7 @@ import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { Link } from "react-router";
 import { dateTime, kindLabel } from "../../shared/formatters/display";
 import { Empty } from "../../shared/ui/feedback";
-import { ProcurementTable } from "../procurement/ProcurementTable.tsx";
+import { ProcurementTable } from "../../modules/procurement/presentation/ProcurementTable.tsx";
 import "./dashboard.css";
 
 import type { useDashboard } from "./useDashboard";

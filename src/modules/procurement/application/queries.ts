@@ -1,6 +1,6 @@
 import type { ReadStore } from "../../../shared/kernel/read-store";
-import type { Procurement } from "../../procurement/domain/models";
-import type { Vendor } from "../../procurement/domain/models";
+import type { Procurement } from "../domain/models";
+import type { Vendor } from "../domain/models";
 import type { DocumentRecord } from "../../documents/domain/models";
 import type { Snapshot } from "../../evaluations/domain/models";
 import type { Activity } from "../../evaluations/domain/models";

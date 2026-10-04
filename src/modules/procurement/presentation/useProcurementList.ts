@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import { useSessionService, useSessionState } from "../../services/session-context";
-import { errorMessage } from "../../shared/errors/message";
-import { useToast } from "../../shared/ui/feedback";
+import { useProcurementCommands, useProcurementData } from "./binding";
+import { errorMessage } from "../../../shared/errors/message";
+import { useToast } from "../../../shared/ui/feedback";
 
 export function useProcurementList() {
-  const service = useSessionService();
-  const state = useSessionState();
+  const service = useProcurementCommands();
+  const state = useProcurementData();
   const toast = useToast();
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();

@@ -10,13 +10,13 @@ import { LoadingState } from "../shared/ui/components";
 import { Empty } from "../shared/ui/feedback";
 
 const ProcurementList = lazy(() =>
-  import("../features/procurement/ProcurementList").then((m) => ({ default: m.ProcurementList })),
+  import("../modules/procurement/presentation/ProcurementList").then((m) => ({ default: m.ProcurementList })),
 );
 const ProcurementDetail = lazy(() =>
-  import("../features/procurement/ProcurementDetail").then((m) => ({ default: m.ProcurementDetail })),
+  import("../pages/procurement/ProcurementDetail").then((m) => ({ default: m.ProcurementDetail })),
 );
 const VendorDocuments = lazy(() =>
-  import("../features/procurement/VendorDocuments").then((m) => ({ default: m.VendorDocuments })),
+  import("../pages/procurement/VendorDocuments").then((m) => ({ default: m.VendorDocuments })),
 );
 const Review = lazy(() =>
   import("../modules/documents/presentation/Review").then((m) => ({ default: m.Review })),
