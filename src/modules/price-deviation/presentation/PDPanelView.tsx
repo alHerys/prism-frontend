@@ -1,7 +1,7 @@
 import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
 import { Link } from "react-router";
 import "../../../shared/styles/focus.css";
-import { Stepper } from "../../../shared/ui/feedback";
+import { Stepper } from "../../../shared/ui/stepper";
 import { ResultPanel } from "../../evaluations/presentation/ResultPanel";
 import type { PDPanelModel } from "./view-models";
 

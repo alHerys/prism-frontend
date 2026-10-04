@@ -7,7 +7,7 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { ApplicationProviders } from "../../../app/providers/ApplicationProviders";
 import { createApplication } from "../../../app/bootstrap/application";
 import { createLocalRuntime } from "../../../infrastructure/local/runtime";
-import { ToastProvider } from "../../../shared/ui/feedback";
+import { ToastProvider } from "../../../shared/ui/toast-provider";
 import { Review } from "./Review";
 // The Node Request constructor requires a Node AbortSignal rather than jsdom's.
 beforeEach(() => vi.stubGlobal("AbortController", transferableAbortController().constructor));

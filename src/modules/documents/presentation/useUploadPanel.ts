@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import { useDocumentsCommands } from "./binding";
 import { errorMessage } from "../../../shared/errors/message";
 import type { DocumentKind } from "../domain/models";
-import { useToast } from "../../../shared/ui/feedback";
+import { useToast } from "../../../shared/ui/toast-provider";
 
 export function useUploadPanel({
   procurementId,

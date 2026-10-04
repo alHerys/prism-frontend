@@ -1,6 +1,6 @@
 import { ApplicationProviders } from "./providers/ApplicationProviders";
 import { createBrowserRouter } from "react-router";
-import { ToastProvider } from "../shared/ui/feedback";
+import { ToastProvider } from "../shared/ui/toast-provider";
 
 import { AppShell } from "./AppShell";
 

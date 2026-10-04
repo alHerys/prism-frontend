@@ -3,7 +3,7 @@ import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
 import { money, pct } from "../../../shared/formatters/display";
 import type { A5Values, DocumentRecord } from "../domain/models";
 import "../../../shared/styles/focus.css";
-import { SourcePanel } from "../../../shared/ui/components";
+import { SourcePanel } from "../../../shared/ui/source-panel";
 import { fields } from "./review-fields";
 import type { ReviewModel } from "./view-models";
 export function ReviewSource({ d, focused, p, vendor, fixture }: Pick<ReviewModel, "d" | "focused" | "p" | "vendor" | "fixture"> & { d: DocumentRecord }) {

@@ -13,7 +13,7 @@ import {
   useNavigate
 } from "react-router";
 import { useProcurementData } from "../modules/procurement/presentation/binding";
-import { Hint } from "../shared/ui/components";
+import { Hint } from "../shared/ui/hint";
 import { AppRoutes } from "./AppRoutes";
 const links = [
   ["/", "Dashboard", SquaresFour],

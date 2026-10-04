@@ -7,7 +7,7 @@ import { useDocumentsCommands, useDocumentsData } from "./binding";
 import { toPercent, toRatio } from "../../../shared/formatters/review-input";
 import type { A5Values } from "../domain/models";
 import type { PricePair } from "../../price-deviation/domain/models";
-import { useToast } from "../../../shared/ui/feedback";
+import { useToast } from "../../../shared/ui/toast-provider";
 import { useUnsavedReview } from "./useUnsavedReview";
 
 export function useReview() : ReviewModel {

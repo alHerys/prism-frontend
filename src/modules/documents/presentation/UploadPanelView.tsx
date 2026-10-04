@@ -1,9 +1,7 @@
 import "../../../shared/styles/focus.css";
-import {
-  ErrorState,
-  LoadingState,
-  UploadZone
-} from "../../../shared/ui/components";
+import { ErrorState } from "../../../shared/ui/error-state";
+import { LoadingState } from "../../../shared/ui/loading-state";
+import { UploadZone } from "../../../shared/ui/upload-zone";
 import type { UploadPanelModel } from "./view-models";
 
 export function UploadPanelView({ scope, embedded, kind, setKind, busy, processing, failure, upload }: UploadPanelModel) {

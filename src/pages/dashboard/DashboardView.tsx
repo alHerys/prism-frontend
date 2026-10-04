@@ -5,7 +5,7 @@ import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { Link } from "react-router";
 import { dateTime, kindLabel } from "../../shared/formatters/display";
-import { Empty } from "../../shared/ui/feedback";
+import { Empty } from "../../shared/ui/empty";
 import { ProcurementTable } from "../../modules/procurement/presentation/ProcurementTable.tsx";
 import "./dashboard.css";
 

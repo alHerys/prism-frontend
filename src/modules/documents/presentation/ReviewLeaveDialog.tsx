@@ -1,5 +1,5 @@
 import "../../../shared/styles/focus.css";
-import { Modal } from "../../../shared/ui/feedback";
+import { Modal } from "../../../shared/ui/modal";
 import type { ReviewModel } from "./view-models";
 export function ReviewLeaveDialog({ busy, leave, setLeave, setDirty, blocker, leavePage, save }: Pick<ReviewModel, "busy" | "leave" | "setLeave" | "setDirty" | "blocker" | "leavePage" | "save">) {
   return (

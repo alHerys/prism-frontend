@@ -13,7 +13,7 @@ import { createApplication } from "../../../app/bootstrap/application";
 import { ApplicationProviders } from "../../../app/providers/ApplicationProviders";
 
 
-import { ToastProvider } from "../../../shared/ui/feedback";
+import { ToastProvider } from "../../../shared/ui/toast-provider";
 
 import { HEAPanel } from "../../hea/presentation/HEAPanel";
 import { ProcurementTable } from "./ProcurementTable.tsx";

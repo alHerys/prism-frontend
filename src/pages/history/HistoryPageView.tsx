@@ -1,6 +1,6 @@
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
 import "../../shared/styles/bank.css";
-import { PageTabs } from "../../shared/ui/components";
+import { PageTabs } from "../../shared/ui/page-tabs";
 import { moduleLabel } from "./history-labels";
 import { HistoryActivity } from "./HistoryActivity";
 import { HistoryResults } from "./HistoryResults";

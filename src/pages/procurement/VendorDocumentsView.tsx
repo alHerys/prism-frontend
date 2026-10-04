@@ -1,7 +1,7 @@
 import { ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft";
 import { Link } from "react-router";
 import "../../shared/styles/focus.css";
-import { Empty } from "../../shared/ui/feedback";
+import { Empty } from "../../shared/ui/empty";
 import { DocumentTable } from "../../modules/documents/presentation/DocumentTable";
 import { UploadPanel } from "../../modules/documents/presentation/UploadPanel";
 import type { VendorDocumentsModel } from "./view-models";

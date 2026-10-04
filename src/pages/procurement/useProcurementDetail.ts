@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useParams, useSearchParams } from "react-router";
 import { useProcurementCommands, useProcurementData } from "../../modules/procurement/presentation/binding";
 import { errorMessage } from "../../shared/errors/message";
-import { useToast } from "../../shared/ui/feedback";
+import { useToast } from "../../shared/ui/toast-provider";
 
 export function useProcurementDetail() : ProcurementDetailModel {
   const { id } = useParams();

@@ -5,7 +5,7 @@ import { useEvaluationsCommands } from "./binding";
 import { errorMessage } from "../../../shared/errors/message";
 import type { Procurement } from "../../procurement/domain/models";
 import type { Snapshot } from "../domain/models";
-import { useToast } from "../../../shared/ui/feedback";
+import { useToast } from "../../../shared/ui/toast-provider";
 
 export function useResultPanel({
   snapshot: s,

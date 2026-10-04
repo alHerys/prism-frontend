@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router";
 import { usePriceDeviationCommands, usePriceDeviationData } from "./binding";
 import { errorMessage } from "../../../shared/errors/message";
 import type { Procurement } from "../../procurement/domain/models";
-import { useToast } from "../../../shared/ui/feedback";
+import { useToast } from "../../../shared/ui/toast-provider";
 
 export function usePDPanel({ procurement: p }: { procurement: Procurement }) : PDPanelModel {
   const service = usePriceDeviationCommands();

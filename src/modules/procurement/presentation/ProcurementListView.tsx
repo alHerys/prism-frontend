@@ -1,11 +1,9 @@
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import "../../../shared/styles/focus.css";
-import {
-  Button,
-  Field,
-  HeaderAction
-} from "../../../shared/ui/components";
-import { Modal } from "../../../shared/ui/feedback";
+import { Button } from "../../../shared/ui/button";
+import { Field } from "../../../shared/ui/field";
+import { HeaderAction } from "../../../shared/ui/header-action";
+import { Modal } from "../../../shared/ui/modal";
 import { ProcurementTable } from "./ProcurementTable";
 import type { ProcurementListModel } from "./view-models";
 

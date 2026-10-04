@@ -2,21 +2,20 @@ import { MagnifyingGlassIcon } from "@phosphor-icons/react/dist/csr/MagnifyingGl
 import { PlusIcon } from "@phosphor-icons/react/dist/csr/Plus";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import {
-  Badge,
-  Button,
-  EmptyState,
-  ErrorState,
-  Field,
-  Hint,
-  LoadingState,
-  PageTabs,
-  SelectField,
-  SourcePanel,
-  TableToolbar,
-  UploadZone,
-} from "./shared/ui/components";
-import { Modal, Stepper } from "./shared/ui/feedback";
+import { Badge } from "./shared/ui/badge";
+import { Button } from "./shared/ui/button";
+import { EmptyState } from "./shared/ui/empty-state";
+import { ErrorState } from "./shared/ui/error-state";
+import { Field } from "./shared/ui/field";
+import { Hint } from "./shared/ui/hint";
+import { LoadingState } from "./shared/ui/loading-state";
+import { PageTabs } from "./shared/ui/page-tabs";
+import { SelectField } from "./shared/ui/select-field";
+import { SourcePanel } from "./shared/ui/source-panel";
+import { TableToolbar } from "./shared/ui/table-toolbar";
+import { UploadZone } from "./shared/ui/upload-zone";
+import { Modal } from "./shared/ui/modal";
+import { Stepper } from "./shared/ui/stepper";
 
 
 const meta = {
