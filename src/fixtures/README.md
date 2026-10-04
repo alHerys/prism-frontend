@@ -1,6 +1,6 @@
 # Berkas dan skenario frontend
 
-Seluruh berkas dalam `public/files/` dibuat independen untuk demonstrasi frontend.
+Seluruh berkas dalam `public/files/` dibuat independen untuk pengujian frontend.
 Tidak ada data Pertamina, tanda tangan asli, atau dokumen internal yang digunakan.
 Nama penyedia, dokumen, serta nilai merupakan data sintetis. Aplikasi tidak menjalankan
 parser atau perhitungan finansial; hash berkas terdaftar memilih kandidat dan hasil
@@ -16,7 +16,7 @@ bukan label pada UI atau laporan.
 - `history-2024`–`history-2026`: pengecatan tangki, m², harga 85.000/90.000/95.000.
 
 Fixture peringatan Borneo meminta pemeriksaan TKDN jasa; penawaran Borneo mempunyai
-dua kelompok harga untuk demonstrasi pemilihan eksplisit. Referensi 2024 sendiri
+dua kelompok harga untuk pengujian pemilihan eksplisit. Referensi 2024 sendiri
 merupakan skenario pengamatan tunggal/data tidak memadai.
 
 ## Regenerasi

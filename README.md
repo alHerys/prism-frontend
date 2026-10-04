@@ -15,7 +15,7 @@
 ![Platform](https://img.shields.io/badge/Platform-Desktop%20Web-086DB5?style=for-the-badge)
 ![Frontend](https://img.shields.io/badge/Frontend-React%20%2B%20TypeScript-102D45?style=for-the-badge)
 ![Build](https://img.shields.io/badge/Build-Vite-65C466?style=for-the-badge)
-![Backend](https://img.shields.io/badge/Backend-Offline%20Demo-7B8794?style=for-the-badge)
+![Architecture](https://img.shields.io/badge/Architecture-Modular-7B8794?style=for-the-badge)
 
 </div>
 
@@ -36,7 +36,7 @@
 | --- | --- |
 | Application Type | Desktop web application |
 | Primary Platform | Web browser |
-| Operating mode | Offline frontend demonstration |
+| Operating mode | Offline frontendnstration |
 | Interface language | Indonesian |
 
 PRISM membantu tim pengadaan memeriksa dokumen, meninjau kandidat data, mengonfirmasi nilai yang digunakan untuk evaluasi, membandingkan harga, dan menyimpan hasil yang dapat ditelusuri. Frontend ini menggunakan skenario lokal yang realistis agar seluruh alur dapat diperagakan tanpa koneksi layanan eksternal.
@@ -63,33 +63,33 @@ PRISM membantu tim pengadaan memeriksa dokumen, meninjau kandidat data, mengonfi
 | Routing | React Router | Navigasi antar modul dan tahap pengadaan. |
 | UI primitives | Radix Primitives | Dialog, tab, select, dan tooltip yang dapat diakses. |
 | Icons | Phosphor Icons | Ikon antarmuka yang konsisten. |
-| State model | In-memory session services | Menjaga state demo selama satu sesi browser. |
+| State model | In-memory session services | Menjaga state aplikasi selama satu sesi browser. |
 | Workbook | ExcelJS | Membuat ekspor XLSX dari snapshot lokal. |
 | Testing | Vitest, React Testing Library, Playwright, Storybook | Unit, interaction, browser, dan component verification. |
 | Backend | Belum terhubung | Frontend mengikuti batas kontrak yang disiapkan untuk integrasi berikutnya. |
-| Database | Tidak digunakan | Data demo berasal dari fixture lokal. |
-| Authentication | Tidak digunakan | Login berada di luar cakupan frontend demo. |
+| Database | Tidak digunakan | Data implementation berasal dari fixture lokal. |
+| Authentication | Tidak digunakan | Login berada di luar cakupan frontend. |
 
 ## Project structure
 
 ```text
 frontend/
-├── public/                 # Aset dan berkas sintetis demo
+├── public/                 # Aset dan berkas sintetis
 ├── src/
 │   ├── app/                # Bootstrap, router, shell, dan instance sesi
 │   ├── features/           # Dashboard, procurement, review, hea,
 │   │                       # price-deviation, bank, history
 │   ├── shared/             # UI, model sesi, formatter, snapshot, stylesheet
-│   ├── services/           # Kontrak/binding React, demo, dokumen, ekspor
+│   ├── services/           # Kontrak/binding React, implementation, dokumen, ekspor
 │   └── fixtures/           # Registri berkas sintetis
 ├── tests/                  # Verifikasi browser aplikasi dan Storybook
-└── scripts/                # Generator fixture dan helper demo
+└── scripts/                # Generator fixture dan helper fixture
 ```
 
 Alur aplikasi: **halaman → hook/layanan → state sesi**. Halaman menyusun tampilan
 fitur; hook mengelola draft dan tindakan melalui `SessionService`. Provider memakai
 satu instance offline dengan `useSyncExternalStore`; tes memakai instance terisolasi.
-Layanan demo berbagi satu store dan hasil finansial yang sudah disiapkan. Snapshot
+Adapter lokal berbagi satu store dan hasil finansial yang sudah disiapkan. Snapshot
 menyimpan salinan input saat evaluasi sehingga koreksi berikutnya tidak mengubah
 hasil lama; ekspor memakai snapshot tersebut dan memuat ExcelJS saat diperlukan.
 Aturan import ESLint menjaga batas `app`, `features`, `shared`, dan `services`.
@@ -131,12 +131,10 @@ Urutan import stylesheet mempertahankan cascade global dan pemuatan per route.
 
 Open the URL printed by Vite, usually `http://127.0.0.1:5173`.
 
-### Presentasi demo
+### Workflow lokal
 
-Jalankan `npm run demo:prepare` untuk menyiapkan delapan berkas PDF/XLSX
-sintetis dan salinan panduan dalam `demo-kit/`. Ikuti [panduan demo](DEMO-GUIDE.md)
-untuk alur presentasi, angka skenario, dan pemulihan sesi. Dengan dev server aktif,
-jalankan `npm run demo:verify` untuk rehearsal browser pada dua ukuran desktop.
+Lihat [panduan workflow](WORKFLOW-GUIDE.md) untuk unggah, review, konfirmasi,
+evaluasi, dan ekspor. Berkas fixture tersedia di `public/files/`.
 
 ### Verification commands
 
@@ -162,4 +160,4 @@ All data and processing in the submitted frontend are local scenarios. File sele
 
 ---
 
-PRISM is a frontend demonstration project. Backend integration, authentication, deployment configuration, and production data services are separate workstreams.
+PRISM is a frontendnstration project. Backend integration, authentication, deployment configuration, and production data services are separate workstreams.

@@ -45,7 +45,7 @@ isolation and immutable historical snapshots. A fixed-clock fingerprint checks a
 original seeded values, IDs, event order and prepared snapshots. Browser coverage
 also compares computed styles on direct routes and navigation, retains tab drafts,
 and checks that ExcelJS loads when exporting. `prism/architecture` in ESLint guards
-static imports, re-exports and dynamic imports; tests can construct demo instances.
+static imports, re-exports and dynamic imports; tests can construct implementation instances.
 
 Production bundle measurement (Vite, minified kB; gzip in parentheses):
 
