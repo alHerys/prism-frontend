@@ -31,3 +31,15 @@ it("notifies only its subscribers, keeps stable views between mutations and stop
   await service.addVendor(service.getState().procurements[0].id, "Vendor");
   expect(listener).toHaveBeenCalledTimes(1);
 });
+it("rejects an invalid command without changing views, events or the next allocated identity", async () => {
+  const service = createDemoService(false);
+  const control = createDemoService(false);
+  const listener = vi.fn();
+  service.subscribe(listener);
+  const before = service.getState();
+  await expect(service.addVendor("absent", "Vendor")).rejects.toMatchObject({ code: "NOT_FOUND" });
+  expect(service.getState()).toBe(before);
+  expect(listener).not.toHaveBeenCalled();
+  const input = { name: "Regression", number: "TEST-2", functionName: "Maintenance" };
+  expect((await service.createProcurement(input)).id).toBe((await control.createProcurement(input)).id);
+});
