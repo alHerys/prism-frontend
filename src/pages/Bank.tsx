@@ -26,11 +26,12 @@ export interface BankPageProps {
 }
 export function BankPage({ service = demoService, onExport }: BankPageProps) {
   const state = useSyncExternalStore(service.subscribe, service.getState);
-  const [tab, setTab] = useState("Dokumen Historis");
+  const preparedEstimate = state.estimates[0];
+  const [tab, setTab] = useState(preparedEstimate ? "Statistik Harga" : "Dokumen Historis");
   const [query, setQuery] = useState("");
   const [year, setYear] = useState("");
   const [functionFilter, setFunctionFilter] = useState("");
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>(() => preparedEstimate?.referenceIds ?? []);
   const [detail, setDetail] = useState<HistoricalItem>();
   const [showUpload, setShowUpload] = useState(false);
   const [draftId, setDraftId] = useState("");
@@ -42,10 +43,10 @@ export function BankPage({ service = demoService, onExport }: BankPageProps) {
   const [busy, setBusy] = useState("");
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
-  const [need, setNeed] = useState("");
-  const [unit, setUnit] = useState("m²");
-  const [quantity, setQuantity] = useState("");
-  const [estimateId, setEstimateId] = useState("");
+  const [need, setNeed] = useState(preparedEstimate?.description ?? "");
+  const [unit, setUnit] = useState(preparedEstimate?.unit ?? "m²");
+  const [quantity, setQuantity] = useState(preparedEstimate?.quantity ?? "");
+  const [estimateId, setEstimateId] = useState(preparedEstimate?.id ?? "");
   const draft = state.documents.find((d) => d.id === draftId);
   const estimate = state.estimates.find((e) => e.id === estimateId);
   const filtered = state.historicalItems.filter(

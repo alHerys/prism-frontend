@@ -63,7 +63,7 @@ export class DemoService {
   private state: DemoState;
   private listeners = new Set<() => void>();
   private sequence = 20;
-  constructor(seed = true) {
+  constructor(seed = true, prepared = false) {
     this.state = {
       procurements: [],
       vendors: [],
@@ -154,7 +154,66 @@ export class DemoService {
         },
       ];
     }
+    if (seed && prepared) this.prepareShowcase();
     this.updateView();
+  }
+  // Prepared synthetic records represent a completed demo session only.
+  // New uploads still pass through review and explicit evaluator confirmation.
+  private prepareShowcase() {
+    const procurementId = "proc-showcase";
+    this.state.procurements.push({
+      id: procurementId,
+      name: "Penggantian Jalur Pipa — Siap Evaluasi",
+      number: "PRC-DEMO-2026-003",
+      functionName: "Maintenance",
+      createdAt: "2026-10-02T09:00:00+07:00",
+      preferences: copy(DEMO_PREFERENCES),
+      preferenceRevision: 1,
+      preferenceConfirmed: true,
+    });
+    for (const [id, name] of [["nusa", "PT Nusa Teknik Mandiri"], ["borneo", "PT Borneo Teknik Nusantara"]]) {
+      this.state.vendors.push({id: `showcase-${id}`, procurementId, name});
+    }
+    const docs = [
+      this.makeDocument({procurementId, vendorId: "showcase-nusa", kind: "FORM_A5", fixtureId: "a5-nusa", name: "Form-A5-Nusa.pdf"}),
+      this.makeDocument({procurementId, vendorId: "showcase-borneo", kind: "FORM_A5", fixtureId: "a5-borneo", name: "Form-A5-Borneo.pdf"}),
+      this.makeDocument({procurementId, kind: "OE", fixtureId: "oe-terminal", name: "OE-Terminal.xlsx"}),
+      this.makeDocument({procurementId, vendorId: "showcase-nusa", kind: "OFFER", fixtureId: "bid-nusa", name: "Penawaran-Nusa.xlsx"}),
+    ];
+    for (const doc of docs) {
+      doc.status = "CONFIRMED";
+      doc.acknowledged = true;
+      if (doc.reviewed) {
+        doc.reviewed = copy(A5_FIXTURES[doc.fixtureId]);
+        if (doc.fixtureId === "a5-borneo") doc.revision = 2;
+      } else {
+        doc.selectedGroup = "Harga satuan material dan jasa";
+        doc.revision = 2;
+        doc.pairs.forEach((pair) => { pair.confirmed = pair.matched; });
+      }
+    }
+    this.state.documents.push(...docs);
+    this.event({procurementId, module: "PROCUREMENT", type: "CREATED", summary: "Pengadaan contoh siap evaluasi tersedia"});
+    this.event({procurementId, module: "HEA", type: "CORRECTED", summary: "Koreksi contoh TKDN jasa Borneo: 30% menjadi 35%"});
+    this.event({procurementId, module: "HEA", type: "CONFIRMED", summary: "Form A5 dan preferensi pada data contoh telah dikonfirmasi"});
+    this.event({procurementId, module: "PRICE_DEVIATION", type: "CONFIRMED", summary: "Sumber dan pasangan harga pada data contoh telah dikonfirmasi"});
+    this.buildHEA(procurementId, docs.filter((d) => d.kind === "FORM_A5").map((d) => d.id));
+    this.buildDeviation(procurementId, docs[2].id, docs[3].id);
+    for (const item of this.state.historicalItems) {
+      const document = this.makeDocument({
+        procurementId: "proc-tank", kind: "HISTORICAL_OE",
+        fixtureId: `history-${item.period}`, name: item.documentName,
+        functionName: item.functionName, period: item.period,
+      });
+      document.status = "CONFIRMED";
+      document.published = true;
+      this.state.documents.push(document);
+    }
+    this.state.historicalItems.forEach((item) => { item.comparable = true; });
+    const referenceIds = this.state.historicalItems.map((item) => item.id);
+    this.event({module: "BANK", type: "CONFIRMED", summary: "Kesebandingan tiga referensi OE contoh telah diperiksa"});
+    this.buildBankSnapshot(referenceIds);
+    this.buildEstimate({description: "Pengecatan tangki", unit: "m²", quantity: "10", referenceIds});
   }
   getState = () => this.view;
   subscribe = (listener: () => void) => {
@@ -457,6 +516,9 @@ export class DemoService {
     return copy(p);
   }
   async evaluateHEA(procurementId: string, documentIds: string[]) {
+    return this.buildHEA(procurementId, documentIds);
+  }
+  private buildHEA(procurementId: string, documentIds: string[]) {
     const p = this.proc(procurementId);
     if (!p.preferenceConfirmed || !p.preferences)
       throw new DomainError(
@@ -653,11 +715,10 @@ export class DemoService {
     this.emit();
     return copy(d);
   }
-  async evaluateDeviation(
-    procurementId: string,
-    oeId: string,
-    offerId: string,
-  ) {
+  async evaluateDeviation(procurementId: string, oeId: string, offerId: string) {
+    return this.buildDeviation(procurementId, oeId, offerId);
+  }
+  private buildDeviation(procurementId: string, oeId: string, offerId: string) {
     this.proc(procurementId);
     const oe = this.doc(oeId),
       offer = this.doc(offerId);
@@ -816,7 +877,10 @@ export class DemoService {
     item.comparable = value;
     this.emit();
   }
-  async estimate(input: {
+  async estimate(input: { description: string; unit: string; quantity: string; referenceIds: string[] }) {
+    return this.buildEstimate(input);
+  }
+  private buildEstimate(input: {
     description: string;
     unit: string;
     quantity: string;
@@ -917,6 +981,9 @@ export class DemoService {
   getHistoricalStatistics = (referenceIds: string[]) =>
     this.getPreparedStatistics(referenceIds);
   async createBankSnapshot(referenceIds: string[]) {
+    return this.buildBankSnapshot(referenceIds);
+  }
+  private buildBankSnapshot(referenceIds: string[]) {
     const refs = [...new Set(referenceIds)].map((id) =>
       this.state.historicalItems.find((i) => i.id === id),
     );
@@ -959,5 +1026,5 @@ export class DemoService {
     this.emit();
   }
 }
-export const createDemoService = (seed = true) => new DemoService(seed);
-export const demoService = createDemoService();
+export const createDemoService = (seed = true, prepared = false) => new DemoService(seed, prepared);
+export const demoService = createDemoService(true, true);

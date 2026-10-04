@@ -126,7 +126,7 @@ export function ProcurementDetail() {
   const { id } = useParams();
   const state = useDemo();
   const [params, setParams] = useSearchParams();
-  const tab = params.get("tab") || "ringkasan";
+  const tab = params.get("tab") || (state.snapshots.some((s) => s.procurementId === id && s.module === "HEA") ? "hea" : "ringkasan");
   const p = state.procurements.find((p) => p.id === id);
   const toast = useToast();
   const [vendorOpen, setVendorOpen] = useState(false);
