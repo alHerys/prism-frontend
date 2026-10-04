@@ -1,7 +1,7 @@
 import type { BankPageModel } from "./view-models";
 import { useState } from "react";
 import { useHistoricalPricesCommands, useHistoricalPricesData } from "./binding";
-import type { HistoricalItem } from "../../../shared/model/session";
+import type { HistoricalItem } from "../domain/models";
 
 
 export function useBankPage() : BankPageModel {

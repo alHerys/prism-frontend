@@ -1,8 +1,6 @@
 import { selectedGroup, reviewedPairs, confirmedPairs } from "../../modules/price-deviation/domain/review";
 import registry from "./fixtures/file-registry.json";
-import type {
-  PricePair
-} from "../../shared/model/session";
+import type { PricePair } from "../../modules/price-deviation/domain/models";
 import {
   PAIR_FIXTURES
 } from "./fixtures";

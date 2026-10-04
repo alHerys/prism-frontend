@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useSearchParams } from "react-router";
 import { usePriceDeviationCommands, usePriceDeviationData } from "./binding";
 import { errorMessage } from "../../../shared/errors/message";
-import type { Procurement } from "../../../shared/model/session";
+import type { Procurement } from "../../procurement/domain/models";
 import { useToast } from "../../../shared/ui/feedback";
 
 export function usePDPanel({ procurement: p }: { procurement: Procurement }) : PDPanelModel {

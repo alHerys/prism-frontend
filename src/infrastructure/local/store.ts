@@ -1,15 +1,13 @@
-import type {
-  Activity,
-  DemoState
-} from "../../shared/model/session";
+import type { Activity } from "../../modules/evaluations/domain/models";
+import type { LocalState } from "./state";
 import {
   HISTORICAL_FIXTURES
 } from "./fixtures";
 import { copy, DomainError } from "./validation";
 // Only the facade owns this mutable store; React receives frozen copies.
 export class LocalStore {
-  private view!: DemoState;
-  state: DemoState;
+  private view!: LocalState;
+  state: LocalState;
   private listeners = new Set<() => void>();
   private sequence = 20;
   constructor() {

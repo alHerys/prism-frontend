@@ -3,7 +3,8 @@ import { useState } from "react";
 
 import { useEvaluationsCommands } from "./binding";
 import { errorMessage } from "../../../shared/errors/message";
-import type { Procurement, Snapshot } from "../../../shared/model/session";
+import type { Procurement } from "../../procurement/domain/models";
+import type { Snapshot } from "../domain/models";
 import { useToast } from "../../../shared/ui/feedback";
 
 export function useResultPanel({

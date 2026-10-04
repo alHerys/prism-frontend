@@ -1,3 +1,4 @@
+import { createTestSession } from "../../../infrastructure/local/test-session";
 import {
   cleanup,
   fireEvent,
@@ -20,7 +21,7 @@ afterEach(cleanup);
 describe("Bank Data and history workflows", () => {
   it("requires selection and comparability before descriptive statistics are shown", async () => {
     const runtime = createLocalRuntime();
-    const service = runtime.session;
+    const service = createTestSession(true, false, runtime);
     render(<ApplicationProviders application={createApplication(runtime)}><BankPage /></ApplicationProviders>);
     await userEvent.click(screen.getByRole("tab", { name: "Statistik Harga" }));
     expect(
@@ -54,7 +55,7 @@ describe("Bank Data and history workflows", () => {
   });
   it("keeps reference selections while filtering and distinguishes a single observation", async () => {
     const runtime = createLocalRuntime();
-    const service = runtime.session;
+    const service = createTestSession(true, false, runtime);
     render(<ApplicationProviders application={createApplication(runtime)}><BankPage /></ApplicationProviders>);
     await userEvent.click(
       screen.getByRole("tab", { name: "Pencarian Referensi" }),
@@ -86,7 +87,7 @@ describe("Bank Data and history workflows", () => {
   });
   it("keeps full precision on the snapshot while presenting rounded rupiah and Indonesian labels", async () => {
     const runtime = createLocalRuntime();
-    const service = runtime.session;
+    const service = createTestSession(true, false, runtime);
     const docs = service
       .getState()
       .documents.filter((d) => d.kind === "FORM_A5");

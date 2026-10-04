@@ -1,7 +1,4 @@
-import type {
-  Estimate,
-  HistoricalStatistics
-} from "../../shared/model/session";
+import type { Estimate, HistoricalStatistics } from "../../modules/historical-prices/domain/models";
 import {
   HISTORICAL_FIXTURES
 } from "./fixtures";

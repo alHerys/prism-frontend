@@ -1,5 +1,6 @@
 import { downloadBytes } from "../../../infrastructure/browser/download";
-import type { Procurement, Snapshot } from "../../../shared/model/session";
+import type { Procurement } from "../../procurement/domain/models";
+import type { Snapshot } from "../domain/models";
 const labels: Record<string, string> = {
   vendorId: "Identitas vendor",
   vendorName: "Vendor",

@@ -1,5 +1,5 @@
 import type { BinarySource } from "../../shared/kernel/binary-source";
-import type { DocumentKind } from "../../shared/model/session";
+import type { DocumentKind } from "../../modules/documents/domain/models";
 
 import { recognizeFile } from "./file-registry";
 

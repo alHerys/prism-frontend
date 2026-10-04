@@ -1,10 +1,6 @@
 import { reviewedDocument, confirmedDocument } from "../../modules/documents/domain/review";
 import registry from "./fixtures/file-registry.json";
-import type {
-  A5Values,
-  DocumentRecord,
-  UploadInput
-} from "../../shared/model/session";
+import type { A5Values, DocumentRecord, UploadInput } from "../../modules/documents/domain/models";
 import {
   A5_FIXTURES,
   PAIR_FIXTURES

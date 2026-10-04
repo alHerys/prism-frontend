@@ -1,3 +1,4 @@
+import { createTestSession } from "../../../infrastructure/local/test-session";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { transferableAbortController } from "node:util";
 import { createMemoryRouter, RouterProvider } from "react-router";
@@ -13,7 +14,7 @@ beforeEach(() => vi.stubGlobal("AbortController", transferableAbortController().
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 function openReview(documentId: string) {
   const runtime = createLocalRuntime();
-    const service = runtime.session;
+    const service = createTestSession(true, false, runtime);
   const router = createMemoryRouter([
     { path: "/pengadaan/:id/review/:documentId", element: <Review /> },
     { path: "/pengadaan/:id/vendor/:vendorId", element: <p>Dokumen vendor</p> },

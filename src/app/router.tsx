@@ -4,16 +4,15 @@ import { ToastProvider } from "../shared/ui/feedback";
 
 import { AppShell } from "./AppShell";
 
-import { application, sessionService } from "./session";
+import { application } from "./session";
 
-import { SessionProvider } from "../services/session-context";
 export const router = createBrowserRouter([
   {
     path: "*",
     element: (
-      <ApplicationProviders application={application}><SessionProvider service={sessionService}><ToastProvider>
+      <ApplicationProviders application={application}><ToastProvider>
         <AppShell />
-      </ToastProvider></SessionProvider></ApplicationProviders>
+      </ToastProvider></ApplicationProviders>
     ),
   },
 ]);

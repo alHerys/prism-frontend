@@ -1,4 +1,6 @@
-import type { A5Values, HistoricalItem, PricePair } from "../../shared/model/session";
+import type { A5Values } from "../../modules/documents/domain/models";
+import type { HistoricalItem } from "../../modules/historical-prices/domain/models";
+import type { PricePair } from "../../modules/price-deviation/domain/models";
 export const A5_FIXTURES: Record<string, A5Values> = {
   "a5-nusa": {
     hpb: "1000000000",

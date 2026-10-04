@@ -5,7 +5,8 @@ import { useNavigate, useParams } from "react-router";
 import { useDocumentsCommands, useDocumentsData } from "./binding";
 
 import { toPercent, toRatio } from "../../../shared/formatters/review-input";
-import type { A5Values, PricePair } from "../../../shared/model/session";
+import type { A5Values } from "../domain/models";
+import type { PricePair } from "../../price-deviation/domain/models";
 import { useToast } from "../../../shared/ui/feedback";
 import { useUnsavedReview } from "./useUnsavedReview";
 

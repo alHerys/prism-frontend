@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { useEvaluationsCommands, useEvaluationsData } from "../../modules/evaluations/presentation/binding";
 import { useDocumentsData } from "../../modules/documents/presentation/binding";
 import { localDay } from "../../shared/formatters/display";
-import type { Snapshot } from "../../shared/model/session";
+import type { Snapshot } from "../../modules/evaluations/domain/models";
 import { moduleLabel } from "./history-labels";
 import type { HistoryPageProps } from "./history-page.types.ts";
 

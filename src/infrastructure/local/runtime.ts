@@ -1,8 +1,15 @@
-import { createLocalSession } from "./service";
+import { LocalStore } from "./store";
+import { initializeSession } from "./seed";
+import { createProcurement, addVendor } from "./procurement";
+import { uploadRegisteredDocument, reviewDocument, confirmDocument } from "./documents";
+import { setPreferences, confirmPreferences, evaluateHEA } from "./hea";
+import { selectGroup, reviewPairs, confirmPairs, evaluateDeviation } from "./price-deviation";
+import { setHistoricalMetadata, publishHistory, setComparable, estimate, getPreparedStatistics, createBankSnapshot } from "./historical";
+import { recordExport } from "./snapshots";
 import { processLocalDocument } from "./process-document";
 import { availableDocuments } from "./file-registry";
 import type { ReadStore } from "../../shared/kernel/read-store";
-import type { DemoState } from "../../shared/model/session";
+import type { LocalState } from "./state";
 import type { DocumentKind } from "../../modules/documents/domain/models";
 import type { DocumentProcessing } from "../../modules/documents/application/ports";
 import type { ProcurementGateway } from "../../modules/procurement/application/ports";
@@ -18,8 +25,8 @@ import type { HistoricalPricesData } from "../../modules/historical-prices/appli
 import type { EvaluationsGateway } from "../../modules/evaluations/application/ports";
 import type { EvaluationsData } from "../../modules/evaluations/application/queries";
 
-function projection<T>(source: { getState(): DemoState; subscribe(listener: () => void): () => void }, select: (state: DemoState) => T): ReadStore<T> {
-  let parent: DemoState | undefined;
+function projection<T>(source: { getState(): LocalState; subscribe(listener: () => void): () => void }, select: (state: LocalState) => T): ReadStore<T> {
+  let parent: LocalState | undefined;
   let snapshot: T;
   let fingerprint: string;
   return {
@@ -37,49 +44,50 @@ function projection<T>(source: { getState(): DemoState; subscribe(listener: () =
   };
 }
 export function createLocalRuntime(seed = true, prepared = false) {
-  const session = createLocalSession(seed, prepared);
+  const store = new LocalStore();
+  initializeSession(store, seed, prepared);
+  const source = { getState: store.getState, subscribe: store.subscribe };
   const processing: DocumentProcessing = { process: async (file, kind, onProgress) => ({ ...await processLocalDocument(file, kind, onProgress), kind }), availableSources: () => availableDocuments().map((source) => ({ ...source, kind: source.kind as DocumentKind })) };
   const procurementGateway: ProcurementGateway = {
-    createProcurement: session.createProcurement.bind(session),
-    addVendor: session.addVendor.bind(session),
+    createProcurement: (...args: Parameters<ProcurementGateway["createProcurement"]>) => createProcurement(store, ...args),
+    addVendor: (...args: Parameters<ProcurementGateway["addVendor"]>) => addVendor(store, ...args),
   };
   const documentsGateway: DocumentsGateway = {
-    uploadRegisteredDocument: session.uploadRegisteredDocument.bind(session),
-    reviewDocument: session.reviewDocument.bind(session),
-    confirmDocument: session.confirmDocument.bind(session),
+    uploadRegisteredDocument: (...args: Parameters<DocumentsGateway["uploadRegisteredDocument"]>) => uploadRegisteredDocument(store, ...args),
+    reviewDocument: (...args: Parameters<DocumentsGateway["reviewDocument"]>) => reviewDocument(store, ...args),
+    confirmDocument: (...args: Parameters<DocumentsGateway["confirmDocument"]>) => confirmDocument(store, ...args),
   };
   const heaGateway: HEAGateway = {
-    setPreferences: session.setPreferences.bind(session),
-    confirmPreferences: session.confirmPreferences.bind(session),
-    evaluateHEA: session.evaluateHEA.bind(session),
+    setPreferences: (...args: Parameters<HEAGateway["setPreferences"]>) => setPreferences(store, ...args),
+    confirmPreferences: (...args: Parameters<HEAGateway["confirmPreferences"]>) => confirmPreferences(store, ...args),
+    evaluateHEA: (...args: Parameters<HEAGateway["evaluateHEA"]>) => evaluateHEA(store, ...args),
   };
   const priceDeviationGateway: PriceDeviationGateway = {
-    selectGroup: session.selectGroup.bind(session),
-    reviewPairs: session.reviewPairs.bind(session),
-    confirmPairs: session.confirmPairs.bind(session),
-    evaluateDeviation: session.evaluateDeviation.bind(session),
+    selectGroup: (...args: Parameters<PriceDeviationGateway["selectGroup"]>) => selectGroup(store, ...args),
+    reviewPairs: (...args: Parameters<PriceDeviationGateway["reviewPairs"]>) => reviewPairs(store, ...args),
+    confirmPairs: (...args: Parameters<PriceDeviationGateway["confirmPairs"]>) => confirmPairs(store, ...args),
+    evaluateDeviation: (...args: Parameters<PriceDeviationGateway["evaluateDeviation"]>) => evaluateDeviation(store, ...args),
   };
   const historicalPricesGateway: HistoricalPricesGateway = {
-    setHistoricalMetadata: session.setHistoricalMetadata.bind(session),
-    publishHistory: session.publishHistory.bind(session),
-    setComparable: session.setComparable.bind(session),
-    estimate: session.estimate.bind(session),
-    getPreparedStatistics: session.getPreparedStatistics.bind(session),
-    getHistoricalStatistics: session.getHistoricalStatistics.bind(session),
-    createBankSnapshot: session.createBankSnapshot.bind(session),
+    setHistoricalMetadata: (...args: Parameters<HistoricalPricesGateway["setHistoricalMetadata"]>) => setHistoricalMetadata(store, ...args),
+    publishHistory: (...args: Parameters<HistoricalPricesGateway["publishHistory"]>) => publishHistory(store, ...args),
+    setComparable: (...args: Parameters<HistoricalPricesGateway["setComparable"]>) => setComparable(store, ...args),
+    estimate: (...args: Parameters<HistoricalPricesGateway["estimate"]>) => estimate(store, ...args),
+    getPreparedStatistics: (...args: Parameters<HistoricalPricesGateway["getPreparedStatistics"]>) => getPreparedStatistics(store, ...args),
+    getHistoricalStatistics: (...args: Parameters<HistoricalPricesGateway["getHistoricalStatistics"]>) => getPreparedStatistics(store, ...args),
+    createBankSnapshot: (...args: Parameters<HistoricalPricesGateway["createBankSnapshot"]>) => createBankSnapshot(store, ...args),
   };
   const evaluationsGateway: EvaluationsGateway = {
-    recordExport: session.recordExport.bind(session),
+    recordExport: (...args: Parameters<EvaluationsGateway["recordExport"]>) => recordExport(store, ...args),
   };
   return {
-    // Temporary migration bridge; removed with legacy consumers.
-    session, processing,
+    processing,
     delay: (milliseconds: number) => new Promise<void>((resolve) => setTimeout(resolve, milliseconds)),
-    procurement: { gateway: procurementGateway, queries: projection<ProcurementData>(session, (state) => ({ procurements: state.procurements, vendors: state.vendors, documents: state.documents, snapshots: state.snapshots, events: state.events })) },
-    documents: { gateway: documentsGateway, queries: projection<DocumentsData>(session, (state) => ({ documents: state.documents, procurements: state.procurements, vendors: state.vendors })) },
-    hea: { gateway: heaGateway, queries: projection<HEAData>(session, (state) => ({ documents: state.documents, vendors: state.vendors, snapshots: state.snapshots })) },
-    priceDeviation: { gateway: priceDeviationGateway, queries: projection<PriceDeviationData>(session, (state) => ({ documents: state.documents, snapshots: state.snapshots })) },
-    historicalPrices: { gateway: historicalPricesGateway, queries: projection<HistoricalPricesData>(session, (state) => ({ historicalItems: state.historicalItems, estimates: state.estimates, procurements: state.procurements, documents: state.documents })) },
-    evaluations: { gateway: evaluationsGateway, queries: projection<EvaluationsData>(session, (state) => ({ snapshots: state.snapshots, events: state.events, procurements: state.procurements })) },
+    procurement: { gateway: procurementGateway, queries: projection<ProcurementData>(source, (state) => ({ procurements: state.procurements, vendors: state.vendors, documents: state.documents, snapshots: state.snapshots, events: state.events })) },
+    documents: { gateway: documentsGateway, queries: projection<DocumentsData>(source, (state) => ({ documents: state.documents, procurements: state.procurements, vendors: state.vendors })) },
+    hea: { gateway: heaGateway, queries: projection<HEAData>(source, (state) => ({ documents: state.documents, vendors: state.vendors, snapshots: state.snapshots })) },
+    priceDeviation: { gateway: priceDeviationGateway, queries: projection<PriceDeviationData>(source, (state) => ({ documents: state.documents, snapshots: state.snapshots })) },
+    historicalPrices: { gateway: historicalPricesGateway, queries: projection<HistoricalPricesData>(source, (state) => ({ historicalItems: state.historicalItems, estimates: state.estimates, procurements: state.procurements, documents: state.documents })) },
+    evaluations: { gateway: evaluationsGateway, queries: projection<EvaluationsData>(source, (state) => ({ snapshots: state.snapshots, events: state.events, procurements: state.procurements })) },
   };
 }

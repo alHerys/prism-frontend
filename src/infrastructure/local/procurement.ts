@@ -1,6 +1,4 @@
-import type {
-  Procurement
-} from "../../shared/model/session";
+import type { Procurement } from "../../modules/procurement/domain/models";
 import type { LocalStore } from "./store";
 import { DomainError, copy, requireText } from "./validation";
 export async function createProcurement(store: LocalStore, input: {

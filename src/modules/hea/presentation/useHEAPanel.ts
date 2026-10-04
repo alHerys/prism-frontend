@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router";
 import { useHEACommands, useHEAData } from "./binding";
 import { errorMessage } from "../../../shared/errors/message";
 import { percentInput, ratioInput } from "../../../shared/formatters/percentage-input";
-import type { Procurement } from "../../../shared/model/session";
+import type { Procurement } from "../../procurement/domain/models";
 import { useToast } from "../../../shared/ui/feedback";
 
 export function useHEAPanel({ procurement: p }: { procurement: Procurement }) : HEAPanelModel {

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { A5_FIXTURES, FIXTURE_PREFERENCES } from "./fixtures";
-import { createLocalSession } from "./service";
+import { createTestSession } from "./test-session";
 async function confirmedHEA() {
-  const service = createLocalSession();
+  const service = createTestSession();
   for (const doc of service
     .getState()
     .documents.filter((d) => d.kind === "FORM_A5")) {
@@ -38,14 +38,14 @@ describe("review and evaluation boundaries", () => {
     ).toBe(true);
   });
   it("keeps preferences empty until explicitly entered and confirmed", async () => {
-    const s = createLocalSession();
+    const s = createTestSession();
     expect(s.getState().procurements[0].preferences).toBeUndefined();
     await expect(s.evaluateHEA("proc-terminal", [])).rejects.toMatchObject({
       code: "PREFERENCES_REQUIRED",
     });
   });
   it("requires warning acknowledgement and rejects stale revisions", async () => {
-    const s = createLocalSession();
+    const s = createTestSession();
     const d = s.getState().documents.find((d) => d.fixtureId === "a5-borneo")!;
     await expect(s.confirmDocument(d.id, 1)).rejects.toMatchObject({
       code: "WARNING_REQUIRED",
@@ -102,7 +102,7 @@ describe("review and evaluation boundaries", () => {
     ).rejects.toMatchObject({ code: "DUPLICATE" });
   });
   it("unknown fixture and incorrect ownership do not create data/events", async () => {
-    const s = createLocalSession();
+    const s = createTestSession();
     const before = s.getState();
     await expect(
       s.uploadRegisteredDocument({
@@ -126,7 +126,7 @@ describe("review and evaluation boundaries", () => {
 });
 describe("price deviation", () => {
   it("keeps OE and offer source price rows immutable through review corrections", async () => {
-    const s = createLocalSession();
+    const s = createTestSession();
     const oe = s.getState().documents.find((d) => d.kind === "OE")!;
     const offer = s.getState().documents.find((d) => d.kind === "OFFER")!;
     expect(oe.priceItems?.[0]).toMatchObject({
@@ -154,7 +154,7 @@ describe("price deviation", () => {
     ).toEqual(oe.priceItems);
   });
   it("snapshots exact percentage against selected OE and rejects modified item identity", async () => {
-    const s = createLocalSession();
+    const s = createTestSession();
     let oe = s.getState().documents.find((d) => d.kind === "OE")!;
     let offer = s.getState().documents.find((d) => d.kind === "OFFER")!;
     oe = await s.selectGroup(oe.id, "Harga satuan material dan jasa", 1);
@@ -187,7 +187,7 @@ describe("price deviation", () => {
     expect(s.getState().snapshots[0]).toEqual(result);
   });
   it("requires source groups, separates unresolved rows, and rejects free edits", async () => {
-    const s = createLocalSession();
+    const s = createTestSession();
     let oe = s.getState().documents.find((d) => d.kind === "OE")!;
     let offer = s.getState().documents.find((d) => d.kind === "OFFER")!;
     await expect(s.confirmPairs(offer.id, 1)).rejects.toMatchObject({
@@ -218,7 +218,7 @@ describe("price deviation", () => {
 });
 describe("historical references", () => {
   it("requires metadata and confirmation before publication", async () => {
-    const s = createLocalSession();
+    const s = createTestSession();
     const doc = await s.uploadRegisteredDocument({
       procurementId: "proc-tank",
       kind: "HISTORICAL_OE",
@@ -240,7 +240,7 @@ describe("historical references", () => {
     ).rejects.toMatchObject({ code: "DUPLICATE" });
   });
   it("exposes historical source rows and prepared statistics through service only", async () => {
-    const s = createLocalSession();
+    const s = createTestSession();
     const doc = await s.uploadRegisteredDocument({
       procurementId: "proc-tank",
       kind: "HISTORICAL_OE",
@@ -274,7 +274,7 @@ describe("historical references", () => {
     expect(s.getPreparedStatistics(ids)).toBeUndefined();
   });
   it("exports prepared statistics only for complete matching references", async () => {
-    const s = createLocalSession();
+    const s = createTestSession();
     const ids = s.getState().historicalItems.map((i) => i.id);
     for (const id of ids) await s.setComparable(id, true);
     const complete = await s.createBankSnapshot(ids);
@@ -285,7 +285,7 @@ describe("historical references", () => {
     expect(partial.inputs).not.toHaveProperty("statistics");
   });
   it("requires comparable references and supports only prepared estimate inputs", async () => {
-    const s = createLocalSession();
+    const s = createTestSession();
     const ids = s.getState().historicalItems.map((i) => i.id);
     const input = {
       description: "Pengecatan tangki",

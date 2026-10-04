@@ -1,7 +1,7 @@
 import type { ProcurementTableModel } from "./view-models";
 import { useState } from "react";
 import { useProcurementData } from "./binding";
-import type { Procurement } from "../../../shared/model/session";
+import type { Procurement } from "../domain/models";
 
 export function useProcurementTable({
   items,

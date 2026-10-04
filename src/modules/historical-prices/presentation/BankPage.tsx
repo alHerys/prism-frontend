@@ -1,4 +1,4 @@
-import "./bank-page.types.ts";
+import "../../../shared/styles/bank.css";
 import { BankPageView } from "./BankPageView";
 import { useBankPage } from "./useBankPage";
 export function BankPage() {

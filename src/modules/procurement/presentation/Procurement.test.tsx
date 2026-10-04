@@ -1,3 +1,4 @@
+import { createTestSession } from "../../../infrastructure/local/test-session";
 import {
   act,
   cleanup,
@@ -20,7 +21,7 @@ afterEach(cleanup);
 describe("Preferensi evaluasi", () => {
   it("tidak mengonfirmasi atau mengevaluasi preferensi lama ketika formulir memiliki perubahan", async () => {
     const runtime = createLocalRuntime(true, true);
-    const service = runtime.session;
+    const service = createTestSession(true, false, runtime);
     const initial = service.getState().procurements[0];
     await act(async () => {
       await service.setPreferences(
@@ -56,7 +57,7 @@ describe("Preferensi evaluasi", () => {
 describe("Pencarian pengadaan", () => {
   it("menemukan pengadaan melalui vendor dan dokumen tanpa menampilkan pengadaan lain", () => {
     const runtime = createLocalRuntime(true, true);
-    const service = runtime.session;
+    const service = createTestSession(true, false, runtime);
     const state = service.getState();
     render(<MemoryRouter><ApplicationProviders application={createApplication(runtime)}><ProcurementTable items={state.procurements} /></ApplicationProviders></MemoryRouter>);
     const search = screen.getByRole("textbox", { name: "Cari pengadaan" });

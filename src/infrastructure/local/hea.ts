@@ -1,7 +1,5 @@
 import { reviewedPreferences, confirmedPreferences } from "../../modules/hea/domain/preferences";
-import type {
-  Preferences
-} from "../../shared/model/session";
+import type { Preferences } from "../../modules/hea/domain/models";
 import {
   A5_FIXTURES,
   FIXTURE_PREFERENCES,

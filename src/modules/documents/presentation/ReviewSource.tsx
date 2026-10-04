@@ -1,7 +1,7 @@
 import { ArrowsOut } from "@phosphor-icons/react/dist/csr/ArrowsOut";
 import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
 import { money, pct } from "../../../shared/formatters/display";
-import type { A5Values, DocumentRecord } from "../../../shared/model/session";
+import type { A5Values, DocumentRecord } from "../domain/models";
 import "../../../shared/styles/focus.css";
 import { SourcePanel } from "../../../shared/ui/components";
 import { fields } from "./review-fields";
