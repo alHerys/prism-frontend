@@ -1,3 +1,4 @@
+import type { UploadPanelModel } from "./view-models";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -16,7 +17,7 @@ export function useUploadPanel({
   vendorId?: string;
   scope?: "vendor" | "procurement";
   embedded?: boolean;
-}) {
+}) : UploadPanelModel {
   const service = useDocumentsCommands();
   const toast = useToast();
   const navigate = useNavigate();

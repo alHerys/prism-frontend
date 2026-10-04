@@ -5,8 +5,8 @@ import type { A5Values, DocumentRecord } from "../../../shared/model/session";
 import "../../../shared/styles/focus.css";
 import { SourcePanel } from "../../../shared/ui/components";
 import { fields } from "./review-fields";
-import type { useReview } from "./useReview";
-export function ReviewSource({ d, focused, p, vendor, fixture }: Pick<ReturnType<typeof useReview>, "d" | "focused" | "p" | "vendor" | "fixture"> & { d: DocumentRecord }) {
+import type { ReviewModel } from "./view-models";
+export function ReviewSource({ d, focused, p, vendor, fixture }: Pick<ReviewModel, "d" | "focused" | "p" | "vendor" | "fixture"> & { d: DocumentRecord }) {
   return (
     <SourcePanel
       id="review-source"

@@ -9,8 +9,8 @@ import { Empty } from "../../shared/ui/feedback";
 import { ProcurementTable } from "../../modules/procurement/presentation/ProcurementTable.tsx";
 import "./dashboard.css";
 
-import type { useDashboard } from "./useDashboard";
-export function DashboardView({ state, pending }: ReturnType<typeof useDashboard>) {
+import type { DashboardModel } from "./view-models";
+export function DashboardView({ state, pending }: DashboardModel) {
 
   return (
     <div className="page dashboard-page">

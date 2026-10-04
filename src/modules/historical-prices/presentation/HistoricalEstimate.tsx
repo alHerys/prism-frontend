@@ -1,7 +1,7 @@
 import { Sparkle } from "@phosphor-icons/react/dist/csr/Sparkle";
 import { bankDateTime, bankMoney as money } from "../../../shared/formatters/display";
 import "../../../shared/styles/bank.css";
-import type { useBankPage } from "./useBankPage";
+import type { BankPageModel } from "./view-models";
 export function HistoricalEstimate({
   tab,
   setTab,
@@ -15,7 +15,7 @@ export function HistoricalEstimate({
   estimate,
   selected,
   createEstimate,
-}: Pick<ReturnType<typeof useBankPage>, "tab" | "setTab" | "busy" | "need" | "setNeed" | "unit" | "setUnit" | "quantity" | "setQuantity" | "estimate" | "selected" | "createEstimate">) {
+}: Pick<BankPageModel, "tab" | "setTab" | "busy" | "need" | "setNeed" | "unit" | "setUnit" | "quantity" | "setQuantity" | "estimate" | "selected" | "createEstimate">) {
   return (
     <>
       {tab === "Bantuan Estimasi" && (

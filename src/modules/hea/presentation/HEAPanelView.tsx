@@ -4,7 +4,7 @@ import { Link } from "react-router";
 import "../../../shared/styles/focus.css";
 import { Empty, Status, Stepper } from "../../../shared/ui/feedback";
 import { ResultPanel } from "../../evaluations/presentation/ResultPanel";
-import type { useHEAPanel } from "./useHEAPanel";
+import type { HEAPanelModel } from "./view-models";
 
 export function HEAPanelView({
   p,
@@ -20,7 +20,7 @@ export function HEAPanelView({
   save,
   confirm,
   evaluate,
-}: ReturnType<typeof useHEAPanel>) {
+}: HEAPanelModel) {
 
   return (
     <>

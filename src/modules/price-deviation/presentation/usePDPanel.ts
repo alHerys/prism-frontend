@@ -1,3 +1,4 @@
+import type { PDPanelModel } from "./view-models";
 import { useState } from "react";
 import { useSearchParams } from "react-router";
 import { usePriceDeviationCommands, usePriceDeviationData } from "./binding";
@@ -5,7 +6,7 @@ import { errorMessage } from "../../../shared/errors/message";
 import type { Procurement } from "../../../shared/model/session";
 import { useToast } from "../../../shared/ui/feedback";
 
-export function usePDPanel({ procurement: p }: { procurement: Procurement }) {
+export function usePDPanel({ procurement: p }: { procurement: Procurement }) : PDPanelModel {
   const service = usePriceDeviationCommands();
   const state = usePriceDeviationData();
   const toast = useToast();

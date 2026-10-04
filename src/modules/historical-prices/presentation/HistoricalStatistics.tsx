@@ -4,7 +4,7 @@ import { bankMoney as money } from "../../../shared/formatters/display";
 import "../../../shared/styles/bank.css";
 import { Empty } from "./Empty";
 import { ReferenceTable } from "./ReferenceTable";
-import type { useBankPage } from "./useBankPage";
+import type { BankPageModel } from "./view-models";
 export function HistoricalStatistics({
   tab,
   setTab,
@@ -17,7 +17,7 @@ export function HistoricalStatistics({
   toggle,
   exportStats,
   compareReference,
-}: Pick<ReturnType<typeof useBankPage>, "tab" | "setTab" | "selectedIds" | "setDetail" | "busy" | "selected" | "statistics" | "statsReady" | "toggle" | "exportStats" | "compareReference">) {
+}: Pick<BankPageModel, "tab" | "setTab" | "selectedIds" | "setDetail" | "busy" | "selected" | "statistics" | "statsReady" | "toggle" | "exportStats" | "compareReference">) {
   return (
     <>
       {tab === "Statistik Harga" && (

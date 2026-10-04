@@ -3,8 +3,8 @@ import { historyTime as time } from "../../shared/formatters/display";
 import "../../shared/styles/bank.css";
 import { Empty } from "./Empty";
 import { eventLabel, moduleLabel } from "./history-labels";
-import type { useHistoryPage } from "./useHistoryPage";
-export function HistoryActivity({ tab, events, procurementName }: Pick<ReturnType<typeof useHistoryPage>, "tab" | "events" | "procurementName">) {
+import type { HistoryPageModel } from "./view-models";
+export function HistoryActivity({ tab, events, procurementName }: Pick<HistoryPageModel, "tab" | "events" | "procurementName">) {
   return (
     <>
       {tab === "Aktivitas" && (

@@ -11,7 +11,7 @@ import { HistoricalStatistics } from "./HistoricalStatistics";
 import { HistoricalUpload } from "./HistoricalUpload";
 import { ReferenceDetail } from "./ReferenceDetail";
 
-import type { useBankPage } from "./useBankPage";
+import type { BankPageModel } from "./view-models";
 export function BankPageView({
   state,
   tab,
@@ -60,7 +60,7 @@ export function BankPageView({
   exportStats,
   createEstimate,
   compareReference,
-}: ReturnType<typeof useBankPage>) {
+}: BankPageModel) {
 
   return (
     <div className="page bank-page">

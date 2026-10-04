@@ -3,9 +3,9 @@ import { Link } from "react-router";
 import "../../../shared/styles/focus.css";
 import { Stepper } from "../../../shared/ui/feedback";
 import { ResultPanel } from "../../evaluations/presentation/ResultPanel";
-import type { usePDPanel } from "./usePDPanel";
+import type { PDPanelModel } from "./view-models";
 
-export function PDPanelView({ p, docs, oe, setOe, offer, setOffer, busy, chosen, evaluate }: ReturnType<typeof usePDPanel>) {
+export function PDPanelView({ p, docs, oe, setOe, offer, setOffer, busy, chosen, evaluate }: PDPanelModel) {
 
   return (
     <>

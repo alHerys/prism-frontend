@@ -1,3 +1,4 @@
+import type { HEAPanelModel } from "./view-models";
 import { useState } from "react";
 import { useSearchParams } from "react-router";
 import { useHEACommands, useHEAData } from "./binding";
@@ -6,7 +7,7 @@ import { percentInput, ratioInput } from "../../../shared/formatters/percentage-
 import type { Procurement } from "../../../shared/model/session";
 import { useToast } from "../../../shared/ui/feedback";
 
-export function useHEAPanel({ procurement: p }: { procurement: Procurement }) {
+export function useHEAPanel({ procurement: p }: { procurement: Procurement }) : HEAPanelModel {
   const service = useHEACommands();
   const state = useHEAData();
   const toast = useToast();

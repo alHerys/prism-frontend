@@ -1,9 +1,10 @@
+import type { BankPageModel } from "./view-models";
 import { useState } from "react";
 import { useHistoricalPricesCommands, useHistoricalPricesData } from "./binding";
 import type { HistoricalItem } from "../../../shared/model/session";
 
 
-export function useBankPage() {
+export function useBankPage() : BankPageModel {
   const service = useHistoricalPricesCommands();
   const state = useHistoricalPricesData();
   const preparedEstimate = state.estimates[0];

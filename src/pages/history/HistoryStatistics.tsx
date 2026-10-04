@@ -4,8 +4,8 @@ import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
 import { historyChartDay } from "../../shared/formatters/display";
 import "../../shared/styles/bank.css";
 import { Empty } from "./Empty";
-import type { useHistoryPage } from "./useHistoryPage";
-export function HistoryStatistics({ tab, events, results, activityChart, maxCount, visibleDocuments }: Pick<ReturnType<typeof useHistoryPage>, "tab" | "events" | "results" | "activityChart" | "maxCount" | "visibleDocuments">) {
+import type { HistoryPageModel } from "./view-models";
+export function HistoryStatistics({ tab, events, results, activityChart, maxCount, visibleDocuments }: Pick<HistoryPageModel, "tab" | "events" | "results" | "activityChart" | "maxCount" | "visibleDocuments">) {
   return (
     <>
       {tab === "Statistik Aktivitas" && (

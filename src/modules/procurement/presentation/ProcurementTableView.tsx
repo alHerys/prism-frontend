@@ -7,7 +7,7 @@ import { Link } from "react-router";
 import { SelectField } from "../../../shared/ui/components";
 import { Empty } from "../../../shared/ui/feedback";
 
-import type { useProcurementTable } from "./useProcurementTable";
+import type { ProcurementTableModel } from "./view-models";
 export function ProcurementTableView({
   items,
   onSearchChange,
@@ -27,7 +27,7 @@ export function ProcurementTableView({
   pages,
   current,
   shown,
-}: ReturnType<typeof useProcurementTable>) {
+}: ProcurementTableModel) {
 
   return (
     <>

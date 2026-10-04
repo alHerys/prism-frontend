@@ -1,7 +1,7 @@
 import { CloudArrowUp } from "@phosphor-icons/react/dist/csr/CloudArrowUp";
 import "../../../shared/styles/bank.css";
-import type { useBankPage } from "./useBankPage";
-export function HistoricalUpload({ state, showUpload, setShowUpload, procurementId, setProcurementId, busy, upload }: Pick<ReturnType<typeof useBankPage>, "state" | "showUpload" | "setShowUpload" | "procurementId" | "setProcurementId" | "busy" | "upload">) {
+import type { BankPageModel } from "./view-models";
+export function HistoricalUpload({ state, showUpload, setShowUpload, procurementId, setProcurementId, busy, upload }: Pick<BankPageModel, "state" | "showUpload" | "setShowUpload" | "procurementId" | "setProcurementId" | "busy" | "upload">) {
   return (
     <>
       {showUpload && (

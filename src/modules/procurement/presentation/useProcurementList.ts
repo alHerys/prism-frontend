@@ -1,10 +1,11 @@
+import type { ProcurementListModel } from "./view-models";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { useProcurementCommands, useProcurementData } from "./binding";
 import { errorMessage } from "../../../shared/errors/message";
 import { useToast } from "../../../shared/ui/feedback";
 
-export function useProcurementList() {
+export function useProcurementList() : ProcurementListModel {
   const service = useProcurementCommands();
   const state = useProcurementData();
   const toast = useToast();

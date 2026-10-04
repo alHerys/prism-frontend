@@ -6,7 +6,7 @@ import type { A5Values, DocumentRecord } from "../../../shared/model/session";
 import "../../../shared/styles/focus.css";
 import { CurrencyInput } from "../../../shared/ui/currency-input";
 import { fields } from "./review-fields";
-import type { useReview } from "./useReview";
+import type { ReviewModel } from "./view-models";
 export function ReviewEditor({
   d,
   ack,
@@ -24,7 +24,7 @@ export function ReviewEditor({
   changeValue,
   save,
   editPair,
-}: Pick<ReturnType<typeof useReview>, "d" | "ack" | "setAck" | "busy" | "setConfirm" | "setFocused" | "values" | "pairs" | "group" | "setGroup" | "dirty" | "setDirty" | "failure" | "changeValue" | "save" | "editPair"> & { d: DocumentRecord }) {
+}: Pick<ReviewModel, "d" | "ack" | "setAck" | "busy" | "setConfirm" | "setFocused" | "values" | "pairs" | "group" | "setGroup" | "dirty" | "setDirty" | "failure" | "changeValue" | "save" | "editPair"> & { d: DocumentRecord }) {
   return (
     <section className="panel review-editor">
       <div className="panel-header">

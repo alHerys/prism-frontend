@@ -7,9 +7,9 @@ import {
 } from "../../../shared/ui/components";
 import { Modal } from "../../../shared/ui/feedback";
 import { ProcurementTable } from "./ProcurementTable";
-import type { useProcurementList } from "./useProcurementList";
+import type { ProcurementListModel } from "./view-models";
 
-export function ProcurementListView({ state, setParams, open, setOpen, search, setSearch, form, setForm, busy, create }: ReturnType<typeof useProcurementList>) {
+export function ProcurementListView({ state, setParams, open, setOpen, search, setSearch, form, setForm, busy, create }: ProcurementListModel) {
 
   return (
     <div className="page">

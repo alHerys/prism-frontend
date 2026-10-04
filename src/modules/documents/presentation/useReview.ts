@@ -1,3 +1,4 @@
+import type { ReviewModel } from "./view-models";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
@@ -8,7 +9,7 @@ import type { A5Values, PricePair } from "../../../shared/model/session";
 import { useToast } from "../../../shared/ui/feedback";
 import { useUnsavedReview } from "./useUnsavedReview";
 
-export function useReview() {
+export function useReview() : ReviewModel {
   const { id, documentId } = useParams();
   const service = useDocumentsCommands();
   const state = useDocumentsData();

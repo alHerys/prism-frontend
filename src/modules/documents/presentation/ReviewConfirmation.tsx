@@ -1,7 +1,7 @@
 import "../../../shared/styles/focus.css";
 import { Modal } from "../../../shared/ui/feedback";
-import type { useReview } from "./useReview";
-export function ReviewConfirmation({ busy, confirm, setConfirm, confirmDocument }: Pick<ReturnType<typeof useReview>, "busy" | "confirm" | "setConfirm" | "confirmDocument">) {
+import type { ReviewModel } from "./view-models";
+export function ReviewConfirmation({ busy, confirm, setConfirm, confirmDocument }: Pick<ReviewModel, "busy" | "confirm" | "setConfirm" | "confirmDocument">) {
   return (
     <Modal
       open={confirm}

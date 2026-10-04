@@ -1,7 +1,7 @@
 import "../../../shared/styles/focus.css";
 import { Modal } from "../../../shared/ui/feedback";
-import type { useReview } from "./useReview";
-export function ReviewLeaveDialog({ busy, leave, setLeave, setDirty, blocker, leavePage, save }: Pick<ReturnType<typeof useReview>, "busy" | "leave" | "setLeave" | "setDirty" | "blocker" | "leavePage" | "save">) {
+import type { ReviewModel } from "./view-models";
+export function ReviewLeaveDialog({ busy, leave, setLeave, setDirty, blocker, leavePage, save }: Pick<ReviewModel, "busy" | "leave" | "setLeave" | "setDirty" | "blocker" | "leavePage" | "save">) {
   return (
     <Modal
       open={leave || blocker.state === "blocked"}

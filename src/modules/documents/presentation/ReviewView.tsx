@@ -11,7 +11,7 @@ import { ReviewEditor } from "./ReviewEditor";
 import { ReviewLeaveDialog } from "./ReviewLeaveDialog";
 import { ReviewSource } from "./ReviewSource";
 
-import type { useReview } from "./useReview";
+import type { ReviewModel } from "./view-models";
 export function ReviewView({
   d,
   showSource,
@@ -42,7 +42,7 @@ export function ReviewView({
   save,
   confirmDocument,
   editPair,
-}: ReturnType<typeof useReview>) {
+}: ReviewModel) {
   if (!d)
     return (
       <div className="page">

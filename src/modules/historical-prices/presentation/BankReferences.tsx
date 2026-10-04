@@ -2,8 +2,8 @@ import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
 import "../../../shared/styles/bank.css";
 import { Empty } from "./Empty";
 import { ReferenceTable } from "./ReferenceTable";
-import type { useBankPage } from "./useBankPage";
-export function BankReferences({ tab, setTab, selectedIds, setDetail, filtered, selected, toggle, compareReference }: Pick<ReturnType<typeof useBankPage>, "tab" | "setTab" | "selectedIds" | "setDetail" | "filtered" | "selected" | "toggle" | "compareReference">) {
+import type { BankPageModel } from "./view-models";
+export function BankReferences({ tab, setTab, selectedIds, setDetail, filtered, selected, toggle, compareReference }: Pick<BankPageModel, "tab" | "setTab" | "selectedIds" | "setDetail" | "filtered" | "selected" | "toggle" | "compareReference">) {
   return (
     <>
       {(tab === "Dokumen Historis" || tab === "Pencarian Referensi") && (

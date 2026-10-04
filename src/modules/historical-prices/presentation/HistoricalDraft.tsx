@@ -2,7 +2,7 @@ import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
 import { FileXls } from "@phosphor-icons/react/dist/csr/FileXls";
 import { bankMoney as money } from "../../../shared/formatters/display";
 import "../../../shared/styles/bank.css";
-import type { useBankPage } from "./useBankPage";
+import type { BankPageModel } from "./view-models";
 export function HistoricalDraft({
   functionName,
   setFunctionName,
@@ -13,7 +13,7 @@ export function HistoricalDraft({
   saveDraft,
   confirmDraft,
   publishDraft,
-}: Pick<ReturnType<typeof useBankPage>, "functionName" | "setFunctionName" | "period" | "setPeriod" | "busy" | "draft" | "saveDraft" | "confirmDraft" | "publishDraft">) {
+}: Pick<BankPageModel, "functionName" | "setFunctionName" | "period" | "setPeriod" | "busy" | "draft" | "saveDraft" | "confirmDraft" | "publishDraft">) {
   return (
     <>
       {draft && (

@@ -1,3 +1,4 @@
+import type { ProcurementTableModel } from "./view-models";
 import { useState } from "react";
 import { useProcurementData } from "./binding";
 import type { Procurement } from "../../../shared/model/session";
@@ -12,7 +13,7 @@ export function useProcurementTable({
   search?: string;
   onSearchChange?: (s: string) => void;
   searchLabel?: string;
-}) {
+}) : ProcurementTableModel {
   const state = useProcurementData();
   const [ownSearch, setOwnSearch] = useState("");
   const search = controlledSearch ?? ownSearch;

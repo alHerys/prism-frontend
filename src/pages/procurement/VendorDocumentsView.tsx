@@ -4,9 +4,9 @@ import "../../shared/styles/focus.css";
 import { Empty } from "../../shared/ui/feedback";
 import { DocumentTable } from "../../modules/documents/presentation/DocumentTable";
 import { UploadPanel } from "../../modules/documents/presentation/UploadPanel";
-import type { useVendorDocuments } from "./useVendorDocuments";
+import type { VendorDocumentsModel } from "./view-models";
 
-export function VendorDocumentsView({ id, state, procurement, vendor, backUrl }: ReturnType<typeof useVendorDocuments>) {
+export function VendorDocumentsView({ id, state, procurement, vendor, backUrl }: VendorDocumentsModel) {
   if (!procurement || !vendor) {
     return (
       <div className="page">

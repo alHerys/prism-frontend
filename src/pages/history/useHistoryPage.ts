@@ -1,3 +1,4 @@
+import type { HistoryPageModel } from "./view-models";
 import { useMemo, useState } from "react";
 import { useEvaluationsCommands, useEvaluationsData } from "../../modules/evaluations/presentation/binding";
 import { useDocumentsData } from "../../modules/documents/presentation/binding";
@@ -8,7 +9,7 @@ import type { HistoryPageProps } from "./history-page.types.ts";
 
 export function useHistoryPage({
   onOpenResult,
-}: HistoryPageProps) {
+}: HistoryPageProps) : HistoryPageModel {
   const service = useEvaluationsCommands();
   const state = { ...useEvaluationsData(), ...useDocumentsData() };
   const [tab, setTab] = useState("Aktivitas");

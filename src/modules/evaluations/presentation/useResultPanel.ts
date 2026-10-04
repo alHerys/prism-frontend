@@ -1,3 +1,4 @@
+import type { ResultPanelModel } from "./view-models";
 import { useState } from "react";
 
 import { useEvaluationsCommands } from "./binding";
@@ -11,7 +12,7 @@ export function useResultPanel({
 }: {
   snapshot: Snapshot;
   procurement: Procurement;
-}) {
+}) : ResultPanelModel {
   const service = useEvaluationsCommands();
   const toast = useToast();
   const [busy, setBusy] = useState(false);

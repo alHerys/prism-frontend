@@ -4,8 +4,8 @@ import { exactMoney, roundedMoney, historyTime as time } from "../../shared/form
 import { SnapshotInputs } from "../../modules/evaluations/presentation/SnapshotInputs";
 import "../../shared/styles/bank.css";
 import { categoryLabel, classificationLabel, moduleLabel } from "./history-labels";
-import type { useHistoryPage } from "./useHistoryPage";
-export function HistorySnapshot({ onOpenResult, selected, setSelected, exportBusy, procurementName, exportSelected }: Pick<ReturnType<typeof useHistoryPage>, "onOpenResult" | "selected" | "setSelected" | "exportBusy" | "procurementName" | "exportSelected">) {
+import type { HistoryPageModel } from "./view-models";
+export function HistorySnapshot({ onOpenResult, selected, setSelected, exportBusy, procurementName, exportSelected }: Pick<HistoryPageModel, "onOpenResult" | "selected" | "setSelected" | "exportBusy" | "procurementName" | "exportSelected">) {
   return (
     <>
       {selected && (

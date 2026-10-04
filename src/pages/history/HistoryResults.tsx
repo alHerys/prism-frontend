@@ -3,8 +3,8 @@ import { historyTime as time } from "../../shared/formatters/display";
 import "../../shared/styles/bank.css";
 import { Empty } from "./Empty";
 import { moduleLabel } from "./history-labels";
-import type { useHistoryPage } from "./useHistoryPage";
-export function HistoryResults({ tab, setSelected, results, procurementName }: Pick<ReturnType<typeof useHistoryPage>, "tab" | "setSelected" | "results" | "procurementName">) {
+import type { HistoryPageModel } from "./view-models";
+export function HistoryResults({ tab, setSelected, results, procurementName }: Pick<HistoryPageModel, "tab" | "setSelected" | "results" | "procurementName">) {
   return (
     <>
       {tab === "Hasil Evaluasi" && (

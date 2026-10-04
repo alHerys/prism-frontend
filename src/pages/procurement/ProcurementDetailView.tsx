@@ -8,7 +8,7 @@ import { HEAPanel } from "../../modules/hea/presentation/HEAPanel";
 import { PDPanel } from "../../modules/price-deviation/presentation/PDPanel";
 import { DocumentTable } from "../../modules/documents/presentation/DocumentTable";
 import { UploadPanel } from "../../modules/documents/presentation/UploadPanel";
-import type { useProcurementDetail } from "./useProcurementDetail";
+import type { ProcurementDetailModel } from "./view-models";
 
 export function ProcurementDetailView({
   state,
@@ -23,7 +23,7 @@ export function ProcurementDetailView({
   vendors,
   results,
   addVendor,
-}: ReturnType<typeof useProcurementDetail>) {
+}: ProcurementDetailModel) {
   if (!p)
     return (
       <div className="page">

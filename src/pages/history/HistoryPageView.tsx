@@ -7,7 +7,7 @@ import { HistoryResults } from "./HistoryResults";
 import { HistorySnapshot } from "./HistorySnapshot";
 import { HistoryStatistics } from "./HistoryStatistics";
 
-import type { useHistoryPage } from "./useHistoryPage";
+import type { HistoryPageModel } from "./view-models";
 export function HistoryPageView({
   onOpenResult,
   state,
@@ -35,7 +35,7 @@ export function HistoryPageView({
   visibleDocuments,
   procurementName,
   exportSelected,
-}: ReturnType<typeof useHistoryPage>) {
+}: HistoryPageModel) {
 
   return (
     <div className="page bank-page bank-history">
