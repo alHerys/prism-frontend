@@ -1,3 +1,4 @@
+import { selectedGroup, reviewedPairs, confirmedPairs } from "../../modules/price-deviation/domain/review";
 import registry from "./fixtures/file-registry.json";
 import type {
   PricePair
@@ -7,66 +8,22 @@ import {
 } from "./fixtures";
 import { snapshot } from "./snapshots";
 import type { LocalStore } from "./store";
-import { DomainError, copy, decimal, equalValues, normalize } from "./validation";
+import { DomainError, copy, equalValues } from "./validation";
 export async function selectGroup(store: LocalStore, id: string, group: string, expectedRevision: number) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
-  if (!d.groups.includes(group))
-    throw new DomainError(
-      "INVALID_GROUP",
-      "Pilih kelompok harga yang tersedia.",
-    );
-  if (d.selectedGroup === group) return copy(d);
-  d.selectedGroup = group;
-  d.revision++;
-  d.status = "REVIEW_REQUIRED";
-  d.pairs.forEach((p) => (p.confirmed = false));
+  const selected = selectedGroup(d, group);
+  if (!selected) return copy(d);
+  Object.assign(d, selected);
   store.emit();
   return copy(d);
 }
 export async function reviewPairs(store: LocalStore, id: string, pairs: PricePair[], expectedRevision: number) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
-  if (d.kind !== "OFFER")
-    throw new DomainError("WRONG_KIND", "Pilih dokumen penawaran.");
-  if (
-    pairs.length !== PAIR_FIXTURES.length ||
-    new Set(pairs.map((p) => p.id)).size !== pairs.length ||
-    pairs.some((p) => !PAIR_FIXTURES.some((f) => f.id === p.id))
-  )
-    throw new DomainError(
-      "INVALID_PAIRS",
-      "Daftar pasangan tidak sesuai dokumen.",
-    );
-  pairs.forEach((p) => {
-    decimal(p.oe);
-    decimal(p.offer);
-  });
-  if (
-    pairs.every((p) => {
-      const old = d.pairs.find((o) => o.id === p.id);
-      return (
-        old &&
-        equalValues(
-          { oe: p.oe, offer: p.offer },
-          { oe: old.oe, offer: old.offer },
-        ) &&
-        old.description === p.description &&
-        old.category === p.category &&
-        old.unit === p.unit &&
-        old.matched === p.matched &&
-        old.source === p.source
-      );
-    })
-  )
-    return copy(d);
-  d.pairs = pairs.map((p) => ({
-    ...copy(p),
-    confirmed: false,
-    revision: p.revision + 1,
-  }));
-  d.revision++;
-  d.status = "REVIEW_REQUIRED";
+  const reviewed = reviewedPairs(d, pairs, PAIR_FIXTURES.map((pair) => pair.id));
+  if (!reviewed) return copy(d);
+  Object.assign(d, reviewed);
   store.event({
     procurementId: d.procurementId,
     module: "PRICE_DEVIATION",
@@ -79,27 +36,9 @@ export async function reviewPairs(store: LocalStore, id: string, pairs: PricePai
 export async function confirmPairs(store: LocalStore, id: string, expectedRevision: number, acknowledged = false) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
-  if (d.selectedGroup !== "Harga satuan material dan jasa")
-    throw new DomainError(
-      "GROUP_REQUIRED",
-      "Pilih kelompok harga satuan material dan jasa.",
-    );
-  if (d.warnings.length && !acknowledged)
-    throw new DomainError(
-      "WARNING_REQUIRED",
-      "Verifikasi seluruh peringatan sebelum konfirmasi pasangan.",
-    );
-  if (d.pairs.some((p) => p.matched && normalize(p.oe) === "0"))
-    throw new DomainError(
-      "INVALID_VALUE",
-      "Harga OE harus lebih besar dari nol.",
-    );
-  if (!d.pairs.some((p) => p.matched))
-    throw new DomainError("PAIR_REQUIRED", "Pilih setidaknya satu pasangan.");
-  if (d.status === "CONFIRMED") return copy(d);
-  d.acknowledged = acknowledged;
-  d.pairs.forEach((p) => (p.confirmed = p.matched));
-  d.status = "CONFIRMED";
+  const confirmed = confirmedPairs(d, acknowledged, "Harga satuan material dan jasa");
+  if (!confirmed) return copy(d);
+  Object.assign(d, confirmed);
   store.event({
     procurementId: d.procurementId,
     module: "PRICE_DEVIATION",

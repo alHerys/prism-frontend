@@ -1,8 +1,8 @@
 import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
 import { Link } from "react-router";
-import "../../shared/styles/focus.css";
-import { Stepper } from "../../shared/ui/feedback";
-import { ResultPanel } from "../procurement/ResultPanel";
+import "../../../shared/styles/focus.css";
+import { Stepper } from "../../../shared/ui/feedback";
+import { ResultPanel } from "../../../features/procurement/ResultPanel";
 import type { usePDPanel } from "./usePDPanel";
 
 export function PDPanelView({ p, docs, oe, setOe, offer, setOffer, busy, chosen, evaluate }: ReturnType<typeof usePDPanel>) {

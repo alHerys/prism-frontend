@@ -5,7 +5,7 @@ import { dateTime } from "../../shared/formatters/display";
 import "../../shared/styles/focus.css";
 import { Empty, Modal } from "../../shared/ui/feedback";
 import { HEAPanel } from "../../modules/hea/presentation/HEAPanel";
-import { PDPanel } from "../../features/price-deviation/PDPanel";
+import { PDPanel } from "../../modules/price-deviation/presentation/PDPanel";
 import { DocumentTable } from "../../modules/documents/presentation/DocumentTable";
 import { UploadPanel } from "../../modules/documents/presentation/UploadPanel";
 import type { useProcurementDetail } from "./useProcurementDetail";

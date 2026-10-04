@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router";
-import { useSessionService, useSessionState } from "../../services/session-context";
-import { errorMessage } from "../../shared/errors/message";
-import type { Procurement } from "../../shared/model/session";
-import { useToast } from "../../shared/ui/feedback";
+import { usePriceDeviationCommands, usePriceDeviationData } from "./binding";
+import { errorMessage } from "../../../shared/errors/message";
+import type { Procurement } from "../../../shared/model/session";
+import { useToast } from "../../../shared/ui/feedback";
 
 export function usePDPanel({ procurement: p }: { procurement: Procurement }) {
-  const service = useSessionService();
-  const state = useSessionState();
+  const service = usePriceDeviationCommands();
+  const state = usePriceDeviationData();
   const toast = useToast();
   const [params, setParams] = useSearchParams();
   const docs = state.documents.filter((d) => d.procurementId === p.id);
@@ -27,7 +27,6 @@ export function usePDPanel({ procurement: p }: { procurement: Procurement }) {
   async function evaluate() {
     setBusy(true);
     try {
-      await new Promise((r) => setTimeout(r, 450));
       const s = await service.evaluateDeviation(p.id, oe, offer);
       setParams({ tab: "harga", hasil: s.id });
       toast("Evaluasi Harga Timpang selesai.");
