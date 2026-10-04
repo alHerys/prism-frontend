@@ -74,22 +74,26 @@ PRISM membantu tim pengadaan memeriksa dokumen, meninjau kandidat data, mengonfi
 
 ```text
 frontend/
-├── public/
-│   ├── files/              # Berkas fixture yang dapat dipilih pengguna
-│   └── pertamina*.{svg,png} # Identitas visual aplikasi
+├── public/                 # Aset dan berkas sintetis demo
 ├── src/
-│   ├── domain/              # Tipe, aturan sesi, revisi, konfirmasi, dan snapshot
-│   ├── export/              # Pembuatan workbook XLSX
-│   ├── fixtures/            # Registri berkas, bukti, dan skenario lokal
-│   ├── pages/               # Dashboard dan halaman modul pengadaan
-│   ├── services/            # Pengenalan berkas dan layanan simulasi
-│   ├── components.tsx       # Komponen UI bersama
-│   └── App.tsx              # Shell dan routing aplikasi
-├── tests/                   # Browser dan Storybook acceptance tests
-├── scripts/                 # Generator fixture dan helper acceptance
-├── package.json
-└── vite.config.ts
+│   ├── app/                # Bootstrap, router, shell, dan instance sesi
+│   ├── features/           # Dashboard, procurement, review, hea,
+│   │                       # price-deviation, bank, history
+│   ├── shared/             # UI, model sesi, formatter, snapshot, stylesheet
+│   ├── services/           # Kontrak/binding React, demo, dokumen, ekspor
+│   └── fixtures/           # Registri berkas sintetis
+├── tests/                  # Verifikasi browser aplikasi dan Storybook
+└── scripts/                # Generator fixture dan helper demo
 ```
+
+Alur aplikasi: **halaman → hook/layanan → state sesi**. Halaman menyusun tampilan
+fitur; hook mengelola draft dan tindakan melalui `SessionService`. Provider memakai
+satu instance offline dengan `useSyncExternalStore`; tes memakai instance terisolasi.
+Layanan demo berbagi satu store dan hasil finansial yang sudah disiapkan. Snapshot
+menyimpan salinan input saat evaluasi sehingga koreksi berikutnya tidak mengubah
+hasil lama; ekspor memakai snapshot tersebut dan memuat ExcelJS saat diperlukan.
+Aturan import ESLint menjaga batas `app`, `features`, `shared`, dan `services`.
+Urutan import stylesheet mempertahankan cascade global dan pemuatan per route.
 
 ## Getting started
 
@@ -142,7 +146,8 @@ npm run lint
 npm test
 npm run build
 npm run test:desktop
-npm run storybook
+npm run build-storybook
+npm run test:storybook:browser
 ```
 
 All data and processing in the submitted frontend are local scenarios. File selection performs metadata and SHA-256 registry checks in the browser; it does not upload files or parse arbitrary documents at runtime. Reloading the page starts a new in-memory session. Financial calculations are not recomputed by the frontend export flow.

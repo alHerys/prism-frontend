@@ -3,9 +3,15 @@ import type { Page, TestInfo } from '@playwright/test';
 import ExcelJS from 'exceljs';
 import path from 'node:path';
 
+// Observe actual requests: Playwright's fixed clock replaces the Performance API.
+const excelLoaded = new WeakSet<Page>();
+
 // Every test uses a fresh browser context and the application's synthetic initial
 // state. Fixed Date leaves the real processing timers running.
 test.beforeEach(async ({ page, baseURL }) => {
+  page.on('request', request => {
+    if (/exceljs.*\.js/.test(request.url())) excelLoaded.add(page);
+  });
   await page.clock.setFixedTime(new Date('2026-10-02T02:00:00Z'));
   await page.route('**/*', async route => {
     const url = route.request().url();
@@ -55,6 +61,7 @@ async function exportWorkbook(page: Page, info: TestInfo, name: string) {
   const pending = page.waitForEvent('download');
   await click(page, 'Ekspor Excel');
   const download = await pending;
+  expect(excelLoaded.has(page)).toBe(true);
   expect(download.suggestedFilename()).toMatch(/^PRISM-.*\.xlsx$/);
   const filename = info.outputPath(`${name}.xlsx`);
   await download.saveAs(filename);
@@ -125,6 +132,7 @@ test('confirmed HEA and explicit price sources preserve results and XLSX traceab
     if (/^https?:/.test(request.url()) && new URL(request.url()).origin !== new URL(info.project.use.baseURL as string).origin) outbound.push(request.url());
   });
   await page.goto('/pengadaan/proc-terminal?tab=hea');
+  expect(excelLoaded.has(page)).toBe(false);
   await expect(page.getByRole('button', { name: 'Evaluasi HEA', exact: true })).toBeDisabled();
   await page.getByRole('link', { name: 'Periksa dokumen' }).first().click();
   await confirm(page);

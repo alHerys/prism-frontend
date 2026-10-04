@@ -9,7 +9,7 @@ Jakarta timezone and reduced motion. It does not cover mobile.
 The browser starts with fresh production synthetic state for each test. The
 fixed Date controls screenshot timestamps while processing timers remain live.
 Nonlocal requests are blocked; the full evaluation flow also asserts no outbound
-requests or browser errors. File upload uses independent registered public PDF
+HTTP requests or browser errors. Native Chrome PDF resources are allowed. File upload uses independent registered public PDF
 bytes through the actual input and SHA-256 recognition path. Exported XLSX files
 are opened with ExcelJS and checked for exact HEA output, percentage strings,
 partial exclusions and source values. These checks verify the prepared frontend
@@ -22,6 +22,9 @@ ignored by Git. Create a first local baseline with `npm run test:desktop:update`
 inspect the images, then rerun `npm run test:desktop` to verify comparison. Updating
 an image is not evidence of visual acceptance; changes still require inspection.
 The same Chrome/browser, fonts and platform should be used when comparing images.
+Only the native PDF iframe is masked; the upload test asserts its registered source
+URL and review values. Freeze baselines before refactoring and compare afterward;
+do not update them to hide interface changes.
 
 Coverage includes sidebar collapse, all main result pages, mandatory confirmation,
 warning acknowledgement, explicit price groups, partial results, real upload
@@ -35,3 +38,23 @@ ten component stories at both desktop sizes. It checks Select/Tabs, the long tab
 and filter, file selection, dialog keyboard focus/Escape and error retry. Override
 `PRISM_STORYBOOK_URL` if needed. The first long-table baseline can be created with
 `npm run test:storybook:browser -- --update-snapshots` and inspected locally.
+
+Architecture verification uses isolated `SessionProvider` instances, navigation
+remounts, preserved formatter variants, revision/confirmation checks, subscriber
+isolation and immutable historical snapshots. A fixed-clock fingerprint checks all
+original seeded values, IDs, event order and prepared snapshots. Browser coverage
+also compares computed styles on direct routes and navigation, retains tab drafts,
+and checks that ExcelJS loads when exporting. `prism/architecture` in ESLint guards
+static imports, re-exports and dynamic imports; tests can construct demo instances.
+
+Production bundle measurement (Vite, minified kB; gzip in parentheses):
+
+| JavaScript | Before | After |
+| --- | ---: | ---: |
+| Entry | 511.93 (161.03) | 514.16 (161.73) |
+| ExcelJS, deferred | 936.98 (270.74) | 936.98 (270.74) |
+| All JS chunks combined | 1562.74 (467.79) | 1572.95 (473.28) |
+
+Combined sizes include lazy chunks; they are not initial-page transfer sizes.
+The emitted CSS is unchanged. Legacy `scripts/acceptance-*.cjs` target older UI
+controls; use the Playwright suites above for current regression verification.
