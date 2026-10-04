@@ -1,3 +1,4 @@
+import { reviewedDocument, confirmedDocument } from "../../modules/documents/domain/review";
 import registry from "./fixtures/file-registry.json";
 import type {
   A5Values,
@@ -9,7 +10,7 @@ import {
   PAIR_FIXTURES
 } from "./fixtures";
 import type { LocalStore } from "./store";
-import { DomainError, copy, decimal, equalValues } from "./validation";
+import { DomainError, copy } from "./validation";
 export function makeDocument(store: LocalStore, input: UploadInput): DocumentRecord {
   const candidate = A5_FIXTURES[input.fixtureId];
   const file = registry.find((f) => f.id === input.fixtureId);
@@ -127,16 +128,9 @@ export async function uploadRegisteredDocument(store: LocalStore, input: UploadI
 export async function reviewDocument(store: LocalStore, id: string, values: A5Values, expectedRevision: number) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
-  if (!d.candidate)
-    throw new DomainError("WRONG_KIND", "Dokumen ini bukan Form A5.");
-  Object.entries(values).forEach(([key, value]) =>
-    decimal(value, key.startsWith("tkdn")),
-  );
-  if (d.reviewed && equalValues(values, d.reviewed)) return copy(d);
-  d.reviewed = copy(values);
-  d.revision++;
-  d.status = "REVIEW_REQUIRED";
-  d.acknowledged = false;
+  const reviewed = reviewedDocument(d, values);
+  if (!reviewed) return copy(d);
+  Object.assign(d, reviewed);
   store.event({
     procurementId: d.procurementId,
     module: "HEA",
@@ -149,14 +143,9 @@ export async function reviewDocument(store: LocalStore, id: string, values: A5Va
 export async function confirmDocument(store: LocalStore, id: string, expectedRevision: number, acknowledged = false) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
-  if (d.status === "CONFIRMED") return copy(d);
-  if (d.warnings.length && !acknowledged)
-    throw new DomainError(
-      "WARNING_REQUIRED",
-      "Verifikasi seluruh peringatan sebelum konfirmasi.",
-    );
-  d.status = "CONFIRMED";
-  d.acknowledged = acknowledged;
+  const confirmed = confirmedDocument(d, acknowledged);
+  if (!confirmed) return copy(d);
+  Object.assign(d, confirmed);
   store.event({
     procurementId: d.procurementId,
     module:
