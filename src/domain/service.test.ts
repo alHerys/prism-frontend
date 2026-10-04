@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { createDemoService, DEMO_PREFERENCES } from "./index";
 import { A5_FIXTURES } from "./fixtures";
+import { createDemoService, DEMO_PREFERENCES } from "./index";
 async function confirmedHEA() {
   const service = createDemoService();
   for (const doc of service

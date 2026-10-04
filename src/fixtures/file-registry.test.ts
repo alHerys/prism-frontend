@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
-import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { describe, expect, it } from "vitest";
 import registry from "./file-registry.json";
 describe("registered source files", () => {
   it("matches every downloadable file to its SHA-256 registry entry", () => {

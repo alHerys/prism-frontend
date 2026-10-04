@@ -1,31 +1,30 @@
-import { HeaderAction } from "../components";
-import { useState, useSyncExternalStore } from "react";
-import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
-import { CloudArrowUp } from "@phosphor-icons/react/dist/csr/CloudArrowUp";
-import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
-import { FileXls } from "@phosphor-icons/react/dist/csr/FileXls";
-import { DownloadSimple } from "@phosphor-icons/react/dist/csr/DownloadSimple";
 import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
-import { Sparkle } from "@phosphor-icons/react/dist/csr/Sparkle";
 import { CircleNotch } from "@phosphor-icons/react/dist/csr/CircleNotch";
+import { CloudArrowUp } from "@phosphor-icons/react/dist/csr/CloudArrowUp";
+import { DownloadSimple } from "@phosphor-icons/react/dist/csr/DownloadSimple";
+import { FileXls } from "@phosphor-icons/react/dist/csr/FileXls";
+import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
+import { Sparkle } from "@phosphor-icons/react/dist/csr/Sparkle";
+import { useState } from "react";
 import {
-  demoService,
-  type DemoService,
   type HistoricalItem,
-  type Snapshot,
+  type Snapshot
 } from "../domain";
-import "./bank.css";
-import { PageTabs } from "../components";
-const money = (value: string) =>
-  `Rp ${value.split(".")[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+import { useSessionService, useSessionState } from "../services/session-context";
+import type { SessionService } from "../services/session-service";
+import { bankMoney as money } from "../shared/formatters/display";
+import "../shared/styles/bank.css";
+import { HeaderAction, PageTabs } from "../shared/ui/components";
 const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export interface BankPageProps {
-  service?: DemoService;
+  service?: SessionService;
   onExport?: (snapshot: Snapshot) => Promise<void> | void;
 }
-export function BankPage({ service = demoService, onExport }: BankPageProps) {
-  const state = useSyncExternalStore(service.subscribe, service.getState);
+export function BankPage({ service: serviceOverride, onExport }: BankPageProps) {
+  const service = useSessionService(serviceOverride);
+  const state = useSessionState(service);
   const preparedEstimate = state.estimates[0];
   const [tab, setTab] = useState(preparedEstimate ? "Statistik Harga" : "Dokumen Historis");
   const [query, setQuery] = useState("");
@@ -139,7 +138,7 @@ export function BankPage({ service = demoService, onExport }: BankPageProps) {
       const result = await service.createBankSnapshot(selectedIds);
       if (onExport) await onExport(result);
       else {
-        const { downloadSnapshot } = await import("../export/workbook");
+        const { downloadSnapshot } = await import("../services/export/workbook.ts");
         const p = state.procurements.find((p) => p.id === result.procurementId);
         await downloadSnapshot(
           result,

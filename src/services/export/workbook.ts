@@ -1,4 +1,4 @@
-import type { Procurement, Snapshot } from "../domain/types";
+import type { Procurement, Snapshot } from "../../shared/model/session";
 const labels: Record<string, string> = {
   vendorId: "Identitas vendor",
   vendorName: "Vendor",
@@ -228,13 +228,13 @@ export async function buildSnapshotWorkbook(
   );
   const inputs = snapshot.inputs as
     | {
-        statistics?: {
-          min?: string;
-          median?: string;
-          max?: string;
-          unit?: string;
-        };
-      }
+      statistics?: {
+        min?: string;
+        median?: string;
+        max?: string;
+        unit?: string;
+      };
+    }
     | undefined;
   const statistics =
     snapshot.module === "BANK" ? inputs?.statistics : undefined;
@@ -246,11 +246,11 @@ export async function buildSnapshotWorkbook(
       ["Belum dievaluasi", String(snapshot.excluded.length)],
       ...(statistics
         ? [
-            ["Minimum (Rp)", statistics.min || ""],
-            ["Median (Rp)", statistics.median || ""],
-            ["Maksimum (Rp)", statistics.max || ""],
-            ["Satuan", statistics.unit || ""],
-          ]
+          ["Minimum (Rp)", statistics.min || ""],
+          ["Median (Rp)", statistics.median || ""],
+          ["Maksimum (Rp)", statistics.max || ""],
+          ["Satuan", statistics.unit || ""],
+        ]
         : []),
       ...snapshot.excluded.map((reason, index) => [
         `Pengecualian ${index + 1}`,

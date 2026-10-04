@@ -1,28 +1,22 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams, useBlocker } from "react-router";
 import { ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft";
+import { ArrowsOut } from "@phosphor-icons/react/dist/csr/ArrowsOut";
 import { CheckCircle as CheckCircle2 } from "@phosphor-icons/react/dist/csr/CheckCircle";
 import { Eye } from "@phosphor-icons/react/dist/csr/Eye";
 import { EyeSlash as EyeOff } from "@phosphor-icons/react/dist/csr/EyeSlash";
-import { FloppyDisk as Save } from "@phosphor-icons/react/dist/csr/FloppyDisk";
 import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
-import { ArrowsOut } from "@phosphor-icons/react/dist/csr/ArrowsOut";
-import { CurrencyInput } from "../currency-input";
+import { FloppyDisk as Save } from "@phosphor-icons/react/dist/csr/FloppyDisk";
+import { useEffect, useState } from "react";
+import { Link, useBlocker, useNavigate, useParams } from "react-router";
+import { useSessionService, useSessionState } from "../services/session-context";
+import { SourcePanel } from "../shared/ui/components";
+import { CurrencyInput } from "../shared/ui/currency-input";
 import "./review.css";
-import { SourcePanel } from "../components";
-import { demoService } from "../domain";
+
 import type { A5Values, PricePair } from "../domain";
-import {
-  useDemo,
-  useToast,
-  kindLabel,
-  Status,
-  Modal,
-  Empty,
-  money,
-  pct,
-} from "../ui";
 import { availableDocuments } from "../services/registry";
+import { kindLabel, money, pct } from "../shared/formatters/display";
+import { Empty, Modal, Status, useToast } from "../shared/ui/feedback";
+
 const fields: Record<keyof A5Values, string> = {
   hpb: "Harga Penawaran Barang",
   hpj: "Harga Penawaran Jasa",
@@ -43,7 +37,8 @@ function toRatio(s: string) {
 }
 export function Review() {
   const { id, documentId } = useParams();
-  const state = useDemo();
+  const service = useSessionService();
+  const state = useSessionState();
   const d = state.documents.find(
     (d) => d.id === documentId && d.procurementId === id,
   );
@@ -58,10 +53,10 @@ export function Review() {
   const [values, setValues] = useState<A5Values | undefined>(
     d?.reviewed
       ? {
-          ...d.reviewed,
-          tkdn_barang: toPercent(d.reviewed.tkdn_barang),
-          tkdn_jasa: toPercent(d.reviewed.tkdn_jasa),
-        }
+        ...d.reviewed,
+        tkdn_barang: toPercent(d.reviewed.tkdn_barang),
+        tkdn_jasa: toPercent(d.reviewed.tkdn_jasa),
+      }
       : undefined,
   );
   const [pairs, setPairs] = useState<PricePair[]>(() =>
@@ -118,7 +113,7 @@ export function Review() {
     setBusy(true);
     try {
       if (values) {
-        await demoService.reviewDocument(
+        await service.reviewDocument(
           d!.id,
           {
             ...values,
@@ -130,9 +125,9 @@ export function Review() {
       } else {
         let current = d!;
         if (group && group !== d!.selectedGroup)
-          current = await demoService.selectGroup(d!.id, group, d!.revision);
+          current = await service.selectGroup(d!.id, group, d!.revision);
         if (current.kind === "OFFER")
-          await demoService.reviewPairs(current.id, pairs, current.revision);
+          await service.reviewPairs(current.id, pairs, current.revision);
       }
       setDirty(false);
       toast(
@@ -153,8 +148,8 @@ export function Review() {
     setBusy(true);
     try {
       if (d!.kind === "OFFER")
-        await demoService.confirmPairs(d!.id, d!.revision, ack);
-      else await demoService.confirmDocument(d!.id, d!.revision, ack);
+        await service.confirmPairs(d!.id, d!.revision, ack);
+      else await service.confirmDocument(d!.id, d!.revision, ack);
       setConfirm(false);
       toast("Data terkonfirmasi dan siap dievaluasi.");
       back();
@@ -251,69 +246,69 @@ export function Review() {
                   title={`Preview PDF ${d.name}`}
                 />
               ) : (
-              <div className="paper">
-                <div className="paper-header">
-                  <h3>
-                    {d.kind === "FORM_A5"
-                      ? "FORM A5 · KOMITMEN TKDN"
-                      : "RINCIAN HARGA SATUAN"}
-                  </h3>
-                  <small>{vendor?.name || p.name}</small>
-                </div>
-                {d.candidate ? (
-                  <dl>
-                    {Object.entries(d.candidate).map(([key, value]) => (
-                      <div
-                        key={key}
-                        className={`review-source-value${focused === key ? " selected" : ""}`}
-                      >
-                        <dt>{fields[key as keyof A5Values]}</dt>
-                        <dd>
-                          {key.startsWith("tkdn")
-                            ? d.sources.find((s) => s.field === key)?.quote ||
+                <div className="paper">
+                  <div className="paper-header">
+                    <h3>
+                      {d.kind === "FORM_A5"
+                        ? "FORM A5 · KOMITMEN TKDN"
+                        : "RINCIAN HARGA SATUAN"}
+                    </h3>
+                    <small>{vendor?.name || p.name}</small>
+                  </div>
+                  {d.candidate ? (
+                    <dl>
+                      {Object.entries(d.candidate).map(([key, value]) => (
+                        <div
+                          key={key}
+                          className={`review-source-value${focused === key ? " selected" : ""}`}
+                        >
+                          <dt>{fields[key as keyof A5Values]}</dt>
+                          <dd>
+                            {key.startsWith("tkdn")
+                              ? d.sources.find((s) => s.field === key)?.quote ||
                               pct(value)
-                            : money(value)}
-                        </dd>
+                              : money(value)}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+                  ) : (
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th>Komponen</th>
+                          <th>Harga</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {(d.priceItems || []).map((pair) => (
+                          <tr key={pair.id}>
+                            <td>
+                              {pair.description}
+                              <small>
+                                {pair.category === "MATERIAL"
+                                  ? "Material"
+                                  : "Jasa"}{" "}
+                                · {pair.unit}
+                              </small>
+                            </td>
+                            <td>
+                              {money(d.kind === "OE" ? pair.oe : pair.offer)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                  {d.sources
+                    .filter((s) => d.kind !== "FORM_A5" || s.field === focused)
+                    .map((s, i) => (
+                      <div className="evidence" key={i}>
+                        <strong>{s.location}</strong>
+                        <p>{s.quote}</p>
                       </div>
                     ))}
-                  </dl>
-                ) : (
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th>Komponen</th>
-                        <th>Harga</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {(d.priceItems || []).map((pair) => (
-                        <tr key={pair.id}>
-                          <td>
-                            {pair.description}
-                            <small>
-                              {pair.category === "MATERIAL"
-                                ? "Material"
-                                : "Jasa"}{" "}
-                              · {pair.unit}
-                            </small>
-                          </td>
-                          <td>
-                            {money(d.kind === "OE" ? pair.oe : pair.offer)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-                {d.sources
-                  .filter((s) => d.kind !== "FORM_A5" || s.field === focused)
-                  .map((s, i) => (
-                    <div className="evidence" key={i}>
-                      <strong>{s.location}</strong>
-                      <p>{s.quote}</p>
-                    </div>
-                  ))}
-              </div>
+                </div>
               )}
             </SourcePanel>
           )}
@@ -360,13 +355,13 @@ export function Review() {
                       (key.startsWith("tkdn")
                         ? toPercent(d.candidate![key])
                         : d.candidate![key]) && (
-                      <span
-                        className="badge info"
-                        style={{ width: "fit-content" }}
-                      >
-                        Dikoreksi
-                      </span>
-                    )}
+                        <span
+                          className="badge info"
+                          style={{ width: "fit-content" }}
+                        >
+                          Dikoreksi
+                        </span>
+                      )}
                   </div>
                 ))}
               </div>

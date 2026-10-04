@@ -1,37 +1,20 @@
-import { lazy, Suspense, useEffect, useState } from "react";
-import {
-  NavLink,
-  Route,
-  Routes,
-  Link,
-  useLocation,
-  useNavigate,
-} from "react-router";
-import { SquaresFour } from "@phosphor-icons/react/dist/csr/SquaresFour";
-import { Folder } from "@phosphor-icons/react/dist/csr/Folder";
-import { Database } from "@phosphor-icons/react/dist/csr/Database";
-import { ClockCounterClockwise } from "@phosphor-icons/react/dist/csr/ClockCounterClockwise";
 import { CaretLeft } from "@phosphor-icons/react/dist/csr/CaretLeft";
 import { CaretRight } from "@phosphor-icons/react/dist/csr/CaretRight";
+import { ClockCounterClockwise } from "@phosphor-icons/react/dist/csr/ClockCounterClockwise";
+import { Database } from "@phosphor-icons/react/dist/csr/Database";
+import { Folder } from "@phosphor-icons/react/dist/csr/Folder";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
-const ProcurementList = lazy(() =>
-  import("./pages/Procurement").then((m) => ({ default: m.ProcurementList })),
-);
-const ProcurementDetail = lazy(() =>
-  import("./pages/Procurement").then((m) => ({ default: m.ProcurementDetail })),
-);
-const VendorDocuments = lazy(() =>
-  import("./pages/Procurement").then((m) => ({ default: m.VendorDocuments })),
-);
-import { Dashboard } from "./pages/Dashboard";
-const Review = lazy(() =>
-  import("./pages/Review").then((m) => ({ default: m.Review })),
-);
-const Bank = lazy(() => import("./pages/Bank"));
-const HistoryPage = lazy(() => import("./pages/History"));
-import { demoService } from "./domain";
-import { Empty, useDemo } from "./ui";
-import { Hint, LoadingState } from "./components";
+import { SquaresFour } from "@phosphor-icons/react/dist/csr/SquaresFour";
+import { useEffect, useState } from "react";
+import {
+  Link,
+  NavLink,
+  useLocation,
+  useNavigate
+} from "react-router";
+import { useSessionState } from "../services/session-context";
+import { Hint } from "../shared/ui/components";
+import { AppRoutes } from "./AppRoutes";
 const links = [
   ["/", "Dashboard", SquaresFour],
   ["/pengadaan", "Pengadaan", Folder],
@@ -47,10 +30,10 @@ const descriptions: Record<string, string> = {
   "/riwayat":
     "Tinjau aktivitas, hasil tersimpan, dan jejak perubahan pengadaan.",
 };
-export default function App() {
+export function AppShell() {
   const location = useLocation();
   const navigate = useNavigate();
-  const state = useDemo();
+  const state = useSessionState();
   const [collapsed, setCollapsed] = useState(false);
   const [search, setSearch] = useState("");
   useEffect(() => {
@@ -67,47 +50,7 @@ export default function App() {
   const description = procurement
     ? `${procurement.number} · ${procurement.functionName}`
     : descriptions[active?.[0] || ""];
-  const content = (
-    <Suspense
-      fallback={
-        <div className="page">
-          <LoadingState label="Menyiapkan ruang kerja" />
-        </div>
-      }
-    >
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/pengadaan" element={<ProcurementList />} />
-        <Route
-          path="/pengadaan/:id"
-          element={<ProcurementDetail key={location.pathname} />}
-        />
-        <Route
-          path="/pengadaan/:id/vendor/:vendorId"
-          element={<VendorDocuments key={location.pathname} />}
-        />
-        <Route
-          path="/pengadaan/:id/review/:documentId"
-          element={<Review key={location.pathname} />}
-        />
-        <Route path="/bank" element={<Bank service={demoService} />} />
-        <Route
-          path="/riwayat"
-          element={<HistoryPage service={demoService} />}
-        />
-        <Route
-          path="*"
-          element={
-            <div className="page">
-              <Empty title="Halaman tidak ditemukan">
-                Kembali ke <Link to="/">Dashboard</Link> untuk melanjutkan.
-              </Empty>
-            </div>
-          }
-        />
-      </Routes>
-    </Suspense>
-  );
+  const content = <AppRoutes />;
   if (focus) return content;
   return (
     <div className={`app ${collapsed ? "nav-collapsed" : ""}`}>

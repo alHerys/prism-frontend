@@ -1,14 +1,17 @@
-import { Link } from "react-router";
 import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
-import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
-import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
 import { CaretRight } from "@phosphor-icons/react/dist/csr/CaretRight";
 import { ClockCounterClockwise } from "@phosphor-icons/react/dist/csr/ClockCounterClockwise";
-import { useDemo, kindLabel, dateTime, Empty } from "../ui";
+import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
+import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
+import { Link } from "react-router";
+import { useSessionState } from "../services/session-context";
+import { dateTime, kindLabel } from "../shared/formatters/display";
+import { Empty } from "../shared/ui/feedback";
+
 import { ProcurementTable } from "./ProcurementTable";
 import "./dashboard.css";
 export function Dashboard() {
-  const state = useDemo();
+  const state = useSessionState();
   const pending = state.documents.filter((d) => d.status !== "CONFIRMED");
   return (
     <div className="page dashboard-page">

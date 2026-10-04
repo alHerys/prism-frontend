@@ -1,3 +1,3 @@
-export * from "./types";
-export * from "./service";
+export * from "../shared/model/session";
 export { DEMO_PREFERENCES } from "./fixtures";
+export * from "./service";

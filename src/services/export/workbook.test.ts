@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
+import type { Snapshot } from "../../shared/model/session";
 import { buildSnapshotWorkbook, percentageText } from "./workbook";
-import type { Snapshot } from "../domain/types";
 const snapshot: Snapshot = {
   id: "hea-test",
   procurementId: "p1",

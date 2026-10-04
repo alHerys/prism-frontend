@@ -1,22 +1,23 @@
-import { useState } from "react";
-import type { Meta, StoryObj } from "@storybook/react-vite";
 import { MagnifyingGlassIcon } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
 import { PlusIcon } from "@phosphor-icons/react/dist/csr/Plus";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { useState } from "react";
 import {
-  Button,
   Badge,
+  Button,
+  EmptyState,
+  ErrorState,
   Field,
+  Hint,
+  LoadingState,
   PageTabs,
   SelectField,
-  Hint,
+  SourcePanel,
   TableToolbar,
   UploadZone,
-  SourcePanel,
-  EmptyState,
-  LoadingState,
-  ErrorState,
-} from "./components";
-import { Modal, Stepper } from "./ui";
+} from "./shared/ui/components";
+import { Modal, Stepper } from "./shared/ui/feedback";
+
 
 const meta = {
   title: "PRISM/Komponen",
@@ -240,7 +241,7 @@ function UploadExample() {
         XLSX OE/penawaran, maksimum 10 MiB.
       </UploadZone>
       {name ? <p role="status">Berkas dipilih: {name}</p> : null}
-      <UploadZone disabled onFiles={() => {}} ariaLabel="Pilih berkas">
+      <UploadZone disabled onFiles={() => { }} ariaLabel="Pilih berkas">
         Membaca dokumen yang dipilih.
       </UploadZone>
       <LoadingState label="Membaca dokumen…" />

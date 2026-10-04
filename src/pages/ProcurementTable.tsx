@@ -1,13 +1,15 @@
-import { useState } from "react";
-import { Link } from "react-router";
-import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
-import { Folder } from "@phosphor-icons/react/dist/csr/Folder";
-import { CaretRight } from "@phosphor-icons/react/dist/csr/CaretRight";
 import { ArrowsDownUp } from "@phosphor-icons/react/dist/csr/ArrowsDownUp";
 import { CaretLeft } from "@phosphor-icons/react/dist/csr/CaretLeft";
+import { CaretRight } from "@phosphor-icons/react/dist/csr/CaretRight";
+import { Folder } from "@phosphor-icons/react/dist/csr/Folder";
+import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+import { useState } from "react";
+import { Link } from "react-router";
 import type { Procurement } from "../domain";
-import { Empty, useDemo } from "../ui";
-import { SelectField } from "../components";
+import { useSessionState } from "../services/session-context";
+import { SelectField } from "../shared/ui/components";
+import { Empty } from "../shared/ui/feedback";
+
 export function ProcurementTable({
   items,
   search: controlledSearch,
@@ -19,7 +21,7 @@ export function ProcurementTable({
   onSearchChange?: (s: string) => void;
   searchLabel?: string;
 }) {
-  const state = useDemo();
+  const state = useSessionState();
   const [ownSearch, setOwnSearch] = useState("");
   const search = controlledSearch ?? ownSearch;
   const [status, setStatus] = useState("all");

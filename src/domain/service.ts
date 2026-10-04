@@ -1,3 +1,4 @@
+import type { SessionService } from "../services/session-service";
 import registry from "../fixtures/file-registry.json";
 import type {
   A5Values,
@@ -11,7 +12,7 @@ import type {
   Procurement,
   Snapshot,
   UploadInput,
-} from "./types";
+} from "../shared/model/session";
 import {
   A5_FIXTURES,
   DEMO_PREFERENCES,
@@ -58,7 +59,7 @@ const decimal = (text: string, ratio = false) => {
         : "Nilai harus berupa angka desimal non-negatif.",
     );
 };
-export class DemoService {
+export class DemoService implements SessionService {
   private view!: DemoState;
   private state: DemoState;
   private listeners = new Set<() => void>();
@@ -172,13 +173,13 @@ export class DemoService {
       preferenceConfirmed: true,
     });
     for (const [id, name] of [["nusa", "PT Nusa Teknik Mandiri"], ["borneo", "PT Borneo Teknik Nusantara"]]) {
-      this.state.vendors.push({id: `showcase-${id}`, procurementId, name});
+      this.state.vendors.push({ id: `showcase-${id}`, procurementId, name });
     }
     const docs = [
-      this.makeDocument({procurementId, vendorId: "showcase-nusa", kind: "FORM_A5", fixtureId: "a5-nusa", name: "Form-A5-Nusa.pdf"}),
-      this.makeDocument({procurementId, vendorId: "showcase-borneo", kind: "FORM_A5", fixtureId: "a5-borneo", name: "Form-A5-Borneo.pdf"}),
-      this.makeDocument({procurementId, kind: "OE", fixtureId: "oe-terminal", name: "OE-Terminal.xlsx"}),
-      this.makeDocument({procurementId, vendorId: "showcase-nusa", kind: "OFFER", fixtureId: "bid-nusa", name: "Penawaran-Nusa.xlsx"}),
+      this.makeDocument({ procurementId, vendorId: "showcase-nusa", kind: "FORM_A5", fixtureId: "a5-nusa", name: "Form-A5-Nusa.pdf" }),
+      this.makeDocument({ procurementId, vendorId: "showcase-borneo", kind: "FORM_A5", fixtureId: "a5-borneo", name: "Form-A5-Borneo.pdf" }),
+      this.makeDocument({ procurementId, kind: "OE", fixtureId: "oe-terminal", name: "OE-Terminal.xlsx" }),
+      this.makeDocument({ procurementId, vendorId: "showcase-nusa", kind: "OFFER", fixtureId: "bid-nusa", name: "Penawaran-Nusa.xlsx" }),
     ];
     for (const doc of docs) {
       doc.status = "CONFIRMED";
@@ -193,10 +194,10 @@ export class DemoService {
       }
     }
     this.state.documents.push(...docs);
-    this.event({procurementId, module: "PROCUREMENT", type: "CREATED", summary: "Pengadaan contoh siap evaluasi tersedia"});
-    this.event({procurementId, module: "HEA", type: "CORRECTED", summary: "Koreksi contoh TKDN jasa Borneo: 30% menjadi 35%"});
-    this.event({procurementId, module: "HEA", type: "CONFIRMED", summary: "Form A5 dan preferensi pada data contoh telah dikonfirmasi"});
-    this.event({procurementId, module: "PRICE_DEVIATION", type: "CONFIRMED", summary: "Sumber dan pasangan harga pada data contoh telah dikonfirmasi"});
+    this.event({ procurementId, module: "PROCUREMENT", type: "CREATED", summary: "Pengadaan contoh siap evaluasi tersedia" });
+    this.event({ procurementId, module: "HEA", type: "CORRECTED", summary: "Koreksi contoh TKDN jasa Borneo: 30% menjadi 35%" });
+    this.event({ procurementId, module: "HEA", type: "CONFIRMED", summary: "Form A5 dan preferensi pada data contoh telah dikonfirmasi" });
+    this.event({ procurementId, module: "PRICE_DEVIATION", type: "CONFIRMED", summary: "Sumber dan pasangan harga pada data contoh telah dikonfirmasi" });
     this.buildHEA(procurementId, docs.filter((d) => d.kind === "FORM_A5").map((d) => d.id));
     this.buildDeviation(procurementId, docs[2].id, docs[3].id);
     for (const item of this.state.historicalItems) {
@@ -211,9 +212,9 @@ export class DemoService {
     }
     this.state.historicalItems.forEach((item) => { item.comparable = true; });
     const referenceIds = this.state.historicalItems.map((item) => item.id);
-    this.event({module: "BANK", type: "CONFIRMED", summary: "Kesebandingan tiga referensi OE contoh telah diperiksa"});
+    this.event({ module: "BANK", type: "CONFIRMED", summary: "Kesebandingan tiga referensi OE contoh telah diperiksa" });
     this.buildBankSnapshot(referenceIds);
-    this.buildEstimate({description: "Pengecatan tangki", unit: "m²", quantity: "10", referenceIds});
+    this.buildEstimate({ description: "Pengecatan tangki", unit: "m²", quantity: "10", referenceIds });
   }
   getState = () => this.view;
   subscribe = (listener: () => void) => {
@@ -270,47 +271,47 @@ export class DemoService {
       id,
       priceItems: ["OE", "OFFER"].includes(input.kind)
         ? file?.rows?.map((row) => ({
-            id: row.id,
-            description: row.description,
-            category:
-              row.category === "MATERIAL"
-                ? ("MATERIAL" as const)
-                : ("SERVICE" as const),
-            unit: row.unit,
-            oe: row.oe,
-            offer: row.offer,
-            source: row.source,
-          }))
+          id: row.id,
+          description: row.description,
+          category:
+            row.category === "MATERIAL"
+              ? ("MATERIAL" as const)
+              : ("SERVICE" as const),
+          unit: row.unit,
+          oe: row.oe,
+          offer: row.offer,
+          source: row.source,
+        }))
         : undefined,
       period: input.period ?? file?.period,
       historicalItems:
         input.kind === "HISTORICAL_OE"
           ? file?.rows?.map((row, index) => ({
-              id: `${id}-item-${index}`,
-              documentName: input.name,
-              description: row.description,
-              functionName: input.functionName ?? "",
-              period: file.period ?? "",
-              unit: row.unit,
-              price: row.oe,
-              source: row.source,
-              comparable: false,
-            }))
+            id: `${id}-item-${index}`,
+            documentName: input.name,
+            description: row.description,
+            functionName: input.functionName ?? "",
+            period: file.period ?? "",
+            unit: row.unit,
+            price: row.oe,
+            source: row.source,
+            comparable: false,
+          }))
           : undefined,
       uploadedAt: new Date().toISOString(),
       revision: 1,
       status: "REVIEW_REQUIRED",
       candidate: candidate
         ? {
-            ...copy(candidate),
-            ...(input.fixtureId === "a5-borneo" ? { tkdn_jasa: "0.3" } : {}),
-          }
+          ...copy(candidate),
+          ...(input.fixtureId === "a5-borneo" ? { tkdn_jasa: "0.3" } : {}),
+        }
         : undefined,
       reviewed: candidate
         ? {
-            ...copy(candidate),
-            ...(input.fixtureId === "a5-borneo" ? { tkdn_jasa: "0.3" } : {}),
-          }
+          ...copy(candidate),
+          ...(input.fixtureId === "a5-borneo" ? { tkdn_jasa: "0.3" } : {}),
+        }
         : undefined,
       warnings: file?.warnings ?? [],
       acknowledged: false,
@@ -321,11 +322,11 @@ export class DemoService {
       pairs:
         input.kind === "OFFER"
           ? copy(PAIR_FIXTURES).map((pair) => ({
-              ...pair,
-              source:
-                file?.rows?.find((row) => row.id === pair.id)?.source ??
-                pair.source,
-            }))
+            ...pair,
+            source:
+              file?.rows?.find((row) => row.id === pair.id)?.source ??
+              pair.source,
+          }))
           : [],
       published: false,
     };

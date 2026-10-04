@@ -1,30 +1,23 @@
-import { useMemo, useState, useSyncExternalStore } from "react";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
-import { DownloadSimple } from "@phosphor-icons/react/dist/csr/DownloadSimple";
-import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
-import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
-import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
 import { ClipboardText } from "@phosphor-icons/react/dist/csr/ClipboardText";
-import { demoService, type DemoService } from "../domain";
-import type { Snapshot } from "../domain/types";
-import "./bank.css";
-import { roundedMoney } from "../ui";
-import { PageTabs } from "../components";
+import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
+import { DownloadSimple } from "@phosphor-icons/react/dist/csr/DownloadSimple";
+import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
+import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+import { useMemo, useState } from "react";
+import { useSessionService, useSessionState } from "../services/session-context";
+import type { SessionService } from "../services/session-service";
+import { exactMoney, roundedMoney, historyTime as time } from "../shared/formatters/display";
+import type { Snapshot } from "../shared/model/session";
+import { SnapshotInputs } from "../shared/snapshot/SnapshotInputs";
+import { PageTabs } from "../shared/ui/components";
+
+import "../shared/styles/bank.css";
 const moduleLabel: Record<string, string> = {
   HEA: "HEA",
   PRICE_DEVIATION: "Harga Timpang",
   BANK: "Bank Data OE",
   PROCUREMENT: "Pengadaan",
-};
-const time = (value: string) =>
-  new Intl.DateTimeFormat("id-ID", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value));
-const exactMoney = (value?: string) => {
-  if (value === undefined) return "—";
-  const [whole, fraction] = value.split(".");
-  return `Rp ${whole.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}${fraction ? "," + fraction : ""}`;
 };
 const eventLabel: Record<string, string> = {
   CREATED: "Pengadaan dibuat",
@@ -50,16 +43,17 @@ const classificationLabel: Record<string, string> = {
   TIDAK_TIMPANG: "Tidak timpang",
 };
 export interface HistoryPageProps {
-  service?: DemoService;
+  service?: SessionService;
   onOpenResult?: (id: string) => void;
   onExport?: (snapshot: Snapshot) => Promise<void> | void;
 }
 export function HistoryPage({
-  service = demoService,
+  service: serviceOverride,
   onOpenResult,
   onExport,
 }: HistoryPageProps) {
-  const state = useSyncExternalStore(service.subscribe, service.getState);
+  const service = useSessionService(serviceOverride);
+  const state = useSessionState(service);
   const [tab, setTab] = useState("Aktivitas");
   const [query, setQuery] = useState("");
   const [module, setModule] = useState("");
@@ -127,7 +121,7 @@ export function HistoryPage({
     try {
       if (onExport) await onExport(selected);
       else {
-        const { downloadSnapshot } = await import("../export/workbook");
+        const { downloadSnapshot } = await import("../services/export/workbook.ts");
         const p = state.procurements.find(
           (p) => p.id === selected.procurementId,
         );
@@ -549,79 +543,3 @@ function Empty({ title, text }: { title: string; text: string }) {
   );
 }
 export default HistoryPage;
-export function SnapshotInputs({ value }: { value: unknown }) {
-  const labels: Record<string, string> = {
-    procurement: "Pengadaan",
-    documents: "Dokumen",
-    name: "Nama",
-    number: "Nomor pengadaan",
-    functionName: "Fungsi",
-    revision: "Revisi",
-    reviewed: "Nilai review",
-    candidate: "Nilai sumber",
-    hpb: "Harga penawaran barang",
-    hpj: "Harga penawaran jasa",
-    knb: "KNB",
-    tkdn_barang: "TKDN barang (rasio)",
-    tkdn_jasa: "TKDN jasa (rasio)",
-    preferences: "Preferensi",
-    preferensi_barang: "Barang (rasio)",
-    preferensi_jasa: "Jasa (rasio)",
-    period: "Periode",
-    references: "Referensi",
-    description: "Uraian",
-    unit: "Satuan",
-    price: "Harga satuan",
-    documentName: "Dokumen",
-    oe: "OE",
-    offer: "Penawaran",
-    source: "Sumber",
-    sources: "Bukti sumber",
-    location: "Lokasi",
-    quote: "Nilai sumber",
-    field: "Field",
-    status: "Status",
-    selectedGroup: "Kelompok harga",
-    pairs: "Pasangan",
-    category: "Kategori",
-    statistics: "Statistik harga",
-    min: "Minimum (Rp)",
-    median: "Median (Rp)",
-    max: "Maksimum (Rp)",
-    warnings: "Peringatan",
-    policy: "Kebijakan",
-  };
-  if (value == null) return <span>—</span>;
-  if (Array.isArray(value))
-    return (
-      <div>
-        {value.map((item, index) => (
-          <div className="bank-snapshot-group" key={index}>
-            <SnapshotInputs value={item} />
-          </div>
-        ))}
-      </div>
-    );
-  if (typeof value === "object")
-    return (
-      <dl className="bank-snapshot-values">
-        {Object.entries(value)
-          .filter(([key]) => key in labels)
-          .map(([key, item]) => (
-            <div key={key}>
-              <dt>{labels[key]}</dt>
-              <dd>
-                <SnapshotInputs value={item} />
-              </dd>
-            </div>
-          ))}
-      </dl>
-    );
-  if (typeof value === "string" && categoryLabel[value])
-    return <span>{categoryLabel[value]}</span>;
-  if (typeof value === "string" && classificationLabel[value])
-    return <span>{classificationLabel[value]}</span>;
-  if (value === "CONFIRMED") return <span>Terkonfirmasi</span>;
-  if (value === "REVIEW_REQUIRED") return <span>Perlu ditinjau</span>;
-  return <span>{String(value)}</span>;
-}

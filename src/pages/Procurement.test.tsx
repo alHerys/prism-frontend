@@ -1,22 +1,25 @@
 import {
   act,
+  cleanup,
   fireEvent,
   render,
   screen,
-  cleanup,
 } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
 import { MemoryRouter } from "react-router";
-import { ProcurementTable } from "./ProcurementTable";
+import { afterEach, describe, expect, it } from "vitest";
+import { createDemoService } from "../domain";
+import { SessionProvider } from "../services/session-context";
+import { ToastProvider } from "../shared/ui/feedback";
+
 import { HEAPanel } from "./Procurement";
-import { demoService } from "../domain";
-import { ToastProvider } from "../ui";
+import { ProcurementTable } from "./ProcurementTable";
 afterEach(cleanup);
 describe("Preferensi evaluasi", () => {
   it("tidak mengonfirmasi atau mengevaluasi preferensi lama ketika formulir memiliki perubahan", async () => {
-    const initial = demoService.getState().procurements[0];
+    const service = createDemoService(true, true);
+    const initial = service.getState().procurements[0];
     await act(async () => {
-      await demoService.setPreferences(
+      await service.setPreferences(
         initial.id,
         { preferensi_barang: "0.15", preferensi_jasa: "0.075" },
         initial.preferenceRevision,
@@ -24,9 +27,9 @@ describe("Preferensi evaluasi", () => {
     });
     render(
       <MemoryRouter>
-        <ToastProvider>
-          <HEAPanel procurement={demoService.getState().procurements[0]} />
-        </ToastProvider>
+        <SessionProvider service={service}><ToastProvider>
+          <HEAPanel procurement={service.getState().procurements[0]} />
+        </ToastProvider></SessionProvider>
       </MemoryRouter>,
     );
     expect(
@@ -40,7 +43,7 @@ describe("Preferensi evaluasi", () => {
     ).toBeDisabled();
     expect(screen.getByRole("button", { name: "Evaluasi HEA" })).toBeDisabled();
     expect(
-      demoService.getState().procurements[0].preferences?.preferensi_barang,
+      service.getState().procurements[0].preferences?.preferensi_barang,
     ).toBe("0.15");
   });
 });
@@ -48,8 +51,9 @@ describe("Preferensi evaluasi", () => {
 
 describe("Pencarian pengadaan", () => {
   it("menemukan pengadaan melalui vendor dan dokumen tanpa menampilkan pengadaan lain", () => {
-    const state = demoService.getState();
-    render(<MemoryRouter><ProcurementTable items={state.procurements} /></MemoryRouter>);
+    const service = createDemoService(true, true);
+    const state = service.getState();
+    render(<MemoryRouter><SessionProvider service={service}><ProcurementTable items={state.procurements} /></SessionProvider></MemoryRouter>);
     const search = screen.getByRole("textbox", { name: "Cari pengadaan" });
     for (const query of [state.vendors[0].name, state.documents[0].name]) {
       fireEvent.change(search, { target: { value: query } });

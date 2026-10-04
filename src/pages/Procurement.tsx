@@ -1,48 +1,39 @@
-import { useState } from "react";
-import { ProcurementTable } from "./ProcurementTable";
-import {
-  HeaderAction,
-  UploadZone,
-  Button,
-  Field,
-  LoadingState,
-  ErrorState,
-} from "../components";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router";
-import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
-import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
 import { ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft";
-import "./review.css";
-import { DownloadSimple as Download } from "@phosphor-icons/react/dist/csr/DownloadSimple";
+import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
 import { CheckCircle as CheckCircle2 } from "@phosphor-icons/react/dist/csr/CheckCircle";
-import { demoService } from "../domain";
+import { DownloadSimple as Download } from "@phosphor-icons/react/dist/csr/DownloadSimple";
+import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
+import { useState } from "react";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router";
+import { useSessionService, useSessionState } from "../services/session-context";
+import {
+  Button,
+  ErrorState,
+  Field,
+  HeaderAction,
+  LoadingState,
+  UploadZone,
+} from "../shared/ui/components";
+import { ProcurementTable } from "./ProcurementTable";
+import "./review.css";
+
 import type {
-  DocumentRecord,
   DocumentKind,
-  Snapshot,
+  DocumentRecord,
   Procurement,
+  Snapshot,
 } from "../domain";
 import { processDemoDocument } from "../services/document-processing";
-import { SnapshotInputs } from "./History";
-import { downloadSnapshot } from "../export/workbook";
-import {
-  useDemo,
-  useToast,
-  money,
-  roundedMoney,
-  pct,
-  date,
-  dateTime,
-  kindLabel,
-  Status,
-  Modal,
-  Empty,
-  Stepper,
-} from "../ui";
+import { downloadSnapshot } from "../services/export/workbook";
+import { date, dateTime, kindLabel, money, pct, roundedMoney } from "../shared/formatters/display";
+import { SnapshotInputs } from "../shared/snapshot/SnapshotInputs";
+import { Empty, Modal, Status, Stepper, useToast } from "../shared/ui/feedback";
+
 const errorMessage = (e: unknown) =>
   e instanceof Error ? e.message : "Tindakan belum berhasil. Coba kembali.";
 export function ProcurementList() {
-  const state = useDemo();
+  const service = useSessionService();
+  const state = useSessionState();
   const toast = useToast();
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
@@ -56,7 +47,7 @@ export function ProcurementList() {
     e.preventDefault();
     setBusy(true);
     try {
-      const p = await demoService.createProcurement(form);
+      const p = await service.createProcurement(form);
       navigate(`/pengadaan/${p.id}`);
       toast("Pengadaan berhasil dibuat. Mulai dengan menambahkan vendor.");
     } catch (e) {
@@ -124,7 +115,8 @@ export function ProcurementList() {
 }
 export function ProcurementDetail() {
   const { id } = useParams();
-  const state = useDemo();
+  const service = useSessionService();
+  const state = useSessionState();
   const [params, setParams] = useSearchParams();
   const tab = params.get("tab") || (state.snapshots.some((s) => s.procurementId === id && s.module === "HEA") ? "hea" : "ringkasan");
   const p = state.procurements.find((p) => p.id === id);
@@ -145,7 +137,7 @@ export function ProcurementDetail() {
   async function addVendor(e: React.FormEvent) {
     e.preventDefault();
     try {
-      await demoService.addVendor(p!.id, vendorName);
+      await service.addVendor(p!.id, vendorName);
       setVendorOpen(false);
       setVendorName("");
       toast("Vendor berhasil ditambahkan.");
@@ -230,32 +222,32 @@ export function ProcurementDetail() {
         )}
         {tab === "dokumen" && (
           <>
-              <>
-                <section className="panel">
-                  <div className="panel-header">
-                    <div>
-                      <h2>Dokumen per vendor</h2>
-                      <p>Pilih vendor untuk mengunggah Form A5 atau dokumen penawarannya.</p>
-                    </div>
+            <>
+              <section className="panel">
+                <div className="panel-header">
+                  <div>
+                    <h2>Dokumen per vendor</h2>
+                    <p>Pilih vendor untuk mengunggah Form A5 atau dokumen penawarannya.</p>
                   </div>
-                  {vendors.length ? vendors.map((v) => {
-                    const vendorDocs = docs.filter((d) => d.vendorId === v.id);
-                    return (
-                      <Link className="vendor-document-row" key={v.id} to={`/pengadaan/${p.id}/vendor/${v.id}`}>
-                        <span><strong>{v.name}</strong><small>{vendorDocs.length} dokumen · {vendorDocs.filter((d) => d.status === "CONFIRMED").length} terkonfirmasi</small></span>
-                        <span className="vendor-document-action">Buka dokumen <ArrowRight /></span>
-                      </Link>
-                    );
-                  }) : (
-                    <Empty title="Belum ada vendor">Kembali ke tahap identitas & vendor untuk menambahkan vendor.</Empty>
-                  )}
-                </section>
-                <UploadPanel procurementId={p.id} scope="procurement" />
-                {docs.some((d) => d.kind === "OE") && (
-                  <DocumentTable documents={docs.filter((d) => d.kind === "OE")} title="Dokumen OE" />
+                </div>
+                {vendors.length ? vendors.map((v) => {
+                  const vendorDocs = docs.filter((d) => d.vendorId === v.id);
+                  return (
+                    <Link className="vendor-document-row" key={v.id} to={`/pengadaan/${p.id}/vendor/${v.id}`}>
+                      <span><strong>{v.name}</strong><small>{vendorDocs.length} dokumen · {vendorDocs.filter((d) => d.status === "CONFIRMED").length} terkonfirmasi</small></span>
+                      <span className="vendor-document-action">Buka dokumen <ArrowRight /></span>
+                    </Link>
+                  );
+                }) : (
+                  <Empty title="Belum ada vendor">Kembali ke tahap identitas & vendor untuk menambahkan vendor.</Empty>
                 )}
-                <DocumentTable documents={docs.filter((d) => d.vendorId)} title="Daftar Dokumen Vendor" />
-              </>
+              </section>
+              <UploadPanel procurementId={p.id} scope="procurement" />
+              {docs.some((d) => d.kind === "OE") && (
+                <DocumentTable documents={docs.filter((d) => d.kind === "OE")} title="Dokumen OE" />
+              )}
+              <DocumentTable documents={docs.filter((d) => d.vendorId)} title="Daftar Dokumen Vendor" />
+            </>
             <div className="stage-navigation">
               <button className="btn" onClick={() => setParams({ tab: "ringkasan" })}>Kembali</button>
               <button className="btn primary" onClick={() => setParams({ tab: "hea" })}>Lanjut ke evaluasi <ArrowRight /></button>
@@ -289,24 +281,24 @@ export function ProcurementDetail() {
             <section className="panel">
               <h2>Riwayat pengadaan</h2>
               {state.events
-              .filter((e) => e.procurementId === p.id)
-              .map((e) => (
-                <div className="queue-row" key={e.id}>
-                  <div>
-                    {e.summary}
-                    <small>{dateTime(e.createdAt)}</small>
+                .filter((e) => e.procurementId === p.id)
+                .map((e) => (
+                  <div className="queue-row" key={e.id}>
+                    <div>
+                      {e.summary}
+                      <small>{dateTime(e.createdAt)}</small>
+                    </div>
+                    <span className="badge">
+                      {e.type === "CONFIRMED"
+                        ? "Konfirmasi"
+                        : e.type === "EXPORTED"
+                          ? "Ekspor"
+                          : e.type === "EVALUATED"
+                            ? "Evaluasi"
+                            : "Aktivitas"}
+                    </span>
                   </div>
-                  <span className="badge">
-                    {e.type === "CONFIRMED"
-                      ? "Konfirmasi"
-                      : e.type === "EXPORTED"
-                        ? "Ekspor"
-                        : e.type === "EVALUATED"
-                          ? "Evaluasi"
-                          : "Aktivitas"}
-                  </span>
-                </div>
-              ))}
+                ))}
             </section>
             <div className="stage-navigation">
               <button className="btn" onClick={() => setParams({ tab: "hea" })}>Kembali ke evaluasi</button>
@@ -348,7 +340,7 @@ export function ProcurementDetail() {
 }
 export function VendorDocuments() {
   const { id, vendorId } = useParams();
-  const state = useDemo();
+  const state = useSessionState();
   const procurement = state.procurements.find((p) => p.id === id);
   const vendor = state.vendors.find((v) => v.id === vendorId && v.procurementId === id);
   const backUrl = `/pengadaan/${id}?tab=dokumen`;
@@ -395,7 +387,7 @@ export function DocumentTable({
   embedded?: boolean;
   title?: string;
 }) {
-  const state = useDemo();
+  const state = useSessionState();
   return (
     <section className={embedded ? "document-table-embedded" : "panel"}>
       <div className="panel-header">
@@ -462,6 +454,7 @@ export function UploadPanel({
   scope?: "vendor" | "procurement";
   embedded?: boolean;
 }) {
+  const service = useSessionService();
   const toast = useToast();
   const navigate = useNavigate();
   const [kind, setKind] = useState<DocumentKind>(scope === "procurement" ? "OE" : "FORM_A5");
@@ -479,7 +472,7 @@ export function UploadPanel({
     setBusy(true);
     try {
       const fixture = await processDemoDocument(file, kind, setProcessing);
-      const document = await demoService.uploadRegisteredDocument({
+      const document = await service.uploadRegisteredDocument({
         procurementId,
         kind,
         vendorId: kind === "OE" ? undefined : vendor,
@@ -560,7 +553,8 @@ function ratioInput(value: string) {
   return `${digits.slice(0, -2)}.${digits.slice(-2)}${f}`;
 }
 export function HEAPanel({ procurement: p }: { procurement: Procurement }) {
-  const state = useDemo();
+  const service = useSessionService();
+  const state = useSessionState();
   const toast = useToast();
   const [params, setParams] = useSearchParams();
   const docs = state.documents.filter(
@@ -574,9 +568,9 @@ export function HEAPanel({ procurement: p }: { procurement: Procurement }) {
   const [busy, setBusy] = useState(false);
   const prefDirty =
     prefs.barang !==
-      (p.preferences ? percentInput(p.preferences.preferensi_barang) : "") ||
+    (p.preferences ? percentInput(p.preferences.preferensi_barang) : "") ||
     prefs.jasa !==
-      (p.preferences ? percentInput(p.preferences.preferensi_jasa) : "");
+    (p.preferences ? percentInput(p.preferences.preferensi_jasa) : "");
   const chosen =
     state.snapshots.find(
       (s) =>
@@ -587,7 +581,7 @@ export function HEAPanel({ procurement: p }: { procurement: Procurement }) {
     state.snapshots.find((s) => s.procurementId === p.id && s.module === "HEA");
   async function save() {
     try {
-      const saved = await demoService.setPreferences(
+      const saved = await service.setPreferences(
         p.id,
         {
           preferensi_barang: ratioInput(prefs.barang),
@@ -608,7 +602,7 @@ export function HEAPanel({ procurement: p }: { procurement: Procurement }) {
   }
   async function confirm() {
     try {
-      await demoService.confirmPreferences(p.id, p.preferenceRevision);
+      await service.confirmPreferences(p.id, p.preferenceRevision);
       toast("Preferensi pengadaan terkonfirmasi.");
     } catch (e) {
       toast(errorMessage(e), true);
@@ -618,7 +612,7 @@ export function HEAPanel({ procurement: p }: { procurement: Procurement }) {
     setBusy(true);
     try {
       await new Promise((r) => setTimeout(r, 450));
-      const s = await demoService.evaluateHEA(p.id, selected);
+      const s = await service.evaluateHEA(p.id, selected);
       setParams({ tab: "hea", hasil: s.id });
       toast("Evaluasi HEA selesai. Hasil tersimpan.");
     } catch (e) {
@@ -777,7 +771,8 @@ export function HEAPanel({ procurement: p }: { procurement: Procurement }) {
   );
 }
 export function PDPanel({ procurement: p }: { procurement: Procurement }) {
-  const state = useDemo();
+  const service = useSessionService();
+  const state = useSessionState();
   const toast = useToast();
   const [params, setParams] = useSearchParams();
   const docs = state.documents.filter((d) => d.procurementId === p.id);
@@ -798,7 +793,7 @@ export function PDPanel({ procurement: p }: { procurement: Procurement }) {
     setBusy(true);
     try {
       await new Promise((r) => setTimeout(r, 450));
-      const s = await demoService.evaluateDeviation(p.id, oe, offer);
+      const s = await service.evaluateDeviation(p.id, oe, offer);
       setParams({ tab: "harga", hasil: s.id });
       toast("Evaluasi Harga Timpang selesai.");
     } catch (e) {
@@ -878,6 +873,7 @@ export function ResultPanel({
   snapshot: Snapshot;
   procurement: Procurement;
 }) {
+  const service = useSessionService();
   const toast = useToast();
   const [busy, setBusy] = useState(false);
   const [detail, setDetail] = useState(false);
@@ -886,7 +882,7 @@ export function ResultPanel({
     setBusy(true);
     try {
       await downloadSnapshot(s, p);
-      await demoService.recordExport(s.id);
+      await service.recordExport(s.id);
       toast("Laporan Excel berhasil dibuat.");
     } catch (e) {
       toast(errorMessage(e), true);

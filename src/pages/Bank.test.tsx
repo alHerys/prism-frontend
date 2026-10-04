@@ -1,17 +1,16 @@
-import { describe, expect, it } from "vitest";
-import userEvent from "@testing-library/user-event";
 import {
+  cleanup,
+  fireEvent,
   render,
   screen,
-  fireEvent,
   waitFor,
-  cleanup,
 } from "@testing-library/react";
-import { afterEach } from "vitest";
-import BankPage from "./Bank";
-import HistoryPage from "./History";
+import userEvent from "@testing-library/user-event";
+import { afterEach, describe, expect, it } from "vitest";
 import { createDemoService, DEMO_PREFERENCES } from "../domain";
 import { A5_FIXTURES, HEA_RESULTS } from "../domain/fixtures";
+import BankPage from "./Bank";
+import HistoryPage from "./History";
 afterEach(cleanup);
 describe("Bank Data and history workflows", () => {
   it("requires selection and comparability before descriptive statistics are shown", async () => {
