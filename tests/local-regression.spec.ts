@@ -35,7 +35,7 @@ async function exportRows(page: Page, info: TestInfo, name: string) {
   return JSON.stringify(workbook.getWorksheet('Rincian')!.getSheetValues());
 }
 
-test('demo baru: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot dan ekspor', async ({page, baseURL}, info) => {
+test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot dan ekspor', async ({page, baseURL}, info) => {
   const errors: string[] = [];
   const external: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
@@ -45,8 +45,8 @@ test('demo baru: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot dan eks
   });
   await page.goto('/pengadaan');
   await button(page, 'Tambah pengadaan').click();
-  await page.getByLabel('Nama pengadaan', {exact: true}).fill('Demo Penggantian Jalur Pipa');
-  await page.getByLabel('Nomor pengadaan', {exact: true}).fill('DEMO-2026-001');
+  await page.getByLabel('Nama pengadaan', {exact: true}).fill('Penggantian Jalur Pipa');
+  await page.getByLabel('Nomor pengadaan', {exact: true}).fill('REG-2026-001');
   await page.getByLabel('Fungsi / unit kerja').fill('Maintenance');
   await button(page, 'Buat pengadaan').click();
   await expect(page.locator('[aria-current="step"]')).toContainText('Identitas & vendor');

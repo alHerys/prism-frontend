@@ -134,7 +134,9 @@ Open the URL printed by Vite, usually `http://127.0.0.1:5173`.
 ### Workflow lokal
 
 Lihat [panduan workflow](WORKFLOW-GUIDE.md) untuk unggah, review, konfirmasi,
-evaluasi, dan ekspor. Berkas fixture tersedia di `public/files/`.
+evaluasi, dan ekspor. Berkas fixture tersedia di `public/files/`. Jalankan `npm run fixtures:prepare`
+untuk menyiapkan paket fixture dan `npm run test:local-regression` untuk memeriksa
+workflow melalui preview lokal.
 
 ### Verification commands
 
