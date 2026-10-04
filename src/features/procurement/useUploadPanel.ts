@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { processDemoDocument } from "../../services/document-processing";
+import { processLocalDocument } from "../../infrastructure/local/process-document";
 import { useSessionService } from "../../services/session-context";
 import { errorMessage } from "../../shared/errors/message";
 import type { DocumentKind } from "../../shared/model/session";
@@ -34,7 +34,7 @@ export function useUploadPanel({
     }
     setBusy(true);
     try {
-      const fixture = await processDemoDocument(file, kind, setProcessing);
+      const fixture = await processLocalDocument(file, kind, setProcessing);
       const document = await service.uploadRegisteredDocument({
         procurementId,
         kind,

@@ -1,8 +1,8 @@
 // @vitest-environment node
 import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
-import registry from "../fixtures/file-registry.json";
-import { recognizeFile } from "./registry";
+import registry from "./fixtures/file-registry.json";
+import { recognizeFile } from "./file-registry";
 const source = registry.find((f) => f.kind === "FORM_A5")!;
 describe("Pengenalan berkas lokal", () => {
   it("mengenali isi meski nama diubah dan menolak nama sama dengan isi lain", async () => {

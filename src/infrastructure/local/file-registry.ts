@@ -1,7 +1,8 @@
-import type { DocumentKind } from "../shared/model/session";
+import type { BinarySource } from "../../shared/kernel/binary-source";
+import type { DocumentKind } from "../../shared/model/session";
 
-import registry from "../fixtures/file-registry.json";
-export async function recognizeFile(file: File, kind: DocumentKind) {
+import registry from "./fixtures/file-registry.json";
+export async function recognizeFile(file: BinarySource, kind: DocumentKind) {
   const extension = kind === "FORM_A5" ? ".pdf" : ".xlsx";
   if (!file.name.toLowerCase().endsWith(extension))
     throw new Error(

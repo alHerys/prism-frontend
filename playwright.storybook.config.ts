@@ -1,5 +1,5 @@
 import { defineConfig } from '@playwright/test';
-import desktop from './playwright.config';
+import desktop from './playwright.config.ts';
 
 export default defineConfig({
   ...desktop,

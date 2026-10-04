@@ -6,4 +6,4 @@ export function HistoryPage(props: Parameters<typeof useHistoryPage>[0]) {
 }
 
 export default HistoryPage;
-export type { HistoryPageProps } from "./history-page.types";
+export type { HistoryPageProps } from "./history-page.types.ts";

@@ -7,7 +7,7 @@ import {
 } from "./fixtures";
 import { copy, DomainError } from "./validation";
 // Only the facade owns this mutable store; React receives frozen copies.
-export class DemoStore {
+export class LocalStore {
   private view!: DemoState;
   state: DemoState;
   private listeners = new Set<() => void>();

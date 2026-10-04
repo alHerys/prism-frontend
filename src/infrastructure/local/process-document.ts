@@ -1,11 +1,12 @@
-import type { DocumentKind } from "../shared/model/session";
+import type { BinarySource } from "../../shared/kernel/binary-source";
+import type { DocumentKind } from "../../shared/model/session";
 
-import { recognizeFile } from "./registry";
+import { recognizeFile } from "./file-registry";
 
-// Offline demo: the registered file selects prepared candidates. These stages
+// Local adapter: the registered file selects prepared candidates. These stages
 // simulate processing latency; no parser, AI provider, or network call runs.
-export async function processDemoDocument(
-  file: File,
+export async function processLocalDocument(
+  file: BinarySource,
   kind: DocumentKind,
   onProgress: (label: string) => void,
 ) {

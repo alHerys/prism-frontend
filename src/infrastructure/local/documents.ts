@@ -1,4 +1,4 @@
-import registry from "../../fixtures/file-registry.json";
+import registry from "./fixtures/file-registry.json";
 import type {
   A5Values,
   DocumentRecord,
@@ -8,9 +8,9 @@ import {
   A5_FIXTURES,
   PAIR_FIXTURES
 } from "./fixtures";
-import type { DemoStore } from "./store";
+import type { LocalStore } from "./store";
 import { DomainError, copy, decimal, equalValues } from "./validation";
-export function makeDocument(store: DemoStore, input: UploadInput): DocumentRecord {
+export function makeDocument(store: LocalStore, input: UploadInput): DocumentRecord {
   const candidate = A5_FIXTURES[input.fixtureId];
   const file = registry.find((f) => f.id === input.fixtureId);
   const id = store.id("doc");
@@ -79,7 +79,7 @@ export function makeDocument(store: DemoStore, input: UploadInput): DocumentReco
     published: false,
   };
 }
-export async function uploadRegisteredDocument(store: DemoStore, input: UploadInput) {
+export async function uploadRegisteredDocument(store: LocalStore, input: UploadInput) {
   store.proc(input.procurementId);
   const expected = input.fixtureId.startsWith("a5-")
     ? "FORM_A5"
@@ -124,7 +124,7 @@ export async function uploadRegisteredDocument(store: DemoStore, input: UploadIn
   store.emit();
   return copy(d);
 }
-export async function reviewDocument(store: DemoStore, id: string, values: A5Values, expectedRevision: number) {
+export async function reviewDocument(store: LocalStore, id: string, values: A5Values, expectedRevision: number) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
   if (!d.candidate)
@@ -146,7 +146,7 @@ export async function reviewDocument(store: DemoStore, id: string, values: A5Val
   store.emit();
   return copy(d);
 }
-export async function confirmDocument(store: DemoStore, id: string, expectedRevision: number, acknowledged = false) {
+export async function confirmDocument(store: LocalStore, id: string, expectedRevision: number, acknowledged = false) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
   if (d.status === "CONFIRMED") return copy(d);

@@ -1,4 +1,4 @@
-import registry from "../../fixtures/file-registry.json";
+import registry from "./fixtures/file-registry.json";
 import type {
   PricePair
 } from "../../shared/model/session";
@@ -6,9 +6,9 @@ import {
   PAIR_FIXTURES
 } from "./fixtures";
 import { snapshot } from "./snapshots";
-import type { DemoStore } from "./store";
+import type { LocalStore } from "./store";
 import { DomainError, copy, decimal, equalValues, normalize } from "./validation";
-export async function selectGroup(store: DemoStore, id: string, group: string, expectedRevision: number) {
+export async function selectGroup(store: LocalStore, id: string, group: string, expectedRevision: number) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
   if (!d.groups.includes(group))
@@ -24,7 +24,7 @@ export async function selectGroup(store: DemoStore, id: string, group: string, e
   store.emit();
   return copy(d);
 }
-export async function reviewPairs(store: DemoStore, id: string, pairs: PricePair[], expectedRevision: number) {
+export async function reviewPairs(store: LocalStore, id: string, pairs: PricePair[], expectedRevision: number) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
   if (d.kind !== "OFFER")
@@ -76,7 +76,7 @@ export async function reviewPairs(store: DemoStore, id: string, pairs: PricePair
   store.emit();
   return copy(d);
 }
-export async function confirmPairs(store: DemoStore, id: string, expectedRevision: number, acknowledged = false) {
+export async function confirmPairs(store: LocalStore, id: string, expectedRevision: number, acknowledged = false) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
   if (d.selectedGroup !== "Harga satuan material dan jasa")
@@ -109,10 +109,10 @@ export async function confirmPairs(store: DemoStore, id: string, expectedRevisio
   store.emit();
   return copy(d);
 }
-export async function evaluateDeviation(store: DemoStore, procurementId: string, oeId: string, offerId: string) {
+export async function evaluateDeviation(store: LocalStore, procurementId: string, oeId: string, offerId: string) {
   return buildDeviation(store, procurementId, oeId, offerId);
 }
-export function buildDeviation(store: DemoStore, procurementId: string, oeId: string, offerId: string) {
+export function buildDeviation(store: LocalStore, procurementId: string, oeId: string, offerId: string) {
   store.proc(procurementId);
   const oe = store.doc(oeId),
     offer = store.doc(offerId);

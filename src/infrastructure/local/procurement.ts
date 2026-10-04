@@ -1,9 +1,9 @@
 import type {
   Procurement
 } from "../../shared/model/session";
-import type { DemoStore } from "./store";
+import type { LocalStore } from "./store";
 import { DomainError, copy, requireText } from "./validation";
-export async function createProcurement(store: DemoStore, input: {
+export async function createProcurement(store: LocalStore, input: {
   name: string;
   number: string;
   functionName: string;
@@ -30,7 +30,7 @@ export async function createProcurement(store: DemoStore, input: {
   store.emit();
   return copy(p);
 }
-export async function addVendor(store: DemoStore, procurementId: string, name: string) {
+export async function addVendor(store: LocalStore, procurementId: string, name: string) {
   store.proc(procurementId);
   requireText(name, "Nama vendor");
   if (

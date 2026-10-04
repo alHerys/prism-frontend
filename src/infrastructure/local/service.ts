@@ -5,7 +5,7 @@ import type {
   PricePair,
   UploadInput
 } from "../../shared/model/session";
-import type { SessionService } from "../session-service";
+import type { SessionService } from "../../services/session-service";
 import { confirmDocument, reviewDocument, uploadRegisteredDocument } from "./documents";
 import { confirmPreferences, evaluateHEA, setPreferences } from "./hea";
 import { createBankSnapshot, estimate, getPreparedStatistics, publishHistory, setComparable, setHistoricalMetadata } from "./historical";
@@ -13,11 +13,11 @@ import { confirmPairs, evaluateDeviation, reviewPairs, selectGroup } from "./pri
 import { addVendor, createProcurement } from "./procurement";
 import { initializeSession } from "./seed";
 import { recordExport } from "./snapshots";
-import { DemoStore } from "./store";
+import { LocalStore } from "./store";
 export { DomainError } from "./validation";
-export class DemoService implements SessionService {
-  private readonly store: DemoStore;
-  constructor(seed = true, prepared = false) { this.store = new DemoStore(); initializeSession(this.store, seed, prepared); }
+export class LocalSession implements SessionService {
+  private readonly store: LocalStore;
+  constructor(seed = true, prepared = false) { this.store = new LocalStore(); initializeSession(this.store, seed, prepared); }
   getState = () => this.store.getState();
   subscribe = (listener: () => void) => this.store.subscribe(listener);
   async createProcurement(input: {
@@ -48,4 +48,4 @@ export class DemoService implements SessionService {
   async recordExport(snapshotId: string) { return recordExport(this.store, snapshotId); }
   getHistoricalStatistics = (referenceIds: string[]) => this.getPreparedStatistics(referenceIds);
 }
-export const createDemoService = (seed = true, prepared = false) => new DemoService(seed, prepared);
+export const createLocalSession = (seed = true, prepared = false) => new LocalSession(seed, prepared);

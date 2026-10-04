@@ -3,13 +3,13 @@ import type {
 } from "../../shared/model/session";
 import {
   A5_FIXTURES,
-  DEMO_PREFERENCES,
+  FIXTURE_PREFERENCES,
   HEA_RESULTS
 } from "./fixtures";
 import { snapshot } from "./snapshots";
-import type { DemoStore } from "./store";
+import type { LocalStore } from "./store";
 import { DomainError, copy, decimal, equalValues } from "./validation";
-export async function setPreferences(store: DemoStore, procurementId: string, values: Preferences, expectedRevision: number) {
+export async function setPreferences(store: LocalStore, procurementId: string, values: Preferences, expectedRevision: number) {
   const p = store.proc(procurementId);
   store.check(p.preferenceRevision, expectedRevision);
   Object.values(values).forEach((v) => decimal(v, true));
@@ -26,7 +26,7 @@ export async function setPreferences(store: DemoStore, procurementId: string, va
   store.emit();
   return copy(p);
 }
-export async function confirmPreferences(store: DemoStore, procurementId: string, expectedRevision: number) {
+export async function confirmPreferences(store: LocalStore, procurementId: string, expectedRevision: number) {
   const p = store.proc(procurementId);
   store.check(p.preferenceRevision, expectedRevision);
   if (!p.preferences)
@@ -45,17 +45,17 @@ export async function confirmPreferences(store: DemoStore, procurementId: string
   store.emit();
   return copy(p);
 }
-export async function evaluateHEA(store: DemoStore, procurementId: string, documentIds: string[]) {
+export async function evaluateHEA(store: LocalStore, procurementId: string, documentIds: string[]) {
   return buildHEA(store, procurementId, documentIds);
 }
-export function buildHEA(store: DemoStore, procurementId: string, documentIds: string[]) {
+export function buildHEA(store: LocalStore, procurementId: string, documentIds: string[]) {
   const p = store.proc(procurementId);
   if (!p.preferenceConfirmed || !p.preferences)
     throw new DomainError(
       "PREFERENCES_REQUIRED",
       "Konfirmasi preferensi sebelum evaluasi.",
     );
-  if (!equalValues(p.preferences, DEMO_PREFERENCES))
+  if (!equalValues(p.preferences, FIXTURE_PREFERENCES))
     throw new DomainError(
       "UNAVAILABLE",
       "Evaluasi belum tersedia untuk nilai preferensi ini. Periksa kembali data.",

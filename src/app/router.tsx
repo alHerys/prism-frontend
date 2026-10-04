@@ -1,18 +1,19 @@
+import { ApplicationProviders } from "./providers/ApplicationProviders";
 import { createBrowserRouter } from "react-router";
 import { ToastProvider } from "../shared/ui/feedback";
 
 import { AppShell } from "./AppShell";
 
-import { sessionService } from "./session";
+import { application, sessionService } from "./session";
 
 import { SessionProvider } from "../services/session-context";
 export const router = createBrowserRouter([
   {
     path: "*",
     element: (
-      <SessionProvider service={sessionService}><ToastProvider>
+      <ApplicationProviders application={application}><SessionProvider service={sessionService}><ToastProvider>
         <AppShell />
-      </ToastProvider></SessionProvider>
+      </ToastProvider></SessionProvider></ApplicationProviders>
     ),
   },
 ]);

@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { Link, MemoryRouter, Route, Routes } from "react-router";
 import { afterEach, expect, it } from "vitest";
-import { createDemoService } from "./demo/service";
+import { createLocalSession } from "../infrastructure/local/service";
 
 import { SessionProvider, useSessionService, useSessionState } from "./session-context";
 
@@ -16,8 +16,8 @@ function SessionScreen() {
   </>;
 }
 it("keeps session state when route content remounts without leaking into another instance", async () => {
-  const service = createDemoService(false);
-  const other = createDemoService(false);
+  const service = createLocalSession(false);
+  const other = createLocalSession(false);
   render(<SessionProvider service={service}><MemoryRouter><Routes>
     <Route path="/" element={<SessionScreen />} />
     <Route path="/lain" element={<SessionScreen key="lain" />} />

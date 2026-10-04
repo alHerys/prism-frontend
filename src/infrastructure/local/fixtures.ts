@@ -15,7 +15,7 @@ export const A5_FIXTURES: Record<string, A5Values> = {
     tkdn_jasa: "0.35",
   },
 };
-export const DEMO_PREFERENCES = {
+export const FIXTURE_PREFERENCES = {
   preferensi_barang: "0.15",
   preferensi_jasa: "0.075",
 };

@@ -1,15 +1,15 @@
 import { makeDocument } from "./documents";
 import {
   A5_FIXTURES,
-  DEMO_PREFERENCES
+  FIXTURE_PREFERENCES
 } from "./fixtures";
 import { buildHEA } from "./hea";
 import { buildBankSnapshot, buildEstimate } from "./historical";
 import { buildDeviation } from "./price-deviation";
-import type { DemoStore } from "./store";
+import type { LocalStore } from "./store";
 import { copy } from "./validation";
-// Prepared records only seed the synthetic demo; new uploads still require confirmation.
-export function prepareShowcase(store: DemoStore) {
+// Prepared records only seed the fixture session; new uploads still require confirmation.
+export function prepareShowcase(store: LocalStore) {
   const procurementId = "proc-showcase";
   store.state.procurements.push({
     id: procurementId,
@@ -17,7 +17,7 @@ export function prepareShowcase(store: DemoStore) {
     number: "PRC-DEMO-2026-003",
     functionName: "Maintenance",
     createdAt: "2026-10-02T09:00:00+07:00",
-    preferences: copy(DEMO_PREFERENCES),
+    preferences: copy(FIXTURE_PREFERENCES),
     preferenceRevision: 1,
     preferenceConfirmed: true,
   });
@@ -65,7 +65,7 @@ export function prepareShowcase(store: DemoStore) {
   buildBankSnapshot(store, referenceIds);
   buildEstimate(store, { description: "Pengecatan tangki", unit: "m²", quantity: "10", referenceIds });
 }
-export function initializeSession(store: DemoStore, seed: boolean, prepared: boolean) {
+export function initializeSession(store: LocalStore, seed: boolean, prepared: boolean) {
   if (seed) {
     store.state.procurements = [
       {

@@ -3,8 +3,8 @@ import { readFile, mkdir, copyFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
-const root = fileURLToPath(new URL('../', import.meta.url));
-const registry = JSON.parse(await readFile(path.join(root, 'src/fixtures/file-registry.json'), 'utf8'));
+const root = fileURLToPath(new URL('..', import.meta.url));
+const registry = JSON.parse(await readFile(path.join(root, 'src/infrastructure/local/fixtures/file-registry.json'), 'utf8'));
 const kit = path.join(root, 'fixture-kit');
 const groups = {FORM_A5: '01-HEA', OE: '02-Harga-Timpang', OFFER: '02-Harga-Timpang', HISTORICAL_OE: '03-Bank-OE'};
 

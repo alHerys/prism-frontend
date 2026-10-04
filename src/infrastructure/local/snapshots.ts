@@ -1,9 +1,9 @@
 import type {
   Snapshot
 } from "../../shared/model/session";
-import type { DemoStore } from "./store";
+import type { LocalStore } from "./store";
 import { DomainError, copy } from "./validation";
-export function snapshot(store: DemoStore, input: Omit<Snapshot, "id" | "createdAt">) {
+export function snapshot(store: LocalStore, input: Omit<Snapshot, "id" | "createdAt">) {
   const s: Snapshot = {
     ...copy(input),
     id: store.id("result"),
@@ -20,7 +20,7 @@ export function snapshot(store: DemoStore, input: Omit<Snapshot, "id" | "created
   store.emit();
   return copy(s);
 }
-export async function recordExport(store: DemoStore, snapshotId: string) {
+export async function recordExport(store: LocalStore, snapshotId: string) {
   const s = store.state.snapshots.find((s) => s.id === snapshotId);
   if (!s) throw new DomainError("NOT_FOUND", "Hasil tidak ditemukan.");
   store.event({

@@ -1,11 +1,11 @@
 import { act, cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, expect, it, vi } from "vitest";
-import { createDemoService } from "../../services/demo/service";
+import { createLocalSession } from "../../infrastructure/local/service";
 import HistoryPage from "./HistoryPage";
 afterEach(cleanup);
 it("keeps displayed and exported snapshot inputs after its source document is corrected", async () => {
-  const service = createDemoService(true, true);
+  const service = createLocalSession(true, true);
   const snapshot = service.getState().snapshots.find(s => s.module === "HEA")!;
   const doc = service.getState().documents.find(d => d.procurementId === snapshot.procurementId && d.kind === "FORM_A5")!;
   const onExport = vi.fn();

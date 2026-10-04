@@ -7,16 +7,16 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
-import { DEMO_PREFERENCES } from "../../services/demo/fixtures";
-import { createDemoService } from "../../services/demo/service";
+import { FIXTURE_PREFERENCES } from "../../infrastructure/local/fixtures";
+import { createLocalSession } from "../../infrastructure/local/service";
 
-import { A5_FIXTURES, HEA_RESULTS } from "../../services/demo/fixtures";
+import { A5_FIXTURES, HEA_RESULTS } from "../../infrastructure/local/fixtures";
 import HistoryPage from "../history/HistoryPage";
 import BankPage from "./BankPage";
 afterEach(cleanup);
 describe("Bank Data and history workflows", () => {
   it("requires selection and comparability before descriptive statistics are shown", async () => {
-    const service = createDemoService();
+    const service = createLocalSession();
     render(<BankPage service={service} />);
     await userEvent.click(screen.getByRole("tab", { name: "Statistik Harga" }));
     expect(
@@ -49,7 +49,7 @@ describe("Bank Data and history workflows", () => {
     ).toBeInTheDocument();
   });
   it("keeps reference selections while filtering and distinguishes a single observation", async () => {
-    const service = createDemoService();
+    const service = createLocalSession();
     render(<BankPage service={service} />);
     await userEvent.click(
       screen.getByRole("tab", { name: "Pencarian Referensi" }),
@@ -69,7 +69,7 @@ describe("Bank Data and history workflows", () => {
     ).toBeInTheDocument();
   });
   it("filters history and presents an empty result instead of unrelated activities", async () => {
-    render(<HistoryPage service={createDemoService()} />);
+    render(<HistoryPage service={createLocalSession()} />);
     expect(screen.getAllByText("Pengadaan dibuat").length).toBeGreaterThan(0);
     fireEvent.change(screen.getByLabelText("Cari aktivitas atau hasil"), {
       target: { value: "absen" },
@@ -80,7 +80,7 @@ describe("Bank Data and history workflows", () => {
     expect(screen.queryAllByText("Pengadaan dibuat")).toHaveLength(0);
   });
   it("keeps full precision on the snapshot while presenting rounded rupiah and Indonesian labels", async () => {
-    const service = createDemoService();
+    const service = createLocalSession();
     const docs = service
       .getState()
       .documents.filter((d) => d.kind === "FORM_A5");
@@ -92,7 +92,7 @@ describe("Bank Data and history workflows", () => {
       );
       await service.confirmDocument(doc.id, revised.revision, true);
     }
-    await service.setPreferences("proc-terminal", DEMO_PREFERENCES, 0);
+    await service.setPreferences("proc-terminal", FIXTURE_PREFERENCES, 0);
     await service.confirmPreferences("proc-terminal", 1);
     const snapshot = await service.evaluateHEA(
       "proc-terminal",

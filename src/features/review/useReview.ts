@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { availableDocuments } from "../../services/registry";
+import { availableDocuments } from "../../infrastructure/local/file-registry";
 import { useSessionService, useSessionState } from "../../services/session-context";
 import { toPercent, toRatio } from "../../shared/formatters/review-input";
 import type { A5Values, PricePair } from "../../shared/model/session";

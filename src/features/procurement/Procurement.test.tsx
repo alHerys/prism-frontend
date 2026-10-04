@@ -7,7 +7,7 @@ import {
 } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { afterEach, describe, expect, it } from "vitest";
-import { createDemoService } from "../../services/demo/service";
+import { createLocalSession } from "../../infrastructure/local/service";
 
 import { SessionProvider } from "../../services/session-context";
 import { ToastProvider } from "../../shared/ui/feedback";
@@ -17,7 +17,7 @@ import { ProcurementTable } from "./ProcurementTable.tsx";
 afterEach(cleanup);
 describe("Preferensi evaluasi", () => {
   it("tidak mengonfirmasi atau mengevaluasi preferensi lama ketika formulir memiliki perubahan", async () => {
-    const service = createDemoService(true, true);
+    const service = createLocalSession(true, true);
     const initial = service.getState().procurements[0];
     await act(async () => {
       await service.setPreferences(
@@ -52,7 +52,7 @@ describe("Preferensi evaluasi", () => {
 
 describe("Pencarian pengadaan", () => {
   it("menemukan pengadaan melalui vendor dan dokumen tanpa menampilkan pengadaan lain", () => {
-    const service = createDemoService(true, true);
+    const service = createLocalSession(true, true);
     const state = service.getState();
     render(<MemoryRouter><SessionProvider service={service}><ProcurementTable items={state.procurements} /></SessionProvider></MemoryRouter>);
     const search = screen.getByRole("textbox", { name: "Cari pengadaan" });

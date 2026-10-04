@@ -2,7 +2,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { transferableAbortController } from "node:util";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { createDemoService } from "../../services/demo/service";
+import { createLocalSession } from "../../infrastructure/local/service";
 import { SessionProvider } from "../../services/session-context";
 import { ToastProvider } from "../../shared/ui/feedback";
 import { Review } from "./Review";
@@ -10,7 +10,7 @@ import { Review } from "./Review";
 beforeEach(() => vi.stubGlobal("AbortController", transferableAbortController().constructor));
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 function openReview(documentId: string) {
-  const service = createDemoService();
+  const service = createLocalSession();
   const router = createMemoryRouter([
     { path: "/pengadaan/:id/review/:documentId", element: <Review /> },
     { path: "/pengadaan/:id/vendor/:vendorId", element: <p>Dokumen vendor</p> },

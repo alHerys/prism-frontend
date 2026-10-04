@@ -3,7 +3,7 @@ import { useSessionService, useSessionState } from "../../services/session-conte
 import { localDay } from "../../shared/formatters/display";
 import type { Snapshot } from "../../shared/model/session";
 import { moduleLabel } from "./history-labels";
-import type { HistoryPageProps } from "./history-page.types";
+import type { HistoryPageProps } from "./history-page.types.ts";
 
 export function useHistoryPage({
   service: serviceOverride,

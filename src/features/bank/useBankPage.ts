@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSessionService, useSessionState } from "../../services/session-context";
 import type { HistoricalItem } from "../../shared/model/session";
-import type { BankPageProps } from "./bank-page.types";
+import type { BankPageProps } from "./bank-page.types.ts";
 import { pause } from "./simulation";
 
 export function useBankPage({ service: serviceOverride, onExport }: BankPageProps) {
@@ -72,8 +72,8 @@ export function useBankPage({ service: serviceOverride, onExport }: BankPageProp
   const upload = async (file?: File) => {
     if (!file) return;
     await run("Membaca dokumen", async () => {
-      const { processDemoDocument } = await import("../../services/document-processing");
-      const registered = await processDemoDocument(file, "HISTORICAL_OE", setBusy);
+      const { processLocalDocument } = await import("../../infrastructure/local/process-document");
+      const registered = await processLocalDocument(file, "HISTORICAL_OE", setBusy);
       const record = await service.uploadRegisteredDocument({
         procurementId,
         kind: "HISTORICAL_OE",

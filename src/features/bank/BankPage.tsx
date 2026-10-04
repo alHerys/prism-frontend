@@ -6,4 +6,4 @@ export function BankPage(props: Parameters<typeof useBankPage>[0]) {
 }
 
 export default BankPage;
-export type { BankPageProps } from "./bank-page.types";
+export type { BankPageProps } from "./bank-page.types.ts";

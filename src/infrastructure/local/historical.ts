@@ -6,9 +6,9 @@ import {
   HISTORICAL_FIXTURES
 } from "./fixtures";
 import { snapshot } from "./snapshots";
-import type { DemoStore } from "./store";
+import type { LocalStore } from "./store";
 import { DomainError, copy, requireText } from "./validation";
-export async function setHistoricalMetadata(store: DemoStore, id: string, input: {
+export async function setHistoricalMetadata(store: LocalStore, id: string, input: {
   functionName: string;
   period: string;
 }, expectedRevision: number) {
@@ -32,7 +32,7 @@ export async function setHistoricalMetadata(store: DemoStore, id: string, input:
   store.emit();
   return copy(d);
 }
-export async function publishHistory(store: DemoStore, id: string, expectedRevision: number) {
+export async function publishHistory(store: LocalStore, id: string, expectedRevision: number) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
   if (
@@ -68,16 +68,16 @@ export async function publishHistory(store: DemoStore, id: string, expectedRevis
   store.emit();
   return copy(d);
 }
-export async function setComparable(store: DemoStore, id: string, value: boolean) {
+export async function setComparable(store: LocalStore, id: string, value: boolean) {
   const item = store.state.historicalItems.find((i) => i.id === id);
   if (!item) throw new DomainError("NOT_FOUND", "Referensi tidak ditemukan.");
   item.comparable = value;
   store.emit();
 }
-export async function estimate(store: DemoStore, input: { description: string; unit: string; quantity: string; referenceIds: string[] }) {
+export async function estimate(store: LocalStore, input: { description: string; unit: string; quantity: string; referenceIds: string[] }) {
   return buildEstimate(store, input);
 }
-export function buildEstimate(store: DemoStore, input: {
+export function buildEstimate(store: LocalStore, input: {
   description: string;
   unit: string;
   quantity: string;
@@ -128,7 +128,7 @@ export function buildEstimate(store: DemoStore, input: {
   store.emit();
   return copy(e);
 }
-export function getPreparedStatistics(store: DemoStore, referenceIds: string[]): HistoricalStatistics | undefined {
+export function getPreparedStatistics(store: LocalStore, referenceIds: string[]): HistoricalStatistics | undefined {
   const refs = [...new Set(referenceIds)].map((id) =>
     store.state.historicalItems.find((item) => item.id === id),
   );
@@ -173,10 +173,10 @@ export function getPreparedStatistics(store: DemoStore, referenceIds: string[]):
     },
   };
 }
-export async function createBankSnapshot(store: DemoStore, referenceIds: string[]) {
+export async function createBankSnapshot(store: LocalStore, referenceIds: string[]) {
   return buildBankSnapshot(store, referenceIds);
 }
-export function buildBankSnapshot(store: DemoStore, referenceIds: string[]) {
+export function buildBankSnapshot(store: LocalStore, referenceIds: string[]) {
   const refs = [...new Set(referenceIds)].map((id) =>
     store.state.historicalItems.find((i) => i.id === id),
   );

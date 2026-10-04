@@ -8,7 +8,7 @@ describe("registered source files", () => {
     expect(new Set(registry.map((d) => d.id)).size).toBe(8);
     for (const file of registry) {
       const bytes = readFileSync(
-        new URL("../../public" + file.path, import.meta.url),
+        new URL("../../../../public" + file.path, import.meta.url),
       );
       expect(createHash("sha256").update(bytes).digest("hex")).toBe(
         file.sha256,
