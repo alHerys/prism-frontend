@@ -5,18 +5,18 @@ import {
   Routes,
   useLocation
 } from "react-router";
-import { Dashboard } from "../pages/Dashboard";
+import { Dashboard } from "../features/dashboard/Dashboard";
 import { LoadingState } from "../shared/ui/components";
 import { Empty } from "../shared/ui/feedback";
 
 const ProcurementList = lazy(() =>
-  import("../pages/Procurement").then((m) => ({ default: m.ProcurementList })),
+  import("../features/procurement/ProcurementList").then((m) => ({ default: m.ProcurementList })),
 );
 const ProcurementDetail = lazy(() =>
-  import("../pages/Procurement").then((m) => ({ default: m.ProcurementDetail })),
+  import("../features/procurement/ProcurementDetail").then((m) => ({ default: m.ProcurementDetail })),
 );
 const VendorDocuments = lazy(() =>
-  import("../pages/Procurement").then((m) => ({ default: m.VendorDocuments })),
+  import("../features/procurement/VendorDocuments").then((m) => ({ default: m.VendorDocuments })),
 );
 const Review = lazy(() =>
   import("../pages/Review").then((m) => ({ default: m.Review })),

@@ -10,7 +10,7 @@ import { Link, useBlocker, useNavigate, useParams } from "react-router";
 import { useSessionService, useSessionState } from "../services/session-context";
 import { SourcePanel } from "../shared/ui/components";
 import { CurrencyInput } from "../shared/ui/currency-input";
-import "./review.css";
+import "../shared/styles/focus.css";
 
 import type { A5Values, PricePair } from "../shared/model/session";
 

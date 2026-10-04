@@ -7,13 +7,13 @@ import {
 } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { afterEach, describe, expect, it } from "vitest";
-import { createDemoService } from "../services/demo/service";
+import { createDemoService } from "../../services/demo/service";
 
-import { SessionProvider } from "../services/session-context";
-import { ToastProvider } from "../shared/ui/feedback";
+import { SessionProvider } from "../../services/session-context";
+import { ToastProvider } from "../../shared/ui/feedback";
 
-import { HEAPanel } from "./Procurement";
-import { ProcurementTable } from "./ProcurementTable";
+import { HEAPanel } from "../hea/HEAPanel";
+import { ProcurementTable } from "./ProcurementTable.tsx";
 afterEach(cleanup);
 describe("Preferensi evaluasi", () => {
   it("tidak mengonfirmasi atau mengevaluasi preferensi lama ketika formulir memiliki perubahan", async () => {
