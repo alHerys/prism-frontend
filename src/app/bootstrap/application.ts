@@ -1,3 +1,4 @@
+import type { SnapshotExporter } from "../../modules/evaluations/application/ports";
 import { createLocalRuntime } from "../../infrastructure/local/runtime";
 import { createProcurementUseCases } from "../../modules/procurement/application/use-cases";
 import { createDocumentsUseCases } from "../../modules/documents/application/use-cases";
@@ -6,9 +7,14 @@ import { createPriceDeviationUseCases } from "../../modules/price-deviation/appl
 import { createHistoricalPricesUseCases } from "../../modules/historical-prices/application/use-cases";
 import { createEvaluationsUseCases } from "../../modules/evaluations/application/use-cases";
 
-export function createApplication(runtime = createLocalRuntime(true, true)) {
+export function createApplication(runtime = createLocalRuntime(true, true), exporter: SnapshotExporter = {
+  download: async (snapshot, procurement) => {
+    const { downloadSnapshot } = await import("../../modules/evaluations/infrastructure/workbook");
+    await downloadSnapshot(snapshot, procurement);
+  },
+}) {
   const documents = createDocumentsUseCases(runtime.documents.gateway, runtime.processing, runtime.priceDeviation.gateway);
-  const evaluations = createEvaluationsUseCases(runtime.evaluations.gateway);
+  const evaluations = createEvaluationsUseCases(runtime.evaluations.gateway, runtime.procurement.queries, exporter);
   return {
     procurement: { commands: createProcurementUseCases(runtime.procurement.gateway), queries: runtime.procurement.queries },
     documents: { commands: documents, queries: runtime.documents.queries },

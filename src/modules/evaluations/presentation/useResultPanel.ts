@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { downloadSnapshot } from "../../services/export/workbook";
-import { useSessionService } from "../../services/session-context";
-import { errorMessage } from "../../shared/errors/message";
-import type { Procurement, Snapshot } from "../../shared/model/session";
-import { useToast } from "../../shared/ui/feedback";
+
+import { useEvaluationsCommands } from "./binding";
+import { errorMessage } from "../../../shared/errors/message";
+import type { Procurement, Snapshot } from "../../../shared/model/session";
+import { useToast } from "../../../shared/ui/feedback";
 
 export function useResultPanel({
   snapshot: s,
@@ -12,7 +12,7 @@ export function useResultPanel({
   snapshot: Snapshot;
   procurement: Procurement;
 }) {
-  const service = useSessionService();
+  const service = useEvaluationsCommands();
   const toast = useToast();
   const [busy, setBusy] = useState(false);
   const [detail, setDetail] = useState(false);
@@ -20,8 +20,7 @@ export function useResultPanel({
   async function exportResult() {
     setBusy(true);
     try {
-      await downloadSnapshot(s, p);
-      await service.recordExport(s.id);
+      await service.exportSnapshot(s);
       toast("Laporan Excel berhasil dibuat.");
     } catch (e) {
       toast(errorMessage(e), true);

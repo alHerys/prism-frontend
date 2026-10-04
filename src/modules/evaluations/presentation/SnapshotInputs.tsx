@@ -1,4 +1,4 @@
-import "../styles/bank.css";
+import "../../../shared/styles/bank.css";
 const categoryLabel: Record<string, string> = {
   MATERIAL: "Material",
   SERVICE: "Jasa",

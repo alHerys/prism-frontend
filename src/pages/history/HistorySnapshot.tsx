@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
 import { DownloadSimple } from "@phosphor-icons/react/dist/csr/DownloadSimple";
 import { exactMoney, roundedMoney, historyTime as time } from "../../shared/formatters/display";
-import { SnapshotInputs } from "../../shared/snapshot/SnapshotInputs";
+import { SnapshotInputs } from "../../modules/evaluations/presentation/SnapshotInputs";
 import "../../shared/styles/bank.css";
 import { categoryLabel, classificationLabel, moduleLabel } from "./history-labels";
 import type { useHistoryPage } from "./useHistoryPage";

@@ -5,7 +5,7 @@ import {
   Routes,
   useLocation
 } from "react-router";
-import { Dashboard } from "../features/dashboard/Dashboard";
+import { Dashboard } from "../pages/dashboard/Dashboard";
 import { LoadingState } from "../shared/ui/components";
 import { Empty } from "../shared/ui/feedback";
 
@@ -22,7 +22,7 @@ const Review = lazy(() =>
   import("../modules/documents/presentation/Review").then((m) => ({ default: m.Review })),
 );
 const Bank = lazy(() => import("../modules/historical-prices/presentation/BankPage"));
-const HistoryPage = lazy(() => import("../features/history/HistoryPage"));
+const HistoryPage = lazy(() => import("../pages/history/HistoryPage"));
 
 export function AppRoutes() {
   const location = useLocation();

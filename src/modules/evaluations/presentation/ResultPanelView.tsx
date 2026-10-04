@@ -1,8 +1,8 @@
 import { DownloadSimple as Download } from "@phosphor-icons/react/dist/csr/DownloadSimple";
-import { dateTime, money, pct, roundedMoney } from "../../shared/formatters/display";
-import { SnapshotInputs } from "../../shared/snapshot/SnapshotInputs";
-import "../../shared/styles/focus.css";
-import { Status } from "../../shared/ui/feedback";
+import { dateTime, money, pct, roundedMoney } from "../../../shared/formatters/display";
+import { SnapshotInputs } from "./SnapshotInputs";
+import "../../../shared/styles/focus.css";
+import { Status } from "../../../shared/ui/feedback";
 import type { useResultPanel } from "./useResultPanel";
 
 export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter, exportResult, rows }: ReturnType<typeof useResultPanel>) {

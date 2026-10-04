@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useHistoricalPricesCommands, useHistoricalPricesData } from "./binding";
 import type { HistoricalItem } from "../../../shared/model/session";
-import type { BankPageProps } from "./bank-page.types.ts";
 
 
-export function useBankPage({ onExport }: BankPageProps) {
+export function useBankPage() {
   const service = useHistoricalPricesCommands();
   const state = useHistoricalPricesData();
   const preparedEstimate = state.estimates[0];
@@ -110,17 +109,7 @@ export function useBankPage({ onExport }: BankPageProps) {
   };
   const exportStats = async () => {
     await run("Menyiapkan laporan", async () => {
-      const result = await service.createBankSnapshot(selectedIds);
-      if (onExport) await onExport(result);
-      else {
-        const { downloadSnapshot } = await import("../../../services/export/workbook.ts");
-        const p = state.procurements.find((p) => p.id === result.procurementId);
-        await downloadSnapshot(
-          result,
-          p ?? { name: "Bank Data OE", number: "OE-HISTORIS" },
-        );
-        await service.recordExport(result.id);
-      }
+      await service.exportReferences(selectedIds);
       setNotice("Laporan referensi berhasil disiapkan.");
     });
   };

@@ -1,17 +1,16 @@
 import { useMemo, useState } from "react";
-import { useSessionService, useSessionState } from "../../services/session-context";
+import { useEvaluationsCommands, useEvaluationsData } from "../../modules/evaluations/presentation/binding";
+import { useDocumentsData } from "../../modules/documents/presentation/binding";
 import { localDay } from "../../shared/formatters/display";
 import type { Snapshot } from "../../shared/model/session";
 import { moduleLabel } from "./history-labels";
 import type { HistoryPageProps } from "./history-page.types.ts";
 
 export function useHistoryPage({
-  service: serviceOverride,
   onOpenResult,
-  onExport,
 }: HistoryPageProps) {
-  const service = useSessionService(serviceOverride);
-  const state = useSessionState(service);
+  const service = useEvaluationsCommands();
+  const state = { ...useEvaluationsData(), ...useDocumentsData() };
   const [tab, setTab] = useState("Aktivitas");
   const [query, setQuery] = useState("");
   const [module, setModule] = useState("");
@@ -70,18 +69,7 @@ export function useHistoryPage({
     setNoticeError(false);
     setNotice("");
     try {
-      if (onExport) await onExport(selected);
-      else {
-        const { downloadSnapshot } = await import("../../services/export/workbook.ts");
-        const p = state.procurements.find(
-          (p) => p.id === selected.procurementId,
-        );
-        await downloadSnapshot(
-          selected,
-          p ?? { name: "Bank Data OE", number: "OE-HISTORIS" },
-        );
-        await service.recordExport(selected.id);
-      }
+      await service.exportSnapshot(selected);
       setNotice("Laporan berhasil disiapkan.");
     } catch (error) {
       setNoticeError(true);

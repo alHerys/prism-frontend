@@ -1,4 +1,5 @@
-import type { Procurement, Snapshot } from "../../shared/model/session";
+import { downloadBytes } from "../../../infrastructure/browser/download";
+import type { Procurement, Snapshot } from "../../../shared/model/session";
 const labels: Record<string, string> = {
   vendorId: "Identitas vendor",
   vendorName: "Vendor",
@@ -290,16 +291,5 @@ export async function downloadSnapshot(
 ) {
   const workbook = await buildSnapshotWorkbook(snapshot, procurement);
   const bytes = await workbook.xlsx.writeBuffer();
-  const url = URL.createObjectURL(
-    new Blob([new Uint8Array(bytes)], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    }),
-  );
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = `PRISM-${snapshot.module}-${procurement.number.replace(/[^\w-]/g, "-")}-${snapshot.id.replace(/[^\w-]/g, "-")}.xlsx`;
-  document.body.append(anchor);
-  anchor.click();
-  anchor.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  downloadBytes(new Uint8Array(bytes), `PRISM-${snapshot.module}-${procurement.number.replace(/[^\w-]/g, "-")}-${snapshot.id.replace(/[^\w-]/g, "-")}.xlsx`);
 }

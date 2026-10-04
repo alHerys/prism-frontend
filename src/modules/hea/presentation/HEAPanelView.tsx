@@ -3,7 +3,7 @@ import { CheckCircle as CheckCircle2 } from "@phosphor-icons/react/dist/csr/Chec
 import { Link } from "react-router";
 import "../../../shared/styles/focus.css";
 import { Empty, Status, Stepper } from "../../../shared/ui/feedback";
-import { ResultPanel } from "../../../features/procurement/ResultPanel";
+import { ResultPanel } from "../../evaluations/presentation/ResultPanel";
 import type { useHEAPanel } from "./useHEAPanel";
 
 export function HEAPanelView({

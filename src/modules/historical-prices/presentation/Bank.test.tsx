@@ -8,13 +8,13 @@ import {
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { FIXTURE_PREFERENCES } from "../../../infrastructure/local/fixtures";
-import { createLocalSession } from "../../../infrastructure/local/service";
+
 import { createLocalRuntime } from "../../../infrastructure/local/runtime";
 import { createApplication } from "../../../app/bootstrap/application";
 import { ApplicationProviders } from "../../../app/providers/ApplicationProviders";
 
 import { A5_FIXTURES, HEA_RESULTS } from "../../../infrastructure/local/fixtures";
-import HistoryPage from "../../../features/history/HistoryPage";
+import HistoryPage from "../../../pages/history/HistoryPage";
 import BankPage from "./BankPage";
 afterEach(cleanup);
 describe("Bank Data and history workflows", () => {
@@ -74,7 +74,7 @@ describe("Bank Data and history workflows", () => {
     ).toBeInTheDocument();
   });
   it("filters history and presents an empty result instead of unrelated activities", async () => {
-    render(<HistoryPage service={createLocalSession()} />);
+    render(<ApplicationProviders application={createApplication(createLocalRuntime())}><HistoryPage /></ApplicationProviders>);
     expect(screen.getAllByText("Pengadaan dibuat").length).toBeGreaterThan(0);
     fireEvent.change(screen.getByLabelText("Cari aktivitas atau hasil"), {
       target: { value: "absen" },
@@ -104,7 +104,7 @@ describe("Bank Data and history workflows", () => {
       "proc-terminal",
       docs.map((d) => d.id),
     );
-    render(<HistoryPage service={service} />);
+    render(<ApplicationProviders application={createApplication(runtime)}><HistoryPage /></ApplicationProviders>);
     await userEvent.click(screen.getByRole("tab", { name: "Hasil Evaluasi" }));
     await userEvent.click(screen.getByRole("button", { name: /Lihat hasil/ }));
     expect(

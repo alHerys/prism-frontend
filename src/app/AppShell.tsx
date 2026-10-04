@@ -12,7 +12,7 @@ import {
   useLocation,
   useNavigate
 } from "react-router";
-import { useSessionState } from "../services/session-context";
+import { useProcurementData } from "../modules/procurement/presentation/binding";
 import { Hint } from "../shared/ui/components";
 import { AppRoutes } from "./AppRoutes";
 const links = [
@@ -33,7 +33,7 @@ const descriptions: Record<string, string> = {
 export function AppShell() {
   const location = useLocation();
   const navigate = useNavigate();
-  const state = useSessionState();
+  const state = useProcurementData();
   const [collapsed, setCollapsed] = useState(false);
   const [search, setSearch] = useState("");
   useEffect(() => {

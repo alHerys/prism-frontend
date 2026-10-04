@@ -5,7 +5,11 @@ import type { Delay } from "../../../shared/kernel/binary-source";
 
 export function createHistoricalPricesUseCases(gateway: HistoricalPricesGateway, delay: Delay, documents: DocumentsUseCases, evaluations: EvaluationsUseCases) {
   return {
-    recordExport: evaluations.recordExport,
+    exportReferences: async (ids: string[]) => {
+      const snapshot = await gateway.createBankSnapshot(ids);
+      await evaluations.exportSnapshot(snapshot);
+      return snapshot;
+    },
     upload: documents.upload,
     confirmDocument: documents.confirmDocument,
     setHistoricalMetadata: (...args: Parameters<HistoricalPricesGateway["setHistoricalMetadata"]>) => gateway.setHistoricalMetadata(...args),
