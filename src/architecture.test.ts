@@ -19,6 +19,9 @@ it.each([
   ["src/modules/documents/domain/bad.ts", 'export const read = () => window.location.href;'],
   ["src/modules/documents/application/bad.ts", 'type Data = import("../../../infrastructure/local/state").LocalState;'],
   ["src/modules/documents/domain/bad.ts", 'export { value } from "./bad";'],
+  ["src/modules/documents/application/bad.ts", 'import { reviewedMetadata } from "../../historical-prices/domain/publication";'],
+  ["src/modules/documents/application/bad.ts", 'const read = () => globalThis.document;'],
+  ["src/modules/documents/presentation/bad.ts", 'const read = (name: string) => import(name);'],
 ])("rejects a forbidden dependency in %s", (file, code) => {
   expect(inspect(file, code).some((message) => message.ruleId === "prism/architecture")).toBe(true);
 });

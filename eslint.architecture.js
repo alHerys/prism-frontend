@@ -71,6 +71,7 @@ export const architecture = {
       if (to.endsWith("/test-session")) reason = "the regression harness is only accessible from tests.";
       else if (from.startsWith("src/shared/") && !to.startsWith("src/shared/")) reason = "shared cannot depend on business modules, pages, bootstrap or adapters.";
       else if (from.startsWith("src/shared/kernel/") && !to.startsWith("src/shared/kernel/")) reason = "kernel cannot import UI or formatting adapters.";
+      else if (match && target && target[1] !== match[1] && target[2] === "domain" && !to.endsWith("/models")) reason = "other modules expose domain models and application contracts, not internal rules.";
       else if (isCore) {
         const allowed = to.startsWith("src/shared/kernel/") || target?.[2] === "domain" || (match[2] === "application" && target?.[2] === "application" && /\/(ports|queries|use-cases)$/.test(to));
         if (!allowed) reason = "domain/application cannot depend on React, presentation, bootstrap or infrastructure.";
@@ -90,8 +91,14 @@ export const architecture = {
       ImportDeclaration: (node) => check(node.source),
       ExportNamedDeclaration: (node) => check(node.source),
       ExportAllDeclaration: (node) => check(node.source),
-      ImportExpression: (node) => check(node.source),
+      ImportExpression: (node) => {
+        if (typeof node.source?.value !== "string") report(node, "dynamic imports must be literal so module boundaries can be checked.");
+        else check(node.source);
+      },
       TSImportType: (node) => check(node.source ?? node.argument?.literal ?? node.argument),
+      MemberExpression: (node) => {
+        if (isCore && node.object.type === "Identifier" && node.object.name === "globalThis" && ["document", "window", "File", "Blob", "fetch", "navigator", "localStorage", "sessionStorage"].includes(node.property.name ?? node.property.value)) report(node, "core code cannot access browser globals through globalThis; inject a port.");
+      },
       Identifier: (node) => {
         if (isCore && ["window", "document", "localStorage", "sessionStorage", "File", "Blob", "fetch", "navigator", "HTMLElement"].includes(node.name)) {
           const scope = context.sourceCode.getScope(node);
