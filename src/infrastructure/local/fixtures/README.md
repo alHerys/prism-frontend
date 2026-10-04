@@ -33,7 +33,7 @@ berkas atau hasil finansial untuk nilai bebas di luar skenario.
 
 ## Ekspor
 
-`src/export/workbook.ts` memakai ExcelJS yang dimuat saat dibutuhkan. Nilai hasil
+`src/modules/evaluations/infrastructure/workbook.ts` memakai ExcelJS yang dimuat saat dibutuhkan. Nilai hasil
 ditulis sebagai string agar seluruh digit desimal snapshot dipertahankan. Workbook
 tidak memuat formula atau menjalankan evaluasi ulang. Ekspor selalu memakai snapshot
 yang dibuka, bukan kondisi draft terbaru. Unduhan dipicu lokal; tidak ada upload jaringan.

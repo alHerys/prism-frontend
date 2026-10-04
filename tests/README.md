@@ -39,22 +39,30 @@ and filter, file selection, dialog keyboard focus/Escape and error retry. Overri
 `PRISM_STORYBOOK_URL` if needed. The first long-table baseline can be created with
 `npm run test:storybook:browser -- --update-snapshots` and inspected locally.
 
-Architecture verification uses isolated `SessionProvider` instances, navigation
+Architecture verification uses isolated `ApplicationProviders` and module providers, navigation
 remounts, preserved formatter variants, revision/confirmation checks, subscriber
 isolation and immutable historical snapshots. A fixed-clock fingerprint checks all
 original seeded values, IDs, event order and prepared snapshots. Browser coverage
 also compares computed styles on direct routes and navigation, retains tab drafts,
 and checks that ExcelJS loads when exporting. `prism/architecture` in ESLint guards
-static imports, re-exports and dynamic imports; tests can construct implementation instances.
+static/type imports, re-exports, literal dynamic imports, layer violations, browser globals and cycles; tests can construct isolated adapters. Node suites exercise domain/application without DOM.
 
 Production bundle measurement (Vite, minified kB; gzip in parentheses):
 
 | JavaScript | Before | After |
 | --- | ---: | ---: |
-| Entry | 511.93 (161.03) | 514.16 (161.73) |
+| Entry | 514.16 (161.73) | 502.93 (159.75) |
 | ExcelJS, deferred | 936.98 (270.74) | 936.98 (270.74) |
-| All JS chunks combined | 1562.74 (467.79) | 1572.95 (473.28) |
+| All JS chunks combined | 1572.95 (473.28) | 1577.15 (476.62) |
 
 Combined sizes include lazy chunks; they are not initial-page transfer sizes.
-The emitted CSS is unchanged. Legacy `scripts/acceptance-*.cjs` target older UI
-controls; use the Playwright suites above for current regression verification.
+The emitted CSS is byte-identical to the frozen baseline. All fixture bytes and
+registry fingerprints are unchanged. The entry shrank; additional lazy modules
+increased the combined transfer slightly. Obsolete acceptance runners were removed.
+
+Verified on 4 October 2026: typecheck, ESLint, 71 unit/interaction/Node tests,
+application build and Storybook build; 14 desktop, four local-workflow and two
+Storybook browser tests pass at both sizes without updating screenshots.
+`npm run fixtures:prepare` validates eight originals and creates the ignored
+`fixture-kit/` with `PANDUAN-WORKFLOW.md`. Tooling tests validate commands, links,
+output names and copied fingerprints. See [architecture](../docs/ARCHITECTURE.md).
