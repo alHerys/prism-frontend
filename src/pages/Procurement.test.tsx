@@ -7,7 +7,8 @@ import {
 } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { afterEach, describe, expect, it } from "vitest";
-import { createDemoService } from "../domain";
+import { createDemoService } from "../services/demo/service";
+
 import { SessionProvider } from "../services/session-context";
 import { ToastProvider } from "../shared/ui/feedback";
 

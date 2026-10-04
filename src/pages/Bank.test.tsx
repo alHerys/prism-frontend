@@ -7,8 +7,10 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
-import { createDemoService, DEMO_PREFERENCES } from "../domain";
-import { A5_FIXTURES, HEA_RESULTS } from "../domain/fixtures";
+import { DEMO_PREFERENCES } from "../services/demo/fixtures";
+import { createDemoService } from "../services/demo/service";
+
+import { A5_FIXTURES, HEA_RESULTS } from "../services/demo/fixtures";
 import BankPage from "./Bank";
 import HistoryPage from "./History";
 afterEach(cleanup);

@@ -12,7 +12,8 @@ import { SourcePanel } from "../shared/ui/components";
 import { CurrencyInput } from "../shared/ui/currency-input";
 import "./review.css";
 
-import type { A5Values, PricePair } from "../domain";
+import type { A5Values, PricePair } from "../shared/model/session";
+
 import { availableDocuments } from "../services/registry";
 import { kindLabel, money, pct } from "../shared/formatters/display";
 import { Empty, Modal, Status, useToast } from "../shared/ui/feedback";

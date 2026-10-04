@@ -17,12 +17,8 @@ import {
 import { ProcurementTable } from "./ProcurementTable";
 import "./review.css";
 
-import type {
-  DocumentKind,
-  DocumentRecord,
-  Procurement,
-  Snapshot,
-} from "../domain";
+import type { DocumentKind, DocumentRecord, Procurement, Snapshot } from "../shared/model/session";
+
 import { processDemoDocument } from "../services/document-processing";
 import { downloadSnapshot } from "../services/export/workbook";
 import { date, dateTime, kindLabel, money, pct, roundedMoney } from "../shared/formatters/display";

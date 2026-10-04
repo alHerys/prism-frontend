@@ -1,4 +1,4 @@
-import type { A5Values, HistoricalItem, PricePair } from "../shared/model/session";
+import type { A5Values, HistoricalItem, PricePair } from "../../shared/model/session";
 export const A5_FIXTURES: Record<string, A5Values> = {
   "a5-nusa": {
     hpb: "1000000000",

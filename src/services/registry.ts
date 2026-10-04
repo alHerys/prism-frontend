@@ -1,4 +1,5 @@
-import type { DocumentKind } from "../domain";
+import type { DocumentKind } from "../shared/model/session";
+
 import registry from "../fixtures/file-registry.json";
 export async function recognizeFile(file: File, kind: DocumentKind) {
   const extension = kind === "FORM_A5" ? ".pdf" : ".xlsx";

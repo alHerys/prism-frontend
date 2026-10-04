@@ -8,10 +8,8 @@ import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass"
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { Sparkle } from "@phosphor-icons/react/dist/csr/Sparkle";
 import { useState } from "react";
-import {
-  type HistoricalItem,
-  type Snapshot
-} from "../domain";
+import type { HistoricalItem, Snapshot } from "../shared/model/session";
+
 import { useSessionService, useSessionState } from "../services/session-context";
 import type { SessionService } from "../services/session-service";
 import { bankMoney as money } from "../shared/formatters/display";

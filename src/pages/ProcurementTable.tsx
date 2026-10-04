@@ -5,7 +5,8 @@ import { Folder } from "@phosphor-icons/react/dist/csr/Folder";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
 import { useState } from "react";
 import { Link } from "react-router";
-import type { Procurement } from "../domain";
+import type { Procurement } from "../shared/model/session";
+
 import { useSessionState } from "../services/session-context";
 import { SelectField } from "../shared/ui/components";
 import { Empty } from "../shared/ui/feedback";

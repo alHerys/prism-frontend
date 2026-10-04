@@ -1,7 +1,8 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { Link, MemoryRouter, Route, Routes } from "react-router";
 import { afterEach, expect, it } from "vitest";
-import { createDemoService } from "../domain/service";
+import { createDemoService } from "./demo/service";
+
 import { SessionProvider, useSessionService, useSessionState } from "./session-context";
 
 afterEach(cleanup);

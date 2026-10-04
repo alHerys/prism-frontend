@@ -1,4 +1,5 @@
-import type { DocumentKind } from "../domain";
+import type { DocumentKind } from "../shared/model/session";
+
 import { recognizeFile } from "./registry";
 
 // Offline demo: the registered file selects prepared candidates. These stages
