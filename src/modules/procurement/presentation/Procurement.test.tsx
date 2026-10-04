@@ -11,10 +11,10 @@ import { createLocalRuntime } from "../../../infrastructure/local/runtime";
 import { createApplication } from "../../../app/bootstrap/application";
 import { ApplicationProviders } from "../../../app/providers/ApplicationProviders";
 
-import { SessionProvider } from "../../../services/session-context";
+
 import { ToastProvider } from "../../../shared/ui/feedback";
 
-import { HEAPanel } from "../../../features/hea/HEAPanel";
+import { HEAPanel } from "../../hea/presentation/HEAPanel";
 import { ProcurementTable } from "./ProcurementTable.tsx";
 afterEach(cleanup);
 describe("Preferensi evaluasi", () => {
@@ -31,9 +31,9 @@ describe("Preferensi evaluasi", () => {
     });
     render(
       <MemoryRouter>
-        <ApplicationProviders application={createApplication(runtime)}><SessionProvider service={service}><ToastProvider>
+        <ApplicationProviders application={createApplication(runtime)}><ToastProvider>
           <HEAPanel procurement={service.getState().procurements[0]} />
-        </ToastProvider></SessionProvider></ApplicationProviders>
+        </ToastProvider></ApplicationProviders>
       </MemoryRouter>,
     );
     expect(
@@ -58,7 +58,7 @@ describe("Pencarian pengadaan", () => {
     const runtime = createLocalRuntime(true, true);
     const service = runtime.session;
     const state = service.getState();
-    render(<MemoryRouter><ApplicationProviders application={createApplication(runtime)}><SessionProvider service={service}><ProcurementTable items={state.procurements} /></SessionProvider></ApplicationProviders></MemoryRouter>);
+    render(<MemoryRouter><ApplicationProviders application={createApplication(runtime)}><ProcurementTable items={state.procurements} /></ApplicationProviders></MemoryRouter>);
     const search = screen.getByRole("textbox", { name: "Cari pengadaan" });
     for (const query of [state.vendors[0].name, state.documents[0].name]) {
       fireEvent.change(search, { target: { value: query } });

@@ -4,7 +4,7 @@ import { Link } from "react-router";
 import { dateTime } from "../../shared/formatters/display";
 import "../../shared/styles/focus.css";
 import { Empty, Modal } from "../../shared/ui/feedback";
-import { HEAPanel } from "../../features/hea/HEAPanel";
+import { HEAPanel } from "../../modules/hea/presentation/HEAPanel";
 import { PDPanel } from "../../features/price-deviation/PDPanel";
 import { DocumentTable } from "../../modules/documents/presentation/DocumentTable";
 import { UploadPanel } from "../../modules/documents/presentation/UploadPanel";

@@ -1,3 +1,4 @@
+import { reviewedPreferences, confirmedPreferences } from "../../modules/hea/domain/preferences";
 import type {
   Preferences
 } from "../../shared/model/session";
@@ -8,15 +9,13 @@ import {
 } from "./fixtures";
 import { snapshot } from "./snapshots";
 import type { LocalStore } from "./store";
-import { DomainError, copy, decimal, equalValues } from "./validation";
+import { DomainError, copy, equalValues } from "./validation";
 export async function setPreferences(store: LocalStore, procurementId: string, values: Preferences, expectedRevision: number) {
   const p = store.proc(procurementId);
   store.check(p.preferenceRevision, expectedRevision);
-  Object.values(values).forEach((v) => decimal(v, true));
-  if (p.preferences && equalValues(values, p.preferences)) return copy(p);
-  p.preferences = copy(values);
-  p.preferenceRevision++;
-  p.preferenceConfirmed = false;
+  const reviewed = reviewedPreferences(p, values);
+  if (!reviewed) return copy(p);
+  Object.assign(p, reviewed);
   store.event({
     procurementId,
     module: "HEA",
@@ -29,13 +28,9 @@ export async function setPreferences(store: LocalStore, procurementId: string, v
 export async function confirmPreferences(store: LocalStore, procurementId: string, expectedRevision: number) {
   const p = store.proc(procurementId);
   store.check(p.preferenceRevision, expectedRevision);
-  if (!p.preferences)
-    throw new DomainError(
-      "PREFERENCES_REQUIRED",
-      "Isi preferensi barang dan jasa.",
-    );
-  if (p.preferenceConfirmed) return copy(p);
-  p.preferenceConfirmed = true;
+  const confirmed = confirmedPreferences(p);
+  if (!confirmed) return copy(p);
+  Object.assign(p, confirmed);
   store.event({
     procurementId,
     module: "HEA",

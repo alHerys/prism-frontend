@@ -1,9 +1,9 @@
 import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
 import { CheckCircle as CheckCircle2 } from "@phosphor-icons/react/dist/csr/CheckCircle";
 import { Link } from "react-router";
-import "../../shared/styles/focus.css";
-import { Empty, Status, Stepper } from "../../shared/ui/feedback";
-import { ResultPanel } from "../procurement/ResultPanel";
+import "../../../shared/styles/focus.css";
+import { Empty, Status, Stepper } from "../../../shared/ui/feedback";
+import { ResultPanel } from "../../../features/procurement/ResultPanel";
 import type { useHEAPanel } from "./useHEAPanel";
 
 export function HEAPanelView({

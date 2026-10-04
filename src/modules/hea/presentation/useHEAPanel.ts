@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router";
-import { useSessionService, useSessionState } from "../../services/session-context";
-import { errorMessage } from "../../shared/errors/message";
-import { percentInput, ratioInput } from "../../shared/formatters/percentage-input";
-import type { Procurement } from "../../shared/model/session";
-import { useToast } from "../../shared/ui/feedback";
+import { useHEACommands, useHEAData } from "./binding";
+import { errorMessage } from "../../../shared/errors/message";
+import { percentInput, ratioInput } from "../../../shared/formatters/percentage-input";
+import type { Procurement } from "../../../shared/model/session";
+import { useToast } from "../../../shared/ui/feedback";
 
 export function useHEAPanel({ procurement: p }: { procurement: Procurement }) {
-  const service = useSessionService();
-  const state = useSessionState();
+  const service = useHEACommands();
+  const state = useHEAData();
   const toast = useToast();
   const [params, setParams] = useSearchParams();
   const docs = state.documents.filter(
@@ -65,7 +65,6 @@ export function useHEAPanel({ procurement: p }: { procurement: Procurement }) {
   async function evaluate() {
     setBusy(true);
     try {
-      await new Promise((r) => setTimeout(r, 450));
       const s = await service.evaluateHEA(p.id, selected);
       setParams({ tab: "hea", hasil: s.id });
       toast("Evaluasi HEA selesai. Hasil tersimpan.");
