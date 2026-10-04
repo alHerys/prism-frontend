@@ -5,7 +5,7 @@ import type { UploadInput } from "../domain/models";
 import type { BinarySource } from "../../../shared/kernel/binary-source";
 
 export interface DocumentsGateway {
-  uploadRegisteredDocument(input: UploadInput): Promise<DocumentRecord>;
+  uploadDocument(input: UploadInput): Promise<DocumentRecord>;
   reviewDocument(id: string, values: A5Values, expectedRevision: number): Promise<DocumentRecord>;
   confirmDocument(id: string, expectedRevision: number, acknowledged?: boolean): Promise<DocumentRecord>;
 }

@@ -14,7 +14,7 @@ export function createDocumentsUseCases(gateway: DocumentsGateway, processing: D
     availableSources: () => processing.availableSources(),
     upload: async (input: { file: BinarySource; kind: DocumentKind; procurementId: string; vendorId?: string }, onProgress: (label: string) => void) => {
       const source = await processing.process(input.file, input.kind, onProgress);
-      return gateway.uploadRegisteredDocument({ procurementId: input.procurementId, vendorId: input.vendorId, kind: input.kind, fixtureId: source.id, name: input.file.name });
+      return gateway.uploadDocument({ procurementId: input.procurementId, vendorId: input.vendorId, kind: input.kind, sourceId: source.id, name: input.file.name });
     },
     saveReview: async ({ document, values, group, pairs }: SaveReviewInput) => {
       if (values) return gateway.reviewDocument(document.id, values, document.revision);

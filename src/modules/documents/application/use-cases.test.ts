@@ -4,9 +4,9 @@ import { createDocumentsUseCases } from "./use-cases";
 import type { DocumentsGateway, DocumentProcessing } from "./ports";
 import type { PriceDeviationGateway } from "../../price-deviation/application/ports";
 import type { DocumentRecord } from "../domain/models";
-const document: DocumentRecord = { id: "doc", procurementId: "proc", fixtureId: "source", name: "Offer", kind: "OFFER", uploadedAt: "", revision: 3, status: "REVIEW_REQUIRED", warnings: [], acknowledged: false, sources: [], groups: [], pairs: [], published: false };
+const document: DocumentRecord = { id: "doc", procurementId: "proc", sourceId: "source", name: "Offer", kind: "OFFER", uploadedAt: "", revision: 3, status: "REVIEW_REQUIRED", warnings: [], acknowledged: false, sources: [], groups: [], pairs: [], published: false };
 function fake() {
-  const gateway: DocumentsGateway = { uploadRegisteredDocument: vi.fn(async () => document), reviewDocument: vi.fn(async () => document), confirmDocument: vi.fn(async () => document) };
+  const gateway: DocumentsGateway = { uploadDocument: vi.fn(async () => document), reviewDocument: vi.fn(async () => document), confirmDocument: vi.fn(async () => document) };
   const processing: DocumentProcessing = { process: vi.fn(async () => ({ id: "source", name: "Source", path: "/source", kind: "OFFER" as const })), availableSources: () => [] };
   const prices: Pick<PriceDeviationGateway, "selectGroup" | "reviewPairs" | "confirmPairs"> = { selectGroup: vi.fn(async () => ({ ...document, revision: 4 })), reviewPairs: vi.fn(async () => document), confirmPairs: vi.fn(async () => document) };
   return { gateway, processing, prices, commands: createDocumentsUseCases(gateway, processing, prices) };
@@ -28,8 +28,8 @@ it("uploads only after processing succeeds, using source identity and the origin
   const f = fake();
   const file = { name: "renamed.xlsx", size: 2, arrayBuffer: async () => new ArrayBuffer(2) };
   await f.commands.upload({ file, procurementId: "proc", kind: "OFFER", vendorId: "vendor" }, vi.fn());
-  expect(f.gateway.uploadRegisteredDocument).toHaveBeenCalledWith({ procurementId: "proc", vendorId: "vendor", kind: "OFFER", fixtureId: "source", name: "renamed.xlsx" });
+  expect(f.gateway.uploadDocument).toHaveBeenCalledWith({ procurementId: "proc", vendorId: "vendor", kind: "OFFER", sourceId: "source", name: "renamed.xlsx" });
   vi.mocked(f.processing.process).mockRejectedValue(new Error("Unsupported"));
   await expect(f.commands.upload({ file, procurementId: "proc", kind: "OFFER" }, vi.fn())).rejects.toThrow("Unsupported");
-  expect(f.gateway.uploadRegisteredDocument).toHaveBeenCalledTimes(1);
+  expect(f.gateway.uploadDocument).toHaveBeenCalledTimes(1);
 });

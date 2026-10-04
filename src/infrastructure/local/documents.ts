@@ -1,6 +1,8 @@
+import { toDocument, toLocalDocument } from "./document-mapping";
 import { reviewedDocument, confirmedDocument } from "../../modules/documents/domain/review";
 import registry from "./fixtures/file-registry.json";
-import type { A5Values, DocumentRecord, UploadInput } from "../../modules/documents/domain/models";
+import type { A5Values } from "../../modules/documents/domain/models";
+import type { LocalDocumentRecord as DocumentRecord, LocalUploadInput as UploadInput } from "./state";
 import {
   A5_FIXTURES,
   PAIR_FIXTURES
@@ -124,9 +126,9 @@ export async function uploadRegisteredDocument(store: LocalStore, input: UploadI
 export async function reviewDocument(store: LocalStore, id: string, values: A5Values, expectedRevision: number) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
-  const reviewed = reviewedDocument(d, values);
+  const reviewed = reviewedDocument(toDocument(d), values);
   if (!reviewed) return copy(d);
-  Object.assign(d, reviewed);
+  Object.assign(d, toLocalDocument(reviewed));
   store.event({
     procurementId: d.procurementId,
     module: "HEA",
@@ -139,9 +141,9 @@ export async function reviewDocument(store: LocalStore, id: string, values: A5Va
 export async function confirmDocument(store: LocalStore, id: string, expectedRevision: number, acknowledged = false) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
-  const confirmed = confirmedDocument(d, acknowledged);
+  const confirmed = confirmedDocument(toDocument(d), acknowledged);
   if (!confirmed) return copy(d);
-  Object.assign(d, confirmed);
+  Object.assign(d, toLocalDocument(confirmed));
   store.event({
     procurementId: d.procurementId,
     module:

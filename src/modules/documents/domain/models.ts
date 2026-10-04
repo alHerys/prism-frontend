@@ -23,7 +23,7 @@ export interface DocumentRecord {
   id: string;
   procurementId: string;
   vendorId?: string;
-  fixtureId: string;
+  sourceId: string;
   name: string;
   kind: DocumentKind;
   uploadedAt: string;
@@ -48,7 +48,7 @@ export interface UploadInput {
   procurementId: string;
   vendorId?: string;
   kind: DocumentKind;
-  fixtureId: string;
+  sourceId: string;
   name: string;
   functionName?: string;
   period?: string;

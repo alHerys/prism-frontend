@@ -1,3 +1,4 @@
+import { toDocument, toLocalDocument } from "./document-mapping";
 import { selectedGroup, reviewedPairs, confirmedPairs } from "../../modules/price-deviation/domain/review";
 import registry from "./fixtures/file-registry.json";
 import type { PricePair } from "../../modules/price-deviation/domain/models";
@@ -10,18 +11,18 @@ import { DomainError, copy, equalValues } from "./validation";
 export async function selectGroup(store: LocalStore, id: string, group: string, expectedRevision: number) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
-  const selected = selectedGroup(d, group);
+  const selected = selectedGroup(toDocument(d), group);
   if (!selected) return copy(d);
-  Object.assign(d, selected);
+  Object.assign(d, toLocalDocument(selected));
   store.emit();
   return copy(d);
 }
 export async function reviewPairs(store: LocalStore, id: string, pairs: PricePair[], expectedRevision: number) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
-  const reviewed = reviewedPairs(d, pairs, PAIR_FIXTURES.map((pair) => pair.id));
+  const reviewed = reviewedPairs(toDocument(d), pairs, PAIR_FIXTURES.map((pair) => pair.id));
   if (!reviewed) return copy(d);
-  Object.assign(d, reviewed);
+  Object.assign(d, toLocalDocument(reviewed));
   store.event({
     procurementId: d.procurementId,
     module: "PRICE_DEVIATION",
@@ -34,9 +35,9 @@ export async function reviewPairs(store: LocalStore, id: string, pairs: PricePai
 export async function confirmPairs(store: LocalStore, id: string, expectedRevision: number, acknowledged = false) {
   const d = store.doc(id);
   store.check(d.revision, expectedRevision);
-  const confirmed = confirmedPairs(d, acknowledged, "Harga satuan material dan jasa");
+  const confirmed = confirmedPairs(toDocument(d), acknowledged, "Harga satuan material dan jasa");
   if (!confirmed) return copy(d);
-  Object.assign(d, confirmed);
+  Object.assign(d, toLocalDocument(confirmed));
   store.event({
     procurementId: d.procurementId,
     module: "PRICE_DEVIATION",

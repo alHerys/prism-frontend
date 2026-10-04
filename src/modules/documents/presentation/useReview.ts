@@ -47,7 +47,7 @@ export function useReview() : ReviewModel {
   };
   const p = state.procurements.find((p) => p.id === id)!;
   const vendor = state.vendors.find((v) => v.id === d?.vendorId);
-  const fixture = service.availableSources().find((f) => f.id === d?.fixtureId);
+  const fixture = service.availableSources().find((f) => f.id === d?.sourceId);
   const back = () =>
     navigate(
       d?.vendorId

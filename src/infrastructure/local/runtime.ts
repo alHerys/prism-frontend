@@ -1,3 +1,4 @@
+import { toDocument } from "./document-mapping";
 import { LocalStore } from "./store";
 import { initializeSession } from "./seed";
 import { createProcurement, addVendor } from "./procurement";
@@ -53,9 +54,9 @@ export function createLocalRuntime(seed = true, prepared = false) {
     addVendor: (...args: Parameters<ProcurementGateway["addVendor"]>) => addVendor(store, ...args),
   };
   const documentsGateway: DocumentsGateway = {
-    uploadRegisteredDocument: (...args: Parameters<DocumentsGateway["uploadRegisteredDocument"]>) => uploadRegisteredDocument(store, ...args),
-    reviewDocument: (...args: Parameters<DocumentsGateway["reviewDocument"]>) => reviewDocument(store, ...args),
-    confirmDocument: (...args: Parameters<DocumentsGateway["confirmDocument"]>) => confirmDocument(store, ...args),
+    uploadDocument: async ({ sourceId, ...input }) => toDocument(await uploadRegisteredDocument(store, { ...input, fixtureId: sourceId })),
+    reviewDocument: async (...args: Parameters<DocumentsGateway["reviewDocument"]>) => toDocument(await reviewDocument(store, ...args)),
+    confirmDocument: async (...args: Parameters<DocumentsGateway["confirmDocument"]>) => toDocument(await confirmDocument(store, ...args)),
   };
   const heaGateway: HEAGateway = {
     setPreferences: (...args: Parameters<HEAGateway["setPreferences"]>) => setPreferences(store, ...args),
@@ -63,14 +64,14 @@ export function createLocalRuntime(seed = true, prepared = false) {
     evaluateHEA: (...args: Parameters<HEAGateway["evaluateHEA"]>) => evaluateHEA(store, ...args),
   };
   const priceDeviationGateway: PriceDeviationGateway = {
-    selectGroup: (...args: Parameters<PriceDeviationGateway["selectGroup"]>) => selectGroup(store, ...args),
-    reviewPairs: (...args: Parameters<PriceDeviationGateway["reviewPairs"]>) => reviewPairs(store, ...args),
-    confirmPairs: (...args: Parameters<PriceDeviationGateway["confirmPairs"]>) => confirmPairs(store, ...args),
+    selectGroup: async (...args: Parameters<PriceDeviationGateway["selectGroup"]>) => toDocument(await selectGroup(store, ...args)),
+    reviewPairs: async (...args: Parameters<PriceDeviationGateway["reviewPairs"]>) => toDocument(await reviewPairs(store, ...args)),
+    confirmPairs: async (...args: Parameters<PriceDeviationGateway["confirmPairs"]>) => toDocument(await confirmPairs(store, ...args)),
     evaluateDeviation: (...args: Parameters<PriceDeviationGateway["evaluateDeviation"]>) => evaluateDeviation(store, ...args),
   };
   const historicalPricesGateway: HistoricalPricesGateway = {
-    setHistoricalMetadata: (...args: Parameters<HistoricalPricesGateway["setHistoricalMetadata"]>) => setHistoricalMetadata(store, ...args),
-    publishHistory: (...args: Parameters<HistoricalPricesGateway["publishHistory"]>) => publishHistory(store, ...args),
+    setHistoricalMetadata: async (...args: Parameters<HistoricalPricesGateway["setHistoricalMetadata"]>) => toDocument(await setHistoricalMetadata(store, ...args)),
+    publishHistory: async (...args: Parameters<HistoricalPricesGateway["publishHistory"]>) => toDocument(await publishHistory(store, ...args)),
     setComparable: (...args: Parameters<HistoricalPricesGateway["setComparable"]>) => setComparable(store, ...args),
     estimate: (...args: Parameters<HistoricalPricesGateway["estimate"]>) => estimate(store, ...args),
     getPreparedStatistics: (...args: Parameters<HistoricalPricesGateway["getPreparedStatistics"]>) => getPreparedStatistics(store, ...args),
@@ -83,11 +84,11 @@ export function createLocalRuntime(seed = true, prepared = false) {
   return {
     processing,
     delay: (milliseconds: number) => new Promise<void>((resolve) => setTimeout(resolve, milliseconds)),
-    procurement: { gateway: procurementGateway, queries: projection<ProcurementData>(source, (state) => ({ procurements: state.procurements, vendors: state.vendors, documents: state.documents, snapshots: state.snapshots, events: state.events })) },
-    documents: { gateway: documentsGateway, queries: projection<DocumentsData>(source, (state) => ({ documents: state.documents, procurements: state.procurements, vendors: state.vendors })) },
-    hea: { gateway: heaGateway, queries: projection<HEAData>(source, (state) => ({ documents: state.documents, vendors: state.vendors, snapshots: state.snapshots })) },
-    priceDeviation: { gateway: priceDeviationGateway, queries: projection<PriceDeviationData>(source, (state) => ({ documents: state.documents, snapshots: state.snapshots })) },
-    historicalPrices: { gateway: historicalPricesGateway, queries: projection<HistoricalPricesData>(source, (state) => ({ historicalItems: state.historicalItems, estimates: state.estimates, procurements: state.procurements, documents: state.documents })) },
+    procurement: { gateway: procurementGateway, queries: projection<ProcurementData>(source, (state) => ({ procurements: state.procurements, vendors: state.vendors, documents: Object.freeze(state.documents.map((document) => Object.freeze(toDocument(document)))) as unknown as DocumentsData["documents"], snapshots: state.snapshots, events: state.events })) },
+    documents: { gateway: documentsGateway, queries: projection<DocumentsData>(source, (state) => ({ documents: Object.freeze(state.documents.map((document) => Object.freeze(toDocument(document)))) as unknown as DocumentsData["documents"], procurements: state.procurements, vendors: state.vendors })) },
+    hea: { gateway: heaGateway, queries: projection<HEAData>(source, (state) => ({ documents: Object.freeze(state.documents.map((document) => Object.freeze(toDocument(document)))) as unknown as DocumentsData["documents"], vendors: state.vendors, snapshots: state.snapshots })) },
+    priceDeviation: { gateway: priceDeviationGateway, queries: projection<PriceDeviationData>(source, (state) => ({ documents: Object.freeze(state.documents.map((document) => Object.freeze(toDocument(document)))) as unknown as DocumentsData["documents"], snapshots: state.snapshots })) },
+    historicalPrices: { gateway: historicalPricesGateway, queries: projection<HistoricalPricesData>(source, (state) => ({ historicalItems: state.historicalItems, estimates: state.estimates, procurements: state.procurements, documents: Object.freeze(state.documents.map((document) => Object.freeze(toDocument(document)))) as unknown as DocumentsData["documents"] })) },
     evaluations: { gateway: evaluationsGateway, queries: projection<EvaluationsData>(source, (state) => ({ snapshots: state.snapshots, events: state.events, procurements: state.procurements })) },
   };
 }
