@@ -22,6 +22,7 @@ test('ten production component stories render and interactive examples work', as
   await page.getByRole('tab', { name: 'Dokumen', exact: true }).focus();
   await page.keyboard.press('ArrowRight');
   await expect(page.getByRole('tab', { name: 'Dokumen', exact: true })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('tab', { name: 'HEA & Leaderboard', exact: true })).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.getByRole('heading', { name: 'Persiapan HEA', exact: true })).toBeVisible();
   await page.getByRole('tab', { name: 'Harga Timpang', exact: true }).click();
