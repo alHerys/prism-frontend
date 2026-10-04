@@ -10,7 +10,7 @@ export default tseslint.config(
     rules: {
       ...hooks.configs.recommended.rules,
       "prism/architecture": "error",
-      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-explicit-any": "error",
     },
   },
 );

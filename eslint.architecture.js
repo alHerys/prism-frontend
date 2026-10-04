@@ -1,54 +1,104 @@
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-
-const repositoryRoot = path.dirname(fileURLToPath(import.meta.url));
-
-const routeEntries = new Set([
-  "src/features/dashboard/Dashboard",
-  "src/features/procurement/ProcurementList",
-  "src/features/procurement/ProcurementDetail",
-  "src/features/procurement/VendorDocuments",
-  "src/features/review/Review",
-  "src/features/bank/BankPage",
-  "src/features/history/HistoryPage",
+import ts from "typescript";
+const root = path.dirname(fileURLToPath(import.meta.url));
+const publicViews = new Set([
+  "procurement/ProcurementList", "procurement/ProcurementTable",
+  "documents/Review", "documents/DocumentTable", "documents/UploadPanel",
+  "hea/HEAPanel", "price-deviation/PDPanel", "historical-prices/BankPage",
+  "evaluations/ResultPanel", "evaluations/SnapshotInputs",
 ]);
-
-// Resolve paths so equivalent relative imports, re-exports and dynamic imports
-// obey the same boundaries. Tests may construct isolated demo services.
+const relative = (file) => path.relative(root, file).replaceAll(path.sep, "/");
+const stripExtension = (file) => file.replace(/\.(tsx?|jsx?)$/, "");
+function resolve(from, specifier) {
+  if (specifier.startsWith("@/")) return path.resolve(root, "src", specifier.slice(2));
+  return specifier.startsWith(".") ? path.resolve(path.dirname(from), specifier) : null;
+}
+let graph;
+function dependencyGraph() {
+  if (graph) return graph;
+  graph = new Map();
+  const visitDirectory = (directory) => {
+    for (const item of fs.readdirSync(directory, { withFileTypes: true })) {
+      const file = path.join(directory, item.name);
+      if (item.isDirectory()) { visitDirectory(file); continue; }
+      if (!/\.tsx?$/.test(file) || /\.(test|stories)\./.test(file) || file.endsWith("test-session.ts")) continue;
+      const source = ts.createSourceFile(file, fs.readFileSync(file, "utf8"), ts.ScriptTarget.Latest, true);
+      const edges = new Set();
+      const visit = (node) => {
+        let argument;
+        if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) argument = node.moduleSpecifier;
+        else if (ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword) argument = node.arguments[0];
+        else if (ts.isImportTypeNode(node) && ts.isLiteralTypeNode(node.argument)) argument = node.argument.literal;
+        if (argument && ts.isStringLiteral(argument)) {
+          const target = resolve(file, argument.text);
+          if (target) edges.add(stripExtension(relative(target)));
+        }
+        ts.forEachChild(node, visit);
+      };
+      visit(source);
+      graph.set(stripExtension(relative(file)), edges);
+    }
+  };
+  visitDirectory(path.join(root, "src"));
+  return graph;
+}
+function reaches(start, destination, visited = new Set()) {
+  if (start === destination) return true;
+  if (visited.has(start)) return false;
+  visited.add(start);
+  return [...(dependencyGraph().get(start) ?? [])].some((next) => reaches(next, destination, visited));
+}
 export const architecture = {
-  meta: {
-    type: "problem",
-    schema: [],
-    messages: { boundary: "Module boundary: {{reason}}" },
-  },
+  meta: { type: "problem", schema: [], messages: { boundary: "Architecture boundary: {{reason}}" } },
   create(context) {
-    const filename = context.filename;
-    const from = path.relative(repositoryRoot, filename).replaceAll(path.sep, "/");
-    if (/\.(test|stories)\.tsx?$/.test(from)) return {};
-    const check = (source) => {
-      if (typeof source?.value !== "string" || !source.value.startsWith(".")) return;
-      const to = path.relative(repositoryRoot, path.resolve(path.dirname(filename), source.value))
-        .replaceAll(path.sep, "/").replace(/\.(ts|tsx|js)$/, "");
+    const from = stripExtension(relative(context.filename));
+    if (/\.(test|stories)$/.test(from)) return {};
+    const match = /^src\/modules\/([^/]+)\/(domain|application|presentation|infrastructure)\//.exec(from);
+    const isCore = match && ["domain", "application"].includes(match[2]);
+    const report = (node, reason) => context.report({ node, messageId: "boundary", data: { reason } });
+    const check = (node) => {
+      if (typeof node?.value !== "string") return;
+      const destination = resolve(context.filename, node.value);
+      if (!destination) {
+        if (isCore || from.startsWith("src/shared/kernel/")) report(node, "core code uses language primitives and explicit internal contracts, not framework packages.");
+        return;
+      }
+      const to = stripExtension(relative(destination));
+      const target = /^src\/modules\/([^/]+)\/(domain|application|presentation|infrastructure)\//.exec(to);
       let reason;
-      if (from.startsWith("src/shared/") && /^src\/(app|features|services|fixtures)\//.test(to))
-        reason = "shared only depends on shared modules and external libraries.";
-      else if (from.startsWith("src/services/") && /^src\/(app|features)\//.test(to))
-        reason = "services cannot import application or feature modules.";
-      else if (from.startsWith("src/features/") && to.startsWith("src/app/"))
-        reason = "features cannot import application bootstrap.";
-      else if (from.startsWith("src/features/") && routeEntries.has(to))
-        reason = "compose feature components instead of importing route pages.";
-      else if (to.startsWith("src/services/demo/") && !from.startsWith("src/services/demo/") && from !== "src/app/session.ts")
-        reason = "access the session contract and React bindings; only bootstrap creates the demo service.";
-      else if (from.startsWith("src/features/") && to.startsWith("src/fixtures/"))
-        reason = "read document metadata through services instead of importing fixtures.";
-      if (reason) context.report({ node: source, messageId: "boundary", data: { reason } });
+      if (to.endsWith("/test-session")) reason = "the regression harness is only accessible from tests.";
+      else if (from.startsWith("src/shared/") && !to.startsWith("src/shared/")) reason = "shared cannot depend on business modules, pages, bootstrap or adapters.";
+      else if (from.startsWith("src/shared/kernel/") && !to.startsWith("src/shared/kernel/")) reason = "kernel cannot import UI or formatting adapters.";
+      else if (isCore) {
+        const allowed = to.startsWith("src/shared/kernel/") || target?.[2] === "domain" || (match[2] === "application" && target?.[2] === "application" && /\/(ports|queries|use-cases)$/.test(to));
+        if (!allowed) reason = "domain/application cannot depend on React, presentation, bootstrap or infrastructure.";
+      } else if (from.startsWith("src/infrastructure/") || match?.[2] === "infrastructure") {
+        if (/^src\/(app|pages)\//.test(to) || target?.[2] === "presentation" || to.startsWith("src/shared/ui/")) reason = "adapters implement application ports and never import React presentation.";
+      } else if (match?.[2] === "presentation") {
+        if (/^src\/(app|pages|infrastructure)\//.test(to) || target?.[2] === "infrastructure") reason = "presentation uses application contracts, not adapters or composition roots.";
+        else if (target && target[1] !== match[1] && target[2] === "presentation") reason = "compose cross-module views in pages/app instead of importing another module's presentation.";
+      } else if (/^src\/(app|pages)\//.test(from) && target?.[2] === "presentation") {
+        const view = target[1] + "/" + to.split("/").at(-1);
+        if (!to.endsWith("/binding") && !publicViews.has(view)) reason = "composition roots import declared public views/bindings, not internal controllers or views.";
+      }
+      if (!reason && reaches(to, from)) reason = "circular source dependencies are not allowed, including type-only imports.";
+      if (reason) report(node, reason);
     };
     return {
       ImportDeclaration: (node) => check(node.source),
       ExportNamedDeclaration: (node) => check(node.source),
       ExportAllDeclaration: (node) => check(node.source),
       ImportExpression: (node) => check(node.source),
+      TSImportType: (node) => check(node.source ?? node.argument?.literal ?? node.argument),
+      Identifier: (node) => {
+        if (isCore && ["window", "document", "localStorage", "sessionStorage", "File", "Blob", "fetch", "navigator", "HTMLElement"].includes(node.name)) {
+          const scope = context.sourceCode.getScope(node);
+          const reference = [...scope.references, ...scope.through].find((item) => item.identifier === node);
+          if (reference && (!reference.resolved || reference.resolved.defs.length === 0)) report(node, "core code cannot reference browser globals; inject a port.");
+        }
+      },
     };
   },
 };
