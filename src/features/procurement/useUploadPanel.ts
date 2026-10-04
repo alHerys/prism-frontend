@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import "../../shared/styles/focus.css";
 import { processDemoDocument } from "../../services/document-processing";
 import { useSessionService } from "../../services/session-context";
 import { errorMessage } from "../../shared/errors/message";
 import type { DocumentKind } from "../../shared/model/session";
+import "../../shared/styles/focus.css";
 import { useToast } from "../../shared/ui/feedback";
 
 export function useUploadPanel({

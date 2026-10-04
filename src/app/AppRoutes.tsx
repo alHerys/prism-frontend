@@ -19,7 +19,7 @@ const VendorDocuments = lazy(() =>
   import("../features/procurement/VendorDocuments").then((m) => ({ default: m.VendorDocuments })),
 );
 const Review = lazy(() =>
-  import("../pages/Review").then((m) => ({ default: m.Review })),
+  import("../features/review/Review").then((m) => ({ default: m.Review })),
 );
 const Bank = lazy(() => import("../pages/Bank"));
 const HistoryPage = lazy(() => import("../pages/History"));

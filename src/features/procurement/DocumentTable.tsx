@@ -1,8 +1,8 @@
 import { Link } from "react-router";
-import "../../shared/styles/focus.css";
 import { useSessionState } from "../../services/session-context";
 import { date, kindLabel } from "../../shared/formatters/display";
 import type { DocumentRecord } from "../../shared/model/session";
+import "../../shared/styles/focus.css";
 import { Empty, Status } from "../../shared/ui/feedback";
 
 export function DocumentTable({
