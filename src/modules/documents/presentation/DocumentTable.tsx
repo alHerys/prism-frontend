@@ -1,10 +1,10 @@
 import { Link } from "react-router";
 import { useDocumentsData } from "./binding";
 
-import { date, kindLabel } from "../../../shared/formatters/display";
+import { date, kindLabel } from "../../../shared/formatting/display";
 import type { DocumentRecord } from "../domain/models";
 import "../../../shared/styles/focus.css";
-import { Empty } from "../../../shared/ui/empty";
+import { EmptyState as Empty } from "../../../shared/ui/empty-state";
 import { Status } from "../../../shared/ui/status";
 
 export function DocumentTable({

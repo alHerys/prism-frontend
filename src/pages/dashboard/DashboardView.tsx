@@ -4,8 +4,8 @@ import { ClockCounterClockwise } from "@phosphor-icons/react/dist/csr/ClockCount
 import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { Link } from "react-router";
-import { dateTime, kindLabel } from "../../shared/formatters/display";
-import { Empty } from "../../shared/ui/empty";
+import { dateTime, kindLabel } from "../../shared/formatting/display";
+import { EmptyState as Empty } from "../../shared/ui/empty-state";
 import { ProcurementTable } from "../../modules/procurement/presentation/ProcurementTable.tsx";
 import "./dashboard.css";
 

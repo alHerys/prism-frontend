@@ -1,4 +1,4 @@
 /* Shared bank/history surface, in the original cascade order. */
 @import "./bank/workflows.css";
-@import "../snapshot/snapshot.css";
+@import "./snapshot.css";
 @import "./bank/desktop.css";

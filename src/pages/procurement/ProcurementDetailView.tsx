@@ -2,9 +2,9 @@ import { ResultPanel } from "../../modules/evaluations/presentation/ResultPanel"
 import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { Link } from "react-router";
-import { dateTime } from "../../shared/formatters/display";
+import { dateTime } from "../../shared/formatting/display";
 import "../../shared/styles/focus.css";
-import { Empty } from "../../shared/ui/empty";
+import { EmptyState as Empty } from "../../shared/ui/empty-state";
 import { Modal } from "../../shared/ui/modal";
 import { HEAPanel } from "../../modules/hea/presentation/HEAPanel";
 import { PDPanel } from "../../modules/price-deviation/presentation/PDPanel";

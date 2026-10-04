@@ -2,7 +2,7 @@ import type { ProcurementListModel } from "./view-models";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { useProcurementCommands, useProcurementData } from "./binding";
-import { errorMessage } from "../../../shared/errors/message";
+import { errorMessage } from "../../../shared/kernel/error-message";
 import { useToast } from "../../../shared/ui/toast-provider";
 
 export function useProcurementList() : ProcurementListModel {

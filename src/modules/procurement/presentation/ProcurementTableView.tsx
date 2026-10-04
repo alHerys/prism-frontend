@@ -5,7 +5,7 @@ import { Folder } from "@phosphor-icons/react/dist/csr/Folder";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
 import { Link } from "react-router";
 import { SelectField } from "../../../shared/ui/select-field";
-import { Empty } from "../../../shared/ui/empty";
+import { EmptyState as Empty } from "../../../shared/ui/empty-state";
 
 import type { ProcurementTableModel } from "./view-models";
 export function ProcurementTableView({

@@ -1,4 +1,4 @@
-import { bankMoney as money } from "../../../shared/formatters/display";
+import { bankMoney as money } from "../../../shared/formatting/display";
 import "../../../shared/styles/bank.css";
 import type { BankPageModel } from "./view-models";
 export function ReferenceDetail({ state, detail, setDetail, compareReference }: Pick<BankPageModel, "state" | "detail" | "setDetail" | "compareReference">) {

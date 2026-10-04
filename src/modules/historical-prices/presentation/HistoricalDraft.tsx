@@ -1,6 +1,6 @@
 import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
 import { FileXls } from "@phosphor-icons/react/dist/csr/FileXls";
-import { bankMoney as money } from "../../../shared/formatters/display";
+import { bankMoney as money } from "../../../shared/formatting/display";
 import "../../../shared/styles/bank.css";
 import type { BankPageModel } from "./view-models";
 export function HistoricalDraft({

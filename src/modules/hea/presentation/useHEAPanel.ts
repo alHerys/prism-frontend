@@ -2,8 +2,8 @@ import type { HEAPanelModel } from "./view-models";
 import { useState } from "react";
 import { useSearchParams } from "react-router";
 import { useHEACommands, useHEAData } from "./binding";
-import { errorMessage } from "../../../shared/errors/message";
-import { percentInput, ratioInput } from "../../../shared/formatters/percentage-input";
+import { errorMessage } from "../../../shared/kernel/error-message";
+import { percentInput, ratioInput } from "../../../shared/formatting/percentage-input";
 import type { Procurement } from "../../procurement/domain/models";
 import { useToast } from "../../../shared/ui/toast-provider";
 

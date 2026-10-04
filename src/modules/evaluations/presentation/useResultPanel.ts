@@ -2,7 +2,7 @@ import type { ResultPanelModel } from "./view-models";
 import { useState } from "react";
 
 import { useEvaluationsCommands } from "./binding";
-import { errorMessage } from "../../../shared/errors/message";
+import { errorMessage } from "../../../shared/kernel/error-message";
 import type { Procurement } from "../../procurement/domain/models";
 import type { Snapshot } from "../domain/models";
 import { useToast } from "../../../shared/ui/toast-provider";

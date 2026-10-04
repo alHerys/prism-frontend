@@ -1,5 +1,5 @@
 import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
-import { historyTime as time } from "../../shared/formatters/display";
+import { historyTime as time } from "../../shared/formatting/display";
 import "../../shared/styles/bank.css";
 import { Empty } from "./Empty";
 import { eventLabel, moduleLabel } from "./history-labels";

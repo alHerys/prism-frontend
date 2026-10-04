@@ -4,7 +4,7 @@ import { Linter } from "eslint";
 import parser from "@typescript-eslint/parser";
 // @ts-expect-error The repository's ESLint plugin is a JavaScript tooling module.
 import { architecture } from "../eslint.architecture.js";
-const root = new URL("../", import.meta.url).pathname;
+const root = new URL("..", import.meta.url).pathname;
 const linter = new Linter();
 function inspect(file: string, code: string) {
   return linter.verify(code, [{ files: ["**/*.ts"], languageOptions: { parser }, plugins: { prism: { rules: { architecture } } }, rules: { "prism/architecture": "error" } }], { filename: root + file });

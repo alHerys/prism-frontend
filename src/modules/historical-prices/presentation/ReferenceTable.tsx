@@ -1,6 +1,6 @@
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
 import { FileXls } from "@phosphor-icons/react/dist/csr/FileXls";
-import { bankMoney as money } from "../../../shared/formatters/display";
+import { bankMoney as money } from "../../../shared/formatting/display";
 import type { HistoricalItem } from "../domain/models";
 import "../../../shared/styles/bank.css";
 export function ReferenceTable({

@@ -1,6 +1,6 @@
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
 import { DownloadSimple } from "@phosphor-icons/react/dist/csr/DownloadSimple";
-import { bankMoney as money } from "../../../shared/formatters/display";
+import { bankMoney as money } from "../../../shared/formatting/display";
 import "../../../shared/styles/bank.css";
 import { Empty } from "./Empty";
 import { ReferenceTable } from "./ReferenceTable";

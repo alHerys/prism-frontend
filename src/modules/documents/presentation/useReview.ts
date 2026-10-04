@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router";
 
 import { useDocumentsCommands, useDocumentsData } from "./binding";
 
-import { toPercent, toRatio } from "../../../shared/formatters/review-input";
+import { toPercent, toRatio } from "../../../shared/formatting/review-input";
 import type { A5Values } from "../domain/models";
 import type { PricePair } from "../../price-deviation/domain/models";
 import { useToast } from "../../../shared/ui/toast-provider";

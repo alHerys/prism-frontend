@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 
 import { useDocumentsCommands } from "./binding";
-import { errorMessage } from "../../../shared/errors/message";
+import { errorMessage } from "../../../shared/kernel/error-message";
 import type { DocumentKind } from "../domain/models";
 import { useToast } from "../../../shared/ui/toast-provider";
 

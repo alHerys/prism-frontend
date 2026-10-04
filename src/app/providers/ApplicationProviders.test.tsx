@@ -2,8 +2,8 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { Link, MemoryRouter, Route, Routes } from "react-router";
 import { afterEach, expect, it } from "vitest";
 import { createLocalRuntime } from "../../infrastructure/local/runtime";
-import { createApplication } from "../../app/bootstrap/application";
-import { ApplicationProviders } from "../../app/providers/ApplicationProviders";
+import { createApplication } from "../bootstrap/application";
+import { ApplicationProviders } from "./ApplicationProviders";
 
 import { useProcurementCommands, useProcurementData } from "../../modules/procurement/presentation/binding";
 

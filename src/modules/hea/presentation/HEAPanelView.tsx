@@ -3,7 +3,7 @@ import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
 import { CheckCircle as CheckCircle2 } from "@phosphor-icons/react/dist/csr/CheckCircle";
 import { Link } from "react-router";
 import "../../../shared/styles/focus.css";
-import { Empty } from "../../../shared/ui/empty";
+import { EmptyState as Empty } from "../../../shared/ui/empty-state";
 import { Status } from "../../../shared/ui/status";
 import { Stepper } from "../../../shared/ui/stepper";
 import type { HEAPanelModel } from "./view-models";

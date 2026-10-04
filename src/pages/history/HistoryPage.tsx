@@ -1,4 +1,4 @@
-import type { HistoryPageProps } from "./history-page.types";
+import type { HistoryPageProps } from "./history-page.types.ts";
 import { HistoryPageView } from "./HistoryPageView";
 import { useHistoryPage } from "./useHistoryPage";
 export function HistoryPage(props: HistoryPageProps) {

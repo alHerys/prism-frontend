@@ -1,7 +1,7 @@
 import { ClipboardText } from "@phosphor-icons/react/dist/csr/ClipboardText";
 import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
 import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
-import { historyChartDay } from "../../shared/formatters/display";
+import { historyChartDay } from "../../shared/formatting/display";
 import "../../shared/styles/bank.css";
 import { Empty } from "./Empty";
 import type { HistoryPageModel } from "./view-models";

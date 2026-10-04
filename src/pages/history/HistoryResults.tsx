@@ -1,5 +1,5 @@
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
-import { historyTime as time } from "../../shared/formatters/display";
+import { historyTime as time } from "../../shared/formatting/display";
 import "../../shared/styles/bank.css";
 import { Empty } from "./Empty";
 import { moduleLabel } from "./history-labels";

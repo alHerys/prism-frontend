@@ -1,5 +1,5 @@
 import { Sparkle } from "@phosphor-icons/react/dist/csr/Sparkle";
-import { bankDateTime, bankMoney as money } from "../../../shared/formatters/display";
+import { bankDateTime, bankMoney as money } from "../../../shared/formatting/display";
 import "../../../shared/styles/bank.css";
 import type { BankPageModel } from "./view-models";
 export function HistoricalEstimate({

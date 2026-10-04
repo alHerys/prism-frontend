@@ -7,7 +7,7 @@ import {
 } from "react-router";
 import { Dashboard } from "../pages/dashboard/Dashboard";
 import { LoadingState } from "../shared/ui/loading-state";
-import { Empty } from "../shared/ui/empty";
+import { EmptyState as Empty } from "../shared/ui/empty-state";
 
 const ProcurementList = lazy(() =>
   import("../modules/procurement/presentation/ProcurementList").then((m) => ({ default: m.ProcurementList })),
