@@ -30,7 +30,7 @@ export function usePDPanel({ procurement: p }: { procurement: Procurement }) : P
     try {
       const s = await service.evaluateDeviation(p.id, oe, offer);
       setParams({ tab: "harga", hasil: s.id });
-      toast("Evaluasi Harga Timpang selesai.");
+      toast("Evaluasi Harga Timpang selesai.", false, "evaluation");
     } catch (e) {
       toast(errorMessage(e), true);
     } finally {

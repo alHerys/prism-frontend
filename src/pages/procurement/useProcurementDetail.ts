@@ -24,7 +24,7 @@ export function useProcurementDetail() : ProcurementDetailModel {
       await service.addVendor(p!.id, vendorName);
       setVendorOpen(false);
       setVendorName("");
-      toast("Vendor berhasil ditambahkan.");
+      toast("Vendor berhasil ditambahkan.", false, "procurement");
     } catch (e) {
       toast(errorMessage(e), true);
     }

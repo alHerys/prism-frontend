@@ -1,14 +1,17 @@
 import { X } from "@phosphor-icons/react/dist/csr/X";
 import type { ReactNode } from "react";
 import { createContext, useContext, useEffect, useState } from "react";
+import { useWorkspacePreferences } from "./workspace-preferences";
+import type { NotificationCategory } from "../kernel/workspace-preferences";
 
-const ToastContext = createContext<(message: string, error?: boolean) => void>(
+const ToastContext = createContext<(message: string, error?: boolean, category?: NotificationCategory) => void>(
   () => { },
 );
 
 export const useToast = () => useContext(ToastContext);
 
 export function ToastProvider({ children }: { children: ReactNode }) {
+  const { preferences } = useWorkspacePreferences();
   const [toast, setToast] = useState<{
     message: string;
     error: boolean;
@@ -20,7 +23,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   }, [toast]);
   return (
     <ToastContext.Provider
-      value={(message, error = false) => setToast({ message, error })}
+      value={(message, error = false, category) => {
+        if (error || !category || preferences.notifications[category]) setToast({ message, error });
+      }}
     >
       {children}
       {toast && (

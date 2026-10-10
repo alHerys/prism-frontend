@@ -68,7 +68,7 @@ export function useHEAPanel({ procurement: p }: { procurement: Procurement }) : 
     try {
       const s = await service.evaluateHEA(p.id, selected);
       setParams({ tab: "hea", hasil: s.id });
-      toast("Evaluasi HEA selesai. Hasil tersimpan.");
+      toast("Evaluasi HEA selesai. Hasil tersimpan.", false, "evaluation");
     } catch (e) {
       toast(errorMessage(e), true);
     } finally {

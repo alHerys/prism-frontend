@@ -2,9 +2,11 @@ import type { BankPageModel } from "./view-models";
 import { useState } from "react";
 import { useHistoricalPricesCommands, useHistoricalPricesData } from "./binding";
 import type { HistoricalItem } from "../domain/models";
+import { useWorkspacePreferences } from "../../../shared/ui/workspace-preferences";
 
 
 export function useBankPage() : BankPageModel {
+  const { preferences } = useWorkspacePreferences();
   const service = useHistoricalPricesCommands();
   const state = useHistoricalPricesData();
   const preparedEstimate = state.estimates[0];
@@ -104,14 +106,14 @@ export function useBankPage() : BankPageModel {
     if (!draft) return;
     await run("Mempublikasikan dokumen", async () => {
       await service.publishHistory(draft.id, draft.revision);
-      setNotice("Dokumen telah ditambahkan ke Bank Data OE.");
+      setNotice(preferences.notifications.publication ? "Dokumen telah ditambahkan ke Bank Data OE." : "");
       setDraftId("");
     });
   };
   const exportStats = async () => {
     await run("Menyiapkan laporan", async () => {
       await service.exportReferences(selectedIds);
-      setNotice("Laporan referensi berhasil disiapkan.");
+      setNotice(preferences.notifications.export ? "Laporan referensi berhasil disiapkan." : "");
     });
   };
   const createEstimate = () => run("Menelaah referensi dan kebutuhan", async () => {

@@ -6,10 +6,12 @@ import { localDay } from "../../shared/formatting/display";
 import type { Snapshot } from "../../modules/evaluations/domain/models";
 import { moduleLabel } from "./history-labels";
 import type { HistoryPageProps } from "./history-page.types.ts";
+import { useWorkspacePreferences } from "../../shared/ui/workspace-preferences";
 
 export function useHistoryPage({
   onOpenResult,
 }: HistoryPageProps) : HistoryPageModel {
+  const { preferences } = useWorkspacePreferences();
   const service = useEvaluationsCommands();
   const state = { ...useEvaluationsData(), ...useDocumentsData() };
   const [tab, setTab] = useState("Aktivitas");
@@ -71,7 +73,7 @@ export function useHistoryPage({
     setNotice("");
     try {
       await service.exportSnapshot(selected);
-      setNotice("Laporan berhasil disiapkan.");
+      setNotice(preferences.notifications.export ? "Laporan berhasil disiapkan." : "");
     } catch (error) {
       setNoticeError(true);
       setNotice(

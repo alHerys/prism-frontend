@@ -23,7 +23,7 @@ export function useResultPanel({
     setBusy(true);
     try {
       await service.exportSnapshot(s);
-      toast("Laporan Excel berhasil dibuat.");
+      toast("Laporan Excel berhasil dibuat.", false, "export");
     } catch (e) {
       toast(errorMessage(e), true);
     } finally {

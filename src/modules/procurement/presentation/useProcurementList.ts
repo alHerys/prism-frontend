@@ -23,7 +23,7 @@ export function useProcurementList() : ProcurementListModel {
     try {
       const p = await service.createProcurement(form);
       navigate(`/pengadaan/${p.id}`);
-      toast("Pengadaan berhasil dibuat. Mulai dengan menambahkan vendor.");
+      toast("Pengadaan berhasil dibuat. Mulai dengan menambahkan vendor.", false, "procurement");
     } catch (e) {
       toast(errorMessage(e), true);
     } finally {
