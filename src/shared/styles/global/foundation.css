@@ -1,9 +1,16 @@
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  src: url("/fonts/PlusJakartaSans-Variable.ttf") format("truetype");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #25313e;
-  background: #f7f8fa;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #131a15;
+  background: #e9ebe9;
   font-synthesis: none;
-  font-size: 14px;
+  font-size: 15px;
   --blue: #006cb8;
   --blue-deep: #254c83;
   --blue-soft: #edf3fc;
