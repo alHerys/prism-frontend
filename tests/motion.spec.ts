@@ -73,6 +73,7 @@ test('Bank overview collapses smoothly, reverses and respects reduced motion', a
   const sample = await overview.evaluate(element => {
     const animations = element.getAnimations();
     const timings = animations.map(animation => animation.effect!.getTiming().duration);
+    const easings = animations.map(animation => animation.effect!.getTiming().easing);
     for (const animation of animations) {
       animation.pause();
       const timing = animation.effect!.getTiming();
@@ -81,15 +82,20 @@ test('Bank overview collapses smoothly, reverses and respects reduced motion', a
     const height = element.getBoundingClientRect().height;
     const opacity = Number(getComputedStyle(element).opacity);
     animations.forEach(animation => animation.play());
-    return { height, opacity, timings };
+    return { height, opacity, timings, easings };
   });
   expect(sample.timings).toContain(200);
   expect(sample.timings).toContain(180);
+  expect(sample.easings).toContain('cubic-bezier(0.22, 1, 0.36, 1)');
+  expect(sample.easings).toContain('ease-out');
   expect(sample.height).toBeGreaterThan(0);
   expect(sample.height).toBeLessThan(fullHeight);
   expect(sample.opacity).toBeGreaterThan(0);
   expect(sample.opacity).toBeLessThan(1);
-  await documents.click();
+  await expect.poll(() => overview.evaluate(element => element.getAnimations().length)).toBeGreaterThan(0);
+  // Keyboard activation remains possible while the tab moves with the collapsing
+  // overview. A pointer click waits for stability and would miss rapid reversal.
+  await documents.press('Enter');
   await expect(overview).toHaveAttribute('aria-hidden', 'false');
   await expect.poll(() => overview.evaluate(element => element.getAnimations().length)).toBe(0);
   expect((await overview.boundingBox())!.height).toBeCloseTo(fullHeight, 0);
