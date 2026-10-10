@@ -1,10 +1,43 @@
 import { CalendarBlank } from "@phosphor-icons/react/dist/csr/CalendarBlank";
-import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
+import { Calculator } from "@phosphor-icons/react/dist/csr/Calculator";
+import { ChartBar } from "@phosphor-icons/react/dist/csr/ChartBar";
+import { ChartLine } from "@phosphor-icons/react/dist/csr/ChartLine";
+import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
+import { Database } from "@phosphor-icons/react/dist/csr/Database";
+import { DownloadSimple } from "@phosphor-icons/react/dist/csr/DownloadSimple";
+import { FolderPlus } from "@phosphor-icons/react/dist/csr/FolderPlus";
+import { Folders } from "@phosphor-icons/react/dist/csr/Folders";
+import { PencilSimpleLine } from "@phosphor-icons/react/dist/csr/PencilSimpleLine";
+import { Scales } from "@phosphor-icons/react/dist/csr/Scales";
+import { SlidersHorizontal } from "@phosphor-icons/react/dist/csr/SlidersHorizontal";
+import { UploadSimple } from "@phosphor-icons/react/dist/csr/UploadSimple";
+import { UserPlus } from "@phosphor-icons/react/dist/csr/UserPlus";
 import { historyChartDay, historyTime as time, localDay } from "../../shared/formatting/display";
 import "../../shared/styles/bank.css";
 import { Empty } from "./Empty";
 import { eventLabel, moduleLabel } from "./history-labels";
 import type { HistoryPageModel } from "./view-models";
+
+const actionIcons = {
+  CREATED: FolderPlus,
+  VENDOR_ADDED: UserPlus,
+  UPLOADED: UploadSimple,
+  CORRECTED: PencilSimpleLine,
+  CONFIRMED: CheckCircle,
+  PUBLISHED: Database,
+  ESTIMATED: Calculator,
+  EXPORTED: DownloadSimple,
+  PREFERENCES_UPDATED: SlidersHorizontal,
+  PREFERENCES_CONFIRMED: CheckCircle,
+  METADATA_UPDATED: PencilSimpleLine,
+  GROUP_SELECTED: Folders,
+};
+const moduleIcons = { HEA: Scales, PRICE_DEVIATION: ChartBar, BANK: ChartLine, PROCUREMENT: FolderPlus };
+
+function ActivityIcon({ event }: { event: HistoryPageModel["events"][number] }) {
+  const Icon = actionIcons[event.type as keyof typeof actionIcons] ?? moduleIcons[event.module];
+  return <Icon size={21} aria-hidden="true" />;
+}
 
 export function HistoryActivity({ tab, events, procurementName }: Pick<HistoryPageModel, "tab" | "events" | "procurementName">) {
   if (tab !== "Aktivitas") return null;
@@ -30,7 +63,7 @@ export function HistoryActivity({ tab, events, procurementName }: Pick<HistoryPa
                 <ol>
                   {dayEvents.map((event) => (
                     <li className="history-event" key={event.id}>
-                      <span className="bank-document-icon"><Clock size={21} aria-hidden="true" /></span>
+                      <span className="bank-document-icon"><ActivityIcon event={event} /></span>
                       <div className="history-event-content">
                         <div className="history-event-heading">
                           <strong>{event.summary}</strong>
@@ -56,11 +89,11 @@ export function HistoryActivity({ tab, events, procurementName }: Pick<HistoryPa
         <div className="bank-section-heading"><h2>Dalam pilihan ini</h2></div>
         <div className="history-context">
           <dl>
-            <dt>Aktivitas tercatat</dt><dd>{events.length}</dd>
-            <dt>Hari dengan aktivitas</dt><dd>{days.size}</dd>
-            <dt>Pengadaan terkait</dt><dd>{procurementCount}</dd>
+            <div><dt>Aktivitas tercatat</dt><dd>{events.length}</dd></div>
+            <div><dt>Hari dengan aktivitas</dt><dd>{days.size}</dd></div>
+            <div><dt>Pengadaan terkait</dt><dd>{procurementCount}</dd></div>
           </dl>
-          <p className="muted">Catatan disusun dari aktivitas yang tercatat, sesuai pencarian, modul, pengadaan, dan rentang tanggal di atas.</p>
+          <p className="muted">Ringkasan mengikuti pencarian dan filter di atas.</p>
         </div>
       </aside>
     </div>

@@ -51,15 +51,6 @@ export function HistoryPageView({
         }}
       >
         <section className="bank-filters" aria-label="Filter riwayat">
-          <label className="bank-search">
-            <MagnifyingGlass size={17} />
-            <input
-              aria-label="Cari aktivitas atau hasil"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Cari aktivitas atau pengadaan…"
-            />
-          </label>
           <label className="field">
             Modul
             <select value={module} onChange={(e) => setModule(e.target.value)}>
@@ -100,6 +91,15 @@ export function HistoryPageView({
               value={end}
               min={start || undefined}
               onChange={(e) => setEnd(e.target.value)}
+            />
+          </label>
+          <label className="bank-search">
+            <MagnifyingGlass size={17} />
+            <input
+              aria-label="Cari aktivitas atau hasil"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Cari aktivitas atau pengadaan…"
             />
           </label>
         </section>
