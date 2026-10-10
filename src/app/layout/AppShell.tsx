@@ -77,8 +77,9 @@ function Brand({ onNavigate }: { onNavigate?: () => void }) {
 }
 function SidebarFooter({ pending, onNavigate }: { pending: number; onNavigate?: () => void }) {
   return <div className="sidebar-foot">
-    <p className="sidebar-organization">PT Pertamina Patra Niaga</p>
+    <p className="sidebar-organization"><span>PT Pertamina Patra Niaga</span><span>Regional Kalimantan</span></p>
     <Link to="/pengadaan" className="sidebar-continuation" onClick={onNavigate} aria-label={`${pending} dokumen perlu ditinjau`}><Folder size={18} aria-hidden="true" /><span>{pending} dokumen perlu ditinjau</span><CaretRight size={16} aria-hidden="true" /></Link>
+    <div className="sidebar-brand-stripe" aria-hidden="true" />
   </div>;
 }
 export function AppShell() {
@@ -120,15 +121,17 @@ export function AppShell() {
     <div className={`app ${!narrow && collapsed ? "nav-collapsed" : ""}`}>
       <a className="skip-link" href="#main-content">Lewati navigasi</a>
       {!narrow && <aside className="sidebar">
+        <div className="sidebar-content">
         <Brand />
+        <Navigation collapsed={collapsed} />
+        <GeneralNavigation collapsed={collapsed} onLogout={openLogout} />
+        <SidebarFooter pending={pending} />
+        </div>
         <Hint label={collapsed ? "Perluas navigasi" : "Ringkas navigasi"}>
           <button className="sidebar-toggle" onClick={() => setCollapsed(value => !value)} aria-label={collapsed ? "Perluas navigasi" : "Ringkas navigasi"} aria-expanded={!collapsed}>
             {collapsed ? <CaretRight size={16} /> : <CaretLeft size={16} />}
           </button>
         </Hint>
-        <Navigation collapsed={collapsed} />
-        <GeneralNavigation collapsed={collapsed} onLogout={openLogout} />
-        <SidebarFooter pending={pending} />
       </aside>}
       <main className="workspace" id="main-content" tabIndex={-1}>
         <header className="topbar">

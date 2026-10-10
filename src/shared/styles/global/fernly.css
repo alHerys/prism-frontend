@@ -37,12 +37,14 @@ h1 { font-size: 34px; font-weight: 600; line-height: 1.1; letter-spacing: -.035e
 h2, .panel-header h2 { font-size: 19px; font-weight: 500; line-height: 1.45; color: var(--ink); }
 h3 { font-size: 15px; font-weight: 600; }
 .app { display: block; padding: 12px; }
-.sidebar { top: 12px; left: 12px; height: calc(100dvh - 24px); padding: 22px 0 18px; border: 0; border-radius: 26px; background: var(--shell); overflow-y: auto; }
+.sidebar { top: 12px; left: 12px; height: calc(100dvh - 24px); padding: 0; border: 0; border-radius: 26px; background: var(--shell); overflow: visible; }
+.sidebar-content { display: flex; flex-direction: column; height: 100%; padding: 22px 0 18px; border-radius: inherit; overflow-y: auto; }
+.sidebar-content > .brand, .sidebar-content > .nav, .sidebar-content > .sidebar-foot { flex-shrink: 0; }
 .sidebar::after { display: none; }
 .brand { display: flex; align-items: center; justify-content: center; min-height: 72px; margin-bottom: 22px; padding: 0 32px; }
 .brand .logo-full { width: 176px; max-width: 100%; height: auto; max-height: 64px; margin: 0; object-fit: contain; object-position: center; }
-.sidebar-toggle { top: 28px; right: 12px; width: 26px; height: 26px; border-radius: 50%; background: transparent; color: var(--muted); box-shadow: none; }
-.sidebar-toggle:hover { color: var(--accent); background: var(--accent-soft); }
+.sidebar-toggle { top: 40px; right: -18px; width: 36px; height: 36px; border-radius: 12px; background: var(--accent); color: white; box-shadow: none; }
+.sidebar-toggle:hover { color: white; background: var(--accent-deep); }
 .nav { gap: 6px; }
 .nav-entry { min-width: 0; }
 .nav a { min-height: 42px; padding: 9px 28px; gap: 14px; border-radius: 0; position: relative; color: var(--muted); font-weight: 400; font-size: 15px; }
@@ -52,18 +54,21 @@ h3 { font-size: 15px; font-weight: 600; }
 .nav a:hover { background: var(--accent-soft); }
 .sidebar-foot { border: 0; margin-inline: 18px; padding: 22px 0 0; line-height: 1.6; }
 .sidebar-organization { border-top: 1px solid var(--border); padding-top: 18px; color: var(--muted); font-size: 12px; }
+.sidebar-organization span { display: block; }
+.sidebar-organization span + span { margin-top: 4px; }
+.sidebar-brand-stripe { height: 6px; margin: 18px -18px -18px; background: linear-gradient(to right, #086db5 0 50%, #aac237 50% 75%, #ea1e30 75% 100%); }
 .sidebar-continuation { display: flex; align-items: center; gap: 8px; margin-top: 18px; padding: 16px 12px; color: #f2f8f4; background: var(--accent-deep); border-radius: 20px; font-size: 12px; line-height: 1.5; }
 .sidebar-continuation:hover { color: white; background: var(--accent); text-decoration: none; }
 .sidebar-continuation span { flex: 1; }
 .nav-collapsed { --sidebar-width: 76px; }
-.nav-collapsed .sidebar { padding: 22px 0 18px; }
+.nav-collapsed .sidebar { padding: 0; }
 .nav-collapsed .brand { padding: 0; }
 .nav-collapsed .brand .logo-symbol { width: 34px; height: 48px; margin: 0; }
 .nav-collapsed .sidebar-organization { display: none; }
 .nav-collapsed .sidebar-foot { display: block; margin-inline: 10px; }
 .nav-collapsed .sidebar-continuation { justify-content: center; padding: 14px; }
 .nav-collapsed .sidebar-continuation span, .nav-collapsed .sidebar-continuation > svg:last-child { display: none; }
-.nav-collapsed .sidebar-toggle { top: 80px; right: 25px; }
+.nav-collapsed .sidebar-brand-stripe { margin-inline: -10px; }
 .nav-collapsed .nav { margin-top: 35px; }
 .nav-collapsed .nav a { padding: 13px; justify-content: center; }
 .workspace { margin-left: calc(var(--sidebar-width) + 12px); transition: margin-left var(--motion-sidebar) var(--ease-out); min-width: 0; }
@@ -130,6 +135,8 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--accent); flex-
 .empty h3 { font-weight: 600; }
 .navigation-scrim { position: fixed; inset: 0; z-index: 60; background: #131a1533; }
 .navigation-drawer { position: fixed; inset: 0 auto 0 0; z-index: 61; width: min(290px, calc(100vw - 36px)); padding: 22px 0; border-radius: 0 26px 26px 0; background: var(--shell); display: flex; flex-direction: column; overflow-y: auto; outline: none; }
+.navigation-drawer .sidebar-foot { flex-shrink: 0; }
+.navigation-drawer .sidebar-brand-stripe { margin-bottom: -22px; }
 .drawer-heading { display: flex; align-items: center; justify-content: space-between; padding-right: 12px; }
 .drawer-heading .brand { padding: 0 24px; }
 .drawer-heading .logo-full { width: 150px; }
