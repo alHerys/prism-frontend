@@ -108,7 +108,7 @@
   font-size: 12px;
 }
 .procurement-path button:hover {
-  background: #edf4f9;
+  background: var(--accent-wash);
 }
 .procurement-path button > span {
   display: grid;

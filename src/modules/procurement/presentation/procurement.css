@@ -19,23 +19,23 @@
 .procurement-data-table .procurement-name { min-width: 230px; }
 .procurement-data-table .procurement-name strong { font-weight: 500; line-height: 1.5; }
 .procurement-data-table .procurement-name small { margin-top: 5px; font-size: 11px; }
-.procurement-data-table .procurement-folder { background: #eaf0e9; color: var(--accent, #155a37); width: 42px; height: 42px; border-radius: 13px; }
+.procurement-data-table .procurement-folder { background: var(--accent-wash); color: var(--accent, #155a37); width: 42px; height: 42px; border-radius: 13px; }
 .procurement-data-table .table-sort { display: inline-flex; align-items: center; min-height: 32px; font-size: 12px; gap: 7px; }
 .procurement-data-table .table-sort:hover, .procurement-data-table .table-sort[data-active="true"] { color: var(--accent, #155a37); }
 .procurement-data-table .procurement-table .procurement-table-actions-heading { position: sticky; right: 0; z-index: 1; text-align: right; }
 .procurement-filter-trigger { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 32px; padding: 5px 9px; background: transparent; border: 0; border-radius: 7px; color: var(--muted); font-size: 12px; font-weight: 500; }
-.procurement-filter-trigger:hover, .procurement-filter-trigger[data-state="open"], .procurement-filter-trigger[data-filtered="true"] { background: #e7f0e9; color: var(--accent, #155a37); }
+.procurement-filter-trigger:hover, .procurement-filter-trigger[data-state="open"], .procurement-filter-trigger[data-filtered="true"] { background: var(--accent-soft); color: var(--accent, #155a37); }
 .procurement-filter-menu { position: fixed; z-index: 100; padding: 17px; overflow-y: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 10px 30px #131a151a; }
 .procurement-filter-heading { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 14px; }
 .procurement-filter-heading h2 { flex: 1; margin: 0; font-size: 14px; font-weight: 600; line-height: 1.5; color: var(--ink); }
 .procurement-filter-heading button { width: 25px; height: 25px; display: grid; place-items: center; flex-shrink: 0; padding: 0; background: transparent; border: 0; border-radius: 5px; color: var(--muted); }
-.procurement-filter-heading button:hover { background: #e7f0e9; color: var(--accent, #155a37); }
+.procurement-filter-heading button:hover { background: var(--accent-soft); color: var(--accent, #155a37); }
 .procurement-filter-menu fieldset { min-width: 0; margin: 0; padding: 11px 0; border: 0; border-top: 1px solid var(--border); }
 .procurement-filter-menu fieldset:last-child { padding-bottom: 0; }
 .procurement-filter-menu legend { width: 100%; padding: 0; color: var(--muted); font-size: 11px; font-weight: 500; }
 .procurement-filter-menu label { display: flex; align-items: center; gap: 9px; min-height: 31px; padding: 5px 7px; color: var(--ink); border-radius: 5px; font-size: 12px; cursor: pointer; }
 .procurement-filter-menu label:hover { background: var(--shell, #f5f6f5); }
-.procurement-filter-menu label:has(input:checked) { background: #e7f0e9; color: var(--accent, #155a37); }
+.procurement-filter-menu label:has(input:checked) { background: var(--accent-soft); color: var(--accent, #155a37); }
 .procurement-filter-menu input[type="radio"] { width: 14px; height: 14px; min-height: 0; flex-shrink: 0; padding: 0; margin: 0; accent-color: var(--accent, #155a37); }
 .procurement-data-table .readiness-badges .badge { font-size: 10px; font-weight: 500; padding: 4px 9px; }
 .procurement-readiness { display: block; margin-top: 10px; width: 126px; height: 4px; border: 0; border-radius: 3px; overflow: hidden; background: #e6eae6; accent-color: var(--accent, #155a37); }
@@ -43,13 +43,13 @@
 .procurement-readiness::-webkit-progress-value { background: var(--accent, #155a37); border-radius: 3px; }
 .procurement-readiness::-moz-progress-bar { background: var(--accent, #155a37); border-radius: 3px; }
 .procurement-data-table .table-open { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--border); color: var(--ink); }
-.procurement-data-table .table-open:hover { text-decoration: none; color: var(--accent, #155a37); background: #edf3ed; }
+.procurement-data-table .table-open:hover { text-decoration: none; color: var(--accent, #155a37); background: var(--accent-wash); }
 .procurement-data-table .table-pagination { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; padding: 20px 26px; margin-top: 0; border-top: 1px solid var(--border); font-size: 12px; }
 .procurement-data-table .page-size { margin-left: auto; }
 .procurement-data-table .page-size .select-trigger { min-height: 34px; border-radius: 50px; min-width: 62px; font-size: 12px; }
 .procurement-data-table .pagination-controls { gap: 8px; }
 .procurement-data-table .pagination-controls .btn { min-height: 34px; padding: 7px 11px; font-size: 11px; }
-.procurement-data-table .page-number { min-width: 28px; height: 28px; display: grid; place-items: center; background: #e9f0e9; color: var(--accent, #155a37); border-radius: 50%; }
+.procurement-data-table .page-number { min-width: 28px; height: 28px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent, #155a37); border-radius: 50%; }
 @media (max-width: 639px) {
   .procurement-list-heading { padding: 20px 20px 0; flex-wrap: wrap; gap: 12px; }
   .procurement-list-count { font-size: 12px; }

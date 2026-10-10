@@ -97,7 +97,7 @@
 }
 .dropzone {
   padding: 35px 22px;
-  border: 1px dashed #b8cbbd;
+  border: 1px dashed var(--accent-border);
   background: var(--shell, #f5f6f5);
   border-radius: 9px;
   text-align: center;
@@ -252,7 +252,7 @@
   overflow-wrap: anywhere;
 }
 * {
-  scrollbar-color: #bbc7be var(--shell, #f5f6f5);
+  scrollbar-color: var(--accent-border) var(--shell, #f5f6f5);
   scrollbar-width: thin;
 }
 input::placeholder {

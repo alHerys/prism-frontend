@@ -4,7 +4,7 @@
 .procurement-detail-page .procurement-path button.current { background: var(--accent, #155a37); color: #fff; box-shadow: none; }
 .procurement-detail-page .procurement-path button.current > span { background: #ffffff1f; color: #fff; border-color: #ffffff45; }
 .procurement-detail-page .procurement-path button.current small { color: var(--accent-fg-soft); }
-.procurement-detail-page .procurement-path button:not(.current):hover { background: #edf2ed; }
+.procurement-detail-page .procurement-path button:not(.current):hover { background: var(--accent-wash); }
 .procurement-detail-page .procurement-path small { font-size: 10px; line-height: 1.45; margin-top: 4px; }
 .procurement-summary-layout { display: grid; grid-template-columns: minmax(240px, .72fr) minmax(0, 1.8fr); gap: 20px; align-items: start; }
 .procurement-summary-layout > .panel { min-width: 0; margin: 0; padding: 25px; }

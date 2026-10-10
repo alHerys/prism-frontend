@@ -25,7 +25,7 @@
 .evaluation-selection .table { min-width: 580px; }
 .evaluation-selection .table th:first-child { width: 64px; }
 .evaluation-selection .table tbody tr.is-selected { background: var(--accent-soft, var(--blue-soft)); }
-.evaluation-selection .table tbody tr.is-selected td { border-bottom-color: #d5e4d8; }
+.evaluation-selection .table tbody tr.is-selected td { border-bottom-color: var(--accent-border); }
 .evaluation-selection .table td:first-child { text-align: center; }
 .evaluation-selection input[type="checkbox"] { width: 19px; height: 19px; }
 .evaluation-selection .table td strong { font-size: 15px; }
@@ -66,7 +66,7 @@
 .fernly-upload .document-kind-actions { width: fit-content; max-width: 100%; display: flex; gap: 4px; padding: 5px; border-radius: 14px; background: var(--shell, #f5f6f5); }
 .fernly-upload .document-kind-actions .btn { border: 0; background: transparent; border-radius: 10px; }
 .fernly-upload .document-kind-actions .btn.selected { background: var(--surface); color: var(--accent-deep, var(--blue-deep)); box-shadow: 0 2px 5px #13281b0a; }
-.fernly-upload .upload-zone { border-color: #b8cbbd; border-radius: 16px; padding: 38px 24px; background: var(--shell, #f5f6f5); }
+.fernly-upload .upload-zone { border-color: var(--accent-border); border-radius: 16px; padding: 38px 24px; background: var(--shell, #f5f6f5); }
 .fernly-upload .upload-zone p { font-size: 16px; margin-bottom: 8px; }
 .fernly-upload .upload-zone > svg { color: var(--accent-deep, var(--blue-deep)); }
 .fernly-upload .loading-state { justify-content: center; padding-block: 16px; }

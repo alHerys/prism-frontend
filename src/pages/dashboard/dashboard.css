@@ -5,10 +5,10 @@
 .dashboard-metric p { font-size: 12px; line-height: 1.5; color: var(--muted); }
 .dashboard-metric-open { position: absolute; top: 18px; right: 18px; width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 50%; color: var(--ink); }
 .dashboard-metric-open:hover { background: var(--bg); text-decoration: none; }
-.dashboard-metric-featured { background: linear-gradient(125deg, #1d7347, #0d3a23); }
+.dashboard-metric-featured { background: linear-gradient(125deg, var(--accent-bright), var(--accent-deep)); }
 .dashboard-metric-featured dt, .dashboard-metric-featured dd { color: #fff; }
-.dashboard-metric-featured p { color: #d8e9dd; }
-.dashboard-metric-featured .dashboard-metric-open { background: #f6faf5; border-color: transparent; color: #155a37; }
+.dashboard-metric-featured p { color: #fff; }
+.dashboard-metric-featured .dashboard-metric-open { background: var(--surface); border-color: transparent; color: var(--accent-deep); }
 .dashboard-page .dashboard-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.15fr) minmax(0, 1.4fr); gap: 20px 16px; align-items: stretch; }
 .dashboard-page .dashboard-grid > .panel { margin: 0; padding: 22px; min-width: 0; }
 .dashboard-page .dashboard-grid .panel-header { margin-bottom: 20px; align-items: flex-start; gap: 12px; }
@@ -23,20 +23,20 @@
 .dashboard-review-row strong { display: block; font-size: 14px; font-weight: 500; line-height: 1.45; overflow-wrap: anywhere; }
 .dashboard-review-row small { display: block; font-size: 11px; margin-top: 4px; }
 .dashboard-review-row > svg { color: var(--muted); }
-.dashboard-review .document-icon { display: grid; place-items: center; height: 36px; width: 32px; flex-shrink: 0; border-radius: 9px; color: #8b572d; background: #f6eee4; }
+.dashboard-review .document-icon { display: grid; place-items: center; height: 36px; width: 32px; flex-shrink: 0; border-radius: 9px; color: var(--accent); background: var(--accent-soft); }
 .dashboard-review-action { margin-top: 17px; justify-content: center; font-size: 12px; min-height: 42px; padding-inline: 11px; }
 .dashboard-circle-link { display: grid; place-items: center; height: 27px; width: 27px; flex-shrink: 0; border: 1px solid var(--border); border-radius: 50%; color: var(--ink); }
 .dashboard-circle-link:hover { background: var(--bg); text-decoration: none; }
 .dashboard-procurement-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
 .dashboard-procurement-list a { display: flex; align-items: flex-start; gap: 11px; color: var(--ink); }
 .dashboard-procurement-list a:hover { color: var(--accent, #155a37); text-decoration: none; }
-.dashboard-procurement-icon { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; color: var(--accent, #155a37); background: #e9f0e9; flex-shrink: 0; }
+.dashboard-procurement-icon { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; color: var(--accent, #155a37); background: var(--accent-soft); flex-shrink: 0; }
 .dashboard-procurement-list strong { display: block; font-size: 14px; font-weight: 500; line-height: 1.5; }
 .dashboard-procurement-list small { display: block; font-size: 11px; margin-top: 4px; overflow-wrap: anywhere; }
 .dashboard-more { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 500; margin-top: 21px; }
 .dashboard-activity ol { list-style: none; padding: 0; margin: 0; }
 .dashboard-activity li { position: relative; padding: 0 0 20px 16px; }
-.dashboard-activity li::before { content: ""; position: absolute; left: 0; top: 6px; height: 6px; width: 6px; border-radius: 50%; background: #9aae9d; }
+.dashboard-activity li::before { content: ""; position: absolute; left: 0; top: 6px; height: 6px; width: 6px; border-radius: 50%; background: var(--accent-border); }
 .dashboard-activity li:last-child { padding-bottom: 0; }
 .dashboard-activity li a { display: block; font-size: 14px; line-height: 1.6; color: var(--ink); }
 .dashboard-activity li small { display: block; margin-top: 5px; font-size: 10px; }
