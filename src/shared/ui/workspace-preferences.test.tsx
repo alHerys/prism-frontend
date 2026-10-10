@@ -13,7 +13,7 @@ function Probe({ label = "Preferensi" }: { label?: string }) {
     <output data-testid="persistence">{state.persistence}</output>
     <p role="status" aria-label="Status penyimpanan">{state.storageIssue}</p>
     <button onClick={() => state.saveProfile(profile)}>Simpan profil</button>
-    <button onClick={() => state.setAccent("ocean")}>Ocean</button>
+    <button onClick={() => state.setAccent("forest")}>Forest</button>
     <button onClick={() => state.setNotification("export", false)}>Matikan ekspor</button>
     <button onClick={() => { state.saveProfile(profile); state.setAccent("plum"); state.setNotification("evaluation", false); }}>Terapkan bersama</button>
   </section>;
@@ -38,7 +38,7 @@ describe("workspace preferences provider", () => {
     first.notifications.procurement = false;
     expect(second.profile.name).toBe("");
     expect(second.profile.email).toBe("");
-    expect(second.accent).toBe("forest");
+    expect(second.accent).toBe("ocean");
     expect(Object.values(second.notifications)).toEqual([true, true, true, true]);
     expect(isWorkspacePreferences(second)).toBe(true);
     expect(isWorkspacePreferences({ ...second, accent: "invalid" })).toBe(false);
@@ -77,9 +77,9 @@ describe("workspace preferences provider", () => {
     const first = memoryPort();
     const second = memoryPort();
     render(<><WorkspacePreferencesProvider storage={first.storage}><Probe label="Pertama" /></WorkspacePreferencesProvider><WorkspacePreferencesProvider storage={second.storage}><Probe label="Kedua" /></WorkspacePreferencesProvider></>);
-    fireEvent.click(within(screen.getByRole("region", { name: "Pertama" })).getByRole("button", { name: "Ocean" }));
-    expect(first.value().accent).toBe("ocean");
-    expect(second.value().accent).toBe("forest");
+    fireEvent.click(within(screen.getByRole("region", { name: "Pertama" })).getByRole("button", { name: "Forest" }));
+    expect(first.value().accent).toBe("forest");
+    expect(second.value().accent).toBe("ocean");
     expect(second.storage.save).not.toHaveBeenCalled();
   });
 
@@ -94,10 +94,10 @@ describe("workspace preferences provider", () => {
   it("reports unreadable storage and still accepts local updates", () => {
     const storage: WorkspacePreferencesStorage = { load() { throw new Error("Corrupted"); }, save() { throw new Error("Denied"); } };
     render(<WorkspacePreferencesProvider storage={storage}><Probe /></WorkspacePreferencesProvider>);
-    expect(screen.getByTestId("preferences")).toHaveTextContent('"accent":"forest"');
-    expect(screen.getByRole("status", { name: "Status penyimpanan" })).toHaveTextContent(/tidak dapat dimuat/);
-    fireEvent.click(screen.getByRole("button", { name: "Ocean" }));
     expect(screen.getByTestId("preferences")).toHaveTextContent('"accent":"ocean"');
+    expect(screen.getByRole("status", { name: "Status penyimpanan" })).toHaveTextContent(/tidak dapat dimuat/);
+    fireEvent.click(screen.getByRole("button", { name: "Forest" }));
+    expect(screen.getByTestId("preferences")).toHaveTextContent('"accent":"forest"');
     expect(screen.getByTestId("persistence")).toHaveTextContent("session");
     expect(screen.getByRole("status", { name: "Status penyimpanan" })).toHaveTextContent(/hanya berlaku selama sesi ini/);
   });
@@ -111,7 +111,7 @@ describe("workspace preferences provider", () => {
     expect(screen.getByTestId("persistence")).toHaveTextContent("session");
     expect(screen.getByRole("status", { name: "Status penyimpanan" })).toHaveTextContent(/hanya berlaku selama sesi ini/);
     fail = false;
-    fireEvent.click(screen.getByRole("button", { name: "Ocean" }));
+    fireEvent.click(screen.getByRole("button", { name: "Forest" }));
     expect(screen.getByTestId("persistence")).toHaveTextContent("device");
     expect(screen.getByRole("status", { name: "Status penyimpanan" })).toHaveTextContent("");
   });

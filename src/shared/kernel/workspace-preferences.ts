@@ -20,7 +20,7 @@ export interface WorkspacePreferencesStorage {
 export function defaultWorkspacePreferences(): WorkspacePreferences {
   return {
     profile: { name: "", email: "", role: "", bio: "", timeZone: "Asia/Jakarta" },
-    accent: "forest",
+    accent: "ocean",
     notifications: { procurement: true, evaluation: true, export: true, publication: true },
   };
 }

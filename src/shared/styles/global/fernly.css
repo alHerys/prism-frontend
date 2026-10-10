@@ -1,15 +1,15 @@
 /* Fernly reference contract. Legacy --blue names remain aliases for existing views. */
 :root {
-  --accent: #155a37;
-  --accent-deep: #0d3a23;
-  --accent-soft: #e7f0e9;
-  --accent-bright: #1d7347;
-  --accent-hover-deep: #092f1c;
-  --accent-selection: #c6dfce;
-  --accent-border: #b4cebd;
-  --accent-wash: #eaf3ed;
-  --accent-pale: #eef6f0;
-  --accent-fg-soft: #d0e5d7;
+  --accent: #1f4fa8;
+  --accent-deep: #142f65;
+  --accent-soft: #e8eef9;
+  --accent-bright: #285dbb;
+  --accent-hover-deep: #102952;
+  --accent-selection: #c7d8f4;
+  --accent-border: #b4c8e9;
+  --accent-wash: #edf2fb;
+  --accent-pale: #f1f5fc;
+  --accent-fg-soft: #d6e2f8;
   --blue: var(--accent);
   --blue-deep: var(--accent-deep);
   --blue-soft: var(--accent-soft);
@@ -26,13 +26,13 @@
   --ease-out: cubic-bezier(.22, 1, .36, 1);
   --shadow-paper: 0 4px 16px #131a1505, 0 14px 30px #131a1503;
 }
-:root[data-workspace-accent="ocean"] { --accent: #1f4fa8; --accent-deep: #142f65; --accent-soft: #e8eef9; --accent-bright: #285dbb; --accent-hover-deep: #102952; --accent-selection: #c7d8f4; --accent-border: #b4c8e9; --accent-wash: #edf2fb; --accent-pale: #f1f5fc; --accent-fg-soft: #d6e2f8; }
+:root[data-workspace-accent="forest"] { --accent: #155a37; --accent-deep: #0d3a23; --accent-soft: #e7f0e9; --accent-bright: #1d7347; --accent-hover-deep: #092f1c; --accent-selection: #c6dfce; --accent-border: #b4cebd; --accent-wash: #eaf3ed; --accent-pale: #eef6f0; --accent-fg-soft: #d0e5d7; }
 :root[data-workspace-accent="plum"] { --accent: #6a3fb0; --accent-deep: #41236f; --accent-soft: #f0eafa; --accent-bright: #7449b9; --accent-hover-deep: #341b5d; --accent-selection: #dfd1f2; --accent-border: #d0bce8; --accent-wash: #f4effb; --accent-pale: #f8f4fc; --accent-fg-soft: #e8dbf8; }
 :root[data-workspace-accent="ember"] { --accent: #b1491d; --accent-deep: #743016; --accent-soft: #faeee7; --accent-bright: #b1491d; --accent-hover-deep: #60260f; --accent-selection: #f2d3c2; --accent-border: #e9c4ae; --accent-wash: #fcf2ec; --accent-pale: #fcf6f2; --accent-fg-soft: #f7dfd1; }
 body { background: var(--bg); }
 ::selection { background: var(--accent-selection); color: var(--accent-deep); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-* { scrollbar-width: thin; scrollbar-color: #b8c5bb transparent; }
+* { scrollbar-width: thin; scrollbar-color: var(--accent-border) transparent; }
 h1 { font-size: 34px; font-weight: 600; line-height: 1.1; letter-spacing: -.035em; overflow-wrap: anywhere; }
 h2, .panel-header h2 { font-size: 19px; font-weight: 500; line-height: 1.45; color: var(--ink); }
 h3 { font-size: 15px; font-weight: 600; }
