@@ -4,6 +4,7 @@ import { useDocumentsData } from "./binding";
 import { date, kindLabel } from "../../../shared/formatting/display";
 import type { DocumentRecord } from "../domain/models";
 import "../../../shared/styles/focus.css";
+import "../../../shared/styles/fernly-evaluation.css";
 import { EmptyState as Empty } from "../../../shared/ui/empty-state";
 import { Status } from "../../../shared/ui/status";
 
@@ -18,12 +19,12 @@ export function DocumentTable({
 }) {
   const state = useDocumentsData();
   return (
-    <section className={embedded ? "document-table-embedded" : "panel"}>
+    <section className={`fernly-documents ${embedded ? "document-table-embedded" : "panel"}`}>
       <div className="panel-header">
         <h2>{title}</h2>
         <span className="muted">{documents.length} dokumen</span>
       </div>
-      <div className="table-wrap">
+      <div className="table-wrap" role="region" aria-label={title} tabIndex={0}>
         <table className="table">
           <thead>
             <tr>

@@ -1,4 +1,5 @@
 import "../../../shared/styles/focus.css";
+import "../../../shared/styles/fernly-evaluation.css";
 import { ErrorState } from "../../../shared/ui/error-state";
 import { LoadingState } from "../../../shared/ui/loading-state";
 import { UploadZone } from "../../../shared/ui/upload-zone";
@@ -7,7 +8,7 @@ import type { UploadPanelModel } from "./view-models";
 export function UploadPanelView({ scope, embedded, kind, setKind, busy, processing, failure, upload }: UploadPanelModel) {
 
   return (
-    <section className={embedded ? "upload-panel-embedded" : "panel"}>
+    <section className={`fernly-upload ${embedded ? "upload-panel-embedded" : "panel"}`} aria-busy={busy}>
       <div className="panel-header">
         <div>
           <h2>{scope === "procurement" ? "Unggah Owner Estimate (OE)" : "Unggah dokumen"}</h2>
@@ -15,7 +16,7 @@ export function UploadPanelView({ scope, embedded, kind, setKind, busy, processi
         </div>
         <span className="badge">PDF / XLSX · maks. 10 MiB</span>
       </div>
-      {scope === "vendor" ? (
+      <div className="upload-document-options">{scope === "vendor" ? (
         <div className="field document-kind-field">
           <span className="field-label">Jenis dokumen</span>
           <div className="document-kind-actions" role="group" aria-label="Jenis dokumen">
@@ -28,7 +29,7 @@ export function UploadPanelView({ scope, embedded, kind, setKind, busy, processi
           <span>Jenis dokumen</span>
           <strong>Owner Estimate · XLSX</strong>
         </div>
-      )}
+      )}</div>
       <UploadZone
         ariaLabel="Pilih berkas dokumen"
         accept={kind === "FORM_A5" ? ".pdf" : ".xlsx"}
