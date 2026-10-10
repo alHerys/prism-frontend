@@ -3,7 +3,7 @@
 .settings-session { color: #81561a; }
 .settings-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; align-items: start; }
 .settings-navigation { display: flex; flex-direction: column; gap: 8px; padding: 18px; background: var(--surface); border-radius: 20px; box-shadow: var(--shadow-paper); }
-.settings-nav-item { display: flex; align-items: center; gap: 12px; text-align: left; min-height: 48px; border: 0; border-radius: 12px; padding: 12px 16px; color: var(--muted); background: transparent; font-size: 14px; font-weight: 500; transition: background-color 200ms, color 200ms; }
+.settings-nav-item { display: flex; align-items: center; gap: 12px; text-align: left; min-height: 48px; border: 0; border-radius: 12px; padding: 12px 16px; color: var(--muted); background: transparent; font-size: 14px; font-weight: 500; transition: background-color 200ms var(--ease-out), color 200ms var(--ease-out); }
 .settings-nav-item:hover { background: var(--shell); color: var(--ink); }
 .settings-nav-item[data-state="active"] { background: var(--accent-soft, #eaf3ed); color: var(--accent); }
 .settings-dirty-dot { width: 7px; height: 7px; border-radius: 50%; background: #a17325; margin-left: auto; }
@@ -52,7 +52,7 @@
 .settings-accents { padding: 0; margin: 0 0 26px; border: 0; min-width: 0; }
 .settings-accents legend { padding: 0; font-size: 14px; font-weight: 500; margin-bottom: 20px; }
 .settings-swatch-grid { display: flex; flex-wrap: wrap; gap: 12px; }
-.settings-swatch-option { position: relative; display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--ink); border: 2px solid transparent; border-radius: 12px; background: var(--shell); padding: 7px; transition: border-color 200ms; }
+.settings-swatch-option { position: relative; display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--ink); border: 2px solid transparent; border-radius: 12px; background: var(--shell); padding: 7px; transition: border-color 200ms var(--ease-out); }
 .settings-swatch-option:has(input:checked) { border-color: var(--accent); }
 .settings-swatch-option > input { position: absolute; width: 1px; height: 1px; padding: 0; opacity: 0; pointer-events: none; }
 .settings-swatch { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; color: #fff; transition: transform 200ms cubic-bezier(.22,1,.36,1); }
