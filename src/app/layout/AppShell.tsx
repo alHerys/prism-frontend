@@ -3,7 +3,6 @@ import { CaretRight } from "@phosphor-icons/react/dist/csr/CaretRight";
 import { ClockCounterClockwise } from "@phosphor-icons/react/dist/csr/ClockCounterClockwise";
 import { Database } from "@phosphor-icons/react/dist/csr/Database";
 import { Folder } from "@phosphor-icons/react/dist/csr/Folder";
-import { Kanban } from "@phosphor-icons/react/dist/csr/Kanban";
 import { List } from "@phosphor-icons/react/dist/csr/List";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
 import { SquaresFour } from "@phosphor-icons/react/dist/csr/SquaresFour";
@@ -25,7 +24,7 @@ import "../../shared/styles/features/workspace.css";
 
 const links = [
   ["/", "Dashboard", SquaresFour],
-  ["/pengadaan", "Pengadaan", Kanban],
+  ["/pengadaan", "Pengadaan", Folder],
   ["/bank", "Bank Data OE", Database],
   ["/riwayat", "Riwayat & Statistik", ClockCounterClockwise],
 ] as const;
