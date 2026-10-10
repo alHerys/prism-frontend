@@ -13,6 +13,26 @@ test('ten production component stories render and interactive examples work', as
   await expect(page.getByRole('button', { name: 'Konfirmasi', exact: true })).toBeDisabled();
   await story('status');
   await expect(page.getByText('Terkonfirmasi', { exact: true })).toBeVisible();
+  const tones = [];
+  for (const name of ['Terkonfirmasi', 'Perlu ditinjau', 'Pembacaan gagal', 'Menunggu evaluasi']) {
+    const tone = await page.getByText(name, { exact: true }).evaluate(element => {
+      const css = getComputedStyle(element);
+      const luminance = (color: string) => {
+        const channels = color.match(/[\d.]+/g)!.slice(0, 3).map(Number).map(value => {
+          const channel = value / 255;
+          return channel <= .04045 ? channel / 12.92 : ((channel + .055) / 1.055) ** 2.4;
+        });
+        return channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722;
+      };
+      const foreground = luminance(css.color);
+      const background = luminance(css.backgroundColor);
+      return { color: css.color, background: css.backgroundColor, contrast: (Math.max(foreground, background) + .05) / (Math.min(foreground, background) + .05) };
+    });
+    expect(tone.contrast, `Readable semantic status: ${name}`).toBeGreaterThanOrEqual(4.5);
+    tones.push(tone);
+  }
+  expect(new Set(tones.map(tone => tone.color)).size).toBe(4);
+  expect(new Set(tones.map(tone => tone.background)).size).toBe(4);
   await story('formulir');
   await page.getByRole('combobox', { name: 'Fungsi', exact: true }).click();
   await page.getByRole('option', { name: 'Operasi Terminal BBM Balikpapan', exact: true }).click();
