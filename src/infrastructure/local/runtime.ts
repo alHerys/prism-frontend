@@ -25,6 +25,7 @@ import type { HistoricalPricesGateway } from "../../modules/historical-prices/ap
 import type { HistoricalPricesData } from "../../modules/historical-prices/application/queries";
 import type { EvaluationsGateway } from "../../modules/evaluations/application/ports";
 import type { EvaluationsData } from "../../modules/evaluations/application/queries";
+export { createBrowserPreferencesStorage } from "../browser/workspace-preferences";
 
 function projection<T>(source: { getState(): LocalState; subscribe(listener: () => void): () => void }, select: (state: LocalState) => T): ReadStore<T> {
   let parent: LocalState | undefined;

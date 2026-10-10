@@ -6,8 +6,13 @@ import { HEAProvider } from "../../modules/hea/presentation/binding";
 import { PriceDeviationProvider } from "../../modules/price-deviation/presentation/binding";
 import { HistoricalPricesProvider } from "../../modules/historical-prices/presentation/binding";
 import { EvaluationsProvider } from "../../modules/evaluations/presentation/binding";
-export function ApplicationProviders({ application, children }: { application: Application; children: ReactNode }) {
+import { WorkspacePreferencesProvider } from "../../shared/ui/workspace-preferences";
+import { HelpSearchProvider } from "../../shared/ui/help-search";
+import type { WorkspacePreferencesStorage } from "../../shared/kernel/workspace-preferences";
+export function ApplicationProviders({ application, preferencesStorage, children }: { application: Application; preferencesStorage?: WorkspacePreferencesStorage; children: ReactNode }) {
   return (
+    <WorkspacePreferencesProvider storage={preferencesStorage}>
+    <HelpSearchProvider>
     <ProcurementProvider value={application.procurement}>
     <DocumentsProvider value={application.documents}>
     <HEAProvider value={application.hea}>
@@ -21,5 +26,7 @@ export function ApplicationProviders({ application, children }: { application: A
     </HEAProvider>
     </DocumentsProvider>
     </ProcurementProvider>
+    </HelpSearchProvider>
+    </WorkspacePreferencesProvider>
   );
 }
