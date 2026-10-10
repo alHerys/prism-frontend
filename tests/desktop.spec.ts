@@ -213,7 +213,11 @@ test('confirmed HEA and explicit price sources preserve results and XLSX traceab
 test('real file upload rejects unsupported bytes and accepts registered PDF through review', async ({ page }) => {
   await page.goto('/pengadaan/proc-terminal?tab=dokumen');
   await page.getByRole('link', { name: /PT Nusa Teknik Mandiri.*Buka dokumen/ }).click();
+  // The lazy vendor route replaces the still-mounted procurement OE uploader.
+  // Wait for the actual vendor workspace before selecting the invalid PDF.
+  await expect(page.getByRole('heading', { name: 'PT Nusa Teknik Mandiri', exact: true })).toBeVisible();
   const upload = page.getByLabel('Pilih berkas dokumen');
+  await expect(upload).toHaveAttribute('accept', '.pdf');
   await upload.setInputFiles({ name: 'invalid.pdf', mimeType: 'application/pdf', buffer: Buffer.from('not a supported PDF') });
   await expect(page.getByRole('alert')).toBeVisible();
   await upload.setInputFiles(path.resolve('public/files/Form-A5-Nusa.pdf'));
