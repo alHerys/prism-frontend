@@ -6,7 +6,7 @@ export default defineConfig({
   testMatch: 'workspace-preferences.spec.ts',
   outputDir: 'test-results/preferences-review',
   timeout: 45_000,
-  snapshotPathTemplate: '{testDir}/../test-results/preferences-snapshots/{projectName}/{arg}{ext}',
+  snapshotPathTemplate: '{testDir}/../test-results/preferences-snapshots/ocean-default/{projectName}/{arg}{ext}',
   // Static captures are review artifacts. Motion is exercised independently.
   expect: { timeout: 10_000 },
   use: { ...desktop.use, reducedMotion: 'no-preference', actionTimeout: 10_000 },

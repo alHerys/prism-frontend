@@ -4,5 +4,5 @@ process.env.PRISM_VISUAL_CAPTURE = '1';
 export default defineConfig({
   ...desktop,
   outputDir: 'test-results/workspace-visual',
-  snapshotPathTemplate: '{testDir}/../test-results/workspace-snapshots/{projectName}/{arg}{ext}',
+  snapshotPathTemplate: '{testDir}/../test-results/workspace-snapshots/ocean-default/{projectName}/{arg}{ext}',
 });
