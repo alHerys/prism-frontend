@@ -1,3 +1,4 @@
+import { CaretDown } from "@phosphor-icons/react/dist/csr/CaretDown";
 import { CircleNotch } from "@phosphor-icons/react/dist/csr/CircleNotch";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
@@ -79,11 +80,11 @@ export function BankPageView({
           Tambah dokumen historis
         </button>
       </HeaderAction>
-      {(tab === "Dokumen Historis" || tab === "Pencarian Referensi") && <BankOverview state={state} selected={selected} setTab={(value) => {
+      <BankOverview visible={tab === "Dokumen Historis" || tab === "Pencarian Referensi"} state={state} selected={selected} setTab={(value) => {
         setTab(value);
         setDetail(undefined);
         setError("");
-      }} />}
+      }} />
       <PageTabs
         ariaLabel="Bagian Bank Data OE"
         value={tab}
@@ -119,6 +120,33 @@ export function BankPageView({
         {<HistoricalDraft functionName={functionName} setFunctionName={setFunctionName} period={period} setPeriod={setPeriod} busy={busy} draft={draft} saveDraft={saveDraft} confirmDraft={confirmDraft} publishDraft={publishDraft} />}
         {tab !== "Bantuan Estimasi" && (
           <section className="bank-filters" aria-label="Filter referensi">
+            <label className="field">
+              Fungsi
+              <span className="bank-select">
+                <select
+                  value={functionFilter}
+                  onChange={(e) => setFunctionFilter(e.target.value)}
+                >
+                  <option value="">Semua fungsi</option>
+                  {functions.map((f) => (
+                    <option key={f}>{f}</option>
+                  ))}
+                </select>
+                <CaretDown size={16} aria-hidden="true" />
+              </span>
+            </label>
+            <label className="field">
+              Periode
+              <span className="bank-select">
+                <select value={year} onChange={(e) => setYear(e.target.value)}>
+                  <option value="">Semua periode</option>
+                  {years.map((y) => (
+                    <option key={y}>{y}</option>
+                  ))}
+                </select>
+                <CaretDown size={16} aria-hidden="true" />
+              </span>
+            </label>
             <label className="bank-search">
               <MagnifyingGlass size={17} />
               <input
@@ -127,27 +155,6 @@ export function BankPageView({
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Cari pekerjaan atau nama dokumen…"
               />
-            </label>
-            <label className="field">
-              Fungsi
-              <select
-                value={functionFilter}
-                onChange={(e) => setFunctionFilter(e.target.value)}
-              >
-                <option value="">Semua fungsi</option>
-                {functions.map((f) => (
-                  <option key={f}>{f}</option>
-                ))}
-              </select>
-            </label>
-            <label className="field">
-              Periode
-              <select value={year} onChange={(e) => setYear(e.target.value)}>
-                <option value="">Semua periode</option>
-                {years.map((y) => (
-                  <option key={y}>{y}</option>
-                ))}
-              </select>
             </label>
           </section>
         )}

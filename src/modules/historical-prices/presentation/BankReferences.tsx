@@ -16,7 +16,9 @@ export function BankReferences({ tab, setTab, selectedIds, setDetail, filtered, 
                   ? "Dokumen terpublikasi"
                   : "Referensi harga satuan"}
               </h2>
-              <p className="muted">Telusuri pekerjaan, periode, dan jejak sumbernya.</p>
+              <p className="muted">{tab === "Dokumen Historis"
+                ? "Lihat harga satuan dari dokumen OE historis yang sudah dipublikasikan beserta sumbernya."
+                : "Pilih harga satuan dari pekerjaan sejenis, lalu periksa kesebandingannya untuk statistik dan estimasi."}</p>
             </div>
             <span className="bank-count">{filtered.length} referensi tersedia</span>
           </div>

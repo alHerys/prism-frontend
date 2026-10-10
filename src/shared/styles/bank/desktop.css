@@ -1,6 +1,6 @@
 .bank-page .table td:first-child, .bank-page .table th:first-child { padding-left: 24px; }
 .bank-page .table td:last-child, .bank-page .table th:last-child { padding-right: 24px; }
-.bank-history .bank-filters { display: grid; grid-template-columns: minmax(200px,1.5fr) repeat(4,minmax(115px,1fr)); }
+.bank-history .bank-filters { display: grid; grid-template-columns: repeat(4,minmax(115px,1fr)) minmax(200px,1.5fr); }
 .bank-history .bank-search { min-width: 0; }
 @media (min-width: 640px) and (max-width: 1023px) {
   .bank-history .bank-filters { grid-template-columns: repeat(2,minmax(0,1fr)); }
@@ -14,7 +14,8 @@
 }
 @media (max-width: 639px) {
   .bank-page, .bank-page .page-tab-content { gap: 16px; }
-  .bank-overview { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+  .bank-overview-region { margin-bottom: -16px; }
+  .bank-overview { margin-bottom: 16px; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
   .bank-overview-card:first-child { grid-column: 1/-1; }
   .bank-overview-card { padding: 20px; }
   .bank-overview-value { font-size: 36px; margin: 8px 0; }

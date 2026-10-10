@@ -9,7 +9,10 @@
 .bank-page p { line-height: 1.6; }
 .bank-page .panel { min-width: 0; padding: 0; border: 0; border-radius: 20px; overflow: hidden; background: var(--surface); box-shadow: var(--shadow-soft, 0 1px 2px rgb(19 26 21 / 4%), 0 8px 24px -12px rgb(19 26 21 / 10%)); }
 .bank-page .page-tab-content { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
-.bank-overview { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.bank-overview-region { display: grid; grid-template-rows: 1fr; opacity: 1; margin-bottom: -20px; visibility: visible; transition: grid-template-rows 200ms cubic-bezier(.22,1,.36,1), opacity 180ms ease-out, visibility 0s; }
+.bank-overview-region[data-visible="false"] { grid-template-rows: 0fr; opacity: 0; visibility: hidden; transition-delay: 0s, 0s, 200ms; }
+.bank-overview-clip { min-height: 0; overflow: hidden; }
+.bank-overview { margin-bottom: 20px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .bank-overview-card { padding: 22px 24px; border-radius: 20px; min-width: 0; background: var(--surface); box-shadow: var(--shadow-soft, 0 1px 2px rgb(19 26 21 / 4%), 0 8px 24px -12px rgb(19 26 21 / 10%)); }
 .bank-overview-primary { background: linear-gradient(140deg, var(--accent, #155a37), var(--accent-deep, #0d3a23)); color: #f1f8f3; }
 .bank-overview-heading { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
@@ -107,6 +110,9 @@
 .bank-page .field { display: flex; flex-direction: column; gap: 8px; font-size: 13px; font-weight: 400; color: var(--muted); min-width: 0; }
 .bank-page .field input, .bank-page .field select { height: 48px; width: 100%; border: 1.5px solid var(--border); border-radius: 12px; padding: 0 14px; background-color: var(--shell, #f5f6f5); font: inherit; font-size: 14px; color: var(--ink); min-width: 0; transition: border-color .2s; }
 .bank-page .field select { padding-right: 38px; }
+.bank-select { position: relative; display: block; }
+.bank-page .bank-select select { appearance: none; background-image: none; cursor: pointer; }
+.bank-select > svg { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--muted); }
 .bank-page .field textarea { min-height: 100px; border: 1.5px solid var(--border); border-radius: 12px; padding: 14px; font: inherit; color: var(--ink); }
 .bank-page button:focus-visible, .bank-page input:focus-visible, .bank-page select:focus-visible, .bank-page summary:focus-visible { outline: 2px solid var(--accent, #155a37); outline-offset: 3px; }
 .bank-page .bank-search input:focus-visible { outline: none; box-shadow: none; }
@@ -148,15 +154,18 @@
 .history-event-content { min-width: 0; padding-top: 3px; }
 .history-event-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; font-size: 13px; color: var(--muted); }
 .history-context { padding: 0 24px 24px; }
-.history-context dl { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 18px 12px; margin: 0 0 24px; }
+.history-context dl { margin: 0 0 18px; }
+.history-context dl > div { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 12px; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border); }
+.history-context dl > div:first-child { padding-top: 0; }
+.history-context dl > div:last-child { border-bottom: 0; padding-bottom: 0; }
 .history-context dt { color: var(--muted); font-size: 14px; }
-.history-context dd { margin: 0; font-size: 19px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.history-context dd { min-width: 48px; text-align: right; margin: 0; font-size: 25px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .history-context p { font-size: 14px; margin: 0; }
 .history-results-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
 .history-stat-layout { display: grid; grid-template-columns: minmax(0,1.65fr) minmax(260px,1fr); gap: 20px; align-items: start; }
 .history-stat-layout .bank-bars { border-bottom: 0; }
 @media (prefers-reduced-motion: reduce) {
-  .bank-overview-footer button, .bank-dropzone, .bank-page .field input, .bank-page .field select { transition: none; }
+  .bank-overview-region, .bank-overview-footer button, .bank-dropzone, .bank-page .field input, .bank-page .field select { transition: none; }
   .bank-overview-footer button:hover { transform: none; }
 }
 .bank-estimate-total { display: flex; flex-direction: column; gap: 8px; }

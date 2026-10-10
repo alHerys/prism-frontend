@@ -58,3 +58,46 @@ test('drawer motion, intermediate state and reduced motion preserve navigation',
   await expect(page).toHaveURL(/\/pengadaan$/);
   await expect(drawer).toHaveCount(0);
 });
+
+test('Bank overview collapses smoothly, reverses and respects reduced motion', async ({ page }) => {
+  await page.goto('/bank');
+  const overview = page.locator('.bank-overview-region');
+  const documents = page.getByRole('tab', { name: 'Dokumen Historis', exact: true });
+  const statistics = page.getByRole('tab', { name: 'Statistik Harga', exact: true });
+  await documents.click();
+  await expect(overview).toHaveAttribute('data-visible', 'true');
+  await expect.poll(() => overview.evaluate(element => element.getAnimations().length)).toBe(0);
+  const fullHeight = (await overview.boundingBox())!.height;
+  await statistics.click();
+  await expect(overview).toHaveAttribute('inert', '');
+  const sample = await overview.evaluate(element => {
+    const animations = element.getAnimations();
+    const timings = animations.map(animation => animation.effect!.getTiming().duration);
+    for (const animation of animations) {
+      animation.pause();
+      const timing = animation.effect!.getTiming();
+      animation.currentTime = Number(timing.duration) / 2;
+    }
+    const height = element.getBoundingClientRect().height;
+    const opacity = Number(getComputedStyle(element).opacity);
+    animations.forEach(animation => animation.play());
+    return { height, opacity, timings };
+  });
+  expect(sample.timings).toContain(200);
+  expect(sample.timings).toContain(180);
+  expect(sample.height).toBeGreaterThan(0);
+  expect(sample.height).toBeLessThan(fullHeight);
+  expect(sample.opacity).toBeGreaterThan(0);
+  expect(sample.opacity).toBeLessThan(1);
+  await documents.click();
+  await expect(overview).toHaveAttribute('aria-hidden', 'false');
+  await expect.poll(() => overview.evaluate(element => element.getAnimations().length)).toBe(0);
+  expect((await overview.boundingBox())!.height).toBeCloseTo(fullHeight, 0);
+  await page.getByRole('button', { name: 'Tinjau statistik referensi', exact: true }).click();
+  await expect(statistics).toBeFocused();
+  await expect.poll(() => overview.evaluate(element => element.getBoundingClientRect().height)).toBe(0);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await documents.click();
+  expect(await overview.evaluate(element => element.getAnimations().length)).toBe(0);
+  await expect(overview).not.toHaveAttribute('inert', '');
+});
