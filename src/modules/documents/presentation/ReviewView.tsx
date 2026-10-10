@@ -46,14 +46,14 @@ export function ReviewView({
 }: ReviewModel) {
   if (!d)
     return (
-      <div className="page">
-        <Empty title="Dokumen tidak ditemukan">
+      <main className="page focus-recovery">
+        <Empty title="Dokumen tidak ditemukan" headingLevel={1}>
           Buka pengadaan untuk memilih dokumen yang tersedia.
         </Empty>
         <Link className="btn" to="/pengadaan">
           Kembali ke pengadaan
         </Link>
-      </div>
+      </main>
     );
   return (
     <div className="focus-shell fernly-review">

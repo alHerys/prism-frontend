@@ -1,4 +1,7 @@
 /* Focused document work: the source and evaluator input remain separate. */
+.focus-recovery { width: calc(100% - 32px); max-width: 840px; margin: 24px auto; padding: 32px; border-radius: 26px; background: var(--surface); text-align: center; }
+.focus-recovery .empty { padding: 28px 0; }
+.focus-recovery h1 { margin-block: 16px 12px; font-size: clamp(28px, 4vw, 34px); line-height: 1.2; }
 .focus-shell .focus-head {
   min-height: 96px;
   padding: 18px 32px;
@@ -94,6 +97,7 @@
   .fernly-review .review-action .btn { padding-inline: 14px; }
 }
 @media (max-width: 1023px) {
+  html:has(.fernly-review) { scroll-padding-block: 24px 172px; }
   .focus-shell .review-grid { grid-template-columns: minmax(0, 1fr); }
   .fernly-review .review-source { position: static; }
   .fernly-review .review-header-context { align-items: flex-start; flex-direction: column; gap: 12px; }
@@ -107,6 +111,7 @@
   .review-pdf-preview { height: 480px; }
 }
 @media (max-width: 639px) {
+  html:has(.fernly-review) { scroll-padding-bottom: 210px; }
   .fernly-review { padding: 12px; }
   .fernly-review > .focus-head { padding: 20px; border-radius: 22px; }
   .review-heading h1 { font-size: 28px; overflow-wrap: anywhere; }

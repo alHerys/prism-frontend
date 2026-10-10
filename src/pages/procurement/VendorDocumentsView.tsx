@@ -13,11 +13,11 @@ import "./procurement.css";
 export function VendorDocumentsView({ id, state, procurement, vendor, backUrl }: VendorDocumentsModel) {
   if (!procurement || !vendor) {
     return (
-      <div className="page">
-        <Empty title="Vendor tidak ditemukan">
+      <main className="page focus-recovery">
+        <Empty title="Vendor tidak ditemukan" headingLevel={1}>
           <Link to={backUrl}>Kembali ke unggah & verifikasi</Link>
         </Empty>
-      </div>
+      </main>
     );
   }
   const documents = state.documents.filter((document) => document.procurementId === id && document.vendorId === vendor.id);
