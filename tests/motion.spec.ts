@@ -1,0 +1,60 @@
+import { test, expect } from '@playwright/test';
+
+test('primary feedback and modal motion retain final states and keyboard dismissal', async ({ page }) => {
+  await page.goto('/pengadaan');
+  const trigger = page.getByRole('button', { name: 'Tambah pengadaan', exact: true });
+  const before = await trigger.evaluate(element => {
+    const css = getComputedStyle(element);
+    return { background: css.backgroundImage, duration: css.transitionDuration };
+  });
+  expect(before.duration.split(',').map(value => parseFloat(value))).toContain(.2);
+  await trigger.hover();
+  await expect.poll(() => trigger.evaluate(element => getComputedStyle(element).backgroundImage)).not.toBe(before.background);
+  await trigger.click();
+  const dialog = page.getByRole('dialog', { name: 'Tambah pengadaan', exact: true });
+  await expect(dialog).toBeVisible();
+  const timing = await dialog.evaluate(element => {
+    const css = getComputedStyle(element);
+    return { duration: css.animationDuration, easing: css.animationTimingFunction };
+  });
+  expect(timing.duration).toBe('0.35s');
+  expect(timing.easing).toBe('cubic-bezier(0.22, 1, 0.36, 1)');
+  await expect.poll(() => dialog.evaluate(element => element.getAnimations().length)).toBe(0);
+  await expect(page.getByLabel('Nama pengadaan', { exact: true })).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect(trigger).toBeFocused();
+});
+test('drawer motion, intermediate state and reduced motion preserve navigation', async ({ page }, info) => {
+  test.skip(info.project.use.viewport!.width >= 1024, 'Mobile drawer belongs below1024px.');
+  await page.goto('/');
+  const trigger = page.getByRole('button', { name: 'Buka navigasi', exact: true });
+  await trigger.click();
+  const drawer = page.getByRole('dialog', { name: 'Navigasi ruang kerja' });
+  const motion = await drawer.evaluate(element => {
+    const css = getComputedStyle(element);
+    const animation = element.getAnimations()[0];
+    if (animation) { animation.pause(); animation.currentTime = 225; }
+    const intermediateX = element.getBoundingClientRect().x;
+    const progress = animation?.effect?.getComputedTiming().progress;
+    animation?.play();
+    return { duration: css.animationDuration, easing: css.animationTimingFunction, progress, intermediateX };
+  });
+  expect(motion.duration).toBe('0.45s');
+  expect(motion.easing).toBe('cubic-bezier(0.22, 1, 0.36, 1)');
+  expect(motion.progress).not.toBeNull();
+  expect(motion.intermediateX).toBeLessThan(0);
+  expect(motion.intermediateX).toBeGreaterThan(-290);
+  await expect.poll(() => drawer.evaluate(element => element.getAnimations().length)).toBe(0);
+  expect((await drawer.boundingBox())!.x).toBe(0);
+  await page.keyboard.press('Escape');
+  await expect(drawer).toHaveCount(0);
+  await expect(trigger).toBeFocused();
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await trigger.click();
+  await expect(drawer).toBeVisible();
+  expect(await drawer.evaluate(element => getComputedStyle(element).animationName)).toBe('none');
+  await drawer.getByRole('link', { name: 'Pengadaan', exact: true }).click();
+  await expect(page).toHaveURL(/\/pengadaan$/);
+  await expect(drawer).toHaveCount(0);
+});
