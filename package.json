@@ -14,6 +14,7 @@
     "build-storybook": "node scripts/storybook.mjs build --disable-telemetry",
     "test:desktop": "playwright test",
     "test:visual": "playwright test --config playwright.fernly.config.ts",
+    "test:visual:storybook": "playwright test --config playwright.fernly.storybook.config.ts",
     "test:desktop:update": "playwright test --update-snapshots",
     "test:storybook:browser": "playwright test --config playwright.storybook.config.ts",
     "fixtures:prepare": "node scripts/prepare-fixtures.mjs",

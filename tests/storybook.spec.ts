@@ -29,7 +29,10 @@ test('ten production component stories render and interactive examples work', as
   await expect(page.getByRole('heading', { name: 'Pasangan item', exact: true })).toBeVisible();
   await story('tabel-dan-filter');
   await expect(page.locator('#storybook-root tbody tr')).toHaveCount(12);
-  await expect(page).toHaveScreenshot('prism-storybook-long-table.png', { fullPage: true });
+  await page.evaluate(() => document.fonts.ready);
+  if (process.env.PRISM_VISUAL_CAPTURE === '1') {
+    await expect(page).toHaveScreenshot('prism-storybook-long-table.png', { fullPage: true });
+  }
   await page.getByRole('textbox', { name: 'Cari pengadaan', exact: true }).fill('fasilitas 12');
   await expect(page.locator('#storybook-root tbody tr')).toHaveCount(1);
   await page.getByRole('combobox', { name: 'Status dokumen' }).click();
