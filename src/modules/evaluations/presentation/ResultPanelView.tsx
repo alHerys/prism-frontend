@@ -1,6 +1,7 @@
 import { DownloadSimple as Download } from "@phosphor-icons/react/dist/csr/DownloadSimple";
 import { CaretDown } from "@phosphor-icons/react/dist/csr/CaretDown";
-import { dateTime, money, pct, roundedMoney } from "../../../shared/formatting/display";
+import { money, pct, roundedMoney } from "../../../shared/formatting/display";
+import { useWorkspaceTime } from "../../../shared/ui/workspace-time";
 import { SnapshotInputs } from "./SnapshotInputs";
 import "../../../shared/styles/focus.css";
 import "../../../shared/styles/fernly-evaluation.css";
@@ -8,6 +9,7 @@ import { Status } from "../../../shared/ui/status";
 import type { ResultPanelModel } from "./view-models";
 
 export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter, exportResult, rows }: ResultPanelModel) {
+  const dateTime = useWorkspaceTime();
 
   return (
     <section className="panel evaluation-result">

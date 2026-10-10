@@ -1,5 +1,6 @@
 import { Sparkle } from "@phosphor-icons/react/dist/csr/Sparkle";
-import { bankDateTime, bankMoney as money, exactMoney } from "../../../shared/formatting/display";
+import { bankMoney as money, exactMoney } from "../../../shared/formatting/display";
+import { useWorkspaceTime } from "../../../shared/ui/workspace-time";
 import "../../../shared/styles/bank.css";
 import type { BankPageModel } from "./view-models";
 export function HistoricalEstimate({
@@ -16,6 +17,7 @@ export function HistoricalEstimate({
   selected,
   createEstimate,
 }: Pick<BankPageModel, "tab" | "setTab" | "busy" | "need" | "setNeed" | "unit" | "setUnit" | "quantity" | "setQuantity" | "estimate" | "selected" | "createEstimate">) {
+  const bankDateTime = useWorkspaceTime();
   return (
     <>
       {tab === "Bantuan Estimasi" && (

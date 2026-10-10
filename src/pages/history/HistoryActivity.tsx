@@ -12,7 +12,8 @@ import { Scales } from "@phosphor-icons/react/dist/csr/Scales";
 import { SlidersHorizontal } from "@phosphor-icons/react/dist/csr/SlidersHorizontal";
 import { UploadSimple } from "@phosphor-icons/react/dist/csr/UploadSimple";
 import { UserPlus } from "@phosphor-icons/react/dist/csr/UserPlus";
-import { historyChartDay, historyTime as time, localDay } from "../../shared/formatting/display";
+import { historyChartDay, localDay } from "../../shared/formatting/display";
+import { useWorkspaceTime } from "../../shared/ui/workspace-time";
 import "../../shared/styles/bank.css";
 import { Empty } from "./Empty";
 import { eventLabel, moduleLabel } from "./history-labels";
@@ -40,6 +41,7 @@ function ActivityIcon({ event }: { event: HistoryPageModel["events"][number] }) 
 }
 
 export function HistoryActivity({ tab, events, procurementName }: Pick<HistoryPageModel, "tab" | "events" | "procurementName">) {
+  const time = useWorkspaceTime();
   if (tab !== "Aktivitas") return null;
   const days = new Map<string, typeof events>();
   for (const event of [...events].sort((a, b) => b.createdAt.localeCompare(a.createdAt))) {

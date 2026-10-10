@@ -1,11 +1,13 @@
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
 import { DownloadSimple } from "@phosphor-icons/react/dist/csr/DownloadSimple";
-import { exactMoney, roundedMoney, historyTime as time } from "../../shared/formatting/display";
+import { exactMoney, roundedMoney } from "../../shared/formatting/display";
+import { useWorkspaceTime } from "../../shared/ui/workspace-time";
 import { SnapshotInputs } from "../../modules/evaluations/presentation/SnapshotInputs";
 import "../../shared/styles/bank.css";
 import { categoryLabel, classificationLabel, moduleLabel } from "./history-labels";
 import type { HistoryPageModel } from "./view-models";
 export function HistorySnapshot({ onOpenResult, selected, setSelected, exportBusy, procurementName, exportSelected }: Pick<HistoryPageModel, "onOpenResult" | "selected" | "setSelected" | "exportBusy" | "procurementName" | "exportSelected">) {
+  const time = useWorkspaceTime();
   return (
     <>
       {selected && (

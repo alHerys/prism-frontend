@@ -1,10 +1,11 @@
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
-import { historyTime as time } from "../../shared/formatting/display";
+import { useWorkspaceTime } from "../../shared/ui/workspace-time";
 import "../../shared/styles/bank.css";
 import { Empty } from "./Empty";
 import { moduleLabel } from "./history-labels";
 import type { HistoryPageModel } from "./view-models";
 export function HistoryResults({ tab, setSelected, results, procurementName }: Pick<HistoryPageModel, "tab" | "setSelected" | "results" | "procurementName">) {
+  const time = useWorkspaceTime();
   return (
     <>
       {tab === "Hasil Evaluasi" && (

@@ -6,13 +6,15 @@ import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
 import { Folder } from "@phosphor-icons/react/dist/csr/Folder";
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { Link } from "react-router";
-import { dateTime, kindLabel } from "../../shared/formatting/display";
+import { kindLabel } from "../../shared/formatting/display";
+import { useWorkspaceTime } from "../../shared/ui/workspace-time";
 import { EmptyState as Empty } from "../../shared/ui/empty-state";
 import { HeaderAction } from "../../shared/ui/header-action";
 import type { DashboardModel } from "./view-models";
 import "./dashboard.css";
 
 export function DashboardView({ state, pending }: DashboardModel) {
+  const dateTime = useWorkspaceTime();
   const confirmed = state.documents.length - pending.length;
   const metrics = [
     { label: "Pengadaan aktif", value: state.procurements.length, description: "Pengadaan dalam ruang kerja", to: "/pengadaan" },

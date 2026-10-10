@@ -30,14 +30,15 @@ export const date = (s: string) =>
     month: "short",
     year: "numeric",
   });
-export const dateTime = (s: string) =>
+export const dateTime = (s: string, timeZone?: string) =>
   new Date(s).toLocaleString("id-ID", {
     day: "numeric",
     month: "short",
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: "Asia/Jakarta",
+    timeZone: timeZone ?? "Asia/Jakarta",
+    ...(timeZone ? { timeZoneName: "short" as const } : {}),
   });
 export const kindLabel: Record<string, string> = {
   FORM_A5: "Form A5",

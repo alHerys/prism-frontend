@@ -39,6 +39,7 @@ export function HistoryPageView({
 
   return (
     <div className="page bank-page bank-history">
+      <p className="history-date-basis muted">Rentang tanggal dan pengelompokan aktivitas menggunakan WIB. Waktu setiap aktivitas mengikuti zona waktu profil.</p>
       <PageTabs
         ariaLabel="Bagian riwayat"
         value={tab}

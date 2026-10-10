@@ -5,7 +5,7 @@ import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
 import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { Link } from "react-router";
-import { dateTime } from "../../shared/formatting/display";
+import { useWorkspaceTime } from "../../shared/ui/workspace-time";
 import "../../shared/styles/focus.css";
 import { EmptyState as Empty } from "../../shared/ui/empty-state";
 import { Modal } from "../../shared/ui/modal";
@@ -31,6 +31,7 @@ function VendorCard({ vendor, documents }: { vendor: Vendor; documents: Document
 }
 
 export function ProcurementDetailView({ state, setParams, tab, p, vendorOpen, setVendorOpen, vendorName, setVendorName, docs, vendors, results, addVendor }: ProcurementDetailModel) {
+  const dateTime = useWorkspaceTime();
   if (!p) return <div className="page"><Empty title="Pengadaan tidak ditemukan">Kembali ke <Link to="/pengadaan">daftar pengadaan</Link>.</Empty></div>;
   const confirmed = docs.filter((document) => document.status === "CONFIRMED").length;
   const stages = [
