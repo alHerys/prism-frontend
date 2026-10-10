@@ -9,22 +9,11 @@ import { Link } from "react-router";
 import { dateTime, kindLabel } from "../../shared/formatting/display";
 import { EmptyState as Empty } from "../../shared/ui/empty-state";
 import { HeaderAction } from "../../shared/ui/header-action";
-import { ProcurementTable } from "../../modules/procurement/presentation/ProcurementTable";
 import type { DashboardModel } from "./view-models";
 import "./dashboard.css";
 
 export function DashboardView({ state, pending }: DashboardModel) {
   const confirmed = state.documents.length - pending.length;
-  const distribution = (["FORM_A5", "OE", "OFFER", "HISTORICAL_OE"] as const).map((kind) => {
-    const documents = state.documents.filter((document) => document.kind === kind);
-    return {
-      kind,
-      total: documents.length,
-      confirmed: documents.filter((document) => document.status === "CONFIRMED").length,
-      pending: documents.filter((document) => document.status !== "CONFIRMED").length,
-    };
-  });
-  const maximum = Math.max(1, ...distribution.map((item) => item.total));
   const metrics = [
     { label: "Pengadaan aktif", value: state.procurements.length, description: "Pengadaan dalam ruang kerja", to: "/pengadaan" },
     { label: "Dokumen", value: state.documents.length, description: `${confirmed} dokumen terkonfirmasi`, to: "/pengadaan" },
@@ -48,24 +37,6 @@ export function DashboardView({ state, pending }: DashboardModel) {
         ))}
       </dl>
       <div className="dashboard-grid">
-        <section className="panel dashboard-distribution" aria-labelledby="dashboard-distribution-title">
-          <div className="panel-header">
-            <div><h2 id="dashboard-distribution-title">Status dokumen</h2><p>Dokumen menurut jenis dan hasil pemeriksaan.</p></div>
-            <span className="dashboard-total">{state.documents.length}<small>dokumen</small></span>
-          </div>
-          <div className="dashboard-chart-legend"><span><i className="confirmed" /> Terkonfirmasi</span><span><i className="pending" /> Perlu ditinjau</span></div>
-          <ul className="dashboard-document-chart" aria-label="Distribusi status dokumen">
-            {distribution.map((item) => (
-              <li key={item.kind}>
-                <div className="dashboard-chart-label"><span>{kindLabel[item.kind]}</span><strong>{item.total}</strong></div>
-                <div className="dashboard-chart-track" role="img" aria-label={`${kindLabel[item.kind]}: ${item.confirmed} terkonfirmasi, ${item.pending} perlu ditinjau`}>
-                  <span className="confirmed" style={{ width: `${item.confirmed / maximum * 100}%` }} />
-                  <span className="pending" style={{ width: `${item.pending / maximum * 100}%` }} />
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
         <section className="panel dashboard-review" aria-labelledby="dashboard-review-title">
           <div className="panel-header"><div><h2 id="dashboard-review-title">Perlu ditinjau</h2><p>{pending.length} dokumen menunggu keputusan.</p></div></div>
           {pending.length ? (
@@ -103,10 +74,6 @@ export function DashboardView({ state, pending }: DashboardModel) {
             ))}</ol>
           ) : <Empty title="Belum ada aktivitas">Aktivitas dicatat setelah Anda mulai bekerja.</Empty>}
           <Link className="dashboard-more" to="/riwayat">Lihat riwayat <ArrowRight size={15} /></Link>
-        </section>
-        <section className="panel dashboard-procurements" aria-labelledby="dashboard-procurements-title">
-          <div className="panel-header"><div><h2 id="dashboard-procurements-title">Pengadaan</h2><p>Temukan pengadaan dan lanjutkan evaluasi.</p></div><Link className="btn" to="/pengadaan?baru=1"><Plus size={17} /> Tambah pengadaan</Link></div>
-          <ProcurementTable items={state.procurements} searchLabel="Cari pengadaan pada ringkasan" />
         </section>
       </div>
     </div>
