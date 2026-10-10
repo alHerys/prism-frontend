@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
+import { X } from "@phosphor-icons/react/dist/csr/X";
 import "../../../shared/styles/bank.css";
 import { Empty } from "./Empty";
 import { ReferenceTable } from "./ReferenceTable";
@@ -15,8 +16,9 @@ export function BankReferences({ tab, setTab, selectedIds, setDetail, filtered, 
                   ? "Dokumen terpublikasi"
                   : "Referensi harga satuan"}
               </h2>
-              <p className="muted">{filtered.length} referensi tersedia</p>
+              <p className="muted">Telusuri pekerjaan, periode, dan jejak sumbernya.</p>
             </div>
+            <span className="bank-count">{filtered.length} referensi tersedia</span>
           </div>
           {filtered.length ? (
             <ReferenceTable
@@ -36,7 +38,18 @@ export function BankReferences({ tab, setTab, selectedIds, setDetail, filtered, 
             />
           )}
           {tab === "Pencarian Referensi" && (
-            <div className="bank-reference-selection">
+            <div className="bank-selection-workspace">
+              {selected.length > 0 && (
+                <ul className="bank-selected-references" aria-label="Referensi yang dipilih">
+                  {selected.map((item) => (
+                    <li key={item.id}>
+                      <span>{item.documentName} <span className="muted">· {item.period}</span></span>
+                      <button type="button" aria-label={`Hapus pilihan ${item.documentName}`} onClick={() => toggle(item.id)}><X size={14} /></button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <div className="bank-reference-selection">
               <span>
                 {selected.length} referensi dipilih ·{" "}
                 {selected.filter((i) => i.comparable).length} dinyatakan
@@ -49,6 +62,7 @@ export function BankReferences({ tab, setTab, selectedIds, setDetail, filtered, 
               >
                 Lihat statistik <ArrowUpRight size={16} />
               </button>
+              </div>
             </div>
           )}
         </section>

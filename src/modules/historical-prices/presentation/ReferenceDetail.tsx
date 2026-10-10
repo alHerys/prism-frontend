@@ -5,7 +5,7 @@ export function ReferenceDetail({ state, detail, setDetail, compareReference }: 
   return (
     <>
       {detail && (
-        <section className="panel">
+        <section className="panel bank-source-detail" aria-label="Jejak sumber referensi">
           <div className="bank-section-heading">
             <h2>Jejak sumber referensi</h2>
             <button className="btn" onClick={() => setDetail(undefined)}>

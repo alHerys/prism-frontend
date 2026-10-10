@@ -55,6 +55,7 @@ export function HistoricalDraft({
                   ...new Set(draft.sources.map((source) => source.location)),
                 ].join(" · ") || "Periksa berkas sumber"}
               </p>
+              <div className="table-scroll">
               <table className="table">
                 <thead>
                   <tr>
@@ -73,8 +74,10 @@ export function HistoricalDraft({
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
             <div className="bank-draft-form">
+              <h3 className="bank-source-title">Metadata publikasi</h3>
               <label className="field">
                 Fungsi
                 <input

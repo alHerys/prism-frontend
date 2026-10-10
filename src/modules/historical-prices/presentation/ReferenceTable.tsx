@@ -1,6 +1,6 @@
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
 import { FileXls } from "@phosphor-icons/react/dist/csr/FileXls";
-import { bankMoney as money } from "../../../shared/formatting/display";
+import { bankMoney as money, exactMoney } from "../../../shared/formatting/display";
 import type { HistoricalItem } from "../domain/models";
 import "../../../shared/styles/bank.css";
 export function ReferenceTable({
@@ -34,7 +34,7 @@ export function ReferenceTable({
         </thead>
         <tbody>
           {items.map((item) => (
-            <tr key={item.id}>
+            <tr key={item.id} data-selected={showSelection && selected.includes(item.id)}>
               {showSelection && (
                 <td>
                   <input
@@ -58,7 +58,7 @@ export function ReferenceTable({
               </td>
               <td>{item.functionName}</td>
               <td>{item.period}</td>
-              <td className="numeric nowrap">
+              <td className="numeric nowrap" title={exactMoney(item.price)}>
                 {money(item.price)}
                 <div className="muted bank-meta">per {item.unit}</div>
               </td>

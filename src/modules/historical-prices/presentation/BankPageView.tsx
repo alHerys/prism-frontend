@@ -5,6 +5,7 @@ import "../../../shared/styles/bank.css";
 import { HeaderAction } from "../../../shared/ui/header-action";
 import { PageTabs } from "../../../shared/ui/page-tabs";
 import { BankReferences } from "./BankReferences";
+import { BankOverview } from "./BankOverview";
 import { HistoricalDocuments } from "./HistoricalDocuments";
 import { HistoricalDraft } from "./HistoricalDraft";
 import { HistoricalEstimate } from "./HistoricalEstimate";
@@ -78,6 +79,11 @@ export function BankPageView({
           Tambah dokumen historis
         </button>
       </HeaderAction>
+      {(tab === "Dokumen Historis" || tab === "Pencarian Referensi") && <BankOverview state={state} selected={selected} setTab={(value) => {
+        setTab(value);
+        setDetail(undefined);
+        setError("");
+      }} />}
       <PageTabs
         ariaLabel="Bagian Bank Data OE"
         value={tab}
@@ -112,7 +118,7 @@ export function BankPageView({
         {<HistoricalDocuments state={state} tab={tab} setDraftId={setDraftId} setFunctionName={setFunctionName} setPeriod={setPeriod} />}
         {<HistoricalDraft functionName={functionName} setFunctionName={setFunctionName} period={period} setPeriod={setPeriod} busy={busy} draft={draft} saveDraft={saveDraft} confirmDraft={confirmDraft} publishDraft={publishDraft} />}
         {tab !== "Bantuan Estimasi" && (
-          <section className="bank-filters">
+          <section className="bank-filters" aria-label="Filter referensi">
             <label className="bank-search">
               <MagnifyingGlass size={17} />
               <input
