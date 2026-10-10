@@ -1,4 +1,5 @@
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
+import { Folder } from "@phosphor-icons/react/dist/csr/Folder";
 import "../../../shared/styles/focus.css";
 import { Button } from "../../../shared/ui/button";
 import { Field } from "../../../shared/ui/field";
@@ -6,18 +7,23 @@ import { HeaderAction } from "../../../shared/ui/header-action";
 import { Modal } from "../../../shared/ui/modal";
 import { ProcurementTable } from "./ProcurementTable";
 import type { ProcurementListModel } from "./view-models";
+import "./procurement.css";
 
 export function ProcurementListView({ state, setParams, open, setOpen, search, setSearch, form, setForm, busy, create }: ProcurementListModel) {
 
   return (
-    <div className="page">
+    <div className="page procurement-list-page">
       <HeaderAction>
         <Button variant="primary" onClick={() => setOpen(true)}>
           <Plus />
           Tambah pengadaan
         </Button>
       </HeaderAction>
-      <section className="panel">
+      <section className="panel procurement-list-panel" aria-labelledby="procurement-list-title">
+        <div className="procurement-list-heading">
+          <div><h2 id="procurement-list-title">Daftar pengadaan</h2><p>Cari pengadaan dan lanjutkan pemeriksaan dari ruang kerja terkait.</p></div>
+          <span className="procurement-list-count"><Folder size={18} aria-hidden="true" /> {state.procurements.length} pengadaan</span>
+        </div>
         <ProcurementTable
           items={state.procurements}
           search={search}

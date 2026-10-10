@@ -8,6 +8,7 @@ import { SelectField } from "../../../shared/ui/select-field";
 import { EmptyState as Empty } from "../../../shared/ui/empty-state";
 
 import type { ProcurementTableModel } from "./view-models";
+import "./procurement.css";
 export function ProcurementTableView({
   items,
   onSearchChange,
@@ -30,7 +31,7 @@ export function ProcurementTableView({
 }: ProcurementTableModel) {
 
   return (
-    <>
+    <div className="procurement-data-table">
       <div className="table-toolbar">
         <div className="search">
           <MagnifyingGlass aria-hidden="true" />
@@ -130,6 +131,7 @@ export function ProcurementTableView({
                         <span className="badge">Belum ada dokumen</span>
                       )}
                     </div>
+                    {docs.length > 0 && <progress className="procurement-readiness" value={ready} max={docs.length} aria-label={`Dokumen terkonfirmasi untuk ${p.name}`} />}
                   </td>
                   <td>
                     <Link
@@ -198,6 +200,6 @@ export function ProcurementTableView({
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }
