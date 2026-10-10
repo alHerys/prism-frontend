@@ -27,7 +27,11 @@ export function HistorySnapshot({ onOpenResult, selected, setSelected, exportBus
               Tutup rincian
             </button>
           </div>
-          <p>{selected.policy}</p>
+          <div className="bank-snapshot-overview">
+            <div><span className="muted">Baris hasil tersimpan</span><strong>{selected.rows.length}</strong></div>
+            <div><span className="muted">Status snapshot</span><span className={`badge ${selected.status === "COMPLETE" ? "success" : "warning"}`}>{selected.status === "COMPLETE" ? "Lengkap" : "Parsial"}</span></div>
+            <div><span className="muted">Kebijakan evaluasi</span><p>{selected.policy}</p></div>
+          </div>
           {selected.excluded.length > 0 && (
             <p className="bank-notice">
               Tidak disertakan: {selected.excluded.join(", ")}

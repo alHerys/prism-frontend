@@ -1,27 +1,20 @@
-.bank-snapshot-values {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.bank-snapshot-values { margin: 0; display: flex; flex-direction: column; gap: 14px; }
+.bank-snapshot-values > div { display: grid; grid-template-columns: 170px minmax(0,1fr); gap: 18px; }
+.bank-snapshot-values dt { color: var(--muted); font-size: 14px; }
+.bank-snapshot-values dd { margin: 0; min-width: 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.bank-snapshot-group { padding: 20px 0; border-bottom: 1px solid var(--border); }
+.bank-snapshot-group:last-child { border: 0; }
+.bank-snapshot-group h4 { margin: 0 0 16px; font-size: 15px; font-weight: 600; }
+.bank-snapshot-overview { display: grid; grid-template-columns: minmax(120px,.7fr) minmax(120px,.8fr) minmax(0,2fr); gap: 24px; padding: 20px 24px; margin: 0 24px 24px; border-radius: 16px; background: var(--shell, #f5f6f5); }
+.bank-snapshot-overview > div { display: flex; flex-direction: column; align-items: start; gap: 10px; min-width: 0; }
+.bank-snapshot-overview .muted { font-size: 13px; }
+.bank-snapshot-overview strong { font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.bank-snapshot-overview p { margin: 0; font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+@media (max-width: 1023px) {
+  .bank-snapshot-overview { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
+  .bank-snapshot-overview > div:last-child { grid-column: 1/-1; }
 }
-.bank-snapshot-values > div {
-  display: grid;
-  grid-template-columns: 170px 1fr;
-  gap: 16px;
-}
-.bank-snapshot-values dt {
-  color: var(--muted);
-  font-size: 13px;
-}
-.bank-snapshot-values dd {
-  margin: 0;
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-.bank-snapshot-group {
-  padding: 16px 0;
-  border-bottom: 1px solid var(--border);
-}
-.bank-snapshot-group:last-child {
-  border: 0;
+@media (max-width: 639px) {
+  .bank-snapshot-values > div { grid-template-columns: minmax(0,1fr); gap: 6px; }
+  .bank-snapshot-overview { padding: 18px; margin: 0 20px 20px; }
 }

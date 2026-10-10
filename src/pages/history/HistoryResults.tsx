@@ -11,7 +11,11 @@ export function HistoryResults({ tab, setSelected, results, procurementName }: P
         <section className="panel">
           <div className="bank-section-heading">
             <h2>Hasil evaluasi tersimpan</h2>
-            <span className="muted">{results.length} hasil</span>
+            <div className="history-results-meta">
+              <span className="bank-count">{results.length} hasil</span>
+              <span className="badge success">{results.filter((result) => result.status === "COMPLETE").length} lengkap</span>
+              <span className="badge warning">{results.filter((result) => result.status !== "COMPLETE").length} parsial</span>
+            </div>
           </div>
           {results.length ? (
             <div className="table-scroll">
@@ -39,7 +43,7 @@ export function HistoryResults({ tab, setSelected, results, procurementName }: P
                           </div>
                         </td>
                         <td>{moduleLabel[result.module]}</td>
-                        <td>{time(result.createdAt)}</td>
+                        <td className="nowrap">{time(result.createdAt)}</td>
                         <td>
                           <span
                             className={`badge ${result.status === "COMPLETE" ? "success" : "warning"}`}
