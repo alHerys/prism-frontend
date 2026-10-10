@@ -3,6 +3,7 @@ import { CaretRight } from "@phosphor-icons/react/dist/csr/CaretRight";
 import { ClockCounterClockwise } from "@phosphor-icons/react/dist/csr/ClockCounterClockwise";
 import { Database } from "@phosphor-icons/react/dist/csr/Database";
 import { Folder } from "@phosphor-icons/react/dist/csr/Folder";
+import { Kanban } from "@phosphor-icons/react/dist/csr/Kanban";
 import { List } from "@phosphor-icons/react/dist/csr/List";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
 import { SquaresFour } from "@phosphor-icons/react/dist/csr/SquaresFour";
@@ -16,7 +17,7 @@ import { AppRoutes } from "../router/AppRoutes";
 
 const links = [
   ["/", "Dashboard", SquaresFour],
-  ["/pengadaan", "Pengadaan", Folder],
+  ["/pengadaan", "Pengadaan", Kanban],
   ["/bank", "Bank Data OE", Database],
   ["/riwayat", "Riwayat & Statistik", ClockCounterClockwise],
 ] as const;
@@ -35,13 +36,12 @@ const narrowViewport = () => window.matchMedia("(max-width: 1023px)").matches;
 function Navigation({ onNavigate, collapsed = false }: { onNavigate?: () => void; collapsed?: boolean }) {
   return (
     <nav className="nav" aria-label="Navigasi utama">
-      {links.map(([url, label, Icon], index) => {
+      {links.map(([url, label, Icon]) => {
         const link = <NavLink to={url} end={url === "/"} aria-label={label} onClick={onNavigate}>
           {({ isActive }) => <><Icon size={21} weight={isActive ? "fill" : "regular"} aria-hidden="true" /><span>{label}</span></>}
         </NavLink>;
         return (
         <div key={url} className="nav-entry">
-          {index === 0 || index === 2 ? <p className="nav-caption">{index === 0 ? "RUANG KERJA" : "REFERENSI & LAPORAN"}</p> : null}
           {collapsed ? <Hint label={label}>{link}</Hint> : link}
         </div>
         );
@@ -54,6 +54,12 @@ function Brand({ onNavigate }: { onNavigate?: () => void }) {
     <img className="logo-full" src="/prism_expand.svg" alt="PRISM" />
     <img className="logo-symbol" src="/prism_shrink.svg" alt="PRISM" />
   </Link>;
+}
+function SidebarFooter({ pending, onNavigate }: { pending: number; onNavigate?: () => void }) {
+  return <div className="sidebar-foot">
+    <p className="sidebar-organization">PT Pertamina Patra Niaga</p>
+    <Link to="/pengadaan" className="sidebar-continuation" onClick={onNavigate} aria-label={`${pending} dokumen perlu ditinjau`}><Folder size={18} aria-hidden="true" /><span>{pending} dokumen perlu ditinjau</span><CaretRight size={16} aria-hidden="true" /></Link>
+  </div>;
 }
 export function AppShell() {
   const location = useLocation();
@@ -85,11 +91,7 @@ export function AppShell() {
           </button>
         </Hint>
         <Navigation collapsed={collapsed} />
-        <div className="sidebar-foot">
-          <img src="/pertamina.svg" alt="Pertamina Patra Niaga" />
-          <p>Regional Kalimantan</p>
-          <Link to="/pengadaan" className="sidebar-continuation"><Folder size={18} aria-hidden="true" /><span>{pending} dokumen perlu ditinjau</span><CaretRight size={16} aria-hidden="true" /></Link>
-        </div>
+        <SidebarFooter pending={pending} />
       </aside>}
       <main className="workspace" id="main-content" tabIndex={-1}>
         <header className="topbar">
@@ -105,7 +107,7 @@ export function AppShell() {
                 <Dialog.Description className="sr-only">Pilih halaman PRISM. Tekan Escape untuk menutup navigasi.</Dialog.Description>
                 <div className="drawer-heading"><Brand onNavigate={closeNavigation} /><Dialog.Close asChild><button className="icon-button" aria-label="Tutup navigasi"><X size={20} /></button></Dialog.Close></div>
                 <Navigation onNavigate={closeNavigation} />
-                <div className="sidebar-foot"><img src="/pertamina.svg" alt="Pertamina Patra Niaga" /><p>Regional Kalimantan</p></div>
+                <SidebarFooter pending={pending} onNavigate={closeNavigation} />
               </Dialog.Content>
             </Dialog.Portal>
           </Dialog.Root>}
@@ -117,7 +119,6 @@ export function AppShell() {
             <input aria-label={location.pathname === "/" ? "Cari pengadaan" : "Cari pengadaan di ruang kerja"} name="cari" placeholder="Cari pengadaan…" value={search} onChange={event => setSearch(event.target.value)} />
           </form>
           <div className="shell-context">
-            <Hint label="Buka riwayat aktivitas"><Link className="icon-button" to="/riwayat" aria-label="Buka riwayat aktivitas"><ClockCounterClockwise size={21} /></Link></Hint>
             <div className="workspace-identity"><img src="/pertamina-symbol.png" alt="" /><span>Ruang kerja PRISM<small>Evaluasi pengadaan</small></span></div>
           </div>
         </header>

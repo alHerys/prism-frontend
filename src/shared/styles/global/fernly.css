@@ -29,29 +29,30 @@ h3 { font-size: 15px; font-weight: 600; }
 .app { display: block; padding: 12px; }
 .sidebar { top: 12px; left: 12px; height: calc(100dvh - 24px); padding: 22px 0 18px; border: 0; border-radius: 26px; background: var(--shell); overflow-y: auto; }
 .sidebar::after { display: none; }
-.brand { display: block; padding: 0 28px; }
-.brand .logo-full { width: 162px; max-width: 100%; height: 48px; margin: 0 0 26px; object-fit: contain; object-position: left center; }
+.brand { display: flex; align-items: center; justify-content: center; min-height: 72px; margin-bottom: 22px; padding: 0 32px; }
+.brand .logo-full { width: 176px; max-width: 100%; height: auto; max-height: 64px; margin: 0; object-fit: contain; object-position: center; }
 .sidebar-toggle { top: 28px; right: 12px; width: 26px; height: 26px; border-radius: 50%; background: transparent; color: var(--muted); box-shadow: none; }
 .sidebar-toggle:hover { color: var(--accent); background: var(--accent-soft); }
-.nav { gap: 2px; }
+.nav { gap: 6px; }
 .nav-entry { min-width: 0; }
-.nav-caption { font-size: 10px; font-weight: 500; letter-spacing: .04em; margin: 8px 28px 16px; }
-.nav-entry:nth-child(3) .nav-caption { margin-top: 38px; }
 .nav a { min-height: 42px; padding: 9px 28px; gap: 14px; border-radius: 0; position: relative; color: var(--muted); font-weight: 400; font-size: 15px; }
 .nav a.active, .nav a.active:hover { color: var(--ink); background: transparent; box-shadow: none; font-weight: 600; }
 .nav a.active::before { content: ""; position: absolute; left: 0; top: 5px; bottom: 5px; width: 4px; border-radius: 0 4px 4px 0; background: var(--accent); }
 .nav a.active svg { color: var(--accent); }
 .nav a:hover { background: var(--accent-soft); }
-.sidebar-foot { border: 0; padding: 30px 18px 0; line-height: 1.6; }
-.sidebar-foot > img { display: block; width: 158px; max-width: 100%; margin: 0 10px 8px; }
-.sidebar-foot > p { font-size: 11px; margin-left: 10px; }
+.sidebar-foot { border: 0; margin-inline: 18px; padding: 22px 0 0; line-height: 1.6; }
+.sidebar-organization { border-top: 1px solid var(--border); padding-top: 18px; color: var(--muted); font-size: 12px; }
 .sidebar-continuation { display: flex; align-items: center; gap: 8px; margin-top: 18px; padding: 16px 12px; color: #f2f8f4; background: var(--accent-deep); border-radius: 20px; font-size: 12px; line-height: 1.5; }
 .sidebar-continuation:hover { color: white; background: var(--accent); text-decoration: none; }
 .sidebar-continuation span { flex: 1; }
 .nav-collapsed { --sidebar-width: 76px; }
 .nav-collapsed .sidebar { padding: 22px 0 18px; }
 .nav-collapsed .brand { padding: 0; }
-.nav-collapsed .brand .logo-symbol { width: 34px; height: 48px; margin: 0 auto 26px; }
+.nav-collapsed .brand .logo-symbol { width: 34px; height: 48px; margin: 0; }
+.nav-collapsed .sidebar-organization { display: none; }
+.nav-collapsed .sidebar-foot { display: block; margin-inline: 10px; }
+.nav-collapsed .sidebar-continuation { justify-content: center; padding: 14px; }
+.nav-collapsed .sidebar-continuation span, .nav-collapsed .sidebar-continuation > svg:last-child { display: none; }
 .nav-collapsed .sidebar-toggle { top: 80px; right: 25px; }
 .nav-collapsed .nav { margin-top: 35px; }
 .nav-collapsed .nav a { padding: 13px; justify-content: center; }
@@ -119,7 +120,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--accent); flex-
 .empty h3 { font-weight: 600; }
 .navigation-scrim { position: fixed; inset: 0; z-index: 60; background: #131a1533; }
 .navigation-drawer { position: fixed; inset: 0 auto 0 0; z-index: 61; width: min(290px, calc(100vw - 36px)); padding: 22px 0; border-radius: 0 26px 26px 0; background: var(--shell); display: flex; flex-direction: column; overflow-y: auto; outline: none; }
-.drawer-heading { display: flex; align-items: flex-start; justify-content: space-between; padding-right: 12px; }
+.drawer-heading { display: flex; align-items: center; justify-content: space-between; padding-right: 12px; }
 .drawer-heading .brand { padding: 0 24px; }
 .drawer-heading .logo-full { width: 150px; }
 .navigation-drawer[data-state="open"] { animation: drawer-enter 450ms var(--ease-out); }
