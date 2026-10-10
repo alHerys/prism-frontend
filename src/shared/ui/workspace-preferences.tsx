@@ -10,11 +10,13 @@ interface WorkspacePreferencesValue {
   saveProfile(profile: WorkspaceProfile): void;
   setAccent(accent: WorkspaceAccent): void;
   setNotification(category: NotificationCategory, enabled: boolean): void;
+  shouldNotify(category: NotificationCategory): boolean;
 }
 const defaults = defaultWorkspacePreferences();
 const Context = createContext<WorkspacePreferencesValue>({
   preferences: defaults, persistence: "session", storageIssue: "",
   saveProfile() {}, setAccent() {}, setNotification() {},
+  shouldNotify(category) { return defaults.notifications[category]; },
 });
 export const useWorkspacePreferences = () => useContext(Context);
 
@@ -44,5 +46,6 @@ export function WorkspacePreferencesProvider({ storage, children }: { storage?: 
     saveProfile(profile) { commit({ ...current.current, profile: { ...profile, name: profile.name.trim(), email: profile.email.trim(), role: profile.role.trim(), bio: profile.bio.trim() } }); },
     setAccent(accent) { commit({ ...current.current, accent }); },
     setNotification(category, enabled) { commit({ ...current.current, notifications: { ...current.current.notifications, [category]: enabled } }); },
+    shouldNotify(category) { return current.current.notifications[category]; },
   }}>{children}</Context.Provider>;
 }

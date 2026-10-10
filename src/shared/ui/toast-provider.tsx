@@ -11,7 +11,7 @@ const ToastContext = createContext<(message: string, error?: boolean, category?:
 export const useToast = () => useContext(ToastContext);
 
 export function ToastProvider({ children }: { children: ReactNode }) {
-  const { preferences } = useWorkspacePreferences();
+  const { shouldNotify } = useWorkspacePreferences();
   const [toast, setToast] = useState<{
     message: string;
     error: boolean;
@@ -24,7 +24,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider
       value={(message, error = false, category) => {
-        if (error || !category || preferences.notifications[category]) setToast({ message, error });
+        if (error || !category || shouldNotify(category)) setToast({ message, error });
       }}
     >
       {children}

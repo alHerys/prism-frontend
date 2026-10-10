@@ -11,7 +11,7 @@ import { useWorkspacePreferences } from "../../shared/ui/workspace-preferences";
 export function useHistoryPage({
   onOpenResult,
 }: HistoryPageProps) : HistoryPageModel {
-  const { preferences } = useWorkspacePreferences();
+  const { shouldNotify } = useWorkspacePreferences();
   const service = useEvaluationsCommands();
   const state = { ...useEvaluationsData(), ...useDocumentsData() };
   const [tab, setTab] = useState("Aktivitas");
@@ -73,7 +73,7 @@ export function useHistoryPage({
     setNotice("");
     try {
       await service.exportSnapshot(selected);
-      setNotice(preferences.notifications.export ? "Laporan berhasil disiapkan." : "");
+      setNotice(shouldNotify("export") ? "Laporan berhasil disiapkan." : "");
     } catch (error) {
       setNoticeError(true);
       setNotice(
