@@ -1,5 +1,5 @@
 import { Sparkle } from "@phosphor-icons/react/dist/csr/Sparkle";
-import { bankDateTime, bankMoney as money } from "../../../shared/formatting/display";
+import { bankDateTime, bankMoney as money, exactMoney } from "../../../shared/formatting/display";
 import "../../../shared/styles/bank.css";
 import type { BankPageModel } from "./view-models";
 export function HistoricalEstimate({
@@ -19,7 +19,7 @@ export function HistoricalEstimate({
   return (
     <>
       {tab === "Bantuan Estimasi" && (
-        <>
+        <div className="bank-estimate-layout">
           <section className="panel">
             <div className="bank-section-heading">
               <div>
@@ -92,7 +92,7 @@ export function HistoricalEstimate({
               </div>
             </form>
           </section>
-          {estimate && (
+          {estimate ? (
             <section className="panel">
               <div className="bank-section-heading">
                 <div>
@@ -104,6 +104,7 @@ export function HistoricalEstimate({
                 </div>
               </div>
               <div className="bank-details">
+                <div className="bank-estimate-total"><span className="muted">Estimasi total</span><strong title={exactMoney(estimate.total)}>{money(estimate.total)}</strong></div>
                 <dl>
                   <dt>Harga satuan</dt>
                   <dd>
@@ -114,10 +115,6 @@ export function HistoricalEstimate({
                   <dt>Kuantitas</dt>
                   <dd>
                     {estimate.quantity} {estimate.unit}
-                  </dd>
-                  <dt>Estimasi total</dt>
-                  <dd>
-                    <strong>{money(estimate.total)}</strong>
                   </dd>
                   <dt>Rentang referensi</dt>
                   <dd>
@@ -133,8 +130,30 @@ export function HistoricalEstimate({
                 </p>
               </div>
             </section>
+          ) : (
+            <aside className="panel" aria-label="Referensi estimasi terpilih">
+              <div className="bank-section-heading">
+                <h2>Referensi untuk estimasi</h2>
+                <span className="bank-count">{selected.length} dipilih</span>
+              </div>
+              <div className="bank-estimate-summary">
+                <p className="muted">Periksa kesebandingan lingkup, spesifikasi, dan satuan sebelum membuat estimasi.</p>
+                {selected.length ? (
+                  <ul>
+                    {selected.map((item) => (
+                      <li key={item.id}>
+                        <strong>{item.documentName}</strong>
+                        <span>{item.period} · {item.unit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <button className="btn" onClick={() => setTab("Pencarian Referensi")}>Atur pilihan referensi</button>
+                )}
+              </div>
+            </aside>
           )}
-        </>
+        </div>
       )}
     </>
   );
