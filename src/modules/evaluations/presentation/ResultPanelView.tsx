@@ -1,24 +1,24 @@
 import { DownloadSimple as Download } from "@phosphor-icons/react/dist/csr/DownloadSimple";
+import { CaretDown } from "@phosphor-icons/react/dist/csr/CaretDown";
 import { dateTime, money, pct, roundedMoney } from "../../../shared/formatting/display";
 import { SnapshotInputs } from "./SnapshotInputs";
 import "../../../shared/styles/focus.css";
+import "../../../shared/styles/fernly-evaluation.css";
 import { Status } from "../../../shared/ui/status";
 import type { ResultPanelModel } from "./view-models";
 
 export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter, exportResult, rows }: ResultPanelModel) {
 
   return (
-    <section className="panel">
+    <section className="panel evaluation-result">
       <div className="panel-header">
         <div>
           <h2>
             {s.module === "HEA" ? "Leaderboard HEA" : "Hasil Harga Timpang"}
           </h2>
-          <p>
-            {dateTime(s.createdAt)} · {s.id}
-          </p>
+          <p>Hasil tersimpan dengan input dan jejak sumber evaluasi.</p>
         </div>
-        <div className="toolbar" style={{ margin: 0 }}>
+        <div className="evaluation-result-header">
           <Status value={s.status} />
           <button
             className="btn"
@@ -30,13 +30,18 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
           </button>
         </div>
       </div>
+      <div className="result-metadata">
+        <span>{dateTime(s.createdAt)}</span>
+        <span>Hasil <strong>{s.id}</strong></span>
+        <span>{s.rows.length} {s.module === "HEA" ? "vendor dievaluasi" : "komponen dievaluasi"}</span>
+      </div>
       {s.excluded.length > 0 && (
         <div className="alert">
           Hasil parsial · Belum dievaluasi: {s.excluded.join(", ")}.
         </div>
       )}
       {s.module === "HEA" ? (
-        <div className="table-wrap">
+        <div className="table-wrap" role="region" aria-label="Leaderboard HEA" tabIndex={0}>
           <table className="table">
             <thead>
               <tr>
@@ -67,9 +72,9 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
         </div>
       ) : (
         <>
-          <div className="stats category-stats">
+          <div className="result-category-summary">
             {(["MATERIAL", "SERVICE"] as const).map((c) => (
-              <div className="stat" key={c}>
+              <div key={c}>
                 <span>{c === "MATERIAL" ? "Material" : "Jasa"}</span>
                 <strong>
                   {
@@ -85,7 +90,7 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
               </div>
             ))}
           </div>
-          <div className="toolbar">
+          <div className="result-filter-toolbar">
             <select
               aria-label="Filter kategori hasil"
               value={filter}
@@ -101,7 +106,7 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
               timpang
             </span>
           </div>
-          <div className="table-wrap">
+          <div className="table-wrap" role="region" aria-label="Hasil perbandingan komponen harga" tabIndex={0}>
             <table className="table">
               <thead>
                 <tr>
@@ -143,16 +148,17 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
           </div>
         </>
       )}
-      <div className="toolbar" style={{ marginTop: 20 }}>
-        <button className="inline-link" onClick={() => setDetail(!detail)}>
+      <div className="result-footer">
+        <button className="inline-link" aria-expanded={detail} aria-controls={`result-trace-${s.id}`} onClick={() => setDetail(!detail)}>
           {detail ? "Tutup rincian" : "Lihat input dan jejak sumber"}
+          <CaretDown aria-hidden="true" />
         </button>
         <span className="muted">
           Hasil evaluasi mendukung pemeriksaan; tidak menetapkan pemenang.
         </span>
       </div>
       {detail && (
-        <div className="alert">
+        <div className="result-trace" id={`result-trace-${s.id}`}>
           <p>{s.policy}</p>
           <SnapshotInputs value={s.inputs} />
         </div>

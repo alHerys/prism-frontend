@@ -3,6 +3,7 @@ import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
 import { CheckCircle as CheckCircle2 } from "@phosphor-icons/react/dist/csr/CheckCircle";
 import { Link } from "react-router";
 import "../../../shared/styles/focus.css";
+import "../../../shared/styles/fernly-evaluation.css";
 import { EmptyState as Empty } from "../../../shared/ui/empty-state";
 import { Status } from "../../../shared/ui/status";
 import { Stepper } from "../../../shared/ui/stepper";
@@ -26,7 +27,7 @@ export function HEAPanelView({
 }: HEAPanelModel & Pick<HEAPanelProps, "ResultView">) {
 
   return (
-    <>
+    <div className="evaluation-workflow hea-workflow">
       <Stepper
         stage={
           chosen
@@ -41,20 +42,25 @@ export function HEAPanelView({
         }
       />
       {chosen && <ResultView snapshot={chosen} procurement={p} />}
-      <section className="panel">
+      <section className="panel hea-preferences">
         <div className="panel-header">
           <div>
             <h2>Preferensi pengadaan</h2>
-            <p>
-              Satu pasangan preferensi berlaku untuk seluruh vendor dalam
-              evaluasi.
-            </p>
           </div>
           <Status
             value={p.preferenceConfirmed ? "CONFIRMED" : "REVIEW_REQUIRED"}
           />
         </div>
-        <div className="form-grid">
+        <div className="preference-layout">
+          <div className="preference-context">
+            <h3>Input untuk seluruh vendor</h3>
+            <p>
+              Satu pasangan preferensi berlaku untuk seluruh vendor dalam evaluasi.
+              Simpan dan konfirmasi sebelum mengevaluasi Form A5.
+            </p>
+          </div>
+          <div className="preference-form">
+            <div className="form-grid">
           <div className="field">
             <label htmlFor="pref-barang">Preferensi barang (%)</label>
             <input
@@ -93,13 +99,15 @@ export function HEAPanelView({
               ? "Perubahan belum disimpan dan dikonfirmasi"
               : `Revisi ${p.preferenceRevision}`}
           </span>
+            </div>
+          </div>
         </div>
       </section>
-      <section className="panel">
+      <section className="panel evaluation-selection">
         <div className="panel-header">
           <div>
             <h2>Pilih Form A5 untuk evaluasi</h2>
-            <p>Pilih satu dokumen terkonfirmasi untuk setiap vendor.</p>
+            <p>Pilih satu dokumen terkonfirmasi untuk setiap vendor. {selected.length} dokumen terpilih.</p>
           </div>
           <button
             className="btn primary"
@@ -113,7 +121,7 @@ export function HEAPanelView({
           </button>
         </div>
         {docs.length ? (
-          <div className="table-wrap">
+          <div className="table-wrap" role="region" aria-label="Form A5 untuk evaluasi" tabIndex={0}>
             <table className="table">
               <thead>
                 <tr>
@@ -125,7 +133,7 @@ export function HEAPanelView({
               </thead>
               <tbody>
                 {docs.map((d) => (
-                  <tr key={d.id}>
+                  <tr key={d.id} className={selected.includes(d.id) ? "is-selected" : undefined}>
                     <td>
                       <input
                         type="checkbox"
@@ -171,6 +179,6 @@ export function HEAPanelView({
           </Empty>
         )}
       </section>
-    </>
+    </div>
   );
 }

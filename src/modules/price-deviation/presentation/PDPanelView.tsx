@@ -1,17 +1,20 @@
 import type { PDPanelProps } from "./input-models";
 import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
+import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
 import { Link } from "react-router";
 import "../../../shared/styles/focus.css";
+import "../../../shared/styles/fernly-evaluation.css";
 import { Stepper } from "../../../shared/ui/stepper";
+import { Status } from "../../../shared/ui/status";
 import type { PDPanelModel } from "./view-models";
 
 export function PDPanelView({ ResultView, p, docs, oe, setOe, offer, setOffer, busy, chosen, evaluate }: PDPanelModel & Pick<PDPanelProps, "ResultView">) {
 
   return (
-    <>
+    <div className="evaluation-workflow price-workflow">
       <Stepper stage={chosen ? 4 : oe && offer ? 2 : 0} />
       {chosen && <ResultView snapshot={chosen} procurement={p} />}
-      <section className="panel">
+      <section className="panel evaluation-price-sources">
         <div className="panel-header">
           <div>
             <h2>Sumber perbandingan harga</h2>
@@ -29,13 +32,18 @@ export function PDPanelView({ ResultView, p, docs, oe, setOe, offer, setOffer, b
             <ArrowRight />
           </button>
         </div>
-        <div className="form-grid">
+        <div className="evaluation-source-grid">
           {[
             ["OE pengadaan", "OE", oe, setOe],
             ["Penawaran vendor", "OFFER", offer, setOffer],
-          ].map(([label, kind, value, setter]) => (
-            <div className="field" key={label as string}>
-              <label>{label as string}</label>
+          ].map(([label, kind, value, setter]) => {
+            const selectedDocument = docs.find((document) => document.id === value);
+            return (
+            <div className="field evaluation-source-field" key={label as string}>
+              <label>
+                <FileText aria-hidden="true" size={20} />
+                {label as string}
+              </label>
               <select
                 aria-label={label as string}
                 value={value as string}
@@ -56,18 +64,22 @@ export function PDPanelView({ ResultView, p, docs, oe, setOe, offer, setOffer, b
                   ))}
               </select>
               {value && (
-                <Link to={`/pengadaan/${p.id}/review/${value}`}>
-                  Periksa sumber dan kelompok harga
-                </Link>
+                <div className="evaluation-source-meta">
+                  {selectedDocument && <Status value={selectedDocument.status} />}
+                  <Link to={`/pengadaan/${p.id}/review/${value}`}>
+                    Periksa sumber dan kelompok harga
+                  </Link>
+                </div>
               )}
             </div>
-          ))}
+            );
+          })}
         </div>
         <div className="alert">
           Harga timpang diperiksa per komponen material dan jasa. Pasangan belum
           valid ditampilkan terpisah dan tidak dikategorikan tidak timpang.
         </div>
       </section>
-    </>
+    </div>
   );
 }
