@@ -1,0 +1,43 @@
+.help-hero { position: relative; overflow: hidden; border-radius: 20px; background: linear-gradient(120deg,var(--accent-deep),var(--accent)); color: #fff; padding: 30px; margin-bottom: 20px; }
+.help-hero::before { content: ""; position: absolute; inset: -30% -15%; pointer-events: none; opacity: .12; background: repeating-radial-gradient(ellipse at 95% 20%,transparent 0 29px,#ffffff70 30px 31px,transparent 32px 54px); transform: rotate(-18deg); }
+.help-hero > * { position: relative; }
+.help-hero h2 { color: #fff; font-size: 27px; font-weight: 500; letter-spacing: -.025em; }
+.help-hero > p { margin: 8px 0 26px; color: #ffffffd9; line-height: 1.6; font-size: 14px; max-width: 70ch; }
+.help-topics { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; }
+.help-topic { display: flex; align-items: center; gap: 12px; padding: 18px 16px; min-height: 90px; border-radius: 16px; color: #fff; background: #ffffff0d; border: 1px solid #ffffff26; text-align: left; transition: background-color 200ms,color 200ms; }
+.help-topic:hover { background: #ffffff1f; }
+.help-topic[aria-pressed="true"] { color: var(--accent-deep); background: #fff; }
+.help-topic svg { flex-shrink: 0; }
+.help-topic strong { display: block; font-size: 14px; font-weight: 500; line-height: 1.4; }
+.help-topic small { display: block; margin-top: 5px; color: #ffffffd9; font-size: 12px; }
+.help-topic[aria-pressed="true"] small { color: var(--accent-deep); }
+.help-topic:focus-visible { outline-color: #fff; }
+.help-layout { display: grid; grid-template-columns: minmax(0,2fr) minmax(260px,1fr); gap: 20px; align-items: start; }
+.help-faq { padding: 24px; }
+.help-faq .panel-header { align-items: center; margin-bottom: 16px; }
+.help-faq-item { border-bottom: 1px solid var(--border); }
+.help-faq-item:last-child { border-bottom: 0; }
+.help-faq-item h3 { margin: 0; }
+.help-faq-item h3 button { display: flex; align-items: center; justify-content: space-between; gap: 18px; width: 100%; min-height: 66px; padding: 17px 0; color: var(--ink); background: transparent; border: 0; text-align: left; font-size: 14px; font-weight: 500; line-height: 1.55; }
+.help-faq-symbol { display: grid; place-items: center; width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--shell); }
+.help-faq-symbol svg { transition: transform 200ms var(--ease-out); }
+[aria-expanded="true"] .help-faq-symbol svg { transform: rotate(45deg); }
+.help-answer { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 200ms var(--ease-out),opacity 200ms var(--ease-out); }
+.help-answer[data-open="true"] { grid-template-rows: 1fr; opacity: 1; }
+.help-answer > div { overflow: hidden; min-height: 0; }
+.help-answer p { color: var(--muted); font-size: 14px; line-height: 1.7; max-width: 70ch; margin: 0 30px 12px 0; }
+.help-answer a { display: inline-block; margin-bottom: 20px; font-size: 13px; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.help-aside { display: grid; gap: 20px; }
+.help-shortcuts dl { margin: 22px 0; }
+.help-shortcuts dl > div { display: grid; grid-template-columns: 105px minmax(0,1fr); align-items: center; gap: 12px; margin-bottom: 15px; font-size: 13px; }
+.help-shortcuts dt,.help-shortcuts dd { margin: 0; }
+.help-shortcuts kbd { display: inline-flex; align-items: center; min-height: 28px; border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; font: inherit; color: var(--ink); background: var(--shell); }
+.help-shortcuts > p,.help-contact p { color: var(--muted); font-size: 13px; line-height: 1.65; }
+.help-contact > svg { color: var(--accent); margin-bottom: 14px; }
+.help-contact h2 { margin-bottom: 10px; }
+.help-contact > div { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.help-empty { padding: 28px 0; }
+.help-empty p { color: var(--muted); margin-top: 10px; line-height: 1.6; }
+@media(max-width:1023px) { .help-layout { grid-template-columns: minmax(0,1fr); } .help-aside { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media(max-width:639px) { .help-hero { padding: 22px; } .help-hero h2 { font-size: 24px; } .help-topics { grid-template-columns: repeat(2,minmax(0,1fr)); } .help-topic { padding: 16px 12px; gap: 10px; } .help-topic strong { font-size: 13px; } .help-aside { grid-template-columns: minmax(0,1fr); } .help-faq { padding: 20px; } }
+@media(prefers-reduced-motion:reduce) { .help-answer,.help-faq-symbol svg,.help-topic { transition: none; } }
