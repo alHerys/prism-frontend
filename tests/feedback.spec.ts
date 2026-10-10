@@ -13,7 +13,7 @@ test('simplified sidebar and dashboard retain real continuation links', async ({
   if (narrow) await page.getByRole('button', { name: 'Buka navigasi' }).click();
   const navigation = narrow ? page.getByRole('dialog', { name: 'Navigasi ruang kerja' }) : page.locator('.sidebar');
   await expect(navigation.locator('.nav-caption')).toHaveCount(0);
-  await expect(navigation.getByText('Regional Kalimantan', { exact: true })).toHaveCount(0);
+  await expect(navigation.getByText('Regional Kalimantan', { exact: true })).toBeVisible();
   await expect(navigation.locator('.sidebar-foot img')).toHaveCount(0);
   await expect(navigation.getByText('PT Pertamina Patra Niaga', { exact: true })).toBeVisible();
   await expect(navigation.getByRole('link', { name: '4 dokumen perlu ditinjau', exact: true })).toBeVisible();
