@@ -37,9 +37,9 @@ describe("browser workspace preference storage", () => {
     "not json",
     "null",
     JSON.stringify({ profile: { name: "Missing required fields" }, accent: "ocean", notifications: {} }),
-    JSON.stringify({ ...defaultWorkspacePreferences(), accent: "unsupported" }),
-    JSON.stringify({ ...defaultWorkspacePreferences(), profile: { ...defaultWorkspacePreferences().profile, timeZone: "Invalid/Zone" } }),
-    JSON.stringify({ ...defaultWorkspacePreferences(), notifications: { ...defaultWorkspacePreferences().notifications, publication: "yes" } }),
+    JSON.stringify({ version: 1, preferences: { ...defaultWorkspacePreferences(), accent: "unsupported" } }),
+    JSON.stringify({ version: 1, preferences: { ...defaultWorkspacePreferences(), profile: { ...defaultWorkspacePreferences().profile, timeZone: "Invalid/Zone" } } }),
+    JSON.stringify({ version: 1, preferences: { ...defaultWorkspacePreferences(), notifications: { ...defaultWorkspacePreferences().notifications, publication: "yes" } } }),
   ])("does not accept corrupted or unsupported preference data (%s)", raw => {
     const memory = new MemoryStorage();
     memory.setItem(key, raw);
