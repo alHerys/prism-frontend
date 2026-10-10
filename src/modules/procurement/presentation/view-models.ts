@@ -1,5 +1,7 @@
 import type * as React from "react";
 
+export type ProcurementSortKey = "name" | "vendors" | "documents" | "readiness";
+
 export interface ProcurementTableModel {
   items: import("../domain/models").Procurement[];
   onSearchChange: ((s: string) => void) | undefined;
@@ -9,6 +11,8 @@ export interface ProcurementTableModel {
   search: string;
   status: string;
   setStatus: React.Dispatch<React.SetStateAction<string>>;
+  sortKey: ProcurementSortKey;
+  setSortKey: React.Dispatch<React.SetStateAction<ProcurementSortKey>>;
   ascending: boolean;
   setAscending: React.Dispatch<React.SetStateAction<boolean>>;
   setPage: React.Dispatch<React.SetStateAction<number>>;

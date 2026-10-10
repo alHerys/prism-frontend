@@ -33,7 +33,8 @@ async function capture(page: Page, name: string) {
   await expect(page.getByText('Menyiapkan ruang kerja', { exact: true })).toHaveCount(0);
   if (name === 'review') await expect(page.getByLabel('TKDN jasa (%)')).toBeVisible();
   if (name === 'dashboard') {
-    await expect(page.locator('.dashboard-procurements .table-toolbar')).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Lanjutkan pekerjaan', exact: true })).toBeVisible();
+    await expect(page.locator('.dashboard-distribution, .dashboard-procurements')).toHaveCount(0);
   }
   const close = page.getByRole('button', { name: 'Tutup pemberitahuan' });
   if (await close.count()) await close.click();
@@ -84,7 +85,7 @@ test('desktop shell, sidebar, keyboard dialog and unsaved correction protection'
   await expect(page.getByRole('navigation', { name: 'Navigasi utama' }).getByRole('link', { name: 'Bank Data OE' })).toBeVisible();
   await capture(page, 'dashboard-collapsed');
   await click(page, 'Perluas navigasi');
-  await page.getByRole('link', { name: 'Penggantian Jalur Pipa Terminal', exact: true }).click();
+  await page.getByRole('link', { name: 'Lanjutkan Penggantian Jalur Pipa Terminal', exact: true }).click();
   await capture(page, 'procurement-detail');
   await tab(page, 'HEA');
   await page.getByRole('link', { name: 'Periksa dokumen' }).first().click();
@@ -270,13 +271,16 @@ test('procurement search, sorting and pagination reflect created records', async
   }
   await page.getByRole('combobox', { name: 'Jumlah pengadaan per halaman' }).click();
   await page.getByRole('option', { name: '5', exact: true }).click();
-  await expect(page.getByText('Menampilkan 1–5 dari 7 pengadaan')).toBeVisible();
+  await expect(page.locator('.procurement-table tbody tr')).toHaveCount(5);
+  await expect(page.getByLabel('Halaman 1 dari 2', { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Sebelumnya', exact: true })).toBeDisabled();
   await click(page, 'Selanjutnya');
-  await expect(page.getByText('Menampilkan 6–7 dari 7 pengadaan')).toBeVisible();
+  await expect(page.locator('.procurement-table tbody tr')).toHaveCount(2);
+  await expect(page.getByLabel('Halaman 2 dari 2', { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Selanjutnya', exact: true })).toBeDisabled();
   await page.locator('.table-toolbar').getByRole('textbox', { name: 'Cari pengadaan', exact: true }).fill('acceptance');
-  await expect(page.getByText('Menampilkan 1–4 dari 4 pengadaan')).toBeVisible();
+  await expect(page.locator('.procurement-table tbody tr')).toHaveCount(4);
+  await expect(page.getByLabel('Halaman 1 dari 1', { exact: true })).toBeVisible();
   await page.getByRole('columnheader').getByRole('button', { name: 'Pengadaan', exact: true }).click();
   await expect(page.locator('tbody tr').first().getByRole('link', { name: 'Pengadaan acceptance 4', exact: true })).toBeVisible();
 });
@@ -306,10 +310,10 @@ test('direct routes and navigation load the same styles and preserve tab drafts'
   await page.getByRole('navigation', { name: 'Navigasi utama' }).getByRole('link', { name: 'Riwayat & Statistik' }).click();
   await compareStyles('/riwayat', 'Catatan aktivitas', ['.topbar', '.bank-history .panel', '.bank-history .history-timeline']);
   await page.getByRole('link', { name: 'Dashboard', exact: true }).click();
-  await page.getByRole('link', { name: 'Penggantian Jalur Pipa — Siap Evaluasi', exact: true }).click();
+  await page.getByRole('link', { name: 'Lanjutkan Penggantian Jalur Pipa — Siap Evaluasi', exact: true }).click();
   await compareStyles('/pengadaan/proc-showcase?tab=hea', 'Leaderboard HEA', ['.procurement-path', '.panel', '.table']);
   await page.getByRole('link', { name: 'Dashboard', exact: true }).click();
-  await page.getByRole('link', { name: 'Penggantian Jalur Pipa Terminal', exact: true }).click();
+  await page.getByRole('link', { name: 'Lanjutkan Penggantian Jalur Pipa Terminal', exact: true }).click();
   await tab(page, 'HEA');
   await page.getByRole('link', { name: 'Periksa dokumen' }).first().click();
   await compareStyles('/pengadaan/proc-terminal/review/doc-21', 'Periksa Form A5', ['.focus-head', '.review-editor', '.review-source']);
