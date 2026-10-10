@@ -14,8 +14,23 @@ async function confirm(page: Page) {
   await expect(page).not.toHaveURL(/\/review\//);
 }
 async function upload(page: Page, name: string) {
+  // Observe the real 450ms progress state before selecting a file. Polling after
+  // setInputFiles can miss it when Chrome is busy; production timing stays intact.
+  await page.evaluate(() => {
+    document.documentElement.removeAttribute('data-upload-progress-seen');
+    const observer = new MutationObserver(() => {
+      const visible = [...document.querySelectorAll('[role="status"]')].some(
+        element => element.textContent?.includes('Menyiapkan kandidat data') && element.getClientRects().length > 0,
+      );
+      if (visible) {
+        document.documentElement.setAttribute('data-upload-progress-seen', 'true');
+        observer.disconnect();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+  });
   await page.getByLabel('Pilih berkas dokumen').setInputFiles(file(name));
-  await expect(page.getByText('Menyiapkan kandidat data', {exact: true})).toBeVisible();
+  await expect(page.locator('html')).toHaveAttribute('data-upload-progress-seen', 'true');
   await expect(page).toHaveURL(/\/review\/doc-/);
 }
 async function group(page: Page) {

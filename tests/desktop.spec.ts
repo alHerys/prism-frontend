@@ -304,7 +304,7 @@ test('direct routes and navigation load the same styles and preserve tab drafts'
   await tab(page, 'Bantuan Estimasi');
   await expect(page.getByLabel('Kuantitas', { exact: true })).toHaveValue('100');
   await page.getByRole('navigation', { name: 'Navigasi utama' }).getByRole('link', { name: 'Riwayat & Statistik' }).click();
-  await compareStyles('/riwayat', 'Catatan aktivitas', ['.topbar', '.bank-history .panel', '.bank-history .table']);
+  await compareStyles('/riwayat', 'Catatan aktivitas', ['.topbar', '.bank-history .panel', '.bank-history .history-timeline']);
   await page.getByRole('link', { name: 'Dashboard', exact: true }).click();
   await page.getByRole('link', { name: 'Penggantian Jalur Pipa — Siap Evaluasi', exact: true }).click();
   await compareStyles('/pengadaan/proc-showcase?tab=hea', 'Leaderboard HEA', ['.procurement-path', '.panel', '.table']);
