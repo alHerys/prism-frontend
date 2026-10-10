@@ -29,11 +29,21 @@ export function ReviewSource({ d, focused, p, vendor, source }: Pick<ReviewModel
       }
     >
       {d.kind === "FORM_A5" && source ? (
-        <iframe
-          className="review-pdf-preview"
-          src={source.path}
-          title={`Preview PDF ${d.name}`}
-        />
+        <>
+          <iframe
+            className="review-pdf-preview"
+            src={source.path}
+            title={`Preview PDF ${d.name}`}
+          />
+          <div className="review-source-evidence" aria-live="polite">
+            {d.sources.filter((entry) => entry.field === focused).map((entry, index) => (
+              <div className="evidence" key={index}>
+                <strong>{entry.location}</strong>
+                <p>{entry.quote}</p>
+              </div>
+            ))}
+          </div>
+        </>
       ) : (
         <div className="paper">
           <div className="paper-header">
@@ -62,7 +72,7 @@ export function ReviewSource({ d, focused, p, vendor, source }: Pick<ReviewModel
               ))}
             </dl>
           ) : (
-            <table className="table">
+            <div className="table-wrap" role="region" aria-label="Harga dari dokumen sumber" tabIndex={0}><table className="table">
               <thead>
                 <tr>
                   <th>Komponen</th>
@@ -87,7 +97,7 @@ export function ReviewSource({ d, focused, p, vendor, source }: Pick<ReviewModel
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></div>
           )}
           {d.sources
             .filter((s) => d.kind !== "FORM_A5" || s.field === focused)

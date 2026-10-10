@@ -56,7 +56,7 @@ export function ReviewView({
       </div>
     );
   return (
-    <div className="focus-shell">
+    <div className="focus-shell fernly-review">
       <header className="focus-head">
         <div className="review-header-context">
           <button
@@ -98,10 +98,7 @@ export function ReviewView({
             {showSource ? "Tutup bukti sumber" : "Tampilkan bukti sumber"}
           </button>
         </div>
-        <div
-          className="review-grid"
-          style={!showSource ? { gridTemplateColumns: "1fr" } : undefined}
-        >
+        <div className={`review-grid${showSource ? "" : " review-grid-editor-only"}`}>
           {showSource && (
             <ReviewSource d={d} focused={focused} p={p} vendor={vendor} source={source} />
           )}

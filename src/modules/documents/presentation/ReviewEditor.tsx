@@ -7,6 +7,11 @@ import "../../../shared/styles/focus.css";
 import { CurrencyInput } from "../../../shared/ui/currency-input";
 import { fields } from "./review-fields";
 import type { ReviewModel } from "./view-models";
+
+const reviewFieldOrder: (keyof A5Values)[] = [
+  "hpb", "hpj", "knb", "tkdn_barang", "tkdn_jasa",
+];
+
 export function ReviewEditor({
   d,
   ack,
@@ -35,15 +40,15 @@ export function ReviewEditor({
               : "Kelompok harga dan pasangan"}
           </h2>
           <p>
-            Cocokkan nilai dengan sumber di sebelah kiri. Simpan koreksi
+            Cocokkan nilai dengan bukti sumber. Simpan koreksi
             sebelum mengonfirmasi data.
           </p>
         </div>
       </div>
       {values ? (
-        <div className="form-grid">
-          {(Object.keys(fields) as (keyof A5Values)[]).map((key) => (
-            <div className="field" key={key}>
+        <div className="form-grid review-values">
+          {reviewFieldOrder.map((key) => (
+            <div className={`field review-value-field${key === "knb" ? " review-value-wide" : ""}`} key={key}>
               <label htmlFor={key}>
                 {fields[key]} {key.startsWith("tkdn") ? "(%)" : "(Rp)"}
               </label>
@@ -59,23 +64,22 @@ export function ReviewEditor({
                 onFocus={() => setFocused(key)}
                 onValueChange={(value) => changeValue(key, value)}
               />}
-              <small>
-                Nilai awal:{" "}
-                {key.startsWith("tkdn")
-                  ? pct(d.candidate![key])
-                  : money(d.candidate![key])}
-              </small>
-              {values[key] !==
-                (key.startsWith("tkdn")
-                  ? toPercent(d.candidate![key])
-                  : d.candidate![key]) && (
-                  <span
-                    className="badge info"
-                    style={{ width: "fit-content" }}
-                  >
+              <div className="review-field-meta">
+                <small>
+                  Nilai awal:{" "}
+                  {key.startsWith("tkdn")
+                    ? pct(d.candidate![key])
+                    : money(d.candidate![key])}
+                </small>
+                {values[key] !==
+                  (key.startsWith("tkdn")
+                    ? toPercent(d.candidate![key])
+                    : d.candidate![key]) && (
+                  <span className="badge info">
                     Dikoreksi
                   </span>
                 )}
+              </div>
             </div>
           ))}
         </div>
@@ -103,7 +107,7 @@ export function ReviewEditor({
             </small>
           </div>
           {d.kind === "OFFER" && (
-            <div className="table-wrap">
+            <div className="table-wrap review-pairs" role="region" aria-label="Pasangan komponen harga" tabIndex={0}>
               <table className="table">
                 <thead>
                   <tr>
@@ -142,7 +146,7 @@ export function ReviewEditor({
                       <td>
                         <input
                           aria-label={`OE ${pair.description}`}
-                          style={{ width: 110 }}
+                          className="review-pair-price"
                           value={pair.oe}
                           onChange={(e) =>
                             editPair(i, "oe", e.target.value)
@@ -152,7 +156,7 @@ export function ReviewEditor({
                       <td>
                         <input
                           aria-label={`Penawaran ${pair.description}`}
-                          style={{ width: 110 }}
+                          className="review-pair-price"
                           value={pair.offer}
                           onChange={(e) =>
                             editPair(i, "offer", e.target.value)
@@ -168,7 +172,7 @@ export function ReviewEditor({
         </>
       )}
       {d.warnings.length > 0 && (
-        <div className="alert">
+        <div className="alert review-warning">
           <strong>Perlu verifikasi evaluator</strong>
           {d.warnings.map((w) => (
             <p key={w}>{w}</p>
