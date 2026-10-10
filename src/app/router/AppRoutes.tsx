@@ -23,6 +23,8 @@ const Review = lazy(() =>
 );
 const Bank = lazy(() => import("../../modules/historical-prices/presentation/BankPage"));
 const HistoryPage = lazy(() => import("../../pages/history/HistoryPage"));
+const SettingsPage = lazy(() => import("../../pages/settings/SettingsPage"));
+const HelpPage = lazy(() => import("../../pages/help/HelpPage"));
 
 export function AppRoutes() {
   const location = useLocation();
@@ -50,6 +52,8 @@ export function AppRoutes() {
           element={<Review key={location.pathname} />}
         />
         <Route path="/bank" element={<Bank />} />
+        <Route path="/pengaturan" element={<SettingsPage />} />
+        <Route path="/bantuan" element={<HelpPage />} />
         <Route
           path="/riwayat"
           element={<HistoryPage />}
