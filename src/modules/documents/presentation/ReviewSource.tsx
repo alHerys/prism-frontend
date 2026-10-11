@@ -35,14 +35,6 @@ export function ReviewSource({ d, focused, p, vendor, source }: Pick<ReviewModel
             src={source.path}
             title={`Preview PDF ${d.name}`}
           />
-          <div className="review-source-evidence" aria-live="polite">
-            {d.sources.filter((entry) => entry.field === focused).map((entry, index) => (
-              <div className="evidence" key={index}>
-                <strong>{entry.location}</strong>
-                <p>{entry.quote}</p>
-              </div>
-            ))}
-          </div>
         </>
       ) : (
         <div className="paper">
@@ -99,14 +91,6 @@ export function ReviewSource({ d, focused, p, vendor, source }: Pick<ReviewModel
               </tbody>
             </table></div>
           )}
-          {d.sources
-            .filter((s) => d.kind !== "FORM_A5" || s.field === focused)
-            .map((s, i) => (
-              <div className="evidence" key={i}>
-                <strong>{s.location}</strong>
-                <p>{s.quote}</p>
-              </div>
-            ))}
         </div>
       )}
     </SourcePanel>

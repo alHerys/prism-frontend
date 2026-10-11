@@ -16,7 +16,8 @@
   align-items: center;
 }
 .review-header-context { gap: 24px; min-width: 0; }
-.review-back { white-space: nowrap; }
+.focus-shell .review-back { width: 48px; height: 48px; flex-shrink: 0; color: var(--accent); }
+.focus-shell .review-back svg { width: 28px; height: 28px; }
 .review-heading { min-width: 0; }
 .review-heading h1 { margin: 0; font-size: 34px; letter-spacing: -0.025em; }
 .review-heading p { margin: 6px 0 0; color: var(--muted); font-size: 15px; }
@@ -27,7 +28,6 @@
 .review-document-identity { gap: 12px; min-width: 0; }
 .review-document-identity > div { min-width: 0; }
 .review-document-identity strong { display: block; overflow-wrap: anywhere; font-weight: 600; }
-.review-document-identity p { margin: 5px 0 0; font-size: 13px; color: var(--muted); }
 .review-file-icon { display: grid; place-items: center; height: 46px; width: 46px; border-radius: 14px; background: var(--accent-soft, var(--blue-soft)); color: var(--accent-deep, var(--blue-deep)); flex-shrink: 0; }
 .review-file-icon svg { height: 22px; width: 22px; }
 .focus-shell .review-grid { gap: 24px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.8fr); align-items: start; }
@@ -40,8 +40,6 @@
 .review-source-value { padding: 10px; border-radius: 10px; }
 .review-source-value.selected { background: var(--accent-soft, var(--blue-soft)); }
 .review-source .paper dd { font-weight: 600; overflow-wrap: anywhere; }
-.review-source .evidence { line-height: 1.65; }
-.review-source-evidence .evidence { margin-top: 14px; }
 .review-editor { min-width: 0; margin-bottom: 0; }
 .review-editor .form-grid { gap: 12px 18px; margin-bottom: 16px; }
 .review-editor .field input { font-variant-numeric: tabular-nums; }
@@ -52,10 +50,7 @@
 .review-editor .alert { margin-top: 18px; }
 .review-editor .notice { margin-top: 12px; align-items: start; font-size: 14px; }
 .review-editor .notice input { margin-top: 4px; flex-shrink: 0; }
-.review-editor .review-action { padding-top: 16px; align-items: center; gap: 12px; position: sticky; bottom: 16px; z-index: 5; }
-.review-save-state { margin-right: auto; min-width: 0; }
-.review-save-state strong { display: block; font-size: 13px; font-weight: 600; }
-.review-save-state small { display: block; max-width: 32ch; margin-top: 4px; font-size: 12px; line-height: 1.5; }
+.review-editor .review-action { padding-top: 16px; align-items: center; justify-content: flex-end; gap: 12px; position: sticky; bottom: 16px; z-index: 5; }
 .review-editor .review-action .btn { white-space: nowrap; }
 .review-editor .field { margin-bottom: 0; min-width: 0; }
 .review-value-wide { grid-column: 1 / -1; }
@@ -71,7 +66,6 @@
 .fernly-review { padding: 24px; background: var(--bg); }
 .fernly-review > .focus-head { position: sticky; top: 16px; border: 0; border-radius: 26px; background: var(--surface); padding: 24px 28px; }
 .fernly-review .review-header-context { flex-direction: row; gap: 24px; }
-.fernly-review .review-back { padding-inline: 0; color: var(--accent-deep, var(--blue-deep)); }
 .fernly-review .focus-content { padding: 24px 0 40px; }
 .fernly-review .review-document-bar { padding: 18px 22px; background: var(--surface); border-radius: 20px; }
 .fernly-review .review-source,
@@ -93,7 +87,6 @@
   .fernly-review .review-document-bar { padding-block: 14px; }
   .fernly-review .review-editor > .panel-header { margin-bottom: 14px; }
   .fernly-review .review-action { gap: 8px; }
-  .fernly-review .review-save-state small { max-width: 23ch; }
   .fernly-review .review-action .btn { padding-inline: 14px; }
 }
 @media (max-width: 1023px) {
@@ -102,7 +95,7 @@
   .fernly-review .review-source { position: static; }
   .fernly-review .review-header-context { align-items: flex-start; flex-direction: column; gap: 12px; }
   .fernly-review > .focus-head { position: static; }
-  .fernly-review .focus-content { padding-bottom: 142px; }
+  .fernly-review .focus-content { padding-bottom: 112px; }
   .fernly-review .review-action { position: fixed; left: 24px; right: 24px; bottom: 16px; margin: 0; padding: 16px 20px; border: 0; border-radius: 20px; box-shadow: 0 -6px 28px rgba(13, 24, 17, 0.12); z-index: 30; }
   .fernly-review .field input,
   .fernly-review .field select { scroll-margin-block: 160px; }
@@ -116,7 +109,7 @@
   .fernly-review > .focus-head { padding: 20px; border-radius: 22px; }
   .review-heading h1 { font-size: 28px; overflow-wrap: anywhere; }
   .review-heading p { font-size: 14px; overflow-wrap: anywhere; }
-  .fernly-review .focus-content { padding-top: 16px; padding-bottom: 180px; }
+  .fernly-review .focus-content { padding-top: 16px; padding-bottom: 112px; }
   .fernly-review .review-document-bar { padding: 16px; gap: 16px; }
   .fernly-review .review-document-bar > .btn { width: 100%; justify-content: center; }
   .fernly-review .review-document-identity { display: grid; grid-template-columns: 46px minmax(0, 1fr); align-items: start; gap: 8px 10px; width: 100%; }
@@ -127,9 +120,7 @@
   .review-editor .form-grid { grid-template-columns: minmax(0, 1fr); }
   .review-value-wide { grid-column: auto; }
   .review-pdf-preview { height: 380px; min-height: 320px; }
-  .fernly-review .review-action { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); left: 12px; right: 12px; bottom: 12px; padding: 16px 18px; }
-  .review-save-state { grid-column: 1 / -1; margin: 0; }
-  .review-save-state small { max-width: none; }
+  .fernly-review .review-action { display: grid; grid-template-columns: minmax(0, 1fr); left: 12px; right: 12px; bottom: 12px; padding: 16px 18px; }
   .review-editor .review-action .btn { white-space: normal; padding: 10px; min-height: 48px; }
   .review-editor .review-action .btn svg { display: none; }
   .review-pair-price { width: 144px; }

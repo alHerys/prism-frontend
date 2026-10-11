@@ -5,12 +5,12 @@ export function ReviewConfirmation({ busy, confirm, setConfirm, confirmDocument 
   return (
     <Modal
       open={confirm}
-      onOpenChange={setConfirm}
+      onOpenChange={(open) => { if (!busy) setConfirm(open); }}
       title="Konfirmasi data dokumen"
       description="Anda telah memeriksa nilai, sumber, dan peringatan. Data terkonfirmasi akan menjadi input evaluasi."
     >
       <div className="modal-actions">
-        <button className="btn" onClick={() => setConfirm(false)}>
+        <button className="btn" disabled={busy} onClick={() => setConfirm(false)}>
           Kembali memeriksa
         </button>
         <button

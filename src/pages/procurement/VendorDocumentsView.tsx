@@ -26,8 +26,8 @@ export function VendorDocumentsView({ id, state, procurement, vendor, backUrl }:
     <div className="focus-shell vendor-focus-shell">
       <header className="focus-head">
         <div className="review-header-context">
-          <Link className="btn quiet review-back" to={backUrl} aria-label="Kembali ke tahap Unggah & verifikasi">
-            <ArrowLeft /> Kembali
+          <Link className="icon-button review-back" title="Kembali ke tahap Unggah & verifikasi" to={backUrl} aria-label="Kembali ke tahap Unggah & verifikasi">
+            <ArrowLeft size={28} aria-hidden="true" />
           </Link>
           <div className="review-heading">
             <h1>{vendor.name}</h1>

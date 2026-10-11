@@ -1,6 +1,4 @@
 import { CheckCircle as CheckCircle2 } from "@phosphor-icons/react/dist/csr/CheckCircle";
-import { FloppyDisk as Save } from "@phosphor-icons/react/dist/csr/FloppyDisk";
-import { money, pct } from "../../../shared/formatting/display";
 import { toPercent } from "../../../shared/formatting/review-input";
 import type { A5Values, DocumentRecord } from "../domain/models";
 import "../../../shared/styles/focus.css";
@@ -27,9 +25,8 @@ export function ReviewEditor({
   setDirty,
   failure,
   changeValue,
-  save,
   editPair,
-}: Pick<ReviewModel, "d" | "ack" | "setAck" | "busy" | "setConfirm" | "setFocused" | "values" | "pairs" | "group" | "setGroup" | "dirty" | "setDirty" | "failure" | "changeValue" | "save" | "editPair"> & { d: DocumentRecord }) {
+}: Pick<ReviewModel, "d" | "ack" | "setAck" | "busy" | "setConfirm" | "setFocused" | "values" | "pairs" | "group" | "setGroup" | "dirty" | "setDirty" | "failure" | "changeValue" | "editPair"> & { d: DocumentRecord }) {
   return (
     <section className="panel review-editor">
       <div className="panel-header">
@@ -40,8 +37,8 @@ export function ReviewEditor({
               : "Kelompok harga dan pasangan"}
           </h2>
           <p>
-            Cocokkan nilai dengan bukti sumber. Simpan koreksi
-            sebelum mengonfirmasi data.
+            Cocokkan nilai dengan bukti sumber. Konfirmasi data
+            menyimpan perubahan dan menyetujui data untuk evaluasi.
           </p>
         </div>
       </div>
@@ -64,22 +61,14 @@ export function ReviewEditor({
                 onFocus={() => setFocused(key)}
                 onValueChange={(value) => changeValue(key, value)}
               />}
-              <div className="review-field-meta">
-                <small>
-                  Nilai awal:{" "}
-                  {key.startsWith("tkdn")
-                    ? pct(d.candidate![key])
-                    : money(d.candidate![key])}
-                </small>
-                {values[key] !==
+              {values[key] !==
                   (key.startsWith("tkdn")
                     ? toPercent(d.candidate![key])
                     : d.candidate![key]) && (
-                  <span className="badge info">
+                <div className="review-field-meta"><span className="badge info">
                     Dikoreksi
-                  </span>
+                  </span></div>
                 )}
-              </div>
             </div>
           ))}
         </div>
@@ -101,10 +90,6 @@ export function ReviewEditor({
                 <option key={g}>{g}</option>
               ))}
             </select>
-            <small>
-              Ringkasan total tidak digunakan untuk perbandingan harga
-              satuan.
-            </small>
           </div>
           {d.kind === "OFFER" && (
             <div className="table-wrap review-pairs" role="region" aria-label="Pasangan komponen harga" tabIndex={0}>
@@ -137,11 +122,6 @@ export function ReviewEditor({
                           · {pair.unit}
                         </small>
                         <small>{pair.source}</small>
-                        {!pair.matched && (
-                          <span className="badge warning">
-                            Periksa pasangan
-                          </span>
-                        )}
                       </td>
                       <td>
                         <input
@@ -194,41 +174,18 @@ export function ReviewEditor({
         </div>
       )}
       <div className="review-action">
-        <div className="review-save-state" role="status">
-          <strong>
-            {dirty
-              ? "Perubahan belum disimpan"
-              : d.status === "CONFIRMED"
-                ? "Data terkonfirmasi"
-                : "Siap diperiksa"}
-          </strong>
-          <small>
-            {dirty
-              ? "Simpan koreksi agar dapat dikonfirmasi."
-              : `Revisi ${d.revision} · ${d.status === "CONFIRMED" ? "Siap digunakan untuk evaluasi" : "Konfirmasi setelah nilai dan sumber sesuai"}`}
-          </small>
-        </div>
-        <button
-          className="btn"
-          disabled={!dirty || busy}
-          onClick={() => void save()}
-        >
-          <Save />
-          {busy ? "Menyimpan…" : "Simpan perubahan"}
-        </button>
         <button
           className="btn primary"
           disabled={
-            dirty ||
             busy ||
-            d.status === "CONFIRMED" ||
+            (d.status === "CONFIRMED" && !dirty) ||
             (d.warnings.length > 0 && !ack) ||
-            (!values && !d.selectedGroup)
+            (!values && !group)
           }
           onClick={() => setConfirm(true)}
         >
           <CheckCircle2 />
-          Konfirmasi data
+          {busy ? "Mengonfirmasi…" : "Konfirmasi data"}
         </button>
       </div>
     </section>

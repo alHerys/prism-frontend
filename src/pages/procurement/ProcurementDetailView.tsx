@@ -66,11 +66,11 @@ export function ProcurementDetailView({ state, setParams, tab, p, vendorOpen, se
         </>}
         {tab === "dokumen" && <>
           <div className="procurement-document-overview">
+            <UploadPanel procurementId={p.id} scope="procurement" />
             <section className="panel procurement-document-vendors">
               <div className="panel-header"><div><h2>Dokumen per vendor</h2><p>Pilih vendor untuk mengunggah Form A5 atau dokumen penawarannya.</p></div></div>
               {vendors.length ? <div className="procurement-vendor-grid">{vendors.map((vendor) => <VendorCard key={vendor.id} vendor={vendor} documents={docs.filter((document) => document.vendorId === vendor.id)} />)}</div> : <Empty title="Belum ada vendor">Kembali ke tahap identitas & vendor untuk menambahkan vendor.</Empty>}
             </section>
-            <UploadPanel procurementId={p.id} scope="procurement" />
           </div>
           {docs.some((document) => document.kind === "OE") && <DocumentTable documents={docs.filter((document) => document.kind === "OE")} title="Dokumen OE" />}
           <DocumentTable documents={docs.filter((document) => document.vendorId)} title="Daftar Dokumen Vendor" />

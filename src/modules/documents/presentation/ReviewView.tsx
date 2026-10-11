@@ -60,11 +60,13 @@ export function ReviewView({
       <header className="focus-head">
         <div className="review-header-context">
           <button
-            className="btn quiet review-back"
+            className="icon-button review-back"
+            aria-label="Kembali ke pengadaan"
+            title="Kembali ke pengadaan"
+            disabled={busy}
             onClick={() => (dirty ? setLeave(true) : back())}
           >
-            <ArrowLeft />
-            Kembali ke pengadaan
+            <ArrowLeft size={28} aria-hidden="true" />
           </button>
           <div className="review-heading">
             <h1>Periksa {kindLabel[d.kind]}</h1>
@@ -82,9 +84,6 @@ export function ReviewView({
             </span>
             <div>
               <strong>{d.name}</strong>
-              <p>
-                Revisi {d.revision} · {kindLabel[d.kind]}
-              </p>
             </div>
             <Status value={dirty ? "REVIEW_REQUIRED" : d.status} />
           </div>
@@ -102,7 +101,7 @@ export function ReviewView({
           {showSource && (
             <ReviewSource d={d} focused={focused} p={p} vendor={vendor} source={source} />
           )}
-          <ReviewEditor d={d} ack={ack} setAck={setAck} busy={busy} setConfirm={setConfirm} setFocused={setFocused} values={values} pairs={pairs} group={group} setGroup={setGroup} dirty={dirty} setDirty={setDirty} failure={failure} changeValue={changeValue} save={save} editPair={editPair} />
+          <ReviewEditor d={d} ack={ack} setAck={setAck} busy={busy} setConfirm={setConfirm} setFocused={setFocused} values={values} pairs={pairs} group={group} setGroup={setGroup} dirty={dirty} setDirty={setDirty} failure={failure} changeValue={changeValue} editPair={editPair} />
         </div>
       </main>
       <ReviewConfirmation busy={busy} confirm={confirm} setConfirm={setConfirm} confirmDocument={confirmDocument} />

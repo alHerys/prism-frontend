@@ -59,13 +59,14 @@ export function useReview() : ReviewModel {
     setDirty(true);
     setAck(false);
   }
+  const saveInput = () => ({ document: d!, values: values ? {
+    ...values, tkdn_barang: toRatio(values.tkdn_barang), tkdn_jasa: toRatio(values.tkdn_jasa),
+  } : undefined, group, pairs });
   async function save() {
     setFailure("");
     setBusy(true);
     try {
-      await service.saveReview({ document: d!, values: values ? {
-        ...values, tkdn_barang: toRatio(values.tkdn_barang), tkdn_jasa: toRatio(values.tkdn_jasa),
-      } : undefined, group, pairs });
+      await service.saveReview(saveInput());
       setDirty(false);
       toast(
         "Perubahan disimpan. Konfirmasi diperlukan untuk data yang berubah.",
@@ -84,10 +85,13 @@ export function useReview() : ReviewModel {
     setFailure("");
     setBusy(true);
     try {
-      await service.confirmReview(d!, ack);
+      const current = dirty ? await service.saveReview(saveInput()) : d!;
+      setDirty(false);
+      await service.confirmReview(current, ack);
       setConfirm(false);
       toast("Data terkonfirmasi dan siap dievaluasi.");
-      back();
+      // Let the unsaved-navigation guard observe the saved draft before leaving.
+      setTimeout(back, 0);
     } catch (e) {
       setFailure(e instanceof Error ? e.message : "Konfirmasi belum berhasil.");
       setConfirm(false);
