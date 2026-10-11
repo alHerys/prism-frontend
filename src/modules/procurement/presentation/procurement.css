@@ -1,8 +1,5 @@
 .procurement-list-page .procurement-list-panel { padding: 0; overflow: hidden; }
-.procurement-list-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 24px 26px 0; }
-.procurement-list-heading h2 { font-size: 19px; font-weight: 500; }
-.procurement-list-heading p { margin-top: 6px; font-size: 13px; color: var(--muted); }
-.procurement-list-count { display: flex; align-items: center; gap: 8px; font-size: 13px; white-space: nowrap; color: var(--muted); }
+.procurement-list-count { display: flex; align-items: center; gap: 8px; margin-left: auto; font-size: 13px; white-space: nowrap; color: var(--muted); }
 .procurement-data-table { min-width: 0; }
 .procurement-data-table .table-toolbar { display: flex; align-items: center; gap: 12px; margin: 0; padding: 22px 26px; }
 .procurement-data-table .table-toolbar .search { flex: 1; min-width: 0; max-width: 600px; border: 1px solid var(--border); border-radius: 50px; height: 44px; background: var(--shell, #f5f6f5); }
@@ -51,8 +48,7 @@
 .procurement-data-table .pagination-controls .btn { min-height: 34px; padding: 7px 11px; font-size: 11px; }
 .procurement-data-table .page-number { min-width: 28px; height: 28px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent, #155a37); border-radius: 50%; }
 @media (max-width: 639px) {
-  .procurement-list-heading { padding: 20px 20px 0; flex-wrap: wrap; gap: 12px; }
-  .procurement-list-count { font-size: 12px; }
+  .procurement-list-count { align-self: flex-end; font-size: 12px; }
   .procurement-data-table .table-toolbar { align-items: stretch; flex-direction: column; padding: 20px; }
   .procurement-data-table .table-toolbar .search { width: 100%; max-width: none; flex: auto; }
   .procurement-data-table .table-pagination { padding: 18px 20px; gap: 14px; }

@@ -63,6 +63,15 @@ test('simplified sidebar and dashboard retain real continuation links', async ({
 
 test('table header sorting and filter menu work with existing procurement data', async ({ page }, info) => {
   await page.goto('/pengadaan');
+  await expect(page.getByRole('heading', { name: 'Daftar pengadaan', exact: true })).toHaveCount(0);
+  await expect(page.getByText('Cari pengadaan dan lanjutkan pemeriksaan dari ruang kerja terkait.', { exact: true })).toHaveCount(0);
+  const panel = page.getByRole('region', { name: 'Daftar pengadaan', exact: true });
+  await expect(panel.locator('.procurement-list-count')).toHaveText('3 pengadaan');
+  const searchBounds = await panel.getByRole('textbox', { name: 'Cari pengadaan', exact: true }).boundingBox();
+  const panelBounds = await panel.boundingBox();
+  expect(searchBounds!.y - panelBounds!.y).toBeLessThan(30);
+  await page.evaluate(() => document.fonts.ready);
+  await page.screenshot({ path: info.outputPath('procurement-search-first.png'), animations: 'disabled' });
   const table = page.locator('.procurement-table');
   await expect(table.locator('tbody tr')).toHaveCount(3);
   await expect(page.locator('.table-toolbar').getByRole('combobox')).toHaveCount(0);

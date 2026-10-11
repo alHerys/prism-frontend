@@ -8,6 +8,7 @@ import { FunnelSimple } from "@phosphor-icons/react/dist/csr/FunnelSimple";
 import { X } from "@phosphor-icons/react/dist/csr/X";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useId, useLayoutEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import { Link } from "react-router";
 import { SelectField } from "../../../shared/ui/select-field";
 import { EmptyState as Empty } from "../../../shared/ui/empty-state";
@@ -99,7 +100,8 @@ export function ProcurementTableView({
   pages,
   current,
   shown,
-}: ProcurementTableModel) {
+  children,
+}: ProcurementTableModel & { children?: ReactNode }) {
   const sort = (key: ProcurementSortKey) => {
     if (key === sortKey) setAscending((value) => !value);
     else { setSortKey(key); setAscending(true); }
@@ -120,6 +122,7 @@ export function ProcurementTableView({
             }}
           />
         </div>
+        {children}
       </div>
       <div className="table-wrap">
         <table className="table procurement-table">

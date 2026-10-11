@@ -19,16 +19,14 @@ export function ProcurementListView({ state, setParams, open, setOpen, search, s
           Tambah pengadaan
         </Button>
       </HeaderAction>
-      <section className="panel procurement-list-panel" aria-labelledby="procurement-list-title">
-        <div className="procurement-list-heading">
-          <div><h2 id="procurement-list-title">Daftar pengadaan</h2><p>Cari pengadaan dan lanjutkan pemeriksaan dari ruang kerja terkait.</p></div>
-          <span className="procurement-list-count"><Folder size={18} aria-hidden="true" /> {state.procurements.length} pengadaan</span>
-        </div>
+      <section className="panel procurement-list-panel" aria-label="Daftar pengadaan">
         <ProcurementTable
           items={state.procurements}
           search={search}
           onSearchChange={setSearch}
-        />
+        >
+          <span className="procurement-list-count"><Folder size={18} aria-hidden="true" /> {state.procurements.length} pengadaan</span>
+        </ProcurementTable>
       </section>
       <Modal
         open={open}
