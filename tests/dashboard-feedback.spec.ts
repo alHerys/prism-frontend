@@ -13,18 +13,19 @@ test('requested composition and honest metric states fit desktop and breakpoint 
   await expect(completed.getByRole('link')).toHaveCount(0);
   const metric = page.locator('.dashboard-metric-featured');
   await expect(metric.locator('dd')).toHaveText('3');
-  await expect(metric).toContainText('dibuat bulan ini');
-  await expect(metric).toContainText('bulan lalu (WIB)');
+  await expect(page.locator('.dashboard-metric-trend > span:last-child')).toHaveText(['dari bulan lalu', 'dari bulan lalu']);
+  await expect(page.locator('.dashboard-trend-change svg')).toHaveCount(0);
+  await expect(metric.locator('.dashboard-metric-trend')).toHaveAttribute('title', /pengadaan dibuat bulan ini.*dibanding bulan lalu \(WIB\)/);
   await expect(page.locator('.dashboard-grid > section').first()).toHaveClass(/dashboard-activity/);
   await expect(page.locator('#page-header-actions > a')).toHaveCount(1);
-  for (const width of [1256,1538,1024,1023,640,639,390]) {
+  for (const width of [1256,1538,1024,1023,985,640,639,390]) {
     await page.setViewportSize({ width, height: 842 });
     const activity = await page.locator('.dashboard-activity').boundingBox();
     const continueCard = await page.locator('.dashboard-continue').boundingBox();
     if (width >= 640) expect(activity!.x).toBeLessThan(continueCard!.x);
     else expect(activity!.y).toBeLessThan(continueCard!.y);
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    if (width === 1256 || width === 390) await page.screenshot({ path: info.outputPath(`dashboard-${width}.png`), fullPage: true, animations: 'disabled' });
+    if (width === 1256 || width === 985 || width === 390) await page.screenshot({ path: info.outputPath(`dashboard-${width}.png`), fullPage: true, animations: 'disabled' });
   }
   await page.getByRole('button', { name: 'Buka navigasi', exact: true }).click();
   const drawer = page.getByRole('dialog', { name: 'Navigasi ruang kerja' });

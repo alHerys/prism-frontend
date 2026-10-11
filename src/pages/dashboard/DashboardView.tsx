@@ -1,8 +1,5 @@
 import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
-import { TrendUp } from "@phosphor-icons/react/dist/csr/TrendUp";
-import { TrendDown } from "@phosphor-icons/react/dist/csr/TrendDown";
-import { Minus } from "@phosphor-icons/react/dist/csr/Minus";
 import { ClockCounterClockwise } from "@phosphor-icons/react/dist/csr/ClockCounterClockwise";
 import { Folder } from "@phosphor-icons/react/dist/csr/Folder";
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
@@ -37,9 +34,8 @@ export function DashboardView({ state, pending }: DashboardModel) {
             {metric.trend ? <p className="dashboard-metric-trend" title={describeMonthlyAdditions(metric.trend, metric.activity)}>
               <span className="dashboard-trend-change" aria-label={`Selisih ${metric.trend.change} ${metric.activity} dibanding bulan lalu`}>
                 {metric.trend.change > 0 ? `+${metric.trend.change}` : metric.trend.change}
-                {metric.trend.change > 0 ? <TrendUp size={13} aria-hidden="true" /> : metric.trend.change < 0 ? <TrendDown size={13} aria-hidden="true" /> : <Minus size={13} aria-hidden="true" />}
               </span>
-              <span>{metric.trend.current} {metric.activity === "pengadaan dibuat" ? "dibuat" : "disimpan"} bulan ini<br />vs {metric.trend.previous} bulan lalu (WIB)</span>
+              <span>dari bulan lalu</span>
             </p> : <p>{metric.description}</p>}
           </div>
         ))}
