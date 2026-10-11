@@ -1,10 +1,8 @@
-.dashboard-overview { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 0 0 20px; }
+.dashboard-overview { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 0 0 20px; }
 .dashboard-metric { position: relative; min-height: 158px; padding: 22px 22px 19px; border-radius: 20px; background: var(--surface); }
 .dashboard-metric dt { padding-right: 34px; color: var(--ink); font-size: 16px; font-weight: 500; }
 .dashboard-metric dd { margin: 14px 0 8px; color: var(--ink); font-size: 48px; font-weight: 600; line-height: 1; letter-spacing: -0.035em; font-variant-numeric: tabular-nums; }
 .dashboard-metric p { font-size: 12px; line-height: 1.5; color: var(--muted); }
-.dashboard-metric-trend { display: flex; align-items: center; gap: 8px; }
-.dashboard-trend-change { display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0; padding: 2px 4px; border: 1px solid currentColor; border-radius: 5px; font-size: 11px; font-variant-numeric: tabular-nums; }
 .dashboard-metric-open { position: absolute; top: 18px; right: 18px; width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 50%; color: var(--ink); }
 .dashboard-metric-open:hover { background: var(--bg); text-decoration: none; }
 .dashboard-metric-featured { background: linear-gradient(125deg, var(--accent-bright), var(--accent-deep)); }
@@ -38,9 +36,8 @@
 @media (max-width: 1199px) {
   .dashboard-page .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-@media (max-width: 1023px) { .dashboard-overview { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 639px) {
-  .dashboard-overview { gap: 12px; margin-bottom: 16px; }
+  .dashboard-overview { grid-template-columns: 1fr; gap: 12px; margin-bottom: 16px; }
   .dashboard-metric { min-height: 151px; padding: 18px 15px; }
   .dashboard-metric dt { font-size: 13px; padding-right: 32px; }
   .dashboard-metric dd { font-size: 39px; margin-top: 19px; }

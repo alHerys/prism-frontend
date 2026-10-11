@@ -7,17 +7,14 @@ import { Link } from "react-router";
 import { useWorkspaceTime } from "../../shared/ui/workspace-time";
 import { EmptyState as Empty } from "../../shared/ui/empty-state";
 import type { DashboardModel } from "./view-models";
-import { dashboardStatistics, describeMonthlyAdditions } from "./statistics";
 import "./dashboard.css";
 
 export function DashboardView({ state, pending }: DashboardModel) {
   const dateTime = useWorkspaceTime();
-  const statistics = dashboardStatistics(state, new Date());
   const metrics = [
-    { label: "Pengadaan aktif", value: state.procurements.length, trend: statistics.procurements, activity: "pengadaan dibuat", to: "/pengadaan" },
-    { label: "Pengadaan Selesai", value: "—", description: "Status penyelesaian belum dicatat" },
-    { label: "Perlu ditinjau", value: pending.length, description: `${pending.length} dari ${state.documents.length} dokumen menunggu konfirmasi`, to: "/pengadaan" },
-    { label: "Evaluasi tersimpan", value: state.snapshots.length, trend: statistics.evaluations, activity: "evaluasi disimpan", to: "/riwayat" },
+    { label: "Pengadaan aktif", value: state.procurements.length, description: "Pengadaan di ruang kerja", to: "/pengadaan" },
+    { label: "Perlu ditinjau", value: pending.length, description: "Dokumen menunggu konfirmasi", to: "/pengadaan" },
+    { label: "Evaluasi tersimpan", value: state.snapshots.length, description: "Hasil evaluasi tersimpan", to: "/riwayat" },
   ];
   return (
     <div className="page dashboard-page">
@@ -27,12 +24,7 @@ export function DashboardView({ state, pending }: DashboardModel) {
             <dt>{metric.label}</dt>
             {metric.to && <Link className="dashboard-metric-open" to={metric.to} aria-label={`Lihat ${metric.label.toLocaleLowerCase("id")}`}><ArrowUpRight size={20} aria-hidden="true" /></Link>}
             <dd>{metric.value}</dd>
-            {metric.trend ? <p className="dashboard-metric-trend" title={describeMonthlyAdditions(metric.trend, metric.activity)}>
-              <span className="dashboard-trend-change" aria-label={`Selisih ${metric.trend.change} ${metric.activity} dibanding bulan lalu`}>
-                {metric.trend.change > 0 ? `+${metric.trend.change}` : metric.trend.change}
-              </span>
-              <span>dari bulan lalu</span>
-            </p> : <p>{metric.description}</p>}
+            <p>{metric.description}</p>
           </div>
         ))}
       </dl>

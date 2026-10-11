@@ -7,23 +7,24 @@ test('requested composition and honest metric states fit desktop and breakpoint 
   await page.evaluate(() => document.fonts.ready);
   await expect(page.locator('.dashboard-review,.sidebar-continuation')).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Buka riwayat', exact: true })).toHaveCount(0);
-  const completed = page.locator('.dashboard-metric').filter({ hasText: 'Pengadaan Selesai' });
-  await expect(completed.locator('dd')).toHaveText('—');
-  await expect(completed).toContainText('Status penyelesaian belum dicatat');
-  await expect(completed.getByRole('link')).toHaveCount(0);
+  await expect(page.locator('.dashboard-metric')).toHaveCount(3);
+  await expect(page.getByText('Pengadaan Selesai', { exact: true })).toHaveCount(0);
   const metric = page.locator('.dashboard-metric-featured');
   await expect(metric.locator('dd')).toHaveText('3');
-  await expect(page.locator('.dashboard-metric-trend > span:last-child')).toHaveText(['dari bulan lalu', 'dari bulan lalu']);
-  await expect(page.locator('.dashboard-trend-change svg')).toHaveCount(0);
-  await expect(metric.locator('.dashboard-metric-trend')).toHaveAttribute('title', /pengadaan dibuat bulan ini.*dibanding bulan lalu \(WIB\)/);
+  await expect(page.locator('.dashboard-metric > p')).toHaveText(['Pengadaan di ruang kerja', 'Dokumen menunggu konfirmasi', 'Hasil evaluasi tersimpan']);
+  await expect(page.locator('.dashboard-metric-trend,.dashboard-trend-change')).toHaveCount(0);
   await expect(page.locator('.dashboard-grid > section').first()).toHaveClass(/dashboard-activity/);
   await expect(page.locator('#page-header-actions > a')).toHaveCount(0);
-  for (const width of [1256,1538,1024,1023,985,640,639,390]) {
+  for (const width of [1256,1538,1071,1024,1023,985,640,639,390]) {
     await page.setViewportSize({ width, height: 842 });
     const activity = await page.locator('.dashboard-activity').boundingBox();
     const continueCard = await page.locator('.dashboard-continue').boundingBox();
     if (width >= 640) expect(activity!.x).toBeLessThan(continueCard!.x);
     else expect(activity!.y).toBeLessThan(continueCard!.y);
+    const cards = await page.locator('.dashboard-metric').evaluateAll(elements => elements.map(e => { const r = e.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width }; }));
+    expect(Math.abs(cards[0].width - cards[2].width)).toBeLessThan(1);
+    if (width >= 640) { expect(cards[0].y).toBe(cards[2].y); expect(cards[0].x).toBeLessThan(cards[2].x); }
+    else { expect(cards[0].x).toBe(cards[2].x); expect(cards[0].y).toBeLessThan(cards[2].y); }
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     if (width === 1256 || width === 985 || width === 390) await page.screenshot({ path: info.outputPath(`dashboard-${width}.png`), fullPage: true, animations: 'disabled' });
   }
@@ -34,11 +35,10 @@ test('requested composition and honest metric states fit desktop and breakpoint 
   await expect(page.getByRole('heading', { name: 'Bantuan', exact: true })).toBeVisible();
 });
 
-test('adding a real procurement increments current-month volume and preserves drilldowns', async ({ page }) => {
+test('adding a real procurement increments the workspace count and preserves drilldowns', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
   const metric = page.locator('.dashboard-metric-featured');
-  const previousChange = Number(await metric.locator('.dashboard-trend-change').innerText());
   await page.getByRole('region', { name: 'Lanjutkan pengadaan', exact: true }).getByRole('link', { name: 'Tambah pengadaan', exact: true }).click();
   await page.getByLabel('Nama pengadaan', { exact: true }).fill('Pengadaan statistik nyata');
   await page.getByLabel('Nomor pengadaan', { exact: true }).fill('STAT-2026-001');
@@ -47,7 +47,6 @@ test('adding a real procurement increments current-month volume and preserves dr
   await expect(page.getByRole('heading', { name: 'Pengadaan statistik nyata', exact: true })).toBeVisible();
   await page.keyboard.press('g'); await page.keyboard.press('d');
   await expect(metric.locator('dd')).toHaveText('4');
-  expect(Number(await metric.locator('.dashboard-trend-change').innerText())).toBe(previousChange + 1);
   await metric.getByRole('link', { name: 'Lihat pengadaan aktif', exact: true }).click();
   await expect(page.getByRole('link', { name: 'Pengadaan statistik nyata', exact: true })).toBeVisible();
 });
