@@ -95,7 +95,7 @@ test('desktop shell, sidebar, keyboard dialog and unsaved correction protection'
   expect(confirmationRect).not.toBeNull();
   expect(confirmationRect!.y + confirmationRect!.height).toBeLessThanOrEqual(page.viewportSize()!.height);
   await page.getByLabel('TKDN jasa (%)').fill('31');
-  await expect(page.getByRole('button', { name: 'Konfirmasi data', exact: true })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Konfirmasi data', exact: true })).toBeEnabled();
   await click(page, 'Kembali ke pengadaan');
   const dialog = page.getByRole('dialog', { name: 'Perubahan belum disimpan' });
   await expect(dialog).toBeVisible();
@@ -145,7 +145,6 @@ test('confirmed HEA and explicit price sources preserve results and XLSX traceab
   await page.getByRole('link', { name: 'Periksa dokumen' }).nth(1).click();
   await expect(page.getByRole('button', { name: 'Konfirmasi data', exact: true })).toBeDisabled();
   await page.getByLabel('TKDN jasa (%)').fill('35');
-  await click(page, 'Simpan perubahan');
   await page.getByRole('checkbox').check();
   await confirm(page);
   await page.getByLabel('Preferensi barang (%)').fill('15');
@@ -168,7 +167,6 @@ test('confirmed HEA and explicit price sources preserve results and XLSX traceab
     await page.getByRole('link', { name: 'Periksa sumber dan kelompok harga' }).click();
     await expect(page.getByRole('button', { name: 'Konfirmasi data', exact: true })).toBeDisabled();
     await page.getByLabel('Kelompok harga yang digunakan').selectOption('Harga satuan material dan jasa');
-    await click(page, 'Simpan perubahan');
     const warning = page.getByRole('checkbox', { name: /Saya telah memeriksa/ });
     if (await warning.count()) await warning.check();
     await confirm(page);

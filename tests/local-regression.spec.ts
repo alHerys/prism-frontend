@@ -35,7 +35,6 @@ async function upload(page: Page, name: string) {
 }
 async function group(page: Page) {
   await page.getByLabel('Kelompok harga yang digunakan').selectOption('Harga satuan material dan jasa');
-  await button(page, 'Simpan perubahan').click();
   await confirm(page);
 }
 async function exportRows(page: Page, info: TestInfo, name: string) {
@@ -91,7 +90,6 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   await expect(page.getByLabel('TKDN jasa (%)')).toHaveValue('30');
   await expect(button(page, 'Konfirmasi data')).toBeDisabled();
   await page.getByLabel('TKDN jasa (%)').fill('35');
-  await button(page, 'Simpan perubahan').click();
   await confirm(page);
   await page.locator('.review-back').click();
   await page.locator('.procurement-path').getByRole('button', {name: /Evaluasi/}).click();

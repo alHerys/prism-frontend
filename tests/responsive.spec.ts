@@ -51,14 +51,13 @@ test('review editing and dirty-exit protection remain usable above the action ba
     const action = document.querySelector('.review-action')!.getBoundingClientRect();
     return bounds.top >= 0 && bounds.bottom <= action.top;
   })).toBe(true);
-  await expect(page.getByRole('button', { name: 'Konfirmasi data', exact: true })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Konfirmasi data', exact: true })).toBeEnabled();
   await page.getByRole('button', { name: 'Kembali ke pengadaan', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: 'Perubahan belum disimpan' });
   await expect(dialog).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(dialog).toHaveCount(0);
   await expect(input).toHaveValue('31');
-  await page.getByRole('button', { name: 'Simpan perubahan', exact: true }).click();
   await expect(page.getByText('Dikoreksi', { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Konfirmasi data', exact: true })).toBeEnabled();
   const notificationClose = page.getByRole('button', { name: 'Tutup pemberitahuan', exact: true });
