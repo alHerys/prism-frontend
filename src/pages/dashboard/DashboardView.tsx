@@ -6,6 +6,7 @@ import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { Link } from "react-router";
 import { useWorkspaceTime } from "../../shared/ui/workspace-time";
 import { EmptyState as Empty } from "../../shared/ui/empty-state";
+import { ActivityIcon } from "../../shared/ui/activity-icon";
 import type { DashboardModel } from "./view-models";
 import "./dashboard.css";
 
@@ -33,7 +34,10 @@ export function DashboardView({ state, pending }: DashboardModel) {
           <div className="panel-header"><h2 id="dashboard-activity-title">Aktivitas terbaru</h2><ClockCounterClockwise size={21} className="muted" /></div>
           {state.events.length ? (
             <ol>{state.events.slice(0, 4).map((event) => (
-              <li key={event.id}><Link to={event.procurementId ? `/pengadaan/${event.procurementId}?tab=riwayat` : "/riwayat"}>{event.summary}</Link><small>{dateTime(event.createdAt)}</small></li>
+              <li key={event.id}>
+                <span className="dashboard-activity-icon"><ActivityIcon event={event} size={20} /></span>
+                <div><Link to={event.procurementId ? `/pengadaan/${event.procurementId}?tab=riwayat` : "/riwayat"}>{event.summary}</Link><time dateTime={event.createdAt}>{dateTime(event.createdAt)}</time></div>
+              </li>
             ))}</ol>
           ) : <Empty title="Belum ada aktivitas">Aktivitas dicatat setelah Anda mulai bekerja.</Empty>}
           <Link className="dashboard-more" to="/riwayat">Lihat riwayat <ArrowRight size={15} /></Link>

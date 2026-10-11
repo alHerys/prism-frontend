@@ -15,6 +15,10 @@ test('requested composition and honest metric states fit desktop and breakpoint 
   await expect(page.locator('.dashboard-metric-trend,.dashboard-trend-change')).toHaveCount(0);
   await expect(page.locator('.dashboard-grid > section').first()).toHaveClass(/dashboard-activity/);
   await expect(page.locator('#page-header-actions > a')).toHaveCount(0);
+  await expect(page.locator('.dashboard-activity li')).toHaveCount(4);
+  await expect(page.locator('.dashboard-activity time[datetime]')).toHaveCount(4);
+  const icons = await page.locator('.dashboard-activity-icon svg').evaluateAll(elements => elements.map(e => e.innerHTML));
+  expect(new Set(icons).size).toBe(4);
   for (const width of [1256,1538,1071,1024,1023,985,640,639,390]) {
     await page.setViewportSize({ width, height: 842 });
     const activity = await page.locator('.dashboard-activity').boundingBox();
@@ -47,6 +51,10 @@ test('adding a real procurement increments the workspace count and preserves dri
   await expect(page.getByRole('heading', { name: 'Pengadaan statistik nyata', exact: true })).toBeVisible();
   await page.keyboard.press('g'); await page.keyboard.press('d');
   await expect(metric.locator('dd')).toHaveText('4');
+  await page.locator('.dashboard-activity li').first().getByRole('link').click();
+  await expect(page.getByRole('heading', { name: 'Pengadaan statistik nyata', exact: true })).toBeVisible();
+  await expect(page).toHaveURL(/\?tab=riwayat$/);
+  await page.keyboard.press('g'); await page.keyboard.press('d');
   await metric.getByRole('link', { name: 'Lihat pengadaan aktif', exact: true }).click();
   await expect(page.getByRole('link', { name: 'Pengadaan statistik nyata', exact: true })).toBeVisible();
 });

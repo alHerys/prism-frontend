@@ -40,6 +40,7 @@ test('every route follows all four accents while semantic badges remain fixed', 
     const gradient = await page.locator('.dashboard-metric-featured').evaluate(e => getComputedStyle(e).backgroundImage);
     expect(gradient).toContain(tokens.bright); expect(gradient).toContain(tokens.deep);
     await expect(page.locator('.dashboard-procurement-icon').first()).toHaveCSS('background-color', tokens.soft);
+    await expect(page.locator('.dashboard-activity-icon').first()).toHaveCSS('background-color', tokens.soft);
     await expect(page.locator('.dashboard-metric-featured .dashboard-metric-open')).toHaveCSS('color', tokens.deep);
     await page.screenshot({ path: info.outputPath(`${accent.toLowerCase()}-dashboard.png`), fullPage: true, animations: 'disabled' });
     await ready(page, '/pengadaan');
