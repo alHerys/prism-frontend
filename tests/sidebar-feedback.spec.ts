@@ -10,6 +10,10 @@ test('edge toggle and branded footer remain reachable at breakpoint and short-he
     const mobile = width < 1024;
     if (mobile) await page.getByRole('button', { name: 'Buka navigasi', exact: true }).click();
     const navigation = mobile ? page.getByRole('dialog', { name: 'Navigasi ruang kerja' }) : page.locator('.sidebar');
+    await expect(navigation.getByText('UMUM', { exact: true })).toHaveCount(0);
+    await expect(navigation.locator('.nav-group-divider')).toHaveCSS('border-top-width', '1px');
+    const footerBorder = await navigation.locator('.sidebar-organization').evaluate(e => getComputedStyle(e).borderTopColor);
+    await expect(navigation.locator('.nav-group-divider')).toHaveCSS('border-top-color', footerBorder);
     if (mobile) {
       const close = navigation.getByRole('button', { name: 'Tutup navigasi', exact: true });
       const bounds = await navigation.boundingBox(); const button = await close.boundingBox();
@@ -39,6 +43,7 @@ test('edge toggle and branded footer remain reachable at breakpoint and short-he
       await toggle.focus(); await page.keyboard.press('Enter');
       const expand = page.getByRole('button', { name: 'Perluas navigasi', exact: true });
       await expect(expand).toBeFocused(); await expect(expand).toHaveAttribute('aria-expanded', 'false');
+      await expect(navigation.locator('.nav-group-divider')).toBeVisible();
       await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       // Let the existing shell width transition finish before capturing its endpoint.
       await expect.poll(() => page.locator('.workspace').evaluate(e => {

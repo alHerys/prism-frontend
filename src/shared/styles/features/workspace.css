@@ -1,10 +1,11 @@
 .general-navigation { margin-top: 28px; }
 .history-date-basis { font-size: 12px; line-height: 1.6; margin-bottom: 18px; max-width: 75ch; }
-.nav-group-label { padding: 0 28px; margin: 0 0 12px; font-size: 10px; font-weight: 500; color: var(--muted); letter-spacing: .025em; }
+.nav-group-divider { border-top: 1px solid var(--border); margin: 0 18px 12px; }
 .nav-logout { display: flex; width: 100%; min-height: 42px; align-items: center; gap: 14px; padding: 9px 28px; border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 15px; text-align: left; }
 .nav-logout:hover { background: var(--accent-soft); }
 .nav-collapsed .general-navigation { margin-top: 28px; }
-.nav-collapsed .nav-group-label,.nav-collapsed .nav-logout > span { display: none; }
+.nav-collapsed .nav-group-divider { margin-inline: 10px; }
+.nav-collapsed .nav-logout > span { display: none; }
 .nav-collapsed .nav-logout { padding: 13px; justify-content: center; }
 .workspace-profile { color: var(--ink); max-width: 260px; min-width: 0; }
 .workspace-profile:hover { text-decoration: none; }

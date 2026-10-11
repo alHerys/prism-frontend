@@ -43,7 +43,7 @@ function subscribeViewport(listener: () => void) {
 }
 function GeneralNavigation({ onNavigate, collapsed = false, onLogout }: { onNavigate?: () => void; collapsed?: boolean; onLogout: (element: HTMLElement) => void }) {
   return <nav className="nav general-navigation" aria-label="Navigasi umum">
-    <p className="nav-group-label">UMUM</p>
+    <div className="nav-group-divider" aria-hidden="true" />
     {generalLinks.map(([url,label,Icon]) => {
       const link = <NavLink to={url} aria-label={label} onClick={onNavigate}>{({ isActive }) => <><Icon size={21} weight={isActive ? "fill" : "regular"} aria-hidden="true" /><span>{label}</span></>}</NavLink>;
       return <div key={url} className="nav-entry">{collapsed ? <Hint label={label}>{link}</Hint> : link}</div>;
