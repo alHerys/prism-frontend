@@ -1,5 +1,32 @@
 import { test, expect } from '@playwright/test';
 
+test('history summary sticks beside activity, returns on upward scroll and stays readable on short screens', async ({ page }, info) => {
+  await page.goto('/riwayat');
+  const summary = page.getByRole('complementary', { name: 'Ringkasan aktivitas terfilter', exact: true });
+  await expect(summary).toBeVisible();
+  const initial = await summary.boundingBox();
+  if (info.project.use.viewport!.width >= 1024) {
+    await page.evaluate(y => window.scrollTo(0, y), initial!.y + 150);
+    await expect.poll(async () => (await summary.boundingBox())!.y).toBe(20);
+    await page.screenshot({ path: info.outputPath('history-summary-sticky.png'), animations: 'disabled' });
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect.poll(async () => Math.abs((await summary.boundingBox())!.y - initial!.y)).toBeLessThan(1);
+    await page.setViewportSize({ width: info.project.use.viewport!.width, height: 320 });
+    await summary.scrollIntoViewIfNeeded();
+    expect((await summary.boundingBox())!.height).toBeLessThanOrEqual(280);
+    await summary.locator('.history-context p').scrollIntoViewIfNeeded();
+    await expect(summary.locator('.history-context p')).toBeInViewport();
+  } else {
+    await expect(summary).toHaveCSS('position', 'static');
+    await summary.scrollIntoViewIfNeeded();
+    await expect(summary.locator('.history-context p')).toBeInViewport();
+  }
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.getByRole('textbox', { name: 'Cari aktivitas atau hasil', exact: true }).fill('Estimasi Pengecatan');
+  await expect(summary.locator('dd').first()).toHaveText('1');
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
 test.beforeEach(async ({ page }) => {
   await page.clock.setFixedTime(new Date('2026-10-02T02:00:00Z'));
 });

@@ -139,6 +139,9 @@
 .bank-estimate-summary li { padding: 14px 0; display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--border); font-size: 14px; }
 .bank-estimate-summary li span { color: var(--muted); }
 .history-workspace { display: grid; grid-template-columns: minmax(0,2fr) minmax(260px,1fr); gap: 20px; align-items: start; }
+@media (min-width: 1024px) {
+  .bank-page .history-workspace > aside { position: sticky; top: 20px; max-height: calc(100dvh - 40px); overflow: auto; }
+}
 .history-timeline { padding: 0 24px 24px; }
 .history-day { margin: 0 0 24px; }
 .history-day:last-child { margin: 0; }
