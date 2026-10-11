@@ -6,7 +6,6 @@ import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { Link } from "react-router";
 import { useWorkspaceTime } from "../../shared/ui/workspace-time";
 import { EmptyState as Empty } from "../../shared/ui/empty-state";
-import { HeaderAction } from "../../shared/ui/header-action";
 import type { DashboardModel } from "./view-models";
 import { dashboardStatistics, describeMonthlyAdditions } from "./statistics";
 import "./dashboard.css";
@@ -22,9 +21,6 @@ export function DashboardView({ state, pending }: DashboardModel) {
   ];
   return (
     <div className="page dashboard-page">
-      <HeaderAction>
-        <Link className="btn primary" to="/pengadaan?baru=1"><Plus size={18} /> Tambah pengadaan</Link>
-      </HeaderAction>
       <dl className="dashboard-overview" aria-label="Ringkasan ruang kerja">
         {metrics.map((metric, index) => (
           <div key={metric.label} className={`dashboard-metric${index === 0 ? " dashboard-metric-featured" : ""}`}>

@@ -17,7 +17,7 @@ test('requested composition and honest metric states fit desktop and breakpoint 
   await expect(page.locator('.dashboard-trend-change svg')).toHaveCount(0);
   await expect(metric.locator('.dashboard-metric-trend')).toHaveAttribute('title', /pengadaan dibuat bulan ini.*dibanding bulan lalu \(WIB\)/);
   await expect(page.locator('.dashboard-grid > section').first()).toHaveClass(/dashboard-activity/);
-  await expect(page.locator('#page-header-actions > a')).toHaveCount(1);
+  await expect(page.locator('#page-header-actions > a')).toHaveCount(0);
   for (const width of [1256,1538,1024,1023,985,640,639,390]) {
     await page.setViewportSize({ width, height: 842 });
     const activity = await page.locator('.dashboard-activity').boundingBox();
@@ -39,7 +39,7 @@ test('adding a real procurement increments current-month volume and preserves dr
   await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
   const metric = page.locator('.dashboard-metric-featured');
   const previousChange = Number(await metric.locator('.dashboard-trend-change').innerText());
-  await page.locator('#page-header-actions').getByRole('link', { name: 'Tambah pengadaan', exact: true }).click();
+  await page.getByRole('region', { name: 'Lanjutkan pengadaan', exact: true }).getByRole('link', { name: 'Tambah pengadaan', exact: true }).click();
   await page.getByLabel('Nama pengadaan', { exact: true }).fill('Pengadaan statistik nyata');
   await page.getByLabel('Nomor pengadaan', { exact: true }).fill('STAT-2026-001');
   await page.getByLabel('Fungsi / unit kerja', { exact: true }).fill('Maintenance');
