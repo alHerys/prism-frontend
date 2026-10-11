@@ -5,11 +5,21 @@ test('edge toggle and branded footer remain reachable at breakpoint and short-he
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Dashboard', exact: true })).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
-  for (const [width, height] of [[1538,790],[1024,790],[1024,480],[1023,790],[640,790],[639,790],[390,844],[390,480]]) {
+  for (const [width, height] of [[1538,790],[1024,790],[1024,480],[1023,790],[985,842],[640,790],[639,790],[390,844],[390,480]]) {
     await page.setViewportSize({ width, height });
     const mobile = width < 1024;
     if (mobile) await page.getByRole('button', { name: 'Buka navigasi', exact: true }).click();
     const navigation = mobile ? page.getByRole('dialog', { name: 'Navigasi ruang kerja' }) : page.locator('.sidebar');
+    if (mobile) {
+      const close = navigation.getByRole('button', { name: 'Tutup navigasi', exact: true });
+      const bounds = await navigation.boundingBox(); const button = await close.boundingBox();
+      const logo = await navigation.locator('.brand').boundingBox();
+      expect(Math.abs(button!.x + button!.width / 2 - bounds!.x - bounds!.width)).toBeLessThan(1);
+      expect(Math.abs(button!.y + button!.height / 2 - logo!.y - logo!.height / 2)).toBeLessThan(1);
+      await expect(close).toHaveCSS('border-radius', '12px');
+      await expect(close).toHaveCSS('background-color', 'rgb(31, 79, 168)');
+      if (width === 985) await page.screenshot({ path: info.outputPath('drawer-985.png'), animations: 'disabled' });
+    }
     await expect(navigation.getByText('PT Pertamina Patra Niaga', { exact: true })).toBeVisible();
     await expect(navigation.getByText('Regional Kalimantan', { exact: true })).toBeVisible();
     await expect(navigation.locator(".sidebar-continuation")).toHaveCount(0);
@@ -42,6 +52,10 @@ test('edge toggle and branded footer remain reachable at breakpoint and short-he
       await page.keyboard.press('Enter'); await expect(toggle).toHaveAttribute('aria-expanded', 'true');
     } else {
       if (width === 390 && height === 844) await page.screenshot({ path: info.outputPath('sidebar-phone.png'), animations: 'disabled' });
+      await expect(navigation.getByRole('button', { name: 'Tutup navigasi', exact: true })).toBeInViewport();
+      await navigation.getByRole('button', { name: 'Tutup navigasi', exact: true }).click();
+      await expect(page.getByRole('button', { name: 'Buka navigasi', exact: true })).toBeFocused();
+      await page.getByRole('button', { name: 'Buka navigasi', exact: true }).click();
       await page.keyboard.press('Escape');
       await expect(page.getByRole('button', { name: 'Buka navigasi', exact: true })).toBeFocused();
     }

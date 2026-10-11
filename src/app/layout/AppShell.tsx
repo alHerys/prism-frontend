@@ -6,7 +6,6 @@ import { Folder } from "@phosphor-icons/react/dist/csr/Folder";
 import { List } from "@phosphor-icons/react/dist/csr/List";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
 import { SquaresFour } from "@phosphor-icons/react/dist/csr/SquaresFour";
-import { X } from "@phosphor-icons/react/dist/csr/X";
 import { Gear } from "@phosphor-icons/react/dist/csr/Gear";
 import { Question } from "@phosphor-icons/react/dist/csr/Question";
 import { SignOut } from "@phosphor-icons/react/dist/csr/SignOut";
@@ -143,10 +142,13 @@ export function AppShell() {
               }}>
                 <Dialog.Title className="sr-only">Navigasi ruang kerja</Dialog.Title>
                 <Dialog.Description className="sr-only">Pilih halaman PRISM. Tekan Escape untuk menutup navigasi.</Dialog.Description>
-                <div className="drawer-heading"><Brand onNavigate={closeNavigation} /><Dialog.Close asChild><button className="icon-button" aria-label="Tutup navigasi"><X size={20} /></button></Dialog.Close></div>
+                <div className="navigation-drawer-content">
+                <div className="drawer-heading"><Brand onNavigate={closeNavigation} /></div>
                 <Navigation onNavigate={closeNavigation} />
                 <GeneralNavigation onNavigate={closeNavigation} onLogout={openLogout} />
                 <SidebarFooter />
+                </div>
+                <Dialog.Close asChild><button className="sidebar-toggle drawer-close" aria-label="Tutup navigasi"><CaretLeft size={16} aria-hidden="true" /></button></Dialog.Close>
               </Dialog.Content>
             </Dialog.Portal>
           </Dialog.Root>}

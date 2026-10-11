@@ -129,10 +129,11 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--accent); flex-
 .empty svg { color: var(--muted); }
 .empty h3 { font-weight: 600; }
 .navigation-scrim { position: fixed; inset: 0; z-index: 60; background: #131a1533; }
-.navigation-drawer { position: fixed; inset: 0 auto 0 0; z-index: 61; width: min(290px, calc(100vw - 36px)); padding: 22px 0; border-radius: 0 26px 26px 0; background: var(--shell); display: flex; flex-direction: column; overflow-y: auto; outline: none; }
-.navigation-drawer .sidebar-foot { flex-shrink: 0; }
+.navigation-drawer { position: fixed; inset: 0 auto 0 0; z-index: 61; width: min(290px, calc(100vw - 36px)); padding: 0; border-radius: 0 26px 26px 0; background: var(--shell); display: flex; flex-direction: column; overflow: visible; outline: none; }
+.navigation-drawer-content { display: flex; flex-direction: column; height: 100%; padding: 22px 0; border-radius: inherit; overflow-y: auto; }
+.navigation-drawer-content > * { flex-shrink: 0; }
 .navigation-drawer .sidebar-brand-stripe { margin-bottom: -22px; }
-.drawer-heading { display: flex; align-items: center; justify-content: space-between; padding-right: 12px; }
+.drawer-heading { display: flex; align-items: center; justify-content: center; }
 .drawer-heading .brand { padding: 0 24px; }
 .drawer-heading .logo-full { width: 150px; }
 .navigation-drawer[data-state="open"] { animation: drawer-enter 450ms var(--ease-out); }
