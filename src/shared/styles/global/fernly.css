@@ -57,17 +57,12 @@ h3 { font-size: 15px; font-weight: 600; }
 .sidebar-organization span { display: block; }
 .sidebar-organization span + span { margin-top: 4px; }
 .sidebar-brand-stripe { height: 6px; margin: 18px -18px -18px; background: linear-gradient(to right, #086db5 0 50%, #aac237 50% 75%, #ea1e30 75% 100%); }
-.sidebar-continuation { display: flex; align-items: center; gap: 8px; margin-top: 18px; padding: 16px 12px; color: #f2f8f4; background: var(--accent-deep); border-radius: 20px; font-size: 12px; line-height: 1.5; }
-.sidebar-continuation:hover { color: white; background: var(--accent); text-decoration: none; }
-.sidebar-continuation span { flex: 1; }
 .nav-collapsed { --sidebar-width: 76px; }
 .nav-collapsed .sidebar { padding: 0; }
 .nav-collapsed .brand { padding: 0; }
 .nav-collapsed .brand .logo-symbol { width: 34px; height: 48px; margin: 0; }
 .nav-collapsed .sidebar-organization { display: none; }
 .nav-collapsed .sidebar-foot { display: block; margin-inline: 10px; }
-.nav-collapsed .sidebar-continuation { justify-content: center; padding: 14px; }
-.nav-collapsed .sidebar-continuation span, .nav-collapsed .sidebar-continuation > svg:last-child { display: none; }
 .nav-collapsed .sidebar-brand-stripe { margin-inline: -10px; }
 .nav-collapsed .nav { margin-top: 35px; }
 .nav-collapsed .nav a { padding: 13px; justify-content: center; }

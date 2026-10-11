@@ -8,7 +8,7 @@ import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass"
 import { SquaresFour } from "@phosphor-icons/react/dist/csr/SquaresFour";
 import { X } from "@phosphor-icons/react/dist/csr/X";
 import { Gear } from "@phosphor-icons/react/dist/csr/Gear";
-import { Lifebuoy } from "@phosphor-icons/react/dist/csr/Lifebuoy";
+import { Question } from "@phosphor-icons/react/dist/csr/Question";
 import { SignOut } from "@phosphor-icons/react/dist/csr/SignOut";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
@@ -28,7 +28,7 @@ const links = [
   ["/bank", "Bank Data OE", Database],
   ["/riwayat", "Riwayat & Statistik", ClockCounterClockwise],
 ] as const;
-const generalLinks = [["/pengaturan", "Pengaturan", Gear], ["/bantuan", "Bantuan", Lifebuoy]] as const;
+const generalLinks = [["/pengaturan", "Pengaturan", Gear], ["/bantuan", "Bantuan", Question]] as const;
 const descriptions: Record<string, string> = {
   "/": "Pantau pengadaan, pemeriksaan dokumen, dan pekerjaan yang perlu ditindaklanjuti.",
   "/pengadaan": "Kelola vendor, dokumen, dan hasil evaluasi dalam satu ruang kerja.",
@@ -75,10 +75,9 @@ function Brand({ onNavigate }: { onNavigate?: () => void }) {
     <img className="logo-symbol" src="/prism_shrink.svg" alt="PRISM" />
   </Link>;
 }
-function SidebarFooter({ pending, onNavigate }: { pending: number; onNavigate?: () => void }) {
+function SidebarFooter() {
   return <div className="sidebar-foot">
     <p className="sidebar-organization"><span>PT Pertamina Patra Niaga</span><span>Regional Kalimantan</span></p>
-    <Link to="/pengadaan" className="sidebar-continuation" onClick={onNavigate} aria-label={`${pending} dokumen perlu ditinjau`}><Folder size={18} aria-hidden="true" /><span>{pending} dokumen perlu ditinjau</span><CaretRight size={16} aria-hidden="true" /></Link>
     <div className="sidebar-brand-stripe" aria-hidden="true" />
   </div>;
 }
@@ -110,7 +109,6 @@ export function AppShell() {
   const active = [...links, ...generalLinks].find(([url]) => url === "/" ? location.pathname === url : location.pathname.startsWith(url));
   const title = procurement?.name || active?.[1] || "Halaman tidak ditemukan";
   const description = procurement ? `${procurement.number} · ${procurement.functionName}` : descriptions[active?.[0] || ""];
-  const pending = state.documents.filter(document => document.status !== "CONFIRMED").length;
   const content = <AppRoutes />;
   if (focus) return content;
   const closeNavigation = () => setMobileOpen(false);
@@ -125,7 +123,7 @@ export function AppShell() {
         <Brand />
         <Navigation collapsed={collapsed} />
         <GeneralNavigation collapsed={collapsed} onLogout={openLogout} />
-        <SidebarFooter pending={pending} />
+        <SidebarFooter />
         </div>
         <Hint label={collapsed ? "Perluas navigasi" : "Ringkas navigasi"}>
           <button className="sidebar-toggle" onClick={() => setCollapsed(value => !value)} aria-label={collapsed ? "Perluas navigasi" : "Ringkas navigasi"} aria-expanded={!collapsed}>
@@ -148,7 +146,7 @@ export function AppShell() {
                 <div className="drawer-heading"><Brand onNavigate={closeNavigation} /><Dialog.Close asChild><button className="icon-button" aria-label="Tutup navigasi"><X size={20} /></button></Dialog.Close></div>
                 <Navigation onNavigate={closeNavigation} />
                 <GeneralNavigation onNavigate={closeNavigation} onLogout={openLogout} />
-                <SidebarFooter pending={pending} onNavigate={closeNavigation} />
+                <SidebarFooter />
               </Dialog.Content>
             </Dialog.Portal>
           </Dialog.Root>}
