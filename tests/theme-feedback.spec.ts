@@ -20,8 +20,8 @@ test('Ocean defaults without replacing an explicitly saved Forest selection', as
   await ready(page, '/');
   if (info.project.use.viewport!.width < 1024) await page.getByRole('button', { name: 'Buka navigasi', exact: true }).click();
   const link = page.getByRole('navigation', { name: 'Navigasi utama', exact: true }).getByRole('link', { name: 'Pengadaan', exact: true });
-  // Compare the actual drawn path with the existing Folder footer icon, not a class name.
-  expect(await link.locator('svg path').getAttribute('d')).toBe(await page.locator('.sidebar-continuation svg path').first().getAttribute('d'));
+  // Compare the actual drawn path with the existing Folder dashboard icon, not a class name.
+  expect(await link.locator('svg path').getAttribute('d')).toBe(await page.locator('.dashboard-procurement-icon svg path').first().getAttribute('d'));
   await link.click(); await expect(page).toHaveURL(/\/pengadaan$/);
 });
 test('every route follows all four accents while semantic badges remain fixed', async ({ page }, info) => {

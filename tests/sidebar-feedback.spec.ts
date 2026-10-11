@@ -12,10 +12,9 @@ test('edge toggle and branded footer remain reachable at breakpoint and short-he
     const navigation = mobile ? page.getByRole('dialog', { name: 'Navigasi ruang kerja' }) : page.locator('.sidebar');
     await expect(navigation.getByText('PT Pertamina Patra Niaga', { exact: true })).toBeVisible();
     await expect(navigation.getByText('Regional Kalimantan', { exact: true })).toBeVisible();
-    const continuation = navigation.getByRole('link', { name: '4 dokumen perlu ditinjau', exact: true });
-    await continuation.scrollIntoViewIfNeeded();
-    await expect(continuation).toBeInViewport();
+    await expect(navigation.locator(".sidebar-continuation")).toHaveCount(0);
     const stripe = navigation.locator('.sidebar-brand-stripe');
+    await stripe.scrollIntoViewIfNeeded();
     await expect(stripe).toBeInViewport();
     const colors = await stripe.evaluate(e => getComputedStyle(e).backgroundImage);
     expect(colors).toContain('rgb(8, 109, 181)'); expect(colors).toContain('rgb(170, 194, 55)'); expect(colors).toContain('rgb(234, 30, 48)');
@@ -49,6 +48,6 @@ test('edge toggle and branded footer remain reachable at breakpoint and short-he
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   }
   await page.setViewportSize({ width: 1538, height: 790 });
-  await page.locator('.sidebar-continuation').click();
+  await page.getByRole('navigation', { name: 'Navigasi utama', exact: true }).getByRole('link', { name: 'Pengadaan', exact: true }).click();
   await expect(page).toHaveURL(/\/pengadaan$/);
 });

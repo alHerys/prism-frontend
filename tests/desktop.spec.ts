@@ -33,7 +33,7 @@ async function capture(page: Page, name: string) {
   await expect(page.getByText('Menyiapkan ruang kerja', { exact: true })).toHaveCount(0);
   if (name === 'review') await expect(page.getByLabel('TKDN jasa (%)')).toBeVisible();
   if (name === 'dashboard') {
-    await expect(page.getByRole('region', { name: 'Lanjutkan pekerjaan', exact: true })).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Lanjutkan pengadaan', exact: true })).toBeVisible();
     await expect(page.locator('.dashboard-distribution, .dashboard-procurements')).toHaveCount(0);
   }
   const close = page.getByRole('button', { name: 'Tutup pemberitahuan' });

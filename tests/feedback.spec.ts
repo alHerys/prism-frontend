@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
 
 test('simplified sidebar and dashboard retain real continuation links', async ({ page }, info) => {
   await page.goto('/');
-  await expect(page.getByRole('region', { name: 'Lanjutkan pekerjaan', exact: true })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Lanjutkan pengadaan', exact: true })).toBeVisible();
   await expect(page.locator('.dashboard-distribution, .dashboard-procurements')).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Buka riwayat aktivitas' })).toHaveCount(0);
   const narrow = info.project.use.viewport!.width < 1024;
@@ -16,7 +16,7 @@ test('simplified sidebar and dashboard retain real continuation links', async ({
   await expect(navigation.getByText('Regional Kalimantan', { exact: true })).toBeVisible();
   await expect(navigation.locator('.sidebar-foot img')).toHaveCount(0);
   await expect(navigation.getByText('PT Pertamina Patra Niaga', { exact: true })).toBeVisible();
-  await expect(navigation.getByRole('link', { name: '4 dokumen perlu ditinjau', exact: true })).toBeVisible();
+  await expect(navigation.locator('.sidebar-continuation')).toHaveCount(0);
   if (narrow) await page.keyboard.press('Escape');
   else {
     const offset = await navigation.evaluate(element => {
@@ -26,7 +26,7 @@ test('simplified sidebar and dashboard retain real continuation links', async ({
     });
     expect(offset).toBeLessThan(2);
     await page.getByRole('button', { name: 'Ringkas navigasi' }).click();
-    await expect(navigation.getByRole('link', { name: '4 dokumen perlu ditinjau', exact: true })).toBeVisible();
+    await expect(navigation.locator('.sidebar-continuation')).toHaveCount(0);
     await page.getByRole('button', { name: 'Perluas navigasi' }).click();
   }
   await page.getByRole('link', { name: 'Lanjutkan Penggantian Jalur Pipa Terminal', exact: true }).click();
