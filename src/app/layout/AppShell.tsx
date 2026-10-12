@@ -9,6 +9,8 @@ import { SquaresFour } from "@phosphor-icons/react/dist/csr/SquaresFour";
 import { Gear } from "@phosphor-icons/react/dist/csr/Gear";
 import { Question } from "@phosphor-icons/react/dist/csr/Question";
 import { SignOut } from "@phosphor-icons/react/dist/csr/SignOut";
+import { Hash } from "@phosphor-icons/react/dist/csr/Hash";
+import { Briefcase } from "@phosphor-icons/react/dist/csr/Briefcase";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router";
@@ -107,7 +109,7 @@ export function AppShell() {
   const procurement = state.procurements.find(p => location.pathname === `/pengadaan/${p.id}`);
   const active = [...links, ...generalLinks].find(([url]) => url === "/" ? location.pathname === url : location.pathname.startsWith(url));
   const title = procurement?.name || active?.[1] || "Halaman tidak ditemukan";
-  const description = procurement ? `${procurement.number} · ${procurement.functionName}` : descriptions[active?.[0] || ""];
+  const description = descriptions[active?.[0] || ""];
   const content = <AppRoutes />;
   if (focus) return content;
   const closeNavigation = () => setMobileOpen(false);
@@ -167,7 +169,11 @@ export function AppShell() {
           <header className="shell-page-heading">
             <div className="shell-heading">
               {procurement && <Link className="shell-back" to="/pengadaan"><CaretLeft size={13} /> Semua pengadaan</Link>}
-              <h1>{title}</h1><p>{description}</p>
+              <h1>{title}</h1>
+              {procurement ? <dl className="procurement-heading-meta">
+                <div><dt className="sr-only">Kode pengadaan</dt><dd><Hash size={17} aria-hidden="true" /><span>{procurement.number}</span></dd></div>
+                <div><dt className="sr-only">Fungsi</dt><dd><Briefcase size={17} aria-hidden="true" /><span>{procurement.functionName}</span></dd></div>
+              </dl> : <p>{description}</p>}
             </div>
             <div id="page-header-actions" />
           </header>

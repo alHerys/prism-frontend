@@ -25,7 +25,7 @@ function names() {
 
 const tank = "Pengecatan Tangki Penyimpanan";
 const terminal = "Penggantian Jalur Pipa Terminal";
-const showcase = "Penggantian Jalur Pipa — Siap Evaluasi";
+const showcase = "Penggantian Jalur Pipa";
 
 afterEach(cleanup);
 

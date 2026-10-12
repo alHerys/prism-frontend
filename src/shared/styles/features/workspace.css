@@ -17,3 +17,9 @@
 .logout-confirm.btn:hover { background: #8c291f; }
 @media(max-width:1023px) { .workspace-identity .workspace-profile-name { display: none; } .workspace-identity .workspace-avatar { display: grid; } }
 @media(max-width:639px) { .shell-context > .workspace-profile { display: flex; } }
+
+.procurement-heading-meta { display: flex; flex-wrap: wrap; gap: 10px 24px; margin: 12px 0 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.procurement-heading-meta > div { min-width: 0; }
+.procurement-heading-meta dd { display: flex; align-items: center; gap: 7px; margin: 0; }
+.procurement-heading-meta dd svg { flex-shrink: 0; }
+.procurement-heading-meta dd span { overflow-wrap: anywhere; }

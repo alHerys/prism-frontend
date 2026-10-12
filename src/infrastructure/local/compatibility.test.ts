@@ -7,8 +7,9 @@ it("preserves all seeded values, IDs, event order and prepared snapshots from th
   try {
     vi.setSystemTime(new Date("2026-10-02T02:00:00Z"));
     const states = [createTestSession(false).getState(), createTestSession().getState(), createTestSession(true, true).getState()];
-    // Captured from the implementation before modularization with the same clock.
-    expect(createHash("sha256").update(JSON.stringify(states)).digest("hex")).toBe("43313f64f1dbd55a1ea839b6bb34ba2ffaea40ec9e13587ce568bcb127db1c80");
+    // Updated for the approved showcase name without the "Siap Evaluasi" suffix.
+    expect(states[2].procurements.find(procurement => procurement.id === "proc-showcase")?.name).toBe("Penggantian Jalur Pipa");
+    expect(createHash("sha256").update(JSON.stringify(states)).digest("hex")).toBe("14203add233410aea0a99d29ad4f6b61f80c13ca7447f2909021ca8ae3f5622d");
   } finally {
     vi.useRealTimers();
   }

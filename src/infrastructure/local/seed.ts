@@ -13,7 +13,7 @@ export function prepareShowcase(store: LocalStore) {
   const procurementId = "proc-showcase";
   store.state.procurements.push({
     id: procurementId,
-    name: "Penggantian Jalur Pipa — Siap Evaluasi",
+    name: "Penggantian Jalur Pipa",
     number: "PRC-DEMO-2026-003",
     functionName: "Maintenance",
     createdAt: "2026-10-02T09:00:00+07:00",

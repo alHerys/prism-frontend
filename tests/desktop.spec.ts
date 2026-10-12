@@ -312,7 +312,7 @@ test('direct routes and navigation load the same styles and preserve tab drafts'
   await page.getByRole('navigation', { name: 'Navigasi utama' }).getByRole('link', { name: 'Riwayat & Statistik' }).click();
   await compareStyles('/riwayat', 'Catatan aktivitas', ['.topbar', '.bank-history .panel', '.bank-history .history-timeline']);
   await page.getByRole('link', { name: 'Dashboard', exact: true }).click();
-  await page.getByRole('link', { name: 'Lanjutkan Penggantian Jalur Pipa — Siap Evaluasi', exact: true }).click();
+  await page.getByRole('link', { name: 'Lanjutkan Penggantian Jalur Pipa', exact: true }).click();
   await compareStyles('/pengadaan/proc-showcase?tab=hea', 'Leaderboard HEA', ['.procurement-path', '.panel', '.table']);
   await page.getByRole('link', { name: 'Dashboard', exact: true }).click();
   await page.getByRole('link', { name: 'Lanjutkan Penggantian Jalur Pipa Terminal', exact: true }).click();
