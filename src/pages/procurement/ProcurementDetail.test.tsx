@@ -25,7 +25,7 @@ function setup(url: string) {
 it("redirects the retired document stage while preserving parameters and all workspace actions", async () => {
   const { runtime, router } = setup("/pengadaan/proc-showcase?tab=dokumen&hasil=kept");
   await waitFor(() => expect(router.state.location.search).toBe("?tab=ringkasan&hasil=kept"));
-  expect(screen.getByRole("heading", { name: "Identitas pengadaan" })).toBeInTheDocument();
+  expect(screen.queryByRole("heading", { name: "Identitas pengadaan" })).not.toBeInTheDocument();
   expect(screen.getByRole("heading", { name: "Owner Estimate (OE)" })).toBeInTheDocument();
   const stages = screen.getByRole("navigation", { name: "Tahap pengadaan" });
   expect(within(stages).getAllByRole("button")).toHaveLength(3);
@@ -46,7 +46,7 @@ it("returns from the vendor workspace and evaluation to the combined identity an
   expect(await screen.findByRole("heading", { name: "PT Nusa Teknik Mandiri" })).toBeInTheDocument();
   fireEvent.click(screen.getByRole("link", { name: "Kembali ke identitas & vendor" }));
   await waitFor(() => expect(router.state.location.search).toBe("?tab=ringkasan"));
-  expect(screen.getByRole("heading", { name: "Identitas pengadaan" })).toBeInTheDocument();
+  expect(screen.queryByRole("heading", { name: "Identitas pengadaan" })).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Lanjut ke evaluasi" }));
   expect(await screen.findByRole("heading", { name: "Evaluasi pengadaan" })).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Kembali ke identitas & vendor" }));

@@ -14,9 +14,15 @@ test("OE card and vendor layouts keep review links, document availability and re
   page.on("pageerror", error => errors.push(error.message));
   await page.goto("/pengadaan/proc-showcase?tab=dokumen");
   await expect(page.getByRole("heading", { name: "Penggantian Jalur Pipa", exact: true })).toBeVisible();
-  await expect(page.locator(".procurement-heading-meta > div")).toHaveCount(2);
-  await expect(page.locator(".procurement-heading-meta dd svg")).toHaveCount(2);
+  await expect(page.locator(".procurement-heading-meta > div")).toHaveCount(4);
+  await expect(page.locator(".procurement-heading-meta dd svg")).toHaveCount(4);
   await expect(page.getByRole("heading", { name: "Owner Estimate (OE)", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Identitas pengadaan", exact: true })).toHaveCount(0);
+  await expect(page.locator(".procurement-heading-meta time")).toHaveAttribute("datetime", "2026-10-02T09:00:00+07:00");
+  await expect(page.locator(".procurement-identity-summary")).toHaveCount(0);
+  const addButton = await page.getByRole("button", { name: "Tambah vendor", exact: true }).boundingBox();
+  const tableToggle = await page.getByRole("button", { name: "Tabel", exact: true }).boundingBox();
+  expect(addButton!.x + addButton!.width).toBeGreaterThanOrEqual(tableToggle!.x + tableToggle!.width);
   await expect(page.locator(".owner-estimate-document")).toContainText("OE-Terminal.xlsx");
   await expect(page.getByRole("navigation", { name: "Tahap pengadaan" }).getByRole("button")).toHaveCount(3);
   await expect(page.getByRole("button", { name: /Unggah & verifikasi/ })).toHaveCount(0);

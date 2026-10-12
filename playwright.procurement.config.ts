@@ -7,6 +7,7 @@ export default defineConfig({
   outputDir: "test-results/procurement-documents",
   projects: [
     ...desktop.projects!,
+    { name: "annotation-2053", use: { viewport: { width: 2053, height: 972 } } },
     { name: "annotation-1520", use: { viewport: { width: 1520, height: 842 } } },
     { name: "annotation-705", use: { viewport: { width: 705, height: 842 } } },
     { name: "phone-390", use: { viewport: { width: 390, height: 844 } } },
