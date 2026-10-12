@@ -40,12 +40,12 @@ async function capture(page: Page, name: string) {
   if (await close.count()) await close.click();
   await page.evaluate(() => window.scrollTo(0, 0));
   await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  // Native Chrome PDF rendering varies; its source URL is asserted in the upload test.
+  // The application renders PDF pages; include them in visual observations.
   await page.evaluate(() => document.fonts.ready);
   // Functional acceptance and reconstructed visual regression are separate runs.
   // Keep the original snapshots intact; the Fernly config selects its own namespace.
   if (process.env.PRISM_VISUAL_CAPTURE === '1') {
-    await expect(page).toHaveScreenshot(`prism-${name}.png`, { fullPage: true, mask: name === 'review' ? [page.locator('iframe')] : [] });
+    await expect(page).toHaveScreenshot(`prism-${name}.png`, { fullPage: true });
   }
 }
 async function returnToEvaluation(page: Page, module = 'HEA') {
@@ -210,20 +210,26 @@ test('confirmed HEA and explicit price sources preserve results and XLSX traceab
 
 test('real file upload rejects unsupported bytes and accepts registered PDF through review', async ({ page }) => {
   await page.goto('/pengadaan/proc-terminal?tab=dokumen');
-  await page.getByRole('link', { name: /PT Nusa Teknik Mandiri.*Buka dokumen/ }).click();
-  // The lazy vendor route replaces the still-mounted procurement OE uploader.
-  // Wait for the actual vendor workspace before selecting the invalid PDF.
-  await expect(page.getByRole('heading', { name: 'PT Nusa Teknik Mandiri', exact: true })).toBeVisible();
-  const upload = page.getByLabel('Pilih berkas dokumen');
+  // A new vendor has an empty Form A5 slot in the document picker.
+  await page.getByRole('button', { name: 'Tambah vendor', exact: true }).click();
+  await page.getByLabel('Nama badan usaha').fill('PT Nusa Teknik Mandiri Uji Unggah');
+  await page.getByRole('dialog').getByRole('button', { name: 'Tambah vendor', exact: true }).click();
+  await page.getByRole('link', { name: 'PT Nusa Teknik Mandiri Uji Unggah · Buka dokumen', exact: true }).click();
+  await expect(page.getByRole('dialog', { name: 'Pilih Dokumen', exact: true })).toBeVisible();
+  const upload = page.getByLabel('Unggah Form A5', { exact: true });
   await expect(upload).toHaveAttribute('accept', '.pdf');
   await upload.setInputFiles({ name: 'invalid.pdf', mimeType: 'application/pdf', buffer: Buffer.from('not a supported PDF') });
   await expect(page.getByRole('alert')).toBeVisible();
   await upload.setInputFiles(path.resolve('public/files/Form-A5-Nusa.pdf'));
   await expect(page).toHaveURL(/\/review\/doc-/);
-  await expect(page.getByLabel('Harga Penawaran Barang (Rp)')).toHaveValue('1.000.000.000');
-  await expect(page.locator('iframe.review-pdf-preview')).toHaveAttribute('src', '/files/Form-A5-Nusa.pdf');
+  await expect(page.getByLabel('Harga Penawaran Barang')).toHaveValue('1.000.000.000');
+  await expect(page.locator('.review-pdf-preview')).toHaveAttribute('data-source-url', '/files/Form-A5-Nusa.pdf');
+  await expect(page.locator('.pdf-preview-page')).toHaveAttribute('data-rendered', 'true');
   await expect(page.locator('.review-document-identity').getByText('Perlu ditinjau')).toBeVisible();
-  await confirm(page);
+  await click(page, 'Konfirmasi data');
+  await page.getByRole('dialog', { name: 'Konfirmasi data dokumen', exact: true }).getByRole('button', { name: 'Konfirmasi data', exact: true }).click();
+  await expect(page).toHaveURL(/tab=ringkasan&vendor=/);
+  await expect(page.getByRole('dialog', { name: 'Pilih Dokumen', exact: true }).getByRole('link', { name: 'Buka Form A5', exact: true })).toBeVisible();
 });
 
 test('motion preference removes nonessential movement and active motion preserves navigation', async ({ page }) => {

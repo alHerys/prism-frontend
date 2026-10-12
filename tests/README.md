@@ -22,8 +22,8 @@ ignored by Git. Create a first local baseline with `npm run test:desktop:update`
 inspect the images, then rerun `npm run test:desktop` to verify comparison. Updating
 an image is not evidence of visual acceptance; changes still require inspection.
 The same Chrome/browser, fonts and platform should be used when comparing images.
-Only the native PDF iframe is masked; the upload test asserts its registered source
-URL and review values. Freeze baselines before refactoring and compare afterward;
+The PDF preview is rendered by the application and is not masked; the upload test
+asserts its registered source URL, rendered page and review values. Freeze baselines before refactoring and compare afterward;
 do not update them to hide interface changes.
 
 Coverage includes sidebar collapse, all main result pages, mandatory confirmation,
@@ -84,3 +84,15 @@ tersedia, satu tersedia, keduanya kosong, serta unggahan PDF/XLSX dari modal.
 Suite memakai 1366×768, 1520×842, 1920×1080, 2053×972, 705×842 dan 390×844; screenshot observasi
 disimpan di `test-results/procurement-documents/`, tanpa mengubah golden lama.
 Gunakan `PRISM_PREVIEW_URL` untuk memilih URL preview build lokal.
+
+## Review Form A5
+
+`npm run test:review` memeriksa pratinjau PDF.js yang dimuat secara lazy beserta
+worker lokal, pixels PDF asli, teks yang dapat dipilih, zoom, navigasi dua halaman,
+kegagalan muat/coba lagi, dan scrollbar yang mengambil lebar tanpa loop render.
+Suite juga memeriksa draft, navigasi, konfirmasi evaluator dan acknowledgement.
+Pada desktop PDF mendapat area utama dan editor menjadi sidebar; di bawah 900px
+editor berada di bawah PDF. Ukuran yang diperiksa: 1366×768, 1920×1080, 1368×695
+dan 390×844. Screenshot berada di `test-results/review-source/`; baseline lama
+tidak diperbarui. Renderer hanya menampilkan berkas sumber, bukan mengekstrak nilai
+atau menggantikan konfirmasi. Pengujian memakai data sintetis frontend lokal.
