@@ -68,3 +68,11 @@ Storybook browser tests pass at both sizes without updating screenshots.
 sebagai `PANDUAN-WORKFLOW.md`; panduan tidak diperlukan untuk menyiapkan bytes. Tooling tests validate commands, links,
 output names and copied fingerprints. Konfigurasi Storybook memakai `PRISM_STORYBOOK_CONFIG_DIR` atau pengaturan Git
 lokal `prism.storybookConfigDir`; konfigurasi tidak disertakan dalam repository.
+
+## Perubahan dokumen pengadaan
+
+`npm run test:procurement` memeriksa card OE, penggantian dan konfirmasi ulang,
+sumber lama melalui navigasi browser, unggahan gagal, serta Petak/Tabel vendor.
+Suite memakai 1366×768, 1520×842, 1920×1080 dan 390×844; screenshot observasi
+disimpan di `test-results/procurement-documents/`, tanpa mengubah golden lama.
+Gunakan `PRISM_PREVIEW_URL` untuk memilih URL preview build lokal.
