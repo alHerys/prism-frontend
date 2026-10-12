@@ -1,0 +1,91 @@
+import { expect, test } from "@playwright/test";
+import type { Page, TestInfo } from "@playwright/test";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+
+async function capture(page: Page, info: TestInfo, name: string) {
+  await page.screenshot({ path: info.outputPath(`${name}.png`), fullPage: true });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+}
+
+test("OE card and vendor layouts keep review links, document availability and real addition dates", async ({ page }, info) => {
+  const errors: string[] = [];
+  page.on("pageerror", error => errors.push(error.message));
+  await page.goto("/pengadaan/proc-showcase?tab=dokumen");
+  await expect(page.getByRole("heading", { name: "Owner Estimate (OE)", exact: true })).toBeVisible();
+  await expect(page.locator(".owner-estimate-document")).toContainText("OE-Terminal.xlsx");
+  await expect(page.getByRole("heading", { name: "Dokumen OE", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Daftar Dokumen Vendor", exact: true })).toHaveCount(0);
+  await capture(page, info, "documents-grid");
+  const switcher = page.getByRole("group", { name: "Tampilan daftar vendor" });
+  await switcher.getByRole("button", { name: "Tabel", exact: true }).focus();
+  await page.keyboard.press("Enter");
+  await expect(switcher.getByRole("button", { name: "Tabel", exact: true })).toHaveAttribute("aria-pressed", "true");
+  const table = page.getByRole("table", { name: "vendor", exact: true });
+  const nusa = table.getByRole("row").filter({ hasText: "PT Nusa Teknik Mandiri" });
+  const borneo = table.getByRole("row").filter({ hasText: "PT Borneo Teknik Nusantara" });
+  await expect(nusa).toContainText("A5 · PDF · Ada");
+  await expect(nusa).toContainText("Penawaran · XLSX · Ada");
+  await expect(borneo).toContainText("Penawaran · XLSX · Belum ada");
+  await capture(page, info, "documents-table");
+  await table.getByRole("link", { name: "PT Nusa Teknik Mandiri · Buka dokumen" }).click();
+  await expect(page).toHaveURL(/\/vendor\/showcase-nusa$/);
+  await expect(page.getByRole("heading", { name: "PT Nusa Teknik Mandiri", exact: true })).toBeVisible();
+  await page.goto("/pengadaan/proc-showcase?tab=ringkasan");
+  await page.getByRole("button", { name: "Tambah vendor", exact: true }).click();
+  await page.getByLabel("Nama badan usaha").fill("Vendor Baru Review");
+  await page.getByRole("dialog", { name: "Tambah vendor" }).getByRole("button", { name: "Tambah vendor", exact: true }).click();
+  await page.getByRole("button", { name: "Lanjut ke dokumen" }).click();
+  await page.getByRole("button", { name: "Tabel", exact: true }).click();
+  const added = page.getByRole("table", { name: "vendor", exact: true }).getByRole("row").filter({ hasText: "Vendor Baru Review" });
+  await expect(added.locator("time")).toHaveAttribute("datetime", /^\d{4}-\d{2}-\d{2}T/);
+  await expect(added).toContainText("A5 · PDF · Belum ada");
+  await expect(added).toContainText("Penawaran · XLSX · Belum ada");
+  expect(errors).toEqual([]);
+});
+
+test("OE replacement survives failure, requires review, preserves old evidence and supports an empty procurement", async ({ page }, info) => {
+  const errors: string[] = [];
+  page.on("pageerror", error => errors.push(error.message));
+  await page.goto("/pengadaan/proc-showcase?tab=dokumen");
+  const card = page.locator(".fernly-upload");
+  const oldReview = await card.getByRole("link", { name: "Lihat / koreksi" }).getAttribute("href");
+  await card.getByRole("link", { name: "Lihat / koreksi" }).click();
+  await page.getByRole("button", { name: "Kembali ke pengadaan", exact: true }).click();
+  await card.getByRole("button", { name: "Ganti OE", exact: true }).click();
+  await capture(page, info, "documents-replace");
+  await page.getByLabel("Pilih berkas OE terbaru", { exact: true }).setInputFiles({ name: "invalid.xlsx", mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", buffer: Buffer.from("invalid") });
+  await expect(page.getByRole("alert")).toBeVisible();
+  await expect(card).toContainText("OE-Terminal.xlsx");
+  await card.getByRole("button", { name: "Batal mengganti" }).click();
+  await expect(page.getByRole("alert")).toHaveCount(0);
+  await expect(page.getByLabel("Pilih berkas OE terbaru", { exact: true })).toHaveCount(0);
+  await card.getByRole("button", { name: "Ganti OE", exact: true }).click();
+  await page.getByLabel("Pilih berkas OE terbaru", { exact: true }).setInputFiles({ name: "OE-Terbaru.xlsx", mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", buffer: await readFile(path.resolve("public/files/OE-Terminal.xlsx")) });
+  await expect(page).toHaveURL(/\/review\/doc-/);
+  await expect(page.locator(".review-document-identity")).toContainText("OE-Terbaru.xlsx");
+  await expect(page.locator(".review-document-identity")).toContainText("Perlu ditinjau");
+  await page.getByRole("button", { name: "Kembali ke pengadaan", exact: true }).click();
+  await expect(card).toContainText("OE-Terbaru.xlsx");
+  await expect(card).toContainText("Perlu ditinjau");
+  await expect(page.getByLabel("Pilih berkas dokumen", { exact: true })).toHaveCount(0);
+  await card.getByRole("link", { name: "Periksa OE", exact: true }).click();
+  await page.getByLabel("Kelompok harga yang digunakan").selectOption({ label: "Harga satuan material dan jasa" });
+  const ack = page.getByRole("checkbox", { name: /Saya telah memeriksa/ });
+  if (await ack.count()) await ack.check();
+  await page.getByRole("button", { name: "Konfirmasi data", exact: true }).click();
+  await page.getByRole("dialog", { name: "Konfirmasi data dokumen" }).getByRole("button", { name: "Konfirmasi data", exact: true }).click();
+  await expect(page).toHaveURL(/tab=dokumen/);
+  await expect(card).toContainText("Terkonfirmasi");
+  // Browser Back preserves the in-memory runtime; page.goto would reset it.
+  for (let step = 0; step < 6 && !page.url().endsWith(oldReview!); step++) await page.goBack();
+  await expect(page).toHaveURL(new RegExp(`${oldReview}$`));
+  await expect(page.getByRole("heading", { name: "OE telah diganti", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Konfirmasi data", exact: true })).toHaveCount(0);
+  await page.getByRole("link", { name: "Buka OE terbaru", exact: true }).click();
+  await expect(page.locator(".review-document-identity")).toContainText("OE-Terbaru.xlsx");
+  await page.goto("/pengadaan/proc-tank?tab=dokumen");
+  await expect(page.getByRole("heading", { name: "Unggah Owner Estimate (OE)", exact: true })).toBeVisible();
+  await expect(page.getByLabel("Pilih berkas dokumen", { exact: true })).toHaveAttribute("accept", ".xlsx");
+  expect(errors).toEqual([]);
+});

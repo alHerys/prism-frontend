@@ -20,7 +20,8 @@
     "test:desktop:update": "playwright test --update-snapshots",
     "test:storybook:browser": "playwright test --config playwright.storybook.config.ts",
     "fixtures:prepare": "node scripts/prepare-fixtures.mjs",
-    "test:local-regression": "playwright test --config playwright.local.config.ts"
+    "test:local-regression": "playwright test --config playwright.local.config.ts",
+    "test:procurement": "playwright test --config playwright.procurement.config.ts"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
