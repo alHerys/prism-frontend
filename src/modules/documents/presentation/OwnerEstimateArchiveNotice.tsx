@@ -7,7 +7,7 @@ export function OwnerEstimateArchiveNotice({ document }: { document: DocumentRec
     <section className="panel">
       <h2>{removed ? "OE telah dihapus" : "OE telah diganti"}</h2>
       <p>Dokumen ini disimpan sebagai jejak sumber dan tidak digunakan untuk evaluasi berikutnya.</p>
-      <Link className="btn" to={removed ? `/pengadaan/${document.procurementId}?tab=dokumen` : `/pengadaan/${document.procurementId}/review/${document.supersededBy}`}>
+      <Link className="btn" to={removed ? `/pengadaan/${document.procurementId}?tab=ringkasan` : `/pengadaan/${document.procurementId}/review/${document.supersededBy}`}>
         {removed ? "Unggah OE baru" : "Buka OE terbaru"}
       </Link>
     </section>

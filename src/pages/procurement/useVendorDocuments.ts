@@ -7,6 +7,6 @@ export function useVendorDocuments() : VendorDocumentsModel {
   const state = useProcurementData();
   const procurement = state.procurements.find((p) => p.id === id);
   const vendor = state.vendors.find((v) => v.id === vendorId && v.procurementId === id);
-  const backUrl = `/pengadaan/${id}?tab=dokumen`;
+  const backUrl = `/pengadaan/${id}?tab=ringkasan`;
   return { id, vendorId, state, procurement, vendor, backUrl };
 }

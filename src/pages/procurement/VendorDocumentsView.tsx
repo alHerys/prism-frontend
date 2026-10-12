@@ -15,7 +15,7 @@ export function VendorDocumentsView({ id, state, procurement, vendor, backUrl }:
     return (
       <main className="page focus-recovery">
         <Empty title="Vendor tidak ditemukan" headingLevel={1}>
-          <Link to={backUrl}>Kembali ke unggah & verifikasi</Link>
+          <Link to={backUrl}>Kembali ke identitas & vendor</Link>
         </Empty>
       </main>
     );
@@ -26,7 +26,7 @@ export function VendorDocumentsView({ id, state, procurement, vendor, backUrl }:
     <div className="focus-shell vendor-focus-shell">
       <header className="focus-head">
         <div className="review-header-context">
-          <Link className="icon-button review-back" title="Kembali ke tahap Unggah & verifikasi" to={backUrl} aria-label="Kembali ke tahap Unggah & verifikasi">
+          <Link className="icon-button review-back" title="Kembali ke identitas & vendor" to={backUrl} aria-label="Kembali ke identitas & vendor">
             <ArrowLeft size={28} aria-hidden="true" />
           </Link>
           <div className="review-heading">

@@ -52,7 +52,7 @@ export function useReview() : ReviewModel {
     navigate(
       d?.vendorId
         ? `/pengadaan/${id}/vendor/${d?.vendorId}`
-        : `/pengadaan/${id}?tab=dokumen`,
+        : `/pengadaan/${id}?tab=ringkasan`,
     );
   function changeValue(key: keyof A5Values, value: string) {
     setValues((v) => (v ? { ...v, [key]: value } : v));
