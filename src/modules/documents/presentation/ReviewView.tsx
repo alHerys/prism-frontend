@@ -5,6 +5,7 @@ import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
 import { Link } from "react-router";
 import { kindLabel } from "../../../shared/formatting/display";
 import "../../../shared/styles/focus.css";
+import "./a5-review.css";
 import { EmptyState as Empty } from "../../../shared/ui/empty-state";
 import { Status } from "../../../shared/ui/status";
 import { ReviewConfirmation } from "./ReviewConfirmation";
@@ -57,7 +58,7 @@ export function ReviewView({
       </main>
     );
   return (
-    <div className="focus-shell fernly-review">
+    <div className={`focus-shell fernly-review${d.kind === "FORM_A5" ? " a5-review" : ""}`}>
       <header className="focus-head">
         <div className="review-header-context">
           <button

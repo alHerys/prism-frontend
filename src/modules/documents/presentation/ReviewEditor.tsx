@@ -38,8 +38,9 @@ export function ReviewEditor({
               : "Kelompok harga dan pasangan"}
           </h2>
           <p>
-            Cocokkan nilai dengan bukti sumber. Konfirmasi data
-            menyimpan perubahan dan menyetujui data untuk evaluasi.
+            {d.kind === "FORM_A5"
+              ? "Sesuaikan dengan data terlampir sebenarnya pada Form A5"
+              : "Cocokkan nilai dengan bukti sumber. Konfirmasi data menyimpan perubahan dan menyetujui data untuk evaluasi."}
           </p>
         </div>
       </div>
@@ -48,7 +49,7 @@ export function ReviewEditor({
           {reviewFieldOrder.map((key) => (
             <div className={`field review-value-field${key === "knb" ? " review-value-wide" : ""}`} key={key}>
               <label htmlFor={key}>
-                {fields[key]} {key.startsWith("tkdn") ? "(%)" : "(Rp)"}
+                {fields[key]}{key.startsWith("tkdn") ? " (%)" : ""}
               </label>
               {key.startsWith("tkdn") ? <input
                 id={key}
