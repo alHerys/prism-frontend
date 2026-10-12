@@ -199,3 +199,8 @@
     animation: none !important;
   }
 }
+
+.upload-zone { position: relative; }
+.upload-zone .upload-picker-trigger::after { content: ""; position: absolute; inset: 0; cursor: pointer; }
+.upload-zone:focus-within { outline: 2px solid var(--accent); outline-offset: 3px; }
+.upload-zone.is-disabled .upload-picker-trigger::after { cursor: default; }

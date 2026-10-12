@@ -60,6 +60,7 @@ export function UploadZone({
         }}
       />
       <Button
+        className="upload-picker-trigger"
         onClick={() => input.current?.click()}
         disabled={disabled}
         aria-describedby={children ? id : undefined}
