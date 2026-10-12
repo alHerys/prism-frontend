@@ -5,6 +5,8 @@ import { LoadingState } from "../../../shared/ui/loading-state";
 import { UploadZone } from "../../../shared/ui/upload-zone";
 import type { UploadPanelModel } from "./view-models";
 import { OwnerEstimateDocument } from "./OwnerEstimateDocument";
+import { PencilSimple } from "@phosphor-icons/react/dist/csr/PencilSimple";
+import { X } from "@phosphor-icons/react/dist/csr/X";
 import { Trash } from "@phosphor-icons/react/dist/csr/Trash";
 import { Modal } from "../../../shared/ui/modal";
 import { OwnerEstimateRemoval } from "./OwnerEstimateRemoval";
@@ -31,7 +33,7 @@ export function UploadPanelView({ scope, embedded, kind, setKind, busy, processi
       <div className="panel-header">
         <div>
           <h2>{title}</h2>
-          <p>{scope === "vendor" ? "Pilih Form A5 atau penawaran untuk vendor ini." : "Owner Estimate ditautkan ke seluruh pengadaan."}</p>
+          {scope === "vendor" && <p>Pilih Form A5 atau penawaran untuk vendor ini.</p>}
         </div>
         {scope === "vendor" && <span className="badge">PDF / XLSX · maks. 10 MiB</span>}
       </div>
@@ -46,12 +48,12 @@ export function UploadPanelView({ scope, embedded, kind, setKind, busy, processi
         </div>
       </div>}
       {!currentDocument && uploadContent}
-      <Modal className="owner-estimate-edit" open={replacing} onOpenChange={open => { if (!open) cancelReplacement(); }} title="Edit Owner Estimate (OE)"
+      <Modal className="owner-estimate-edit" open={replacing} onOpenChange={open => { if (!open) cancelReplacement(); }} title={<span className="owner-estimate-edit-title"><PencilSimple size={24} aria-hidden="true" /> Edit Owner Estimate (OE)</span>}
         description="Ganti berkas XLSX atau hapus OE. Berkas baru perlu dikonfirmasi.">
+        <button type="button" className="icon-button owner-estimate-edit-close" aria-label="Tutup edit OE" disabled={busy} onClick={cancelReplacement}><X size={22} aria-hidden="true" /></button>
         {uploadContent}
         <div className="modal-actions owner-estimate-edit-actions">
           <button type="button" className="btn danger" disabled={busy} onClick={requestRemoval}><Trash size={17} aria-hidden="true" /> Hapus</button>
-          <button type="button" className="btn" disabled={busy} onClick={cancelReplacement}>Tutup</button>
         </div>
       </Modal>
       <OwnerEstimateRemoval removalTarget={removalTarget} removalFailure={removalFailure} busy={busy} cancelRemoval={cancelRemoval} removeOwnerEstimate={removeOwnerEstimate} />

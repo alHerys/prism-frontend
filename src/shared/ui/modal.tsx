@@ -13,7 +13,7 @@ export function Modal({
   className?: string;
   open: boolean;
   onOpenChange: (v: boolean) => void;
-  title: string;
+  title: ReactNode;
   description?: string;
   children: ReactNode;
 }) {
