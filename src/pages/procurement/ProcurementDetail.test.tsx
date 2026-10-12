@@ -43,8 +43,8 @@ it("redirects the retired document stage while preserving parameters and all wor
 it("returns from the vendor workspace and evaluation to the combined identity and OE workspace", async () => {
   const { router } = setup("/pengadaan/proc-showcase?tab=ringkasan");
   fireEvent.click(screen.getByRole("link", { name: "PT Nusa Teknik Mandiri · Buka dokumen" }));
-  expect(await screen.findByRole("dialog", { name: "PT Nusa Teknik Mandiri" })).toBeInTheDocument();
-  fireEvent.click(screen.getByRole("button", { name: "Tutup" }));
+  expect(await screen.findByRole("dialog", { name: "Pilih Dokumen" })).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: "Tutup dokumen vendor" }));
   await waitFor(() => expect(router.state.location.search).toBe("?tab=ringkasan"));
   expect(screen.queryByRole("heading", { name: "Identitas pengadaan" })).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Lanjut ke evaluasi" }));

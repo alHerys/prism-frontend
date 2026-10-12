@@ -70,8 +70,8 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
     await page.getByRole('dialog').getByRole('button', {name: 'Tambah vendor'}).click();
   }
   await page.getByRole('link', {name: /PT Nusa Teknik Mandiri.*Buka dokumen/}).click();
-  await expect(page.getByRole('heading', {name: 'PT Nusa Teknik Mandiri', exact: true})).toBeVisible();
-  await expect(page.getByRole('dialog', {name: 'PT Nusa Teknik Mandiri'})).toBeVisible();
+  await expect(page.getByRole('heading', {name: 'Pilih Dokumen', exact: true})).toBeVisible();
+  await expect(page.getByRole('dialog', {name: 'Pilih Dokumen'})).toBeVisible();
   await expect(page.getByLabel('Pemilik dokumen')).toHaveCount(0);
   await page.screenshot({path: info.outputPath('vendor.png'), fullPage: true});
   await page.getByLabel('Unggah Form A5', {exact: true}).setInputFiles({name: 'invalid.pdf', mimeType: 'application/pdf', buffer: Buffer.from('unknown bytes')});
@@ -82,15 +82,15 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   await expect(page.getByRole('navigation', {name: 'Progres evaluasi'})).toHaveCount(0);
   await page.screenshot({path: info.outputPath('review-pdf.png'), fullPage: true});
   await confirm(page);
-  await button(page, 'Tutup').click();
+  await button(page, 'Tutup dokumen vendor').click();
   await page.getByRole('link', {name: /PT Borneo Teknik Nusantara.*Buka dokumen/}).click();
-  await expect(page.getByRole('heading', {name: 'PT Borneo Teknik Nusantara', exact: true})).toBeVisible();
+  await expect(page.getByRole('heading', {name: 'Pilih Dokumen', exact: true})).toBeVisible();
   await upload(page, 'Form-A5-Borneo.pdf', 'Unggah Form A5');
   await expect(page.getByLabel('TKDN jasa (%)')).toHaveValue('30');
   await expect(button(page, 'Konfirmasi data')).toBeDisabled();
   await page.getByLabel('TKDN jasa (%)').fill('35');
   await confirm(page);
-  await button(page, 'Tutup').click();
+  await button(page, 'Tutup dokumen vendor').click();
   await page.locator('.procurement-path').getByRole('button', {name: /Evaluasi/}).click();
   await page.getByLabel('Preferensi barang (%)').fill('15');
   await page.getByLabel('Preferensi jasa (%)').fill('7,5');
@@ -106,7 +106,7 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   await page.getByRole('link', {name: /PT Nusa Teknik Mandiri.*Buka dokumen/}).click();
   await upload(page, 'Penawaran-Nusa.xlsx', 'Unggah Penawaran Harga');
   await group(page);
-  await button(page, 'Tutup').click();
+  await button(page, 'Tutup dokumen vendor').click();
   await page.locator('.procurement-path').getByRole('button', {name: /Evaluasi/}).click();
   await button(page, 'Harga Timpang').click();
   await page.getByLabel('OE pengadaan', {exact: true}).selectOption({label: 'OE-Terminal.xlsx · Terkonfirmasi'});
