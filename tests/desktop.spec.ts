@@ -113,7 +113,7 @@ test('desktop shell, sidebar, keyboard dialog and unsaved correction protection'
   await expect(page.getByLabel('TKDN jasa (%)')).toHaveValue('30');
   await page.getByLabel('TKDN jasa (%)').fill('31');
   await click(page, 'Kembali ke pengadaan');
-  await dialog.getByRole('button', { name: 'Simpan & kembali' }).click();
+  await dialog.getByRole('button', { name: 'Simpan' }).click();
   await returnToEvaluation(page);
   await page.getByRole('link', { name: 'Periksa dokumen' }).first().click();
   await expect(page.getByLabel('TKDN jasa (%)')).toHaveValue('31');
@@ -121,7 +121,7 @@ test('desktop shell, sidebar, keyboard dialog and unsaved correction protection'
   await page.getByLabel('TKDN jasa (%)').fill('32');
   await page.goBack();
   await expect(dialog).toBeVisible();
-  await dialog.getByRole('button', { name: 'Tetap di halaman' }).click();
+  await dialog.getByRole('button', { name: 'Tutup dialog' }).click();
   await expect(page.getByLabel('TKDN jasa (%)')).toHaveValue('32');
   await page.goBack();
   await dialog.getByRole('button', { name: 'Buang perubahan' }).click();

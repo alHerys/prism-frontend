@@ -61,7 +61,11 @@ test("native PDF and compact header retain correction, confirmation and vendor r
   await expect(page.getByLabel("TKDN jasa (%)", { exact: true })).toHaveValue("31");
   await page.getByRole("button", { name: "Kembali ke pengadaan", exact: true }).click();
   const leave = page.getByRole("dialog", { name: "Perubahan belum disimpan", exact: true });
-  await leave.getByRole("button", { name: "Tetap di halaman", exact: true }).click();
+  await expect(leave.getByText("Simpan atau buang koreksi sebelum keluar.", { exact: true })).toBeVisible();
+  await expect(leave.getByRole("button", { name: "Buang perubahan", exact: true })).toHaveClass(/danger/);
+  await expect(leave.getByRole("button", { name: "Simpan", exact: true })).toBeVisible();
+  await page.screenshot({ path: info.outputPath("review-leave-dialog.png"), fullPage: false });
+  await leave.getByRole("button", { name: "Tutup dialog", exact: true }).click();
   await expect(leave).toHaveCount(0);
   await expect(page.getByLabel("TKDN jasa (%)", { exact: true })).toHaveValue("31");
   await page.getByRole("button", { name: "Konfirmasi data", exact: true }).click();

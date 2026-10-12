@@ -37,7 +37,7 @@ it("keeps corrections while toggling the review drawer and protects navigation u
   expect(screen.getByRole("button", { name: "Konfirmasi data" })).toBeEnabled();
   fireEvent.click(screen.getByRole("button", { name: "Kembali ke pengadaan" }));
   expect(screen.getByRole("dialog", { name: "Perubahan belum disimpan" })).toBeInTheDocument();
-  fireEvent.click(screen.getByRole("button", { name: "Tetap di halaman" }));
+  fireEvent.click(screen.getByRole("button", { name: "Tutup dialog" }));
   expect(screen.getByLabelText("TKDN jasa (%)")).toHaveValue("31");
   fireEvent.click(screen.getByRole("button", { name: "Kembali ke pengadaan" }));
   fireEvent.click(screen.getByRole("button", { name: "Buang perubahan" }));
