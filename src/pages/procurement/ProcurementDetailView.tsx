@@ -58,7 +58,7 @@ export function ProcurementDetailView({ state, setParams, tab, p, vendorOpen, se
               <div className="procurement-identity-summary"><span>{vendors.length}<small>Vendor</small></span><span>{docs.length}<small>Dokumen</small></span><span>{results.length}<small>Hasil</small></span></div>
             </section>
             <section className="panel stage-vendors">
-              <div className="panel-header"><div><h2>Identitas & vendor</h2><p>Daftarkan peserta sebelum mengaitkan dokumen penawaran.</p></div><button className="btn primary" onClick={() => setVendorOpen(true)}><Plus size={18} /> Tambah vendor</button></div>
+              <div className="panel-header"><div><h2>Identitas & vendor</h2><p>Tambahkan vendor pada pengadaan ini</p></div><button className="btn primary" onClick={() => setVendorOpen(true)}><Plus size={18} /> Tambah vendor</button></div>
               {vendors.length ? <div className="procurement-vendor-grid">{vendors.map((vendor) => <VendorCard key={vendor.id} vendor={vendor} documents={docs.filter((document) => document.vendorId === vendor.id)} />)}</div> : <Empty title="Belum ada vendor">Tambahkan vendor untuk memulai pengadaan.</Empty>}
             </section>
           </div>
@@ -90,7 +90,7 @@ export function ProcurementDetailView({ state, setParams, tab, p, vendorOpen, se
           </div>
           <div className="stage-navigation"><button className="btn" onClick={() => setParams({ tab: "hea" })}>Kembali ke evaluasi</button></div>
         </>}
-        <Modal open={vendorOpen} onOpenChange={setVendorOpen} title="Tambah vendor" description="Nama vendor merupakan identitas yang digunakan pada hasil evaluasi.">
+        <Modal open={vendorOpen} onOpenChange={setVendorOpen} title="Tambah vendor">
           <form onSubmit={addVendor}><div className="field"><label htmlFor="vendorName">Nama badan usaha</label><input id="vendorName" value={vendorName} onChange={(event) => setVendorName(event.target.value)} required maxLength={256} /></div><div className="modal-actions"><button type="button" className="btn" onClick={() => setVendorOpen(false)}>Batal</button><button className="btn primary">Tambah vendor</button></div></form>
         </Modal>
       </div>

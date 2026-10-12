@@ -14,9 +14,9 @@ export function UploadPanelView({ scope, embedded, kind, setKind, busy, processi
           <h2>{scope === "procurement" ? "Unggah Owner Estimate (OE)" : "Unggah dokumen"}</h2>
           <p>{scope === "vendor" ? "Pilih Form A5 atau penawaran untuk vendor ini." : "Owner Estimate ditautkan ke seluruh pengadaan."}</p>
         </div>
-        <span className="badge">PDF / XLSX · maks. 10 MiB</span>
+        {scope === "vendor" && <span className="badge">PDF / XLSX · maks. 10 MiB</span>}
       </div>
-      <div className="upload-document-options">{scope === "vendor" ? (
+      {scope === "vendor" && <div className="upload-document-options">
         <div className="field document-kind-field">
           <span className="field-label">Jenis dokumen</span>
           <div className="document-kind-actions" role="group" aria-label="Jenis dokumen">
@@ -24,12 +24,7 @@ export function UploadPanelView({ scope, embedded, kind, setKind, busy, processi
             <button type="button" className={`btn ${kind === "OFFER" ? "selected" : ""}`} aria-pressed={kind === "OFFER"} disabled={busy} onClick={() => setKind("OFFER")}>Penawaran vendor · XLSX</button>
           </div>
         </div>
-      ) : (
-        <div className="procurement-document-kind">
-          <span>Jenis dokumen</span>
-          <strong>Owner Estimate · XLSX</strong>
-        </div>
-      )}</div>
+      </div>}
       <UploadZone
         ariaLabel="Pilih berkas dokumen"
         accept={kind === "FORM_A5" ? ".pdf" : ".xlsx"}

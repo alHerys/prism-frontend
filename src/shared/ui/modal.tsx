@@ -1,6 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import type { ReactNode } from "react";
-import { useRef } from "react";
+import { useId, useRef } from "react";
 
 export function Modal({
   open,
@@ -12,16 +12,18 @@ export function Modal({
   open: boolean;
   onOpenChange: (v: boolean) => void;
   title: string;
-  description: string;
+  description?: string;
   children: ReactNode;
 }) {
   const opener = useRef<HTMLElement | null>(null);
+  const descriptionId = useId();
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="modal-overlay" />
         <Dialog.Content
           className="modal"
+          aria-describedby={description ? descriptionId : undefined}
           onOpenAutoFocus={() => {
             opener.current = document.activeElement instanceof HTMLElement
               ? document.activeElement
@@ -37,9 +39,9 @@ export function Modal({
           <Dialog.Title asChild>
             <h2>{title}</h2>
           </Dialog.Title>
-          <Dialog.Description asChild>
+          {description && <Dialog.Description id={descriptionId} asChild>
             <p>{description}</p>
-          </Dialog.Description>
+          </Dialog.Description>}
           {children}
         </Dialog.Content>
       </Dialog.Portal>

@@ -28,9 +28,23 @@ test('simplified review and vendor headers fit all layout boundaries with readab
       }
       if (route === 'vendor/vendor-nusa') { await back.click(); await expect(page).toHaveURL(/\?tab=dokumen$/); }
     }
+    if (width === 390 || width === 1521) {
+      await page.goto('/pengadaan/proc-tank');
+      await expect(page.locator('.stage-vendors .panel-header p')).toHaveText('Tambahkan vendor pada pengadaan ini');
+      const trigger = page.getByRole('button', { name: 'Tambah vendor', exact: true });
+      await trigger.click();
+      const dialog = page.getByRole('dialog', { name: 'Tambah vendor', exact: true });
+      await expect(dialog.locator(':scope > p')).toHaveCount(0);
+      await expect(dialog).not.toHaveAttribute('aria-describedby');
+      await expect(page.getByLabel('Nama badan usaha')).toBeFocused();
+      await page.screenshot({ path: info.outputPath(`vendor-dialog-${width}.png`), animations: 'disabled' });
+      await page.keyboard.press('Escape');
+      await expect(trigger).toBeFocused();
+    }
     await page.goto('/pengadaan/proc-terminal?tab=dokumen');
     const overview = page.locator('.procurement-document-overview');
     await expect(overview.locator('> section').first()).toContainText('Unggah Owner Estimate (OE)');
+    await expect(overview.locator('> section').first().locator('.upload-document-options,.panel-header .badge')).toHaveCount(0);
     const owner = await overview.locator('> section').first().boundingBox();
     const vendors = await overview.locator('> section').nth(1).boundingBox();
     if (width >= 1200) expect(owner!.x).toBeLessThan(vendors!.x);
