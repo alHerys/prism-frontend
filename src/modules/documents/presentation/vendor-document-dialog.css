@@ -23,3 +23,13 @@
   .vendor-document-dialog > h2 { font-size: 24px; }
   .vendor-document-close { top: 16px; right: 16px; }
 }
+.vendor-document-dialog > h2 { position: relative; padding-bottom: 18px; margin-bottom: 22px; }
+.vendor-document-dialog > h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 6%;
+  width: 88%;
+  height: 1px;
+  background: var(--border);
+}
