@@ -15,12 +15,3 @@ export interface ProcurementDetailModel {
   results: import("../../modules/evaluations/domain/models").Snapshot[];
   addVendor: (e: React.FormEvent<Element>) => Promise<void>;
 }
-
-export interface VendorDocumentsModel {
-  id: string | undefined;
-  vendorId: string | undefined;
-  state: import("../../modules/procurement/application/queries").ProcurementData;
-  procurement: import("../../modules/procurement/domain/models").Procurement | undefined;
-  vendor: import("../../modules/procurement/domain/models").Vendor | undefined;
-  backUrl: string;
-}

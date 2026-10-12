@@ -17,7 +17,7 @@ import type { VendorRow } from "./vendor-rows";
 import "./vendors.css";
 
 function vendorUrl(vendor: Vendor) {
-  return `/pengadaan/${vendor.procurementId}/vendor/${vendor.id}`;
+  return `/pengadaan/${vendor.procurementId}?tab=ringkasan&vendor=${encodeURIComponent(vendor.id)}`;
 }
 
 function VendorCard({ row }: { row: VendorRow }) {

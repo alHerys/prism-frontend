@@ -51,7 +51,7 @@ export function useReview() : ReviewModel {
   const back = () =>
     navigate(
       d?.vendorId
-        ? `/pengadaan/${id}/vendor/${d?.vendorId}`
+        ? `/pengadaan/${id}?tab=ringkasan&vendor=${encodeURIComponent(d.vendorId)}`
         : `/pengadaan/${id}?tab=ringkasan`,
     );
   function changeValue(key: keyof A5Values, value: string) {

@@ -38,26 +38,13 @@
 .procurement-events small { display: block; font-size: 11px; margin-top: 6px; }
 .procurement-events li:last-child { padding-bottom: 0; }
 .procurement-events .badge { font-size: 10px; margin-top: 2px; flex-shrink: 0; }
-.vendor-focus-owner { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 12px; flex-shrink: 0; }
-.vendor-document-summary { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 25px; }
-.vendor-document-summary p { font-size: 14px; color: var(--muted); }
-.vendor-document-summary > div { display: flex; flex-wrap: wrap; gap: 18px; }
-.vendor-document-summary span { display: flex; gap: 6px; align-items: center; color: var(--accent, #155a37); font-size: 12px; white-space: nowrap; }
-.vendor-workspace-layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.25fr); gap: 22px; align-items: start; }
-.vendor-workspace-layout > .panel { min-width: 0; margin: 0; }
-.vendor-upload-workspace .upload-panel-embedded { padding: 0; }
-.vendor-document-workspace .document-table-embedded { border: 0; padding: 0; margin: 0; }
-.vendor-document-workspace .table-wrap { overflow-x: auto; }
-.vendor-document-workspace .table { min-width: 660px; }
 @media (max-width: 1199px) {
-  .vendor-workspace-layout { grid-template-columns: minmax(0, 1fr); }
   .procurement-summary-layout { grid-template-columns: minmax(230px, .7fr) minmax(0, 1.5fr); }
 }
 @media (max-width: 1023px) {
   .procurement-detail-page .procurement-path { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .procurement-detail-page .procurement-path button:last-child { grid-column: 1 / -1; }
   .procurement-summary-layout, .procurement-history-layout { grid-template-columns: minmax(0, 1fr); }
-  .vendor-focus-owner { display: none; }
 }
 @media (max-width: 639px) {
   .procurement-detail-page .procurement-path { gap: 4px; padding: 5px; margin-bottom: 18px; border-radius: 17px; }
@@ -75,6 +62,4 @@
   .procurement-snapshot-row .btn { margin-left: 54px; }
   .procurement-events li { flex-wrap: wrap; gap: 8px; }
   .procurement-events li > div { flex-basis: calc(100% - 19px); }
-  .vendor-document-summary { align-items: flex-start; flex-direction: column; gap: 13px; }
-  .vendor-document-summary p { font-size: 13px; }
 }
