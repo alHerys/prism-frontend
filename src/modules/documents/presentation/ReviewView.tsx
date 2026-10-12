@@ -72,7 +72,7 @@ export function ReviewView({
       {d.kind === "FORM_A5" ? (
         <A5ReviewLayout
           name={d.name} source={evidence} editor={editor} busy={busy}
-          showSource={showSource} setShowSource={setShowSource} onBack={onBack}
+          onBack={onBack}
         />
       ) : <>
       <header className="focus-head">

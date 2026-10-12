@@ -28,11 +28,11 @@ it("renders unavailable document routes without initializing an editor", () => {
   expect(screen.getByText("Dokumen tidak ditemukan")).toBeInTheDocument();
   expect(screen.queryByLabelText("TKDN jasa (%)")).not.toBeInTheDocument();
 });
-it("keeps corrections while toggling evidence and protects navigation until explicit discard", async () => {
+it("keeps corrections while toggling the review drawer and protects navigation until explicit discard", async () => {
   const service = openReview("doc-21");
   fireEvent.change(screen.getByLabelText("TKDN jasa (%)"), { target: { value: "31" } });
-  fireEvent.click(screen.getByRole("button", { name: "Tutup bukti sumber" }));
-  fireEvent.click(screen.getByRole("button", { name: "Tampilkan bukti sumber" }));
+  fireEvent.click(screen.getByRole("button", { name: "Tutup nilai" }));
+  fireEvent.click(screen.getByRole("button", { name: "Periksa nilai" }));
   expect(screen.getByLabelText("TKDN jasa (%)")).toHaveValue("31");
   expect(screen.getByRole("button", { name: "Konfirmasi data" })).toBeEnabled();
   fireEvent.click(screen.getByRole("button", { name: "Kembali ke pengadaan" }));

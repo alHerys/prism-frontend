@@ -22,7 +22,8 @@ test("native PDF and compact header retain correction, confirmation and vendor r
   await expect(pdf).toHaveAttribute("type", "application/pdf");
   await expect(pdf).toHaveAttribute("src", "/files/Form-A5-Nusa.pdf");
   await expect(page.locator("header").getByRole("heading", { name: "Form_A5_Nusa.pdf", exact: true })).toBeVisible();
-  await expect(page.locator("header").getByRole("button", { name: "Tutup bukti sumber", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: /^(Tutup|Tampilkan) bukti sumber$/ })).toHaveCount(0);
+  await expect(page.locator("#review-source > .panel-header")).toHaveCount(0);
   await expect(page.locator(".review-document-bar, .review-document-identity, .pdf-preview-toolbar")).toHaveCount(0);
   await expect(page.getByText("PRC-2026-001 · PT Nusa Teknik Mandiri", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Terkonfirmasi", { exact: true })).toHaveCount(0);
@@ -55,11 +56,9 @@ test("native PDF and compact header retain correction, confirmation and vendor r
   await expect(page.getByLabel("TKDN jasa (%)", { exact: true })).toHaveValue("31");
   await page.getByLabel("TKDN jasa (%)", { exact: true }).press("Escape");
   await expect(page.getByRole("button", { name: "Periksa nilai", exact: true })).toBeFocused();
-  await page.getByRole("button", { name: "Tutup bukti sumber", exact: true }).click();
-  await expect(pdf).toBeHidden();
-  await expect(page.getByLabel("TKDN jasa (%)", { exact: true })).toHaveValue("31");
-  await page.getByRole("button", { name: "Tampilkan bukti sumber", exact: true }).click();
   await expect(pdf).toBeVisible();
+  await openDrawer(page);
+  await expect(page.getByLabel("TKDN jasa (%)", { exact: true })).toHaveValue("31");
   await page.getByRole("button", { name: "Kembali ke pengadaan", exact: true }).click();
   const leave = page.getByRole("dialog", { name: "Perubahan belum disimpan", exact: true });
   await leave.getByRole("button", { name: "Tetap di halaman", exact: true }).click();
