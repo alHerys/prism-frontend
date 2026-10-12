@@ -15,9 +15,8 @@ import "./procurement.css";
 export function ProcurementDetailView({ state, setParams, tab, p, vendorOpen, setVendorOpen, vendorName, setVendorName, docs, vendors, results, addVendor }: ProcurementDetailModel) {
   const dateTime = useWorkspaceTime();
   if (!p) return <div className="page"><Empty title="Pengadaan tidak ditemukan">Kembali ke <Link to="/pengadaan">daftar pengadaan</Link>.</Empty></div>;
-  const confirmed = docs.filter((document) => document.status === "CONFIRMED").length;
   const stages = [
-    { value: "ringkasan", label: "Identitas & vendor", detail: `${vendors.length} vendor · ${confirmed}/${docs.length} dokumen terkonfirmasi`, current: tab === "ringkasan" },
+    { value: "ringkasan", label: "Identitas & vendor", detail: `${vendors.length} vendor`, current: tab === "ringkasan" },
     { value: "hea", label: "Evaluasi", detail: "HEA atau Harga Timpang", current: tab === "hea" || tab === "harga" },
     { value: "riwayat", label: "Hasil & jejak sumber", detail: `${results.length} hasil tersimpan`, current: tab === "riwayat" },
   ];
