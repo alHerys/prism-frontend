@@ -85,11 +85,11 @@ export function VendorCollection({ vendors, documents, heading, actions, empty }
       <div className="vendor-collection-header">
         {heading && <div className="vendor-collection-heading"><h2>{heading.title}</h2><p>{heading.description}</p></div>}
         <div className="vendor-collection-actions">
-          {actions}
           {vendors.length > 0 && <div className="vendor-layout-switch" role="group" aria-label="Tampilan daftar vendor">
             <button type="button" className="btn small" aria-pressed={layout === "grid"} onClick={() => setLayout("grid")}><SquaresFour size={17} aria-hidden="true" />Petak</button>
             <button type="button" className="btn small" aria-pressed={layout === "table"} onClick={() => setLayout("table")}><ListBullets size={17} aria-hidden="true" />Tabel</button>
           </div>}
+          {actions}
         </div>
       </div>
       {!rows.length ? empty : layout === "grid" ? <div className="procurement-vendor-grid">{rows.map(row => <VendorCard key={row.vendor.id} row={row} />)}</div> : <VendorTable rows={rows} />}
