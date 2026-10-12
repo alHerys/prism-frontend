@@ -46,6 +46,14 @@ test("OE card and vendor layouts keep review links, document availability and re
   const heading = await page.locator(".vendor-collection-header").boundingBox();
   const tableBounds = await table.boundingBox();
   expect(tableBounds!.y - heading!.y - heading!.height).toBeLessThanOrEqual(24);
+  const headers = await table.getByRole("columnheader").all();
+  const cells = await nusa.getByRole("cell").all();
+  for (let column = 0; column < headers.length; column++) {
+    const headerBox = await headers[column].boundingBox();
+    const cellBox = await cells[column].boundingBox();
+    expect(Math.abs(headerBox!.x - cellBox!.x)).toBeLessThan(1);
+    expect(Math.abs(headerBox!.width - cellBox!.width)).toBeLessThan(1);
+  }
   await capture(page, info, "documents-table");
   await table.getByRole("link", { name: "PT Nusa Teknik Mandiri · Buka dokumen" }).click();
   await expect(page).toHaveURL(/vendor=showcase-nusa/);
@@ -99,14 +107,21 @@ test("OE replacement survives failure, requires review, preserves old evidence a
   await expect(replacement).toBeVisible();
   await expect(card.getByRole("button", { name: "Edit", exact: true, includeHidden: true })).toBeVisible();
   await capture(page, info, "documents-replace");
-  await page.getByLabel("Pilih berkas OE terbaru", { exact: true }).setInputFiles({ name: "invalid.xlsx", mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", buffer: Buffer.from("invalid") });
+  await expect(replacement.getByRole("heading")).toContainText("Edit Owner Estimate (OE)");
+  await expect(replacement.getByRole("heading").locator("svg")).toHaveCount(1);
+  await expect(replacement.getByRole("button", { name: "Tutup", exact: true })).toHaveCount(0);
+  const zone = await replacement.locator(".upload-zone").boundingBox();
+  const chooserPromise = page.waitForEvent("filechooser");
+  await page.mouse.click(zone!.x + 16, zone!.y + 16);
+  const chooser = await chooserPromise;
+  await chooser.setFiles({ name: "invalid.xlsx", mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", buffer: Buffer.from("invalid") });
   await expect(page.getByRole("alert")).toBeVisible();
   await expect(card).toContainText("OE-Terminal.xlsx");
   const zoneBounds = await replacement.locator(".upload-zone").boundingBox();
   const errorBounds = await replacement.getByRole("alert").boundingBox();
   expect(errorBounds!.y - (zoneBounds!.y + zoneBounds!.height)).toBeGreaterThanOrEqual(16);
   await capture(page, info, "documents-replace-error");
-  await page.getByRole("dialog", { name: "Edit Owner Estimate (OE)" }).getByRole("button", { name: "Tutup" }).click();
+  await page.getByRole("dialog", { name: "Edit Owner Estimate (OE)" }).getByRole("button", { name: "Tutup edit OE" }).click();
   await expect(page.getByRole("alert")).toHaveCount(0);
   await expect(page.getByLabel("Pilih berkas OE terbaru", { exact: true })).toHaveCount(0);
   await card.getByRole("button", { name: "Edit", exact: true }).click();
@@ -148,6 +163,12 @@ test("vendor document dialog supports available, mixed and empty slots and retur
   await expect(dialog.getByRole("link", { name: "Buka Penawaran Harga", exact: true })).toBeVisible();
   await expect(dialog.locator('input[type="file"]')).toHaveCount(0);
   await expect(dialog).not.toHaveAttribute("aria-describedby");
+  const divider = await dialog.locator(":scope > h2").evaluate(element => {
+    const style = getComputedStyle(element, "::after");
+    return { left: parseFloat(style.left), width: parseFloat(style.width), headingWidth: element.getBoundingClientRect().width };
+  });
+  expect(divider.left).toBe(0);
+  expect(Math.abs(divider.width - divider.headingWidth)).toBeLessThan(1);
   await expect(dialog.getByRole("heading", { name: "Pilih Dokumen", exact: true })).toHaveCSS("text-align", "center");
   await expect(dialog.getByRole("button", { name: "Tutup", exact: true })).toHaveCount(0);
   await expect(dialog.locator(".vendor-document-caption > span").first()).toHaveText("Buka");
@@ -171,6 +192,7 @@ test("vendor document dialog supports available, mixed and empty slots and retur
   await page.getByRole("button", { name: "Tambah vendor", exact: true }).click();
   await page.getByLabel("Nama badan usaha").fill("Vendor Dokumen Baru");
   await page.getByRole("dialog", { name: "Tambah vendor", exact: true }).getByRole("button", { name: "Tambah vendor", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Tambah vendor", exact: true })).toHaveCount(0);
   await page.getByRole("link", { name: "Vendor Dokumen Baru · Buka dokumen", exact: true }).focus();
   await page.keyboard.press("Space");
   dialog = page.getByRole("dialog", { name: "Pilih Dokumen", exact: true });
