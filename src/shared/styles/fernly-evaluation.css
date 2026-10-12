@@ -66,10 +66,10 @@
 .fernly-upload .document-kind-actions { width: fit-content; max-width: 100%; display: flex; gap: 4px; padding: 5px; border-radius: 14px; background: var(--shell, #f5f6f5); }
 .fernly-upload .document-kind-actions .btn { border: 0; background: transparent; border-radius: 10px; }
 .fernly-upload .document-kind-actions .btn.selected { background: var(--surface); color: var(--accent-deep, var(--blue-deep)); box-shadow: 0 2px 5px #13281b0a; }
-.fernly-upload .upload-zone { border-color: var(--accent-border); border-radius: 16px; padding: 38px 24px; background: var(--shell, #f5f6f5); }
-.fernly-upload .upload-zone p { font-size: 16px; margin-bottom: 8px; }
-.fernly-upload .upload-zone > svg { color: var(--accent-deep, var(--blue-deep)); }
-.fernly-upload .loading-state { justify-content: center; padding-block: 16px; }
+.upload-panel-content .upload-zone { border-color: var(--accent-border); border-radius: 16px; padding: 38px 24px; background: var(--shell, #f5f6f5); }
+.upload-panel-content .upload-zone p { font-size: 16px; margin-bottom: 8px; }
+.upload-panel-content .upload-zone > svg { color: var(--accent-deep, var(--blue-deep)); }
+.upload-panel-content .loading-state { justify-content: center; padding-block: 16px; }
 .fernly-upload .procurement-document-kind { border-radius: 12px; background: var(--shell, #f5f6f5); padding: 14px 18px; }
 .fernly-documents .table { min-width: 680px; }
 .fernly-documents .table td { padding-block: 18px; }
@@ -105,5 +105,5 @@
   .result-trace { padding: 16px; }
   .fernly-upload .document-kind-actions { width: 100%; flex-direction: column; }
   .fernly-upload .document-kind-actions .btn { justify-content: center; min-height: 44px; }
-  .fernly-upload .upload-zone { padding: 30px 18px; }
+  .upload-panel-content .upload-zone { padding: 30px 18px; }
 }

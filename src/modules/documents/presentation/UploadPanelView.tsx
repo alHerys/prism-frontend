@@ -5,12 +5,25 @@ import { LoadingState } from "../../../shared/ui/loading-state";
 import { UploadZone } from "../../../shared/ui/upload-zone";
 import type { UploadPanelModel } from "./view-models";
 import { OwnerEstimateDocument } from "./OwnerEstimateDocument";
+import { Modal } from "../../../shared/ui/modal";
 import { OwnerEstimateRemoval } from "./OwnerEstimateRemoval";
 
 export function UploadPanelView({ scope, embedded, kind, setKind, busy, processing, failure, upload, currentDocument, replacing, beginReplacement, cancelReplacement, removalTarget, removalFailure, requestRemoval, cancelRemoval, removeOwnerEstimate }: UploadPanelModel) {
 
   const title = scope === "vendor" ? "Unggah dokumen" : currentDocument ? "Owner Estimate (OE)" : "Unggah Owner Estimate (OE)";
-  const showUpload = !currentDocument || replacing;
+  const uploadContent = <div className="upload-panel-content">
+    <UploadZone
+      ariaLabel={currentDocument ? "Pilih berkas OE terbaru" : "Pilih berkas dokumen"}
+      accept={kind === "FORM_A5" ? ".pdf" : ".xlsx"}
+      disabled={busy}
+      onFiles={files => { if (files[0]) void upload(files[0]); }}
+    >
+      <p><strong>{busy ? `${processing}…` : "Tarik dokumen ke sini atau pilih berkas"}</strong></p>
+      <small>Dokumen akan diperiksa sebelum digunakan untuk evaluasi.</small>
+      {busy && <LoadingState label={processing} />}
+    </UploadZone>
+    {failure && <ErrorState message={`${failure} Pilih berkas kembali untuk mencoba ulang.`} />}
+  </div>;
 
   return (
     <section className={`fernly-upload ${embedded ? "upload-panel-embedded" : "panel"}`} aria-busy={busy}>
@@ -21,7 +34,7 @@ export function UploadPanelView({ scope, embedded, kind, setKind, busy, processi
         </div>
         {scope === "vendor" && <span className="badge">PDF / XLSX · maks. 10 MiB</span>}
       </div>
-      {currentDocument && <OwnerEstimateDocument document={currentDocument} busy={busy} replacing={replacing} onReplace={beginReplacement} onRemove={requestRemoval} />}
+      {currentDocument && <OwnerEstimateDocument document={currentDocument} busy={busy} onReplace={beginReplacement} onRemove={requestRemoval} />}
       {scope === "vendor" && <div className="upload-document-options">
         <div className="field document-kind-field">
           <span className="field-label">Jenis dokumen</span>
@@ -31,33 +44,14 @@ export function UploadPanelView({ scope, embedded, kind, setKind, busy, processi
           </div>
         </div>
       </div>}
-      {showUpload && (
-        <div className={currentDocument ? "owner-estimate-replacement" : undefined}>
-          {currentDocument && (
-            <p>Unggah OE terbaru untuk mengganti dokumen ini. OE baru perlu diperiksa dan dikonfirmasi kembali.</p>
-          )}
-          <UploadZone
-            ariaLabel={currentDocument ? "Pilih berkas OE terbaru" : "Pilih berkas dokumen"}
-            accept={kind === "FORM_A5" ? ".pdf" : ".xlsx"}
-            disabled={busy}
-            onFiles={(files) => {
-              if (files[0]) void upload(files[0]);
-            }}
-          >
-            <p><strong>{busy ? `${processing}…` : "Tarik dokumen ke sini atau pilih berkas"}</strong></p>
-            <small>Dokumen akan diperiksa sebelum digunakan untuk evaluasi.</small>
-            {busy && <LoadingState label={processing} />}
-          </UploadZone>
-          {currentDocument && (
-            <button type="button" className="btn small" disabled={busy} onClick={cancelReplacement}>Batal mengganti</button>
-          )}
+      {!currentDocument && uploadContent}
+      <Modal open={replacing} onOpenChange={open => { if (!open) cancelReplacement(); }} title="Ganti Owner Estimate (OE)"
+        description="Unggah satu berkas XLSX terbaru. OE saat ini tetap digunakan sampai unggahan berhasil. OE baru perlu diperiksa dan dikonfirmasi kembali.">
+        {uploadContent}
+        <div className="modal-actions">
+          <button type="button" className="btn" disabled={busy} onClick={cancelReplacement}>Batal mengganti</button>
         </div>
-      )}
-      {failure && (
-        <ErrorState
-          message={`${failure} Pilih berkas kembali untuk mencoba ulang.`}
-        />
-      )}
+      </Modal>
       <OwnerEstimateRemoval removalTarget={removalTarget} removalFailure={removalFailure} busy={busy} cancelRemoval={cancelRemoval} removeOwnerEstimate={removeOwnerEstimate} />
     </section>
   );

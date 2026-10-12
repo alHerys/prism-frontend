@@ -51,7 +51,7 @@ export function useUploadPanel({
     }
   }
   const beginReplacement = () => { setFailure(""); setReplacing(true); };
-  const cancelReplacement = () => { setFailure(""); setReplacing(false); };
+  const cancelReplacement = () => { if (!busy) { setFailure(""); setReplacing(false); } };
   async function upload(file: File) {
     setFailure("");
     if (busy) return;
