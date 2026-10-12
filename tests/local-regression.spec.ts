@@ -10,10 +10,10 @@ async function confirm(page: Page) {
   if (await ack.count()) await ack.check();
   await button(page, 'Konfirmasi data').click();
   await page.getByRole('dialog').getByRole('button', {name: 'Konfirmasi data', exact: true}).click();
-  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await expect(page.getByRole('dialog', {name: 'Konfirmasi data dokumen'})).toHaveCount(0);
   await expect(page).not.toHaveURL(/\/review\//);
 }
-async function upload(page: Page, name: string) {
+async function upload(page: Page, name: string, label = 'Pilih berkas dokumen') {
   // Observe the real 450ms progress state before selecting a file. Polling after
   // setInputFiles can miss it when Chrome is busy; production timing stays intact.
   await page.evaluate(() => {
@@ -29,7 +29,7 @@ async function upload(page: Page, name: string) {
     });
     observer.observe(document.body, { childList: true, subtree: true, characterData: true });
   });
-  await page.getByLabel('Pilih berkas dokumen').setInputFiles(file(name));
+  await page.getByLabel(label, {exact: true}).setInputFiles(file(name));
   await expect(page.locator('html')).toHaveAttribute('data-upload-progress-seen', 'true');
   await expect(page).toHaveURL(/\/review\/doc-/);
 }
@@ -71,26 +71,26 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   }
   await page.getByRole('link', {name: /PT Nusa Teknik Mandiri.*Buka dokumen/}).click();
   await expect(page.getByRole('heading', {name: 'PT Nusa Teknik Mandiri', exact: true})).toBeVisible();
-  await expect(page.locator('.sidebar')).toHaveCount(0);
+  await expect(page.getByRole('dialog', {name: 'PT Nusa Teknik Mandiri'})).toBeVisible();
   await expect(page.getByLabel('Pemilik dokumen')).toHaveCount(0);
   await page.screenshot({path: info.outputPath('vendor.png'), fullPage: true});
-  await page.getByLabel('Pilih berkas dokumen').setInputFiles({name: 'invalid.pdf', mimeType: 'application/pdf', buffer: Buffer.from('unknown bytes')});
+  await page.getByLabel('Unggah Form A5', {exact: true}).setInputFiles({name: 'invalid.pdf', mimeType: 'application/pdf', buffer: Buffer.from('unknown bytes')});
   await expect(page.getByRole('alert')).toContainText('belum didukung');
-  await upload(page, 'Form-A5-Nusa.pdf');
+  await upload(page, 'Form-A5-Nusa.pdf', 'Unggah Form A5');
   await expect(page.getByLabel('Harga Penawaran Barang (Rp)')).toHaveValue('1.000.000.000');
   await expect(page.locator('iframe.review-pdf-preview')).toHaveAttribute('src', '/files/Form-A5-Nusa.pdf');
   await expect(page.getByRole('navigation', {name: 'Progres evaluasi'})).toHaveCount(0);
   await page.screenshot({path: info.outputPath('review-pdf.png'), fullPage: true});
   await confirm(page);
-  await page.locator('.review-back').click();
+  await button(page, 'Tutup').click();
   await page.getByRole('link', {name: /PT Borneo Teknik Nusantara.*Buka dokumen/}).click();
   await expect(page.getByRole('heading', {name: 'PT Borneo Teknik Nusantara', exact: true})).toBeVisible();
-  await upload(page, 'Form-A5-Borneo.pdf');
+  await upload(page, 'Form-A5-Borneo.pdf', 'Unggah Form A5');
   await expect(page.getByLabel('TKDN jasa (%)')).toHaveValue('30');
   await expect(button(page, 'Konfirmasi data')).toBeDisabled();
   await page.getByLabel('TKDN jasa (%)').fill('35');
   await confirm(page);
-  await page.locator('.review-back').click();
+  await button(page, 'Tutup').click();
   await page.locator('.procurement-path').getByRole('button', {name: /Evaluasi/}).click();
   await page.getByLabel('Preferensi barang (%)').fill('15');
   await page.getByLabel('Preferensi jasa (%)').fill('7,5');
@@ -104,10 +104,9 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   await upload(page, 'OE-Terminal.xlsx');
   await group(page);
   await page.getByRole('link', {name: /PT Nusa Teknik Mandiri.*Buka dokumen/}).click();
-  await button(page, 'Penawaran vendor · XLSX').click();
-  await upload(page, 'Penawaran-Nusa.xlsx');
+  await upload(page, 'Penawaran-Nusa.xlsx', 'Unggah Penawaran Harga');
   await group(page);
-  await page.locator('.review-back').click();
+  await button(page, 'Tutup').click();
   await page.locator('.procurement-path').getByRole('button', {name: /Evaluasi/}).click();
   await button(page, 'Harga Timpang').click();
   await page.getByLabel('OE pengadaan', {exact: true}).selectOption({label: 'OE-Terminal.xlsx · Terkonfirmasi'});

@@ -6,11 +6,13 @@ test('simplified review and vendor headers fit all layout boundaries with readab
     await page.setViewportSize({ width, height: 842 });
     for (const route of ['vendor/vendor-nusa', 'review/doc-21', 'review/doc-24']) {
       await page.goto('/pengadaan/proc-terminal/' + route);
-      const back = page.locator('.review-back');
+      const back = route.startsWith('review') ? page.locator('.review-back') : page.getByRole('button', {name: 'Tutup', exact: true});
       await expect(back).toBeVisible();
-      await expect(back).toHaveText('');
-      await expect(back).toHaveAccessibleName(/Kembali/);
-      expect((await back.boundingBox())!.width).toBe(48);
+      if (route.startsWith('review')) {
+        await expect(back).toHaveText('');
+        await expect(back).toHaveAccessibleName(/Kembali/);
+        expect((await back.boundingBox())!.width).toBe(48);
+      } else await expect(page.getByRole('dialog')).toBeVisible();
       if (route.startsWith('review')) {
         await expect(page.getByRole('button', { name: 'Simpan perubahan', exact: true })).toHaveCount(0);
         await expect(page.getByText(/Nilai awal:/)).toHaveCount(0);

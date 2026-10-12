@@ -17,7 +17,7 @@ function openReview(documentId: string) {
     const service = createTestSession(true, false, runtime);
   const router = createMemoryRouter([
     { path: "/pengadaan/:id/review/:documentId", element: <Review /> },
-    { path: "/pengadaan/:id/vendor/:vendorId", element: <p>Dokumen vendor</p> },
+    { path: "/pengadaan/:id", element: <p>Dokumen vendor</p> },
   ], { initialEntries: [`/pengadaan/proc-terminal/review/${documentId}`] });
   const application = createApplication(runtime);
   render(<ApplicationProviders application={application}><ToastProvider><RouterProvider router={router} /></ToastProvider></ApplicationProviders>);
