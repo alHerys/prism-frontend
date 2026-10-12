@@ -7,6 +7,7 @@ import "../../../shared/styles/focus.css";
 import { SourcePanel } from "../../../shared/ui/source-panel";
 import { fields } from "./review-fields";
 import type { ReviewModel } from "./view-models";
+import { PdfPreview } from "../../../shared/ui/pdf-preview";
 export function ReviewSource({ d, focused, p, vendor, source }: Pick<ReviewModel, "d" | "focused" | "p" | "vendor" | "source"> & { d: DocumentRecord }) {
   return (
     <SourcePanel
@@ -30,13 +31,7 @@ export function ReviewSource({ d, focused, p, vendor, source }: Pick<ReviewModel
       }
     >
       {d.kind === "FORM_A5" && source ? (
-        <>
-          <iframe
-            className="review-pdf-preview"
-            src={source.path}
-            title={`Preview PDF ${d.name}`}
-          />
-        </>
+        <PdfPreview url={source.path} name={d.name} />
       ) : (
         <div className="paper">
           <div className="paper-header">

@@ -21,7 +21,8 @@
     "test:storybook:browser": "playwright test --config playwright.storybook.config.ts",
     "fixtures:prepare": "node scripts/prepare-fixtures.mjs",
     "test:local-regression": "playwright test --config playwright.local.config.ts",
-    "test:procurement": "playwright test --config playwright.procurement.config.ts"
+    "test:procurement": "playwright test --config playwright.procurement.config.ts",
+    "test:review": "playwright test --config playwright.review.config.ts"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
@@ -30,6 +31,7 @@
     "@radix-ui/react-tabs": "^1.1.21",
     "@radix-ui/react-tooltip": "^1.2.16",
     "exceljs": "^4.4.0",
+    "pdfjs-dist": "^6.4.299",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router": "^7.9.3"

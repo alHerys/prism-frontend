@@ -30,7 +30,7 @@ siklus.
 
 ## Menjalankan dan memeriksa
 
-Gunakan Node.js 22+ dan npm 10+ dari direktori frontend:
+Gunakan Node.js 22.13+ (atau 24+) dan npm 10+ dari direktori frontend:
 
 ```sh
 npm ci
