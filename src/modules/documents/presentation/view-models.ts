@@ -1,6 +1,10 @@
 import type * as React from "react";
 
 export interface UploadPanelModel {
+  currentDocument: import("../domain/models").DocumentRecord | undefined;
+  replacing: boolean;
+  beginReplacement: () => void;
+  cancelReplacement: () => void;
   scope: "procurement" | "vendor";
   embedded: boolean;
   kind: import("../domain/models").DocumentKind;

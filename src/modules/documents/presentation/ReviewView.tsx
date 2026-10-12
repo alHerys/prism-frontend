@@ -101,7 +101,7 @@ export function ReviewView({
           {showSource && (
             <ReviewSource d={d} focused={focused} p={p} vendor={vendor} source={source} />
           )}
-          <ReviewEditor d={d} ack={ack} setAck={setAck} busy={busy} setConfirm={setConfirm} setFocused={setFocused} values={values} pairs={pairs} group={group} setGroup={setGroup} dirty={dirty} setDirty={setDirty} failure={failure} changeValue={changeValue} editPair={editPair} />
+          {d.supersededBy ? <section className="panel"><h2>OE telah diganti</h2><p>Dokumen ini disimpan sebagai jejak sumber. Gunakan OE terbaru untuk evaluasi berikutnya.</p><Link className="btn" to={`/pengadaan/${d.procurementId}/review/${d.supersededBy}`}>Buka OE terbaru</Link></section> : <ReviewEditor d={d} ack={ack} setAck={setAck} busy={busy} setConfirm={setConfirm} setFocused={setFocused} values={values} pairs={pairs} group={group} setGroup={setGroup} dirty={dirty} setDirty={setDirty} failure={failure} changeValue={changeValue} editPair={editPair} />}
         </div>
       </main>
       <ReviewConfirmation busy={busy} confirm={confirm} setConfirm={setConfirm} confirmDocument={confirmDocument} />
