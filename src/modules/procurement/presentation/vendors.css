@@ -28,3 +28,10 @@
 .procurement-vendor-card .procurement-vendor-link:hover { background: var(--accent-soft); }
 @media (min-width: 1600px) { .procurement-vendor-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 639px) { .procurement-vendor-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; } }
+
+.vendor-document-row { position: relative; }
+.vendor-document-row .vendor-name-link::after { content: ""; position: absolute; inset: 0; }
+.vendor-document-row:hover, .vendor-document-row:focus-within { background: var(--accent-soft); }
+.vendor-document-row:focus-within { outline: 2px solid var(--accent); outline-offset: -2px; }
+.vendor-documents-cell { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.vendor-documents-cell > svg { flex-shrink: 0; color: var(--accent); }
