@@ -69,7 +69,6 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
     await page.getByLabel('Nama badan usaha').fill(name);
     await page.getByRole('dialog').getByRole('button', {name: 'Tambah vendor'}).click();
   }
-  await button(page, 'Lanjut ke dokumen').click();
   await page.getByRole('link', {name: /PT Nusa Teknik Mandiri.*Buka dokumen/}).click();
   await expect(page.getByRole('heading', {name: 'PT Nusa Teknik Mandiri', exact: true})).toBeVisible();
   await expect(page.locator('.sidebar')).toHaveCount(0);
@@ -101,7 +100,7 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   await button(page, 'Evaluasi HEA').click();
   await expect(page.getByRole('heading', {name: 'Leaderboard HEA'})).toBeVisible();
   expect(await exportRows(page, info, 'hea')).toContain('1261794759.4224293029478248835170918485030216358352');
-  await button(page, 'Kembali ke dokumen').click();
+  await button(page, 'Kembali ke identitas & vendor').click();
   await upload(page, 'OE-Terminal.xlsx');
   await group(page);
   await page.getByRole('link', {name: /PT Nusa Teknik Mandiri.*Buka dokumen/}).click();

@@ -26,11 +26,11 @@ test('simplified review and vendor headers fit all layout boundaries with readab
         await page.getByRole('button', { name: 'Tutup bukti sumber', exact: true }).click();
         await page.screenshot({ path: info.outputPath('review-editor-390.png'), animations: 'disabled' });
       }
-      if (route === 'vendor/vendor-nusa') { await back.click(); await expect(page).toHaveURL(/\?tab=dokumen$/); }
+      if (route === 'vendor/vendor-nusa') { await back.click(); await expect(page).toHaveURL(/\?tab=ringkasan$/); }
     }
     if (width === 390 || width === 1521) {
       await page.goto('/pengadaan/proc-tank');
-      await expect(page.locator('.stage-vendors .panel-header p')).toHaveText('Tambahkan vendor pada pengadaan ini');
+      await expect(page.locator('.stage-vendors .vendor-collection-heading p')).toHaveText('Tambahkan vendor dan periksa dokumennya sebelum evaluasi.');
       const trigger = page.getByRole('button', { name: 'Tambah vendor', exact: true });
       await trigger.click();
       const dialog = page.getByRole('dialog', { name: 'Tambah vendor', exact: true });

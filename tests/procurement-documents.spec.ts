@@ -18,6 +18,8 @@ test("OE card and vendor layouts keep review links, document availability and re
   await expect(page.locator(".procurement-heading-meta dd svg")).toHaveCount(2);
   await expect(page.getByRole("heading", { name: "Owner Estimate (OE)", exact: true })).toBeVisible();
   await expect(page.locator(".owner-estimate-document")).toContainText("OE-Terminal.xlsx");
+  await expect(page.getByRole("navigation", { name: "Tahap pengadaan" }).getByRole("button")).toHaveCount(3);
+  await expect(page.getByRole("button", { name: /Unggah & verifikasi/ })).toHaveCount(0);
   await expect(page.locator(".owner-estimate-document .badge")).toHaveCount(0);
   await expect(page.locator(".owner-estimate-identity small")).not.toContainText("Revisi");
   await expect(page.locator(".procurement-vendor-card").first().getByLabel("Form A5: tersedia")).toHaveCSS("color", "rgb(34, 99, 63)");
@@ -46,7 +48,6 @@ test("OE card and vendor layouts keep review links, document availability and re
   await page.getByRole("button", { name: "Tambah vendor", exact: true }).click();
   await page.getByLabel("Nama badan usaha").fill("Vendor Baru Review");
   await page.getByRole("dialog", { name: "Tambah vendor" }).getByRole("button", { name: "Tambah vendor", exact: true }).click();
-  await page.getByRole("button", { name: "Lanjut ke dokumen" }).click();
   await page.getByRole("button", { name: "Tabel", exact: true }).click();
   const added = page.getByRole("table", { name: "vendor", exact: true }).getByRole("row").filter({ hasText: "Vendor Baru Review" });
   await expect(added.locator("time")).toHaveAttribute("datetime", /^\d{4}-\d{2}-\d{2}T/);
@@ -72,7 +73,7 @@ test("OE deletion requires confirmation, supports cancel and permits a freshly r
   await expect(page.getByRole("heading", { name: "Unggah Owner Estimate (OE)", exact: true })).toBeVisible();
   await page.getByRole("navigation", { name: "Tahap pengadaan" }).getByRole("button", { name: /Hasil & jejak sumber/ }).click();
   await expect(page.getByRole("button", { name: "Buka hasil", exact: true })).toHaveCount(2);
-  await page.getByRole("navigation", { name: "Tahap pengadaan" }).getByRole("button", { name: /Unggah & verifikasi/ }).click();
+  await page.getByRole("navigation", { name: "Tahap pengadaan" }).getByRole("button", { name: /Identitas & vendor/ }).click();
   await page.getByLabel("Pilih berkas dokumen", { exact: true }).setInputFiles(path.resolve("public/files/OE-Terminal.xlsx"));
   await expect(page).toHaveURL(/\/review\/doc-/);
   await expect(page.locator(".review-document-identity")).toContainText("Perlu ditinjau");
@@ -109,7 +110,7 @@ test("OE replacement survives failure, requires review, preserves old evidence a
   if (await ack.count()) await ack.check();
   await page.getByRole("button", { name: "Konfirmasi data", exact: true }).click();
   await page.getByRole("dialog", { name: "Konfirmasi data dokumen" }).getByRole("button", { name: "Konfirmasi data", exact: true }).click();
-  await expect(page).toHaveURL(/tab=dokumen/);
+  await expect(page).toHaveURL(/tab=ringkasan/);
   await expect(card.locator(".badge")).toHaveCount(0);
   // Browser Back preserves the in-memory runtime; page.goto would reset it.
   for (let step = 0; step < 6 && !page.url().endsWith(oldReview!); step++) await page.goBack();
