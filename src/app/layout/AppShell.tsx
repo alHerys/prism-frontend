@@ -11,6 +11,8 @@ import { Question } from "@phosphor-icons/react/dist/csr/Question";
 import { SignOut } from "@phosphor-icons/react/dist/csr/SignOut";
 import { Hash } from "@phosphor-icons/react/dist/csr/Hash";
 import { Briefcase } from "@phosphor-icons/react/dist/csr/Briefcase";
+import { CalendarBlank } from "@phosphor-icons/react/dist/csr/CalendarBlank";
+import { BuildingOffice } from "@phosphor-icons/react/dist/csr/BuildingOffice";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router";
@@ -18,6 +20,7 @@ import { useProcurementData } from "../../modules/procurement/presentation/bindi
 import { Hint } from "../../shared/ui/hint";
 import { AppRoutes } from "../router/AppRoutes";
 import { useWorkspacePreferences } from "../../shared/ui/workspace-preferences";
+import { useWorkspaceTime } from "../../shared/ui/workspace-time";
 import { useHelpSearch } from "../../shared/ui/help-search";
 import { useToast } from "../../shared/ui/toast-provider";
 import { useWorkspaceShortcuts } from "./useWorkspaceShortcuts";
@@ -91,6 +94,7 @@ export function AppShell() {
   const [search, setSearch] = useState("");
   const [logoutOpen, setLogoutOpen] = useState(false);
   const { preferences } = useWorkspacePreferences();
+  const dateTime = useWorkspaceTime();
   const helpSearch = useHelpSearch();
   const toast = useToast();
   const searchInput = useRef<HTMLInputElement>(null);
@@ -107,6 +111,7 @@ export function AppShell() {
   useEffect(() => { window.scrollTo(0, 0); }, [location.pathname]);
   const focus = location.pathname.includes("/review/") || location.pathname.includes("/vendor/");
   const procurement = state.procurements.find(p => location.pathname === `/pengadaan/${p.id}`);
+  const vendorCount = procurement ? state.vendors.filter(vendor => vendor.procurementId === procurement.id).length : 0;
   const active = [...links, ...generalLinks].find(([url]) => url === "/" ? location.pathname === url : location.pathname.startsWith(url));
   const title = procurement?.name || active?.[1] || "Halaman tidak ditemukan";
   const description = descriptions[active?.[0] || ""];
@@ -173,6 +178,8 @@ export function AppShell() {
               {procurement ? <dl className="procurement-heading-meta">
                 <div><dt className="sr-only">Kode pengadaan</dt><dd><Hash size={17} aria-hidden="true" /><span>{procurement.number}</span></dd></div>
                 <div><dt className="sr-only">Fungsi</dt><dd><Briefcase size={17} aria-hidden="true" /><span>{procurement.functionName}</span></dd></div>
+                <div><dt className="sr-only">Dibuat</dt><dd><CalendarBlank size={17} aria-hidden="true" /><span>Dibuat <time dateTime={procurement.createdAt}>{dateTime(procurement.createdAt)}</time></span></dd></div>
+                <div><dt className="sr-only">Vendor</dt><dd><BuildingOffice size={17} aria-hidden="true" /><span>{vendorCount} vendor</span></dd></div>
               </dl> : <p>{description}</p>}
             </div>
             <div id="page-header-actions" />

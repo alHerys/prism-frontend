@@ -32,7 +32,7 @@ export function ProcurementDetailView({ state, setParams, tab, p, vendorOpen, se
       </nav>
       <div className="procurement-stage-content">
         {tab === "ringkasan" && <>
-          <ProcurementWorkspace procurement={p} documents={docs} vendors={vendors} resultCount={results.length} onAddVendor={() => setVendorOpen(true)} />
+          <ProcurementWorkspace procurement={p} documents={docs} vendors={vendors} onAddVendor={() => setVendorOpen(true)} />
           <div className="stage-navigation"><button className="btn primary" onClick={() => setParams({ tab: "hea" })}>Lanjut ke evaluasi <ArrowRight /></button></div>
         </>}
         {(tab === "hea" || tab === "harga") && <>
