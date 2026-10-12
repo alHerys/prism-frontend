@@ -1,3 +1,4 @@
+import { DataTable } from "../../../shared/ui/data-table";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
 import { FileXls } from "@phosphor-icons/react/dist/csr/FileXls";
 import { bankMoney as money, exactMoney } from "../../../shared/formatting/display";
@@ -20,20 +21,15 @@ export function ReferenceTable({
 }) {
   return (
     <div className="table-scroll">
-      <table className="table bank-reference-table">
-        <thead>
-          <tr>
-            {showSelection && <th>Pilih</th>}
-            <th>Dokumen / pekerjaan</th>
-            <th>Fungsi</th>
-            <th>Periode</th>
-            <th className="numeric">Harga satuan</th>
-            <th>Kesebandingan</th>
-            <th>Sumber</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item) => (
+      <DataTable key={showSelection ? "selection" : "browse"} rows={items} label="Referensi Bank Data OE" columns={[
+  ...(showSelection ? [{ label: "Pilih" }] : []),
+  { label: "Dokumen / pekerjaan", value: item => `${item.description} ${item.documentName}` },
+  { label: "Fungsi", value: item => item.functionName, filter: item => item.functionName },
+  { label: "Periode", value: item => item.period, filter: item => item.period },
+  { label: "Harga satuan", value: item => item.price, type: "decimal", className: "numeric" },
+  { label: "Kesebandingan", value: item => item.comparable ? "Sebanding" : "Perlu ditinjau", filter: item => item.comparable ? "Sebanding" : "Perlu ditinjau" },
+  { label: "Sumber" },
+]} className="bank-reference-table">{(item) => (
             <tr key={item.id} data-selected={showSelection && selected.includes(item.id)}>
               {showSelection && (
                 <td>
@@ -79,9 +75,7 @@ export function ReferenceTable({
                 </button>
               </td>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          )}</DataTable>
     </div>
   );
 }

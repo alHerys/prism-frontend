@@ -1,3 +1,4 @@
+import { DataTable } from "../../../shared/ui/data-table";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
 import { FileXls } from "@phosphor-icons/react/dist/csr/FileXls";
 import "../../../shared/styles/bank.css";
@@ -14,19 +15,12 @@ export function HistoricalDocuments({ state, tab, setDraftId, setFunctionName, s
               <h2>Draft belum dipublikasikan</h2>
             </div>
             <div className="table-scroll">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Dokumen</th>
-                    <th>Fungsi / periode</th>
-                    <th>Status</th>
-                    <th>Tindakan</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {state.documents
-                    .filter((d) => d.kind === "HISTORICAL_OE" && !d.published)
-                    .map((d) => (
+              <DataTable rows={state.documents.filter(d => d.kind === "HISTORICAL_OE" && !d.published)} label="Draft dokumen historis" columns={[
+  { label: "Dokumen", value: d => d.name },
+  { label: "Fungsi / periode", value: d => `${d.functionName ?? ""} ${d.period ?? ""}`, filter: d => d.functionName || "Belum diisi" },
+  { label: "Status", value: d => d.status, filter: d => d.status === "CONFIRMED" ? "Siap publikasi" : "Perlu ditinjau" },
+  { label: "Tindakan" },
+]}>{(d) => (
                       <tr key={d.id}>
                         <td>
                           <div className="bank-document-identity">
@@ -60,9 +54,7 @@ export function HistoricalDocuments({ state, tab, setDraftId, setFunctionName, s
                           </button>
                         </td>
                       </tr>
-                    ))}
-                </tbody>
-              </table>
+                    )}</DataTable>
             </div>
           </section>
         )}

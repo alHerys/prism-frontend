@@ -1,3 +1,4 @@
+import { DataTable } from "../../../shared/ui/data-table";
 import { DownloadSimple as Download } from "@phosphor-icons/react/dist/csr/DownloadSimple";
 import { CaretDown } from "@phosphor-icons/react/dist/csr/CaretDown";
 import { money, pct, roundedMoney } from "../../../shared/formatting/display";
@@ -44,17 +45,12 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
       )}
       {s.module === "HEA" ? (
         <div className="table-wrap" role="region" aria-label="Leaderboard HEA" tabIndex={0}>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Peringkat</th>
-                <th>Vendor</th>
-                <th className="numeric">Harga Evaluasi Akhir</th>
-                <th>Sumber</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r, i) => (
+          <DataTable rows={rows} label="Leaderboard HEA" columns={[
+  { label: "Peringkat", value: r => r.rank },
+  { label: "Vendor", value: r => r.vendorName },
+  { label: "Harga Evaluasi Akhir", value: r => r.hea, type: "decimal", className: "numeric" },
+  { label: "Sumber", value: r => r.source },
+]}>{(r, i) => (
                 <tr key={i}>
                   <td>
                     <span className="result-rank">{r.rank}</span>
@@ -68,9 +64,7 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
                   </td>
                   <td>{r.source}</td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              )}</DataTable>
         </div>
       ) : (
         <>
@@ -109,18 +103,13 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
             </span>
           </div>
           <div className="table-wrap" role="region" aria-label="Hasil perbandingan komponen harga" tabIndex={0}>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Item / kategori</th>
-                  <th className="numeric">OE</th>
-                  <th className="numeric">Penawaran</th>
-                  <th className="numeric">Terhadap OE</th>
-                  <th>Klasifikasi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((r, i) => (
+            <DataTable rows={rows} label="Hasil perbandingan komponen harga" columns={[
+  { label: "Item / kategori", value: r => r.description, filter: r => r.category === "MATERIAL" ? "Material" : "Jasa" },
+  { label: "OE", value: r => r.oe, type: "decimal", className: "numeric" },
+  { label: "Penawaran", value: r => r.offer, type: "decimal", className: "numeric" },
+  { label: "Terhadap OE", value: r => r.percentageAgainstOE, type: "decimal", className: "numeric" },
+  { label: "Klasifikasi", value: r => r.classification === "TIMPANG" ? "Timpang" : "Tidak timpang", filter: r => r.classification === "TIMPANG" ? "Timpang" : "Tidak timpang" },
+]}>{(r, i) => (
                   <tr key={i}>
                     <td>
                       <strong>{r.description}</strong>
@@ -144,9 +133,7 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
                       </span>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                )}</DataTable>
           </div>
         </>
       )}

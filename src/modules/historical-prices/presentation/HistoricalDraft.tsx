@@ -1,3 +1,4 @@
+import { DataTable } from "../../../shared/ui/data-table";
 import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
 import { FileXls } from "@phosphor-icons/react/dist/csr/FileXls";
 import { bankMoney as money } from "../../../shared/formatting/display";
@@ -56,24 +57,17 @@ export function HistoricalDraft({
                 ].join(" · ") || "Periksa berkas sumber"}
               </p>
               <div className="table-scroll">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Pekerjaan</th>
-                    <th>Satuan</th>
-                    <th>Harga satuan</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {draft.historicalItems?.map((item) => (
+              <DataTable rows={draft.historicalItems ?? []} label="Harga dokumen historis" columns={[
+  { label: "Pekerjaan", value: item => item.description },
+  { label: "Satuan", value: item => item.unit, filter: item => item.unit },
+  { label: "Harga satuan", value: item => item.price, type: "decimal", className: "numeric" },
+]}>{(item) => (
                     <tr key={item.id}>
                       <td>{item.description}</td>
                       <td>{item.unit}</td>
                       <td className="numeric">{money(item.price)}</td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  )}</DataTable>
               </div>
             </div>
             <div className="bank-draft-form">

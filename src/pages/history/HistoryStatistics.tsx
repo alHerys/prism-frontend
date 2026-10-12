@@ -1,3 +1,4 @@
+import { DataTable } from "../../shared/ui/data-table";
 import { ClipboardText } from "@phosphor-icons/react/dist/csr/ClipboardText";
 import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
 import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
@@ -41,10 +42,10 @@ export function HistoryStatistics({ tab, events, results, activityChart, maxCoun
           <section className="panel">
             <div className="bank-section-heading"><h2>Rincian harian</h2><span className="bank-count">{activityChart.length} hari</span></div>
             <div className="table-scroll">
-              <table className="table">
-                <thead><tr><th>Tanggal</th><th className="numeric">Aktivitas</th></tr></thead>
-                <tbody>{activityChart.map(([day, count]) => <tr key={day}><td>{historyChartDay(day)}</td><td className="numeric">{count}</td></tr>)}</tbody>
-              </table>
+              <DataTable rows={activityChart} label="Rincian harian" columns={[
+  { label: "Tanggal", value: row => row[0] },
+  { label: "Aktivitas", value: row => row[1], className: "numeric" },
+]}>{([day, count]) => <tr key={day}><td>{historyChartDay(day)}</td><td className="numeric">{count}</td></tr>}</DataTable>
             </div>
           </section>
         )}

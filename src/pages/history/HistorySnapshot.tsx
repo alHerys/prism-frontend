@@ -1,3 +1,4 @@
+import { DataTable } from "../../shared/ui/data-table";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
 import { DownloadSimple } from "@phosphor-icons/react/dist/csr/DownloadSimple";
 import { exactMoney, roundedMoney } from "../../shared/formatting/display";
@@ -40,18 +41,13 @@ export function HistorySnapshot({ onOpenResult, selected, setSelected, exportBus
             </p>
           )}
           <div className="table-scroll">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Vendor / item</th>
-                  <th>Kategori</th>
-                  <th>HEA / penawaran</th>
-                  <th>Klasifikasi</th>
-                  <th>Sumber</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selected.rows.map((row, index) => (
+            <DataTable key={selected.id} rows={selected.rows} label="Rincian snapshot" columns={[
+  { label: "Vendor / item", value: row => row.vendorName ?? row.description },
+  { label: "Kategori", value: row => row.category ? categoryLabel[row.category] ?? row.category : "—", filter: row => row.category ? categoryLabel[row.category] ?? row.category : "—" },
+  { label: "HEA / penawaran", value: row => row.hea ?? row.offer, type: "decimal", className: "numeric" },
+  { label: "Klasifikasi", value: row => row.classification ? classificationLabel[row.classification] ?? row.classification : row.rank ? `Peringkat ${row.rank}` : "—", filter: row => row.classification ? classificationLabel[row.classification] ?? row.classification : "Peringkat HEA" },
+  { label: "Sumber", value: row => row.source ?? "Form A5 terkonfirmasi" },
+]}>{(row, index) => (
                   <tr key={index}>
                     <td>{row.vendorName ?? row.description}</td>
                     <td>
@@ -75,9 +71,7 @@ export function HistorySnapshot({ onOpenResult, selected, setSelected, exportBus
                     </td>
                     <td>{row.source ?? "Form A5 terkonfirmasi"}</td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                )}</DataTable>
           </div>
           <details className="bank-input-details">
             <summary>Input dan revisi saat evaluasi</summary>

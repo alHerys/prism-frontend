@@ -1,3 +1,4 @@
+import { DataTable } from "../../shared/ui/data-table";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
 import { useWorkspaceTime } from "../../shared/ui/workspace-time";
 import "../../shared/styles/bank.css";
@@ -20,20 +21,13 @@ export function HistoryResults({ tab, setSelected, results, procurementName }: P
           </div>
           {results.length ? (
             <div className="table-scroll">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Pengadaan</th>
-                    <th>Evaluasi</th>
-                    <th>Waktu</th>
-                    <th>Status</th>
-                    <th>Rincian</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[...results]
-                    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-                    .map((result) => (
+              <DataTable rows={[...results].sort((a,b) => b.createdAt.localeCompare(a.createdAt))} label="Hasil evaluasi tersimpan" columns={[
+  { label: "Pengadaan", value: result => procurementName(result.procurementId) },
+  { label: "Evaluasi", value: result => moduleLabel[result.module], filter: result => moduleLabel[result.module] },
+  { label: "Waktu", value: result => result.createdAt },
+  { label: "Status", value: result => result.status, filter: result => result.status === "COMPLETE" ? "Lengkap" : "Parsial" },
+  { label: "Rincian" },
+]}>{(result) => (
                       <tr key={result.id}>
                         <td>
                           <strong>
@@ -63,9 +57,7 @@ export function HistoryResults({ tab, setSelected, results, procurementName }: P
                           </button>
                         </td>
                       </tr>
-                    ))}
-                </tbody>
-              </table>
+                    )}</DataTable>
             </div>
           ) : (
             <Empty
