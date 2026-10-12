@@ -55,6 +55,13 @@ test('every route follows all four accents while semantic badges remain fixed', 
     for (const route of ['/pengadaan/proc-showcase?tab=hea', '/pengadaan/proc-showcase?tab=harga', '/pengadaan/proc-terminal?tab=riwayat', '/pengadaan/proc-terminal/vendor/vendor-nusa', '/pengadaan/proc-terminal/review/doc-21', '/bank', '/riwayat', '/pengaturan', '/bantuan']) {
       await ready(page, route);
       await expect(page.locator('html')).toHaveAttribute('data-workspace-accent', accent.toLowerCase());
+      const tableFilter = page.locator('.data-table-filter-trigger').first();
+      if (await tableFilter.count()) {
+        await tableFilter.click();
+        await expect(tableFilter).toHaveCSS('background-color', tokens.soft);
+        await expect(page.locator('.data-table-filter-menu label:has(input:checked)').first()).toHaveCSS('background-color', tokens.soft);
+        await page.keyboard.press('Escape');
+      }
       await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       for (const zone of await page.locator('.fernly-upload .upload-zone,.bank-dropzone').all()) await expect(zone).toHaveCSS('border-color', tokens.border);
       if (route === '/bank' || route === '/riwayat') {

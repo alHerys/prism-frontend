@@ -1,3 +1,4 @@
+import { DataTable } from "./shared/ui/data-table";
 import { MagnifyingGlassIcon } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
 import { PlusIcon } from "@phosphor-icons/react/dist/csr/Plus";
 import type { Meta, StoryObj } from "@storybook/react-vite";
@@ -154,6 +155,8 @@ function TableExample() {
       i === 0
         ? "Pemeliharaan dan rehabilitasi fasilitas operasional Terminal BBM Balikpapan tahun 2026"
         : `Pengadaan pemeliharaan fasilitas ${i + 1}`,
+    count: (i % 3) + 1,
+    number: String(i + 1).padStart(3, "0"),
     status: i % 2 ? "review" : "confirmed",
   }));
   return (
@@ -182,33 +185,20 @@ function TableExample() {
         </div>
       </TableToolbar>
       <div className="table-wrap">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Pengadaan</th>
-              <th>Dokumen</th>
-              <th>Kesiapan</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows
-              .filter(
-                (row) =>
-                  (status === "all" || row.status === status) &&
-                  row.name
-                    .toLocaleLowerCase("id")
-                    .includes(search.toLocaleLowerCase("id")),
-              )
-              .map((row, i) => (
+        <DataTable rows={rows.filter(row => (status === "all" || row.status === status) && row.name.toLocaleLowerCase("id").includes(search.toLocaleLowerCase("id")))} label="Contoh pengadaan" columns={[
+  { label: "Pengadaan", value: row => row.name },
+  { label: "Dokumen", value: row => row.count },
+  { label: "Kesiapan", value: row => row.status, filter: row => row.status === "review" ? "Perlu ditinjau" : "Terkonfirmasi" },
+]}>{(row) => (
                 <tr key={row.name}>
                   <td>
                     {row.name}
                     <small>
-                      PGD-2026-{String(i + 1).padStart(3, "0")} · Operasi
+                      PGD-2026-{row.number} · Operasi
                       Terminal
                     </small>
                   </td>
-                  <td>{(i % 3) + 1} dokumen</td>
+                  <td>{row.count} dokumen</td>
                   <td>
                     <Badge
                       tone={row.status === "review" ? "warning" : "success"}
@@ -219,9 +209,7 @@ function TableExample() {
                     </Badge>
                   </td>
                 </tr>
-              ))}
-          </tbody>
-        </table>
+              )}</DataTable>
       </div>
     </section>
   );

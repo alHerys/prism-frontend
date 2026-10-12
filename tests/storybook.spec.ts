@@ -48,7 +48,10 @@ test('ten production component stories render and interactive examples work', as
   await page.getByRole('tab', { name: 'Harga Timpang', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Pasangan item', exact: true })).toBeVisible();
   await story('tabel-dan-filter');
-  await expect(page.locator('#storybook-root tbody tr')).toHaveCount(12);
+  await expect(page.locator('#storybook-root tbody tr')).toHaveCount(10);
+  await page.getByRole('button', { name: 'Selanjutnya', exact: true }).click();
+  await expect(page.locator('#storybook-root tbody tr')).toHaveCount(2);
+  await page.getByRole('button', { name: 'Sebelumnya', exact: true }).click();
   await page.evaluate(() => document.fonts.ready);
   if (process.env.PRISM_VISUAL_CAPTURE === '1') {
     await expect(page).toHaveScreenshot('prism-storybook-long-table.png', { fullPage: true });
@@ -57,7 +60,7 @@ test('ten production component stories render and interactive examples work', as
   await expect(page.locator('#storybook-root tbody tr')).toHaveCount(1);
   await page.getByRole('combobox', { name: 'Status dokumen' }).click();
   await page.getByRole('option', { name: 'Terkonfirmasi', exact: true }).click();
-  await expect(page.locator('#storybook-root tbody tr')).toHaveCount(0);
+  await expect(page.getByText('Belum ada baris.', { exact: true })).toBeVisible();
   await story('unggah');
   await page.locator('input[type="file"]').first().setInputFiles({ name: 'story.pdf', mimeType: 'application/pdf', buffer: Buffer.from('independent story input') });
   await expect(page.getByRole('status').filter({ hasText: 'Berkas dipilih:' })).toHaveText('Berkas dipilih: story.pdf');
