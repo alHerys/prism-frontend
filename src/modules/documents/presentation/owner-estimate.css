@@ -4,7 +4,6 @@
 .owner-estimate-identity > div { min-width: 0; }
 .owner-estimate-identity strong { display: block; font-size: 15px; line-height: 1.6; overflow-wrap: anywhere; }
 .owner-estimate-identity small { display: block; font-size: 12px; line-height: 1.6; color: var(--muted); margin-top: 5px; }
-.owner-estimate-document > .badge { justify-self: start; }
 .owner-estimate-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 .owner-estimate-replacement { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--border); }
 .owner-estimate-replacement > p { font-size: 13px; line-height: 1.6; color: var(--muted); margin: 0 0 14px; }

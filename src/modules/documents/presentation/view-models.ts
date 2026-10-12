@@ -1,6 +1,11 @@
 import type * as React from "react";
 
 export interface UploadPanelModel {
+  removalTarget: import("../domain/models").DocumentRecord | undefined;
+  removalFailure: string;
+  requestRemoval: () => void;
+  cancelRemoval: () => void;
+  removeOwnerEstimate: () => Promise<void>;
   currentDocument: import("../domain/models").DocumentRecord | undefined;
   replacing: boolean;
   beginReplacement: () => void;

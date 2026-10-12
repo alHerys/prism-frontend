@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import { useDocumentsCommands, useDocumentsData } from "./binding";
 import { currentOwnerEstimate } from "../application/queries";
 import { errorMessage } from "../../../shared/kernel/error-message";
-import type { DocumentKind } from "../domain/models";
+import type { DocumentKind, DocumentRecord } from "../domain/models";
 import { useToast } from "../../../shared/ui/toast-provider";
 
 export function useUploadPanel({
@@ -30,6 +30,26 @@ export function useUploadPanel({
   const [processing, setProcessing] = useState("");
   const [failure, setFailure] = useState("");
   const [replacing, setReplacing] = useState(false);
+  const [removalTarget, setRemovalTarget] = useState<DocumentRecord>();
+  const [removalFailure, setRemovalFailure] = useState("");
+  const requestRemoval = () => { setRemovalFailure(""); setRemovalTarget(currentDocument); };
+  const cancelRemoval = () => { if (!busy) { setRemovalFailure(""); setRemovalTarget(undefined); } };
+  async function removeOwnerEstimate() {
+    if (!removalTarget || busy) return;
+    setBusy(true);
+    setRemovalFailure("");
+    try {
+      await service.removeOwnerEstimate(procurementId, removalTarget.id, removalTarget.revision);
+      setRemovalTarget(undefined);
+      setReplacing(false);
+      setFailure("");
+      toast("OE dihapus dari pengadaan. Unggah OE baru untuk melanjutkan evaluasi.");
+    } catch (error) {
+      setRemovalFailure(errorMessage(error));
+    } finally {
+      setBusy(false);
+    }
+  }
   const beginReplacement = () => { setFailure(""); setReplacing(true); };
   const cancelReplacement = () => { setFailure(""); setReplacing(false); };
   async function upload(file: File) {
@@ -54,5 +74,5 @@ export function useUploadPanel({
       setProcessing("");
     }
   }
-  return { scope, embedded, kind, setKind, busy, processing, failure, upload, currentDocument, replacing, beginReplacement, cancelReplacement };
+  return { scope, embedded, kind, setKind, busy, processing, failure, upload, currentDocument, replacing, beginReplacement, cancelReplacement, removalTarget, removalFailure, requestRemoval, cancelRemoval, removeOwnerEstimate };
 }

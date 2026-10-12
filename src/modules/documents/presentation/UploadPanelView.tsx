@@ -5,8 +5,9 @@ import { LoadingState } from "../../../shared/ui/loading-state";
 import { UploadZone } from "../../../shared/ui/upload-zone";
 import type { UploadPanelModel } from "./view-models";
 import { OwnerEstimateDocument } from "./OwnerEstimateDocument";
+import { OwnerEstimateRemoval } from "./OwnerEstimateRemoval";
 
-export function UploadPanelView({ scope, embedded, kind, setKind, busy, processing, failure, upload, currentDocument, replacing, beginReplacement, cancelReplacement }: UploadPanelModel) {
+export function UploadPanelView({ scope, embedded, kind, setKind, busy, processing, failure, upload, currentDocument, replacing, beginReplacement, cancelReplacement, removalTarget, removalFailure, requestRemoval, cancelRemoval, removeOwnerEstimate }: UploadPanelModel) {
 
   const title = scope === "vendor" ? "Unggah dokumen" : currentDocument ? "Owner Estimate (OE)" : "Unggah Owner Estimate (OE)";
   const showUpload = !currentDocument || replacing;
@@ -20,7 +21,7 @@ export function UploadPanelView({ scope, embedded, kind, setKind, busy, processi
         </div>
         {scope === "vendor" && <span className="badge">PDF / XLSX · maks. 10 MiB</span>}
       </div>
-      {currentDocument && <OwnerEstimateDocument document={currentDocument} busy={busy} replacing={replacing} onReplace={beginReplacement} />}
+      {currentDocument && <OwnerEstimateDocument document={currentDocument} busy={busy} replacing={replacing} onReplace={beginReplacement} onRemove={requestRemoval} />}
       {scope === "vendor" && <div className="upload-document-options">
         <div className="field document-kind-field">
           <span className="field-label">Jenis dokumen</span>
@@ -57,6 +58,7 @@ export function UploadPanelView({ scope, embedded, kind, setKind, busy, processi
           message={`${failure} Pilih berkas kembali untuk mencoba ulang.`}
         />
       )}
+      <OwnerEstimateRemoval removalTarget={removalTarget} removalFailure={removalFailure} busy={busy} cancelRemoval={cancelRemoval} removeOwnerEstimate={removeOwnerEstimate} />
     </section>
   );
 }
