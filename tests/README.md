@@ -74,6 +74,8 @@ lokal `prism.storybookConfigDir`; konfigurasi tidak disertakan dalam repository.
 `npm run test:procurement` memeriksa card OE, penggantian dan konfirmasi ulang,
 penghapusan dengan konfirmasi/batal, sumber lama melalui navigasi browser,
 unggahan gagal, metadata header, serta chip dokumen pada Petak/Tabel vendor.
+Alur kini memiliki tiga tahap. Identitas, vendor dan OE berada pada tahap
+Identitas & vendor; URL lama `tab=dokumen` dialihkan ke `tab=ringkasan`.
 Suite memakai 1366×768, 1520×842, 1920×1080, 705×842 dan 390×844; screenshot observasi
 disimpan di `test-results/procurement-documents/`, tanpa mengubah golden lama.
 Gunakan `PRISM_PREVIEW_URL` untuk memilih URL preview build lokal.
