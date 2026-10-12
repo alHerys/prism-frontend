@@ -1,4 +1,5 @@
 import { toDocument, toLocalDocument } from "./document-mapping";
+import { ensureCurrentDocument } from "../../modules/documents/domain/replacement";
 import { selectedGroup, reviewedPairs, confirmedPairs } from "../../modules/price-deviation/domain/review";
 import registry from "./fixtures/file-registry.json";
 import type { PricePair } from "../../modules/price-deviation/domain/models";
@@ -10,6 +11,7 @@ import type { LocalStore } from "./store";
 import { DomainError, copy, equalValues } from "../../shared/kernel/validation";
 export async function selectGroup(store: LocalStore, id: string, group: string, expectedRevision: number) {
   const d = store.doc(id);
+  ensureCurrentDocument(d);
   store.check(d.revision, expectedRevision);
   const selected = selectedGroup(toDocument(d), group);
   if (!selected) return copy(d);
@@ -19,6 +21,7 @@ export async function selectGroup(store: LocalStore, id: string, group: string, 
 }
 export async function reviewPairs(store: LocalStore, id: string, pairs: PricePair[], expectedRevision: number) {
   const d = store.doc(id);
+  ensureCurrentDocument(d);
   store.check(d.revision, expectedRevision);
   const reviewed = reviewedPairs(toDocument(d), pairs, PAIR_FIXTURES.map((pair) => pair.id));
   if (!reviewed) return copy(d);
@@ -34,6 +37,7 @@ export async function reviewPairs(store: LocalStore, id: string, pairs: PricePai
 }
 export async function confirmPairs(store: LocalStore, id: string, expectedRevision: number, acknowledged = false) {
   const d = store.doc(id);
+  ensureCurrentDocument(d);
   store.check(d.revision, expectedRevision);
   const confirmed = confirmedPairs(toDocument(d), acknowledged, "Harga satuan material dan jasa");
   if (!confirmed) return copy(d);
@@ -54,6 +58,7 @@ export function buildDeviation(store: LocalStore, procurementId: string, oeId: s
   store.proc(procurementId);
   const oe = store.doc(oeId),
     offer = store.doc(offerId);
+  ensureCurrentDocument(oe);
   if (
     oe.procurementId !== procurementId ||
     offer.procurementId !== procurementId ||

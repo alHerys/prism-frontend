@@ -29,6 +29,7 @@ export interface DocumentRecord {
   uploadedAt: string;
   revision: number;
   status: Status;
+  supersededBy?: string;
   candidate?: A5Values;
   reviewed?: A5Values;
   warnings: string[];
@@ -52,4 +53,5 @@ export interface UploadInput {
   name: string;
   functionName?: string;
   period?: string;
+  replacement?: { id: string; revision: number };
 }

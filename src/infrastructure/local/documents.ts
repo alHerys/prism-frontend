@@ -1,5 +1,6 @@
 import { toDocument, toLocalDocument } from "./document-mapping";
 import { reviewedDocument, confirmedDocument } from "../../modules/documents/domain/review";
+import { ensureCurrentDocument, validateOwnerEstimateReplacement } from "../../modules/documents/domain/replacement";
 import registry from "./fixtures/file-registry.json";
 import type { A5Values } from "../../modules/documents/domain/models";
 import type { LocalDocumentRecord as DocumentRecord, LocalUploadInput as UploadInput } from "./state";
@@ -10,11 +11,13 @@ import {
 import type { LocalStore } from "./store";
 import { DomainError, copy } from "../../shared/kernel/validation";
 export function makeDocument(store: LocalStore, input: UploadInput): DocumentRecord {
+  const metadata = { ...input };
+  delete metadata.replacement;
   const candidate = A5_FIXTURES[input.fixtureId];
   const file = registry.find((f) => f.id === input.fixtureId);
   const id = store.id("doc");
   return {
-    ...input,
+    ...metadata,
     id,
     priceItems: ["OE", "OFFER"].includes(input.kind)
       ? file?.rows?.map((row) => ({
@@ -107,7 +110,13 @@ export async function uploadRegisteredDocument(store: LocalStore, input: UploadI
     )
   )
     throw new DomainError("VENDOR_REQUIRED", "Pilih vendor pemilik dokumen.");
+  const currentOE = input.kind === "OE"
+    ? store.state.documents.find(document => document.procurementId === input.procurementId && document.kind === "OE" && !document.supersededBy)
+    : undefined;
+  if (input.kind === "OE") validateOwnerEstimateReplacement(currentOE, input.replacement);
+  else if (input.replacement) throw new DomainError("WRONG_KIND", "Penggantian ini hanya berlaku untuk OE pengadaan.");
   const d = makeDocument(store, input);
+  if (currentOE) currentOE.supersededBy = d.id;
   store.state.documents.unshift(d);
   store.event({
     procurementId: input.procurementId,
@@ -118,13 +127,14 @@ export async function uploadRegisteredDocument(store: LocalStore, input: UploadI
           ? "BANK"
           : "PRICE_DEVIATION",
     type: "UPLOADED",
-    summary: `${input.name} selesai dibaca`,
+    summary: currentOE ? `${input.name} menggantikan ${currentOE.name}; menunggu pemeriksaan` : `${input.name} selesai dibaca`,
   });
   store.emit();
   return copy(d);
 }
 export async function reviewDocument(store: LocalStore, id: string, values: A5Values, expectedRevision: number) {
   const d = store.doc(id);
+  ensureCurrentDocument(d);
   store.check(d.revision, expectedRevision);
   const reviewed = reviewedDocument(toDocument(d), values);
   if (!reviewed) return copy(d);
@@ -140,6 +150,7 @@ export async function reviewDocument(store: LocalStore, id: string, values: A5Va
 }
 export async function confirmDocument(store: LocalStore, id: string, expectedRevision: number, acknowledged = false) {
   const d = store.doc(id);
+  ensureCurrentDocument(d);
   store.check(d.revision, expectedRevision);
   const confirmed = confirmedDocument(toDocument(d), acknowledged);
   if (!confirmed) return copy(d);

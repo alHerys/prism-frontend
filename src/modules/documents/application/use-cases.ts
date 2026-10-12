@@ -1,7 +1,7 @@
 import type { DocumentsGateway, DocumentProcessing } from "./ports";
 import type { PriceDeviationGateway } from "../../price-deviation/application/ports";
 import type { BinarySource } from "../../../shared/kernel/binary-source";
-import type { A5Values, DocumentKind, DocumentRecord } from "../domain/models";
+import type { A5Values, DocumentKind, DocumentRecord, UploadInput } from "../domain/models";
 import type { PricePair } from "../../price-deviation/domain/models";
 export interface SaveReviewInput {
   document: DocumentRecord;
@@ -12,7 +12,7 @@ export interface SaveReviewInput {
 export function createDocumentsUseCases(gateway: DocumentsGateway, processing: DocumentProcessing, prices: Pick<PriceDeviationGateway, "selectGroup" | "reviewPairs" | "confirmPairs">) {
   return {
     availableSources: () => processing.availableSources(),
-    upload: async (input: { file: BinarySource; kind: DocumentKind; procurementId: string; vendorId?: string }, onProgress: (label: string) => void) => {
+    upload: async (input: { file: BinarySource; kind: DocumentKind; procurementId: string; vendorId?: string; replacement?: UploadInput["replacement"] }, onProgress: (label: string) => void) => {
       const source = await processing.process(input.file, input.kind, onProgress);
       return gateway.uploadDocument({
         procurementId: input.procurementId,
@@ -20,6 +20,7 @@ export function createDocumentsUseCases(gateway: DocumentsGateway, processing: D
         ...(Object.hasOwn(input, "vendorId") ? { vendorId: input.vendorId } : {}),
         sourceId: source.id,
         name: input.file.name,
+        ...(input.replacement ? { replacement: input.replacement } : {}),
       });
     },
     saveReview: async ({ document, values, group, pairs }: SaveReviewInput) => {
