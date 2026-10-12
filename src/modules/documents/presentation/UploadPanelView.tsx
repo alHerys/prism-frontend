@@ -5,6 +5,7 @@ import { LoadingState } from "../../../shared/ui/loading-state";
 import { UploadZone } from "../../../shared/ui/upload-zone";
 import type { UploadPanelModel } from "./view-models";
 import { OwnerEstimateDocument } from "./OwnerEstimateDocument";
+import { Trash } from "@phosphor-icons/react/dist/csr/Trash";
 import { Modal } from "../../../shared/ui/modal";
 import { OwnerEstimateRemoval } from "./OwnerEstimateRemoval";
 
@@ -34,7 +35,7 @@ export function UploadPanelView({ scope, embedded, kind, setKind, busy, processi
         </div>
         {scope === "vendor" && <span className="badge">PDF / XLSX · maks. 10 MiB</span>}
       </div>
-      {currentDocument && <OwnerEstimateDocument document={currentDocument} busy={busy} onReplace={beginReplacement} onRemove={requestRemoval} />}
+      {currentDocument && <OwnerEstimateDocument document={currentDocument} busy={busy} onReplace={beginReplacement} />}
       {scope === "vendor" && <div className="upload-document-options">
         <div className="field document-kind-field">
           <span className="field-label">Jenis dokumen</span>
@@ -45,11 +46,12 @@ export function UploadPanelView({ scope, embedded, kind, setKind, busy, processi
         </div>
       </div>}
       {!currentDocument && uploadContent}
-      <Modal open={replacing} onOpenChange={open => { if (!open) cancelReplacement(); }} title="Ganti Owner Estimate (OE)"
-        description="Unggah satu berkas XLSX terbaru. OE saat ini tetap digunakan sampai unggahan berhasil. OE baru perlu diperiksa dan dikonfirmasi kembali.">
+      <Modal className="owner-estimate-edit" open={replacing} onOpenChange={open => { if (!open) cancelReplacement(); }} title="Edit Owner Estimate (OE)"
+        description="Ganti berkas XLSX atau hapus OE. Berkas baru perlu dikonfirmasi.">
         {uploadContent}
-        <div className="modal-actions">
-          <button type="button" className="btn" disabled={busy} onClick={cancelReplacement}>Batal mengganti</button>
+        <div className="modal-actions owner-estimate-edit-actions">
+          <button type="button" className="btn danger" disabled={busy} onClick={requestRemoval}><Trash size={17} aria-hidden="true" /> Hapus</button>
+          <button type="button" className="btn" disabled={busy} onClick={cancelReplacement}>Tutup</button>
         </div>
       </Modal>
       <OwnerEstimateRemoval removalTarget={removalTarget} removalFailure={removalFailure} busy={busy} cancelRemoval={cancelRemoval} removeOwnerEstimate={removeOwnerEstimate} />

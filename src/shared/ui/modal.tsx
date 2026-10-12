@@ -3,12 +3,14 @@ import type { ReactNode } from "react";
 import { useId, useRef } from "react";
 
 export function Modal({
+  className,
   open,
   onOpenChange,
   title,
   description,
   children,
 }: {
+  className?: string;
   open: boolean;
   onOpenChange: (v: boolean) => void;
   title: string;
@@ -22,7 +24,7 @@ export function Modal({
       <Dialog.Portal>
         <Dialog.Overlay className="modal-overlay" />
         <Dialog.Content
-          className="modal"
+          className={`modal${className ? ` ${className}` : ""}`}
           aria-describedby={description ? descriptionId : undefined}
           onOpenAutoFocus={() => {
             opener.current = document.activeElement instanceof HTMLElement

@@ -6,3 +6,6 @@
 .owner-estimate-identity small { display: block; font-size: 12px; line-height: 1.6; color: var(--muted); margin-top: 5px; }
 .owner-estimate-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 .upload-panel-content { display: grid; gap: 16px; }
+
+.modal.owner-estimate-edit { width: 640px; }
+.owner-estimate-edit-actions { justify-content: space-between; gap: 16px; }
