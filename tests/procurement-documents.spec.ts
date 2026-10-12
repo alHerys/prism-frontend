@@ -174,7 +174,7 @@ test("vendor document dialog supports available, mixed and empty slots and retur
   await expect(dialog.locator(".vendor-document-caption > span").first()).toHaveText("Buka");
   await capture(page, info, "vendor-documents-available");
   await dialog.getByRole("link", { name: "Buka Form A5", exact: true }).click();
-  await expect(page.locator(".review-document-identity")).toContainText("Form-A5-Nusa.pdf");
+  await expect(page.getByRole("heading", { name: "Form-A5-Nusa.pdf", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Kembali ke pengadaan", exact: true }).click();
   await expect(dialog).toBeVisible();
   await dialog.getByRole("button", { name: "Tutup dokumen vendor", exact: true }).click();

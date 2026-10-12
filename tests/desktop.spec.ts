@@ -40,12 +40,12 @@ async function capture(page: Page, name: string) {
   if (await close.count()) await close.click();
   await page.evaluate(() => window.scrollTo(0, 0));
   await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  // The application renders PDF pages; include them in visual observations.
+  // Native PDF plugin contents vary; mask them in visual comparisons.
   await page.evaluate(() => document.fonts.ready);
   // Functional acceptance and reconstructed visual regression are separate runs.
   // Keep the original snapshots intact; the Fernly config selects its own namespace.
   if (process.env.PRISM_VISUAL_CAPTURE === '1') {
-    await expect(page).toHaveScreenshot(`prism-${name}.png`, { fullPage: true });
+    await expect(page).toHaveScreenshot(`prism-${name}.png`, { fullPage: true, mask: name === 'review' ? [page.locator('embed.review-pdf-preview')] : [] });
   }
 }
 async function returnToEvaluation(page: Page, module = 'HEA') {
@@ -223,9 +223,8 @@ test('real file upload rejects unsupported bytes and accepts registered PDF thro
   await upload.setInputFiles(path.resolve('public/files/Form-A5-Nusa.pdf'));
   await expect(page).toHaveURL(/\/review\/doc-/);
   await expect(page.getByLabel('Harga Penawaran Barang')).toHaveValue('1.000.000.000');
-  await expect(page.locator('.review-pdf-preview')).toHaveAttribute('data-source-url', '/files/Form-A5-Nusa.pdf');
-  await expect(page.locator('.pdf-preview-page')).toHaveAttribute('data-rendered', 'true');
-  await expect(page.locator('.review-document-identity').getByText('Perlu ditinjau')).toBeVisible();
+  await expect(page.locator('embed.review-pdf-preview')).toHaveAttribute('src', '/files/Form-A5-Nusa.pdf');
+  await expect(page.getByRole('heading', {name: 'Form-A5-Nusa.pdf', exact: true})).toBeVisible();
   await click(page, 'Konfirmasi data');
   await page.getByRole('dialog', { name: 'Konfirmasi data dokumen', exact: true }).getByRole('button', { name: 'Konfirmasi data', exact: true }).click();
   await expect(page).toHaveURL(/tab=ringkasan&vendor=/);
@@ -324,6 +323,6 @@ test('direct routes and navigation load the same styles and preserve tab drafts'
   await page.getByRole('link', { name: 'Lanjutkan Penggantian Jalur Pipa Terminal', exact: true }).click();
   await tab(page, 'HEA');
   await page.getByRole('link', { name: 'Periksa dokumen' }).first().click();
-  await compareStyles('/pengadaan/proc-terminal/review/doc-21', 'Periksa Form A5', ['.focus-head', '.review-editor', '.review-source']);
+  await compareStyles('/pengadaan/proc-terminal/review/doc-21', 'Form_A5_Nusa.pdf', ['.focus-head', '.review-editor', '.review-source']);
   await direct.close();
 });

@@ -78,8 +78,7 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   await expect(page.getByRole('alert')).toContainText('belum didukung');
   await upload(page, 'Form-A5-Nusa.pdf', 'Unggah Form A5');
   await expect(page.getByLabel('Harga Penawaran Barang')).toHaveValue('1.000.000.000');
-  await expect(page.locator('.review-pdf-preview')).toHaveAttribute('data-source-url', '/files/Form-A5-Nusa.pdf');
-  await expect(page.locator('.pdf-preview-page')).toHaveAttribute('data-rendered', 'true');
+  await expect(page.locator('embed.review-pdf-preview')).toHaveAttribute('src', '/files/Form-A5-Nusa.pdf');
   await expect(page.getByRole('navigation', {name: 'Progres evaluasi'})).toHaveCount(0);
   await page.screenshot({path: info.outputPath('review-pdf.png'), fullPage: true});
   await confirm(page);
