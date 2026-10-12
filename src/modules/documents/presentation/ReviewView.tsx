@@ -5,7 +5,7 @@ import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
 import { Link } from "react-router";
 import { kindLabel } from "../../../shared/formatting/display";
 import "../../../shared/styles/focus.css";
-import "./a5-review.css";
+import { A5ReviewLayout } from "./A5ReviewLayout";
 import { EmptyState as Empty } from "../../../shared/ui/empty-state";
 import { Status } from "../../../shared/ui/status";
 import { ReviewConfirmation } from "./ReviewConfirmation";
@@ -57,8 +57,24 @@ export function ReviewView({
         </Link>
       </main>
     );
+  const evidence = <ReviewSource d={d} focused={focused} p={p} vendor={vendor} source={source} />;
+  const editor = d.removedAt || d.supersededBy
+    ? <OwnerEstimateArchiveNotice document={d} />
+    : <ReviewEditor
+        d={d} ack={ack} setAck={setAck} busy={busy}
+        setConfirm={setConfirm} setFocused={setFocused} values={values}
+        pairs={pairs} group={group} setGroup={setGroup} dirty={dirty}
+        setDirty={setDirty} failure={failure} changeValue={changeValue} editPair={editPair}
+      />;
+  const onBack = () => dirty ? setLeave(true) : back();
   return (
     <div className={`focus-shell fernly-review${d.kind === "FORM_A5" ? " a5-review" : ""}`}>
+      {d.kind === "FORM_A5" ? (
+        <A5ReviewLayout
+          name={d.name} source={evidence} editor={editor} busy={busy}
+          showSource={showSource} setShowSource={setShowSource} onBack={onBack}
+        />
+      ) : <>
       <header className="focus-head">
         <div className="review-header-context">
           <button
@@ -66,7 +82,7 @@ export function ReviewView({
             aria-label="Kembali ke pengadaan"
             title="Kembali ke pengadaan"
             disabled={busy}
-            onClick={() => (dirty ? setLeave(true) : back())}
+            onClick={onBack}
           >
             <ArrowLeft size={28} aria-hidden="true" />
           </button>
@@ -101,11 +117,12 @@ export function ReviewView({
         </div>
         <div className={`review-grid${showSource ? "" : " review-grid-editor-only"}`}>
           {showSource && (
-            <ReviewSource d={d} focused={focused} p={p} vendor={vendor} source={source} />
+            evidence
           )}
-          {d.removedAt || d.supersededBy ? <OwnerEstimateArchiveNotice document={d} /> : <ReviewEditor d={d} ack={ack} setAck={setAck} busy={busy} setConfirm={setConfirm} setFocused={setFocused} values={values} pairs={pairs} group={group} setGroup={setGroup} dirty={dirty} setDirty={setDirty} failure={failure} changeValue={changeValue} editPair={editPair} />}
+          {editor}
         </div>
       </main>
+      </>}
       <ReviewConfirmation busy={busy} confirm={confirm} setConfirm={setConfirm} confirmDocument={confirmDocument} />
       <ReviewLeaveDialog busy={busy} leave={leave} setLeave={setLeave} setDirty={setDirty} blocker={blocker} leavePage={leavePage} save={save} />
     </div>

@@ -1,25 +1,28 @@
-/* A5 keeps the PDF prominent; financial inputs and confirmation stay in view. */
+/* Native PDF view with a persistent, independently scrollable review drawer. */
 .fernly-review.a5-review { display: flex; flex-direction: column; height: 100svh; min-height: 0; padding: 0; overflow: hidden; }
-.fernly-review.a5-review > .focus-head { position: static; flex-direction: row; align-items: center; flex-shrink: 0; min-height: 64px; padding: 10px 20px; border-radius: 0; border-bottom: 1px solid var(--border); }
-.fernly-review.a5-review .review-header-context { flex-direction: row; gap: 14px; }
-.fernly-review.a5-review .review-heading h1 { font-size: 20px; line-height: 1.4; }
-.fernly-review.a5-review .review-heading p { margin-top: 3px; font-size: 12px; }
-.fernly-review.a5-review .focus-content { display: flex; flex-direction: column; flex: 1; min-height: 0; max-width: none; width: 100%; margin: 0; padding: 0; overflow: hidden; }
-.fernly-review.a5-review .review-document-bar { flex-shrink: 0; margin: 0; padding: 8px 20px; border-radius: 0; gap: 16px; border-bottom: 1px solid var(--border); }
-.fernly-review.a5-review .review-document-identity { gap: 10px; }
-.fernly-review.a5-review .review-document-identity strong { font-size: 13px; }
-.fernly-review.a5-review .review-file-icon { width: 30px; height: 32px; border-radius: 8px; }
-.fernly-review.a5-review .review-file-icon svg { width: 18px; height: 18px; }
-.fernly-review.a5-review .review-document-bar > .btn { min-height: 34px; padding: 6px 12px; font-size: 12px; }
-.fernly-review.a5-review .review-document-bar > .btn svg { width: 16px; height: 16px; }
-.fernly-review.a5-review .review-grid { flex: 1; min-height: 0; gap: 0; grid-template-columns: minmax(0, 1fr) clamp(320px, 26vw, 384px); align-items: stretch; }
-.fernly-review.a5-review .review-source { position: static; display: flex; flex-direction: column; min-height: 0; padding: 0; border-radius: 0; background: #303437; }
+.fernly-review.a5-review > .a5-review-header { position: static; flex-direction: row; align-items: center; flex-shrink: 0; min-height: 64px; padding: 10px 20px; gap: 20px; border-radius: 0; border-bottom: 1px solid var(--border); }
+.fernly-review.a5-review .review-header-context { min-width: 0; flex-direction: row; align-items: center; gap: 12px; }
+.a5-review-header h1 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 18px; line-height: 1.5; }
+.a5-review-file-icon { flex-shrink: 0; color: var(--accent); }
+.a5-review-header-actions { display: flex; flex-shrink: 0; gap: 8px; }
+.a5-review-header-actions .btn { min-height: 36px; padding: 6px 12px; font-size: 12px; }
+.a5-review-header-actions .btn svg { width: 17px; height: 17px; }
+.fernly-review.a5-review .a5-review-workspace { --drawer-width: clamp(320px, 26vw, 384px); display: grid; grid-template-columns: minmax(0, 1fr) 0px; position: relative; flex: 1; min-height: 0; max-width: none; width: 100%; margin: 0; padding: 0; overflow: hidden; transition: grid-template-columns 280ms cubic-bezier(.16, 1, .3, 1); }
+.fernly-review.a5-review .a5-review-workspace.drawer-open { grid-template-columns: minmax(0, 1fr) var(--drawer-width); }
+.a5-review-source { min-width: 0; min-height: 0; }
+.a5-review-source[hidden] { display: none; }
+.fernly-review.a5-review .review-source { position: static; display: flex; flex-direction: column; height: 100%; min-height: 0; padding: 0; border-radius: 0; background: #303437; }
 .fernly-review.a5-review .review-source > .panel-header { flex-shrink: 0; min-height: 42px; margin: 0; padding: 6px 16px; }
 .fernly-review.a5-review .review-source .panel-header h2 { color: #f4f5f5; font-size: 12px; font-weight: 500; }
 .fernly-review.a5-review .review-source .panel-header .btn { min-height: 30px; padding: 4px 8px; background: transparent; border-color: #737a7e; color: #f4f5f5; }
-.fernly-review.a5-review .review-pdf-preview { flex: 1; min-height: 0; height: 100%; border: 0; border-radius: 0; background: #303437; }
-.fernly-review.a5-review .review-editor { min-height: 0; padding: 22px 20px 0; border-radius: 0; overflow-y: auto; border-left: 1px solid var(--border); }
-.fernly-review.a5-review .review-editor > .panel-header { margin-bottom: 20px; }
+.fernly-review.a5-review .review-pdf-preview { display: block; flex: 1; min-height: 0; height: 100%; width: 100%; border: 0; border-radius: 0; background: #303437; }
+.review-drawer { min-width: 0; min-height: 0; overflow: hidden; visibility: hidden; transition: visibility 0s 200ms; }
+.drawer-open .review-drawer { visibility: visible; transition-delay: 0s; }
+.review-drawer-content { position: relative; width: var(--drawer-width); height: 100%; transform: translateX(100%); opacity: 0; transition: transform 200ms ease-in, opacity 150ms ease-in; }
+.drawer-open .review-drawer-content { transform: translateX(0); opacity: 1; transition: transform 280ms cubic-bezier(.16, 1, .3, 1), opacity 180ms ease-out; }
+.review-drawer-close { position: absolute; z-index: 1; right: 12px; top: 14px; }
+.fernly-review.a5-review .review-editor { min-height: 0; height: 100%; padding: 22px 20px 0; border-radius: 0; overflow-y: auto; border-left: 1px solid var(--border); }
+.fernly-review.a5-review .review-editor > .panel-header { padding-right: 26px; margin-bottom: 20px; }
 .fernly-review.a5-review .review-editor .panel-header h2 { font-size: 17px; }
 .fernly-review.a5-review .review-editor > .panel-header p { font-size: 12px; line-height: 1.6; margin-top: 8px; }
 .fernly-review.a5-review .review-editor .review-values { grid-template-columns: minmax(0, 1fr); gap: 16px; margin-bottom: 18px; }
@@ -30,24 +33,19 @@
 .fernly-review.a5-review .review-action .btn { width: 100%; justify-content: center; font-size: 13px; min-height: 42px; }
 .fernly-review.a5-review .review-editor .alert { padding: 12px; font-size: 12px; }
 .fernly-review.a5-review .review-editor .notice { font-size: 12px; }
-.fernly-review.a5-review .review-grid-editor-only { grid-template-columns: minmax(0, 1fr); }
-.fernly-review.a5-review .review-grid-editor-only .review-editor { width: min(100%, 600px); justify-self: center; border-inline: 1px solid var(--border); }
+.fernly-review.a5-review .a5-review-workspace.source-hidden { display: flex; justify-content: center; --drawer-width: min(600px, 100%); background: var(--bg); }
+.source-hidden .review-drawer { width: var(--drawer-width); }
 @media (max-width: 899px) {
-  .fernly-review.a5-review { height: auto; min-height: 100svh; overflow: visible; }
-  .fernly-review.a5-review .focus-content { overflow: visible; flex: none; }
-  .fernly-review.a5-review .review-grid { grid-template-columns: minmax(0, 1fr); flex: none; }
-  .fernly-review.a5-review .review-pdf-preview { flex: none; height: 60svh; min-height: 360px; }
-  .fernly-review.a5-review .review-editor { overflow: visible; border-left: 0; }
-  .fernly-review.a5-review .review-editor .review-action { position: static; }
-}
-@media (max-width: 639px) {
-  .fernly-review.a5-review > .focus-head { padding: 10px 12px; }
-  .fernly-review.a5-review .review-heading h1 { font-size: 18px; }
-  .fernly-review.a5-review .review-heading p { font-size: 11px; }
-  .fernly-review.a5-review .review-document-bar { padding: 10px 12px; gap: 10px; }
-  .fernly-review.a5-review .review-document-identity { grid-template-columns: 30px minmax(0, 1fr); }
-  .fernly-review.a5-review .review-document-bar > .btn { width: auto; margin-left: auto; }
-  .fernly-review.a5-review .review-source .panel-header { padding-inline: 12px; }
+  .fernly-review.a5-review > .a5-review-header { flex-wrap: wrap; gap: 8px; padding: 10px 12px; }
+  .a5-review-header .review-header-context { width: 100%; }
+  .a5-review-header-actions { margin-left: auto; }
+  .fernly-review.a5-review .a5-review-workspace, .fernly-review.a5-review .a5-review-workspace.drawer-open { --drawer-width: min(384px, 100%); grid-template-columns: minmax(0, 1fr); }
+  .a5-review-workspace .review-drawer { position: absolute; inset: 0 0 0 auto; width: var(--drawer-width); z-index: 2; }
+  .drawer-open .review-drawer-content { box-shadow: -8px 0 24px #0002; }
+  .a5-review-header h1 { font-size: 16px; }
   .fernly-review.a5-review .review-editor { padding-inline: 16px; }
   .fernly-review.a5-review .review-editor .review-action { margin-inline: -16px; padding-inline: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fernly-review.a5-review .a5-review-workspace, .review-drawer, .review-drawer-content, .drawer-open .review-drawer-content { transition: none; }
 }
