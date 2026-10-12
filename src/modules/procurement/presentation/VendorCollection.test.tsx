@@ -18,11 +18,11 @@ it("switches layouts without losing vendor destinations and distinguishes availa
   expect(within(table).getAllByRole("columnheader").map(header => header.textContent)).toEqual(["Nama Vendor", "Tanggal Ditambahkan", "DokumenFilter"]);
   const nusa = screen.getByRole("link", { name: linkName });
   expect(nusa).toHaveAttribute("href", destination);
-  expect(within(nusa.closest("tr")!).getByText("A5 · PDF · Ada")).toBeInTheDocument();
-  expect(within(nusa.closest("tr")!).getByText("Penawaran · XLSX · Ada")).toBeInTheDocument();
+  expect(within(nusa.closest("tr")!).getByLabelText("Form A5: tersedia")).toBeInTheDocument();
+  expect(within(nusa.closest("tr")!).getByLabelText("Penawaran Harga: tersedia")).toBeInTheDocument();
   expect(nusa.closest("tr")!.querySelector("time")).toHaveAttribute("dateTime", "2026-10-12T10:00:00Z");
   const borneo = screen.getByRole("link", { name: "PT Borneo Teknik Nusantara · Buka dokumen" }).closest("tr")!;
-  expect(within(borneo).getByText("Penawaran · XLSX · Belum ada")).toBeInTheDocument();
+  expect(within(borneo).getByLabelText("Penawaran Harga: belum tersedia")).toBeInTheDocument();
   expect(within(borneo).getByText("Tidak tercatat")).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Petak" }));
   expect(screen.getByRole("link", { name: linkName })).toHaveAttribute("href", destination);

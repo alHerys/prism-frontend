@@ -1,11 +1,12 @@
 import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
 import { BuildingOffice } from "@phosphor-icons/react/dist/csr/BuildingOffice";
 import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
-import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
+import { CalendarBlank } from "@phosphor-icons/react/dist/csr/CalendarBlank";
 import { SquaresFour } from "@phosphor-icons/react/dist/csr/SquaresFour";
 import { ListBullets } from "@phosphor-icons/react/dist/csr/ListBullets";
-import { MinusCircle } from "@phosphor-icons/react/dist/csr/MinusCircle";
+import { XCircle } from "@phosphor-icons/react/dist/csr/XCircle";
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { Link } from "react-router";
 import type { Vendor } from "../domain/models";
 import type { DocumentRecord } from "../../documents/domain/models";
@@ -19,15 +20,18 @@ function vendorUrl(vendor: Vendor) {
   return `/pengadaan/${vendor.procurementId}/vendor/${vendor.id}`;
 }
 
-function VendorCard({ row: { vendor, documentCount, confirmedCount } }: { row: VendorRow }) {
+function VendorCard({ row }: { row: VendorRow }) {
+  const { vendor } = row;
+  const dateTime = useWorkspaceTime();
   return (
     <article className="procurement-vendor-card">
       <span className="procurement-vendor-symbol"><BuildingOffice size={25} aria-hidden="true" /></span>
       <h3>{vendor.name}</h3>
-      <div className="procurement-vendor-document-count">
-        <span><FileText size={14} aria-hidden="true" /> {documentCount} dokumen</span>
-        <span><CheckCircle size={14} aria-hidden="true" /> {confirmedCount} terkonfirmasi</span>
+      <div className="vendor-added-date" aria-label="Tanggal ditambahkan">
+        <CalendarBlank size={15} aria-hidden="true" />
+        {vendor.createdAt ? <time dateTime={vendor.createdAt}>{dateTime(vendor.createdAt)}</time> : <span>Tidak tercatat</span>}
       </div>
+      <VendorDocumentChips row={row} />
       <Link className="btn procurement-vendor-link" to={vendorUrl(vendor)} aria-label={`${vendor.name} · Buka dokumen`}>
         Buka dokumen <ArrowRight size={16} aria-hidden="true" />
       </Link>
@@ -36,12 +40,16 @@ function VendorCard({ row: { vendor, documentCount, confirmedCount } }: { row: V
 }
 
 function DocumentChip({ label, available }: { label: string; available: boolean }) {
-  const Icon = available ? CheckCircle : MinusCircle;
+  const Icon = available ? CheckCircle : XCircle;
   return (
-    <span className={`vendor-document-chip${available ? " available" : ""}`}>
-      <Icon size={14} aria-hidden="true" /> {label} · {available ? "Ada" : "Belum ada"}
+    <span className={`badge ${available ? "success" : "error"} vendor-document-chip`} aria-label={`${label}: ${available ? "tersedia" : "belum tersedia"}`}>
+      <Icon size={14} aria-hidden="true" /> {label}
     </span>
   );
+}
+
+function VendorDocumentChips({ row }: { row: VendorRow }) {
+  return <div className="vendor-document-chips"><DocumentChip label="Form A5" available={row.hasA5} /><DocumentChip label="Penawaran Harga" available={row.hasOffer} /></div>;
 }
 
 function VendorTable({ rows }: { rows: VendorRow[] }) {
@@ -56,27 +64,32 @@ function VendorTable({ rows }: { rows: VendorRow[] }) {
         {row => <tr key={row.vendor.id}>
           <td><Link className="vendor-name-link" to={vendorUrl(row.vendor)} aria-label={`${row.vendor.name} · Buka dokumen`}>{row.vendor.name}</Link></td>
           <td>{row.vendor.createdAt ? <time dateTime={row.vendor.createdAt}>{dateTime(row.vendor.createdAt)}</time> : <span className="muted">Tidak tercatat</span>}</td>
-          <td><div className="vendor-document-chips"><DocumentChip label="A5 · PDF" available={row.hasA5} /><DocumentChip label="Penawaran · XLSX" available={row.hasOffer} /></div></td>
+          <td><VendorDocumentChips row={row} /></td>
         </tr>}
       </DataTable>
     </div>
   );
 }
 
-export function VendorCollection({ vendors, documents, layoutControl = true }: {
+export function VendorCollection({ vendors, documents, layoutControl = true, heading, empty }: {
   vendors: Vendor[];
   documents: DocumentRecord[];
   layoutControl?: boolean;
+  heading?: { title: string; description: string };
+  empty?: ReactNode;
 }) {
   const [layout, setLayout] = useState<"grid" | "table">("grid");
   const rows = vendorRows(vendors, documents);
   return (
     <div className="vendor-collection">
-      {layoutControl && <div className="vendor-layout-switch" role="group" aria-label="Tampilan daftar vendor">
+      {(heading || layoutControl) && <div className="vendor-collection-header">
+      {heading && <div className="vendor-collection-heading"><h2>{heading.title}</h2><p>{heading.description}</p></div>}
+      {layoutControl && vendors.length > 0 && <div className="vendor-layout-switch" role="group" aria-label="Tampilan daftar vendor">
         <button type="button" className="btn small" aria-pressed={layout === "grid"} onClick={() => setLayout("grid")}><SquaresFour size={17} aria-hidden="true" />Petak</button>
         <button type="button" className="btn small" aria-pressed={layout === "table"} onClick={() => setLayout("table")}><ListBullets size={17} aria-hidden="true" />Tabel</button>
       </div>}
-      {layout === "grid" ? <div className="procurement-vendor-grid">{rows.map(row => <VendorCard key={row.vendor.id} row={row} />)}</div> : <VendorTable rows={rows} />}
+      </div>}
+      {!rows.length ? empty : layout === "grid" ? <div className="procurement-vendor-grid">{rows.map(row => <VendorCard key={row.vendor.id} row={row} />)}</div> : <VendorTable rows={rows} />}
     </div>
   );
 }

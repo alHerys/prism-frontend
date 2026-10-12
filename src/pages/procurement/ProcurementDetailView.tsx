@@ -52,8 +52,9 @@ export function ProcurementDetailView({ state, setParams, tab, p, vendorOpen, se
           <div className="procurement-document-overview">
             <UploadPanel procurementId={p.id} scope="procurement" />
             <section className="panel procurement-document-vendors">
-              <div className="panel-header"><div><h2>Dokumen per vendor</h2><p>Pilih vendor untuk mengunggah Form A5 atau dokumen penawarannya.</p></div></div>
-              {vendors.length ? <VendorCollection vendors={vendors} documents={docs} /> : <Empty title="Belum ada vendor">Kembali ke tahap identitas & vendor untuk menambahkan vendor.</Empty>}
+              <VendorCollection vendors={vendors} documents={docs}
+                heading={{ title: "Dokumen per vendor", description: "Pilih vendor untuk mengunggah Form A5 atau dokumen penawarannya." }}
+                empty={<Empty title="Belum ada vendor">Kembali ke tahap identitas & vendor untuk menambahkan vendor.</Empty>} />
             </section>
           </div>
           <div className="stage-navigation"><button className="btn" onClick={() => setParams({ tab: "ringkasan" })}>Kembali</button><button className="btn primary" onClick={() => setParams({ tab: "hea" })}>Lanjut ke evaluasi <ArrowRight /></button></div>

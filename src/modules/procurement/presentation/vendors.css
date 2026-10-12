@@ -1,5 +1,8 @@
 .vendor-collection { min-width: 0; }
-.vendor-layout-switch { display: flex; justify-content: flex-end; gap: 6px; margin-bottom: 16px; }
+.vendor-collection-header { display: flex; align-items: flex-start; flex-wrap: wrap; justify-content: space-between; gap: 12px 16px; margin-bottom: 20px; }
+.vendor-collection-heading { flex: 1 1 200px; min-width: 0; }
+.vendor-collection-heading p { color: var(--muted); font-size: 13px; line-height: 1.6; margin-top: 6px; }
+.vendor-layout-switch { display: flex; flex-shrink: 0; gap: 6px; margin-left: auto; }
 .vendor-layout-switch .btn { gap: 6px; min-height: 36px; }
 .vendor-layout-switch .btn[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
 .vendor-list-table .table { min-width: 540px; }
@@ -11,14 +14,14 @@
 .vendor-name-link { font-weight: 600; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
 .vendor-name-link:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 .vendor-document-chips { display: flex; flex-wrap: wrap; gap: 6px; min-width: 168px; }
-.vendor-document-chip { display: inline-flex; align-items: center; gap: 5px; padding: 5px 8px; border-radius: 50px; font-size: 10px; white-space: nowrap; color: var(--muted); background: var(--shell); }
-.vendor-document-chip.available { color: var(--accent); background: var(--accent-soft); }
+.vendor-document-chip { display: inline-flex; align-items: center; gap: 5px; padding: 5px 8px; border-radius: 50px; font-size: 10px; white-space: nowrap; }
 .procurement-vendor-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .procurement-vendor-card { min-width: 0; padding: 25px 19px 18px; background: var(--shell, #f5f6f5); border-radius: 18px; text-align: center; display: flex; flex-direction: column; align-items: center; }
 .procurement-vendor-symbol { display: grid; place-items: center; width: 54px; height: 54px; color: var(--accent, #155a37); background: var(--accent-soft); border-radius: 17px; }
 .procurement-vendor-card h3 { margin: 17px 0 10px; font-size: 16px; line-height: 1.5; font-weight: 600; max-width: 25ch; overflow-wrap: anywhere; }
-.procurement-vendor-document-count { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px 12px; font-size: 10px; color: var(--muted); margin-bottom: 19px; }
-.procurement-vendor-document-count > span { display: flex; align-items: center; gap: 4px; }
+.vendor-added-date { display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 11px; line-height: 1.6; color: var(--muted); margin-bottom: 12px; }
+.vendor-added-date svg { flex-shrink: 0; }
+.procurement-vendor-card .vendor-document-chips { justify-content: center; min-width: 0; margin-bottom: 18px; }
 .procurement-vendor-card .procurement-vendor-link { margin-top: auto; min-height: 39px; padding: 8px 15px; border-radius: 50px; font-size: 12px; background: var(--surface); color: var(--accent, #155a37); }
 .procurement-vendor-card .procurement-vendor-link:hover { background: var(--accent-soft); }
 @media (min-width: 1600px) { .procurement-vendor-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
