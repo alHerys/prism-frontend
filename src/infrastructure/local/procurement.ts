@@ -28,7 +28,7 @@ export async function createProcurement(store: LocalStore, input: {
 export async function addVendor(store: LocalStore, procurementId: string, name: string) {
   store.proc(procurementId);
   validateVendor(name, store.state.vendors.filter((v) => v.procurementId === procurementId).map((v) => v.name));
-  const v = { id: store.id("vendor"), procurementId, name: name.trim() };
+  const v = { id: store.id("vendor"), procurementId, name: name.trim(), createdAt: new Date().toISOString() };
   store.state.vendors.push(v);
   store.event({
     procurementId,

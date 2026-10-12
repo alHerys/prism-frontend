@@ -1,7 +1,5 @@
 import { ResultPanel } from "../../modules/evaluations/presentation/ResultPanel";
 import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
-import { BuildingOffice } from "@phosphor-icons/react/dist/csr/BuildingOffice";
-import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
 import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { Link } from "react-router";
@@ -11,24 +9,10 @@ import { EmptyState as Empty } from "../../shared/ui/empty-state";
 import { Modal } from "../../shared/ui/modal";
 import { HEAPanel } from "../../modules/hea/presentation/HEAPanel";
 import { PDPanel } from "../../modules/price-deviation/presentation/PDPanel";
-import { DocumentTable } from "../../modules/documents/presentation/DocumentTable";
 import { UploadPanel } from "../../modules/documents/presentation/UploadPanel";
-import type { Vendor } from "../../modules/procurement/domain/models";
-import type { DocumentRecord } from "../../modules/documents/domain/models";
+import { VendorCollection } from "../../modules/procurement/presentation/VendorCollection";
 import type { ProcurementDetailModel } from "./view-models";
 import "./procurement.css";
-
-function VendorCard({ vendor, documents }: { vendor: Vendor; documents: DocumentRecord[] }) {
-  const confirmed = documents.filter((document) => document.status === "CONFIRMED").length;
-  return (
-    <article className="procurement-vendor-card">
-      <span className="procurement-vendor-symbol"><BuildingOffice size={25} aria-hidden="true" /></span>
-      <h3>{vendor.name}</h3>
-      <div className="procurement-vendor-document-count"><span><FileText size={14} /> {documents.length} dokumen</span><span><CheckCircle size={14} /> {confirmed} terkonfirmasi</span></div>
-      <Link className="btn procurement-vendor-link" to={`/pengadaan/${vendor.procurementId}/vendor/${vendor.id}`} aria-label={`${vendor.name} · Buka dokumen`}>Buka dokumen <ArrowRight size={16} /></Link>
-    </article>
-  );
-}
 
 export function ProcurementDetailView({ state, setParams, tab, p, vendorOpen, setVendorOpen, vendorName, setVendorName, docs, vendors, results, addVendor }: ProcurementDetailModel) {
   const dateTime = useWorkspaceTime();
@@ -59,7 +43,7 @@ export function ProcurementDetailView({ state, setParams, tab, p, vendorOpen, se
             </section>
             <section className="panel stage-vendors">
               <div className="panel-header"><div><h2>Identitas & vendor</h2><p>Tambahkan vendor pada pengadaan ini</p></div><button className="btn primary" onClick={() => setVendorOpen(true)}><Plus size={18} /> Tambah vendor</button></div>
-              {vendors.length ? <div className="procurement-vendor-grid">{vendors.map((vendor) => <VendorCard key={vendor.id} vendor={vendor} documents={docs.filter((document) => document.vendorId === vendor.id)} />)}</div> : <Empty title="Belum ada vendor">Tambahkan vendor untuk memulai pengadaan.</Empty>}
+              {vendors.length ? <VendorCollection vendors={vendors} documents={docs} layoutControl={false} /> : <Empty title="Belum ada vendor">Tambahkan vendor untuk memulai pengadaan.</Empty>}
             </section>
           </div>
           <div className="stage-navigation"><button className="btn primary" onClick={() => setParams({ tab: "dokumen" })}>Lanjut ke dokumen <ArrowRight /></button></div>
@@ -69,11 +53,9 @@ export function ProcurementDetailView({ state, setParams, tab, p, vendorOpen, se
             <UploadPanel procurementId={p.id} scope="procurement" />
             <section className="panel procurement-document-vendors">
               <div className="panel-header"><div><h2>Dokumen per vendor</h2><p>Pilih vendor untuk mengunggah Form A5 atau dokumen penawarannya.</p></div></div>
-              {vendors.length ? <div className="procurement-vendor-grid">{vendors.map((vendor) => <VendorCard key={vendor.id} vendor={vendor} documents={docs.filter((document) => document.vendorId === vendor.id)} />)}</div> : <Empty title="Belum ada vendor">Kembali ke tahap identitas & vendor untuk menambahkan vendor.</Empty>}
+              {vendors.length ? <VendorCollection vendors={vendors} documents={docs} /> : <Empty title="Belum ada vendor">Kembali ke tahap identitas & vendor untuk menambahkan vendor.</Empty>}
             </section>
           </div>
-          {docs.some((document) => document.kind === "OE") && <DocumentTable documents={docs.filter((document) => document.kind === "OE")} title="Dokumen OE" />}
-          <DocumentTable documents={docs.filter((document) => document.vendorId)} title="Daftar Dokumen Vendor" />
           <div className="stage-navigation"><button className="btn" onClick={() => setParams({ tab: "ringkasan" })}>Kembali</button><button className="btn primary" onClick={() => setParams({ tab: "hea" })}>Lanjut ke evaluasi <ArrowRight /></button></div>
         </>}
         {(tab === "hea" || tab === "harga") && <>

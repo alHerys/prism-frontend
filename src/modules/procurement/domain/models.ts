@@ -15,4 +15,6 @@ export interface Vendor {
   id: string;
   procurementId: string;
   name: string;
+  // Older records did not capture an addition timestamp.
+  createdAt?: string;
 }

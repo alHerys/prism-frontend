@@ -1,4 +1,4 @@
-import type { Procurement } from "../domain/models";
+import type { Procurement, Vendor } from "../domain/models";
 
 export interface ProcurementGateway {
   createProcurement(input: {
@@ -6,9 +6,5 @@ export interface ProcurementGateway {
     number: string;
     functionName: string;
   }): Promise<Procurement>;
-  addVendor(procurementId: string, name: string): Promise<{
-    id: string;
-    procurementId: string;
-    name: string;
-  }>;
+  addVendor(procurementId: string, name: string): Promise<Vendor>;
 }
