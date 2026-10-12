@@ -13,18 +13,20 @@ export function useUploadPanel({
   vendorId,
   scope = "vendor",
   embedded = false,
+  initialKind,
 }: {
   procurementId: string;
   vendorId?: string;
   scope?: "vendor" | "procurement";
   embedded?: boolean;
+  initialKind?: "FORM_A5" | "OFFER";
 }) : UploadPanelModel {
   const service = useDocumentsCommands();
   const state = useDocumentsData();
   const currentDocument = scope === "procurement" ? currentOwnerEstimate(state.documents, procurementId) : undefined;
   const toast = useToast();
   const navigate = useNavigate();
-  const [kind, setKind] = useState<DocumentKind>(scope === "procurement" ? "OE" : "FORM_A5");
+  const [kind, setKind] = useState<DocumentKind>(scope === "procurement" ? "OE" : initialKind ?? "FORM_A5");
   const vendor = vendorId || "";
   const [busy, setBusy] = useState(false);
   const [processing, setProcessing] = useState("");
