@@ -111,7 +111,7 @@ export async function uploadRegisteredDocument(store: LocalStore, input: UploadI
   )
     throw new DomainError("VENDOR_REQUIRED", "Pilih vendor pemilik dokumen.");
   const currentOE = input.kind === "OE"
-    ? store.state.documents.find(document => document.procurementId === input.procurementId && document.kind === "OE" && !document.supersededBy)
+    ? store.state.documents.find(document => document.procurementId === input.procurementId && document.kind === "OE" && !document.supersededBy && !document.removedAt)
     : undefined;
   if (input.kind === "OE") validateOwnerEstimateReplacement(currentOE, input.replacement);
   else if (input.replacement) throw new DomainError("WRONG_KIND", "Penggantian ini hanya berlaku untuk OE pengadaan.");
@@ -147,6 +147,19 @@ export async function reviewDocument(store: LocalStore, id: string, values: A5Va
   });
   store.emit();
   return copy(d);
+}
+
+export async function removeOwnerEstimate(store: LocalStore, procurementId: string, documentId: string, expectedRevision: number) {
+  store.proc(procurementId);
+  const document = store.doc(documentId);
+  if (document.procurementId !== procurementId || document.kind !== "OE") {
+    throw new DomainError("WRONG_SCOPE", "Pilih dokumen OE milik pengadaan ini.");
+  }
+  ensureCurrentDocument(document);
+  store.check(document.revision, expectedRevision);
+  document.removedAt = new Date().toISOString();
+  store.event({ procurementId, module: "PRICE_DEVIATION", type: "REMOVED", summary: `${document.name} dihapus dari pengadaan` });
+  store.emit();
 }
 export async function confirmDocument(store: LocalStore, id: string, expectedRevision: number, acknowledged = false) {
   const d = store.doc(id);

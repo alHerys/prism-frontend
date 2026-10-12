@@ -1,7 +1,10 @@
 import type { DocumentRecord, UploadInput } from "./models";
 import { DomainError } from "../../../shared/kernel/validation";
 
-export function ensureCurrentDocument(document: Pick<DocumentRecord, "supersededBy">) {
+export function ensureCurrentDocument(document: Pick<DocumentRecord, "supersededBy" | "removedAt">) {
+  if (document.removedAt) {
+    throw new DomainError("DOCUMENT_REMOVED", "OE ini telah dihapus dari pengadaan. Unggah OE baru untuk melanjutkan evaluasi.");
+  }
   if (document.supersededBy) {
     throw new DomainError("DOCUMENT_REPLACED", "OE ini telah diganti. Buka dokumen OE terbaru.");
   }

@@ -11,5 +11,5 @@ export interface DocumentsData {
 export type DocumentsQueries = ReadStore<DocumentsData>;
 
 export function currentOwnerEstimate(documents: readonly DocumentRecord[], procurementId: string) {
-  return documents.find(document => document.procurementId === procurementId && document.kind === "OE" && !document.supersededBy);
+  return documents.find(document => document.procurementId === procurementId && document.kind === "OE" && !document.supersededBy && !document.removedAt);
 }

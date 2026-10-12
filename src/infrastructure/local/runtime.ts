@@ -2,7 +2,7 @@ import { toDocument, toLocalUpload } from "./document-mapping";
 import { LocalStore } from "./store";
 import { initializeSession } from "./seed";
 import { createProcurement, addVendor } from "./procurement";
-import { uploadRegisteredDocument, reviewDocument, confirmDocument } from "./documents";
+import { uploadRegisteredDocument, reviewDocument, confirmDocument, removeOwnerEstimate } from "./documents";
 import { setPreferences, confirmPreferences, evaluateHEA } from "./hea";
 import { selectGroup, reviewPairs, confirmPairs, evaluateDeviation } from "./price-deviation";
 import { setHistoricalMetadata, publishHistory, setComparable, estimate, getPreparedStatistics, createBankSnapshot } from "./historical";
@@ -55,6 +55,7 @@ export function createLocalRuntime(seed = true, prepared = false) {
     addVendor: (...args: Parameters<ProcurementGateway["addVendor"]>) => addVendor(store, ...args),
   };
   const documentsGateway: DocumentsGateway = {
+    removeOwnerEstimate: (...args) => removeOwnerEstimate(store, ...args),
     uploadDocument: async (input) => toDocument(await uploadRegisteredDocument(store, toLocalUpload(input))),
     reviewDocument: async (...args: Parameters<DocumentsGateway["reviewDocument"]>) => toDocument(await reviewDocument(store, ...args)),
     confirmDocument: async (...args: Parameters<DocumentsGateway["confirmDocument"]>) => toDocument(await confirmDocument(store, ...args)),
@@ -84,10 +85,10 @@ export function createLocalRuntime(seed = true, prepared = false) {
   return {
     processing,
     delay: (milliseconds: number) => new Promise<void>((resolve) => setTimeout(resolve, milliseconds)),
-    procurement: { gateway: procurementGateway, queries: projection<ProcurementData>(source, (state) => ({ procurements: state.procurements, vendors: state.vendors, documents: Object.freeze(state.documents.filter(document => !document.supersededBy).map((document) => Object.freeze(toDocument(document)))) as unknown as DocumentsData["documents"], snapshots: state.snapshots, events: state.events })) },
+    procurement: { gateway: procurementGateway, queries: projection<ProcurementData>(source, (state) => ({ procurements: state.procurements, vendors: state.vendors, documents: Object.freeze(state.documents.filter(document => !document.supersededBy && !document.removedAt).map((document) => Object.freeze(toDocument(document)))) as unknown as DocumentsData["documents"], snapshots: state.snapshots, events: state.events })) },
     documents: { gateway: documentsGateway, queries: projection<DocumentsData>(source, (state) => ({ documents: Object.freeze(state.documents.map((document) => Object.freeze(toDocument(document)))) as unknown as DocumentsData["documents"], procurements: state.procurements, vendors: state.vendors })) },
     hea: { gateway: heaGateway, queries: projection<HEAData>(source, (state) => ({ documents: Object.freeze(state.documents.map((document) => Object.freeze(toDocument(document)))) as unknown as DocumentsData["documents"], vendors: state.vendors, snapshots: state.snapshots })) },
-    priceDeviation: { gateway: priceDeviationGateway, queries: projection<PriceDeviationData>(source, (state) => ({ documents: Object.freeze(state.documents.filter(document => !document.supersededBy).map((document) => Object.freeze(toDocument(document)))) as unknown as DocumentsData["documents"], snapshots: state.snapshots })) },
+    priceDeviation: { gateway: priceDeviationGateway, queries: projection<PriceDeviationData>(source, (state) => ({ documents: Object.freeze(state.documents.filter(document => !document.supersededBy && !document.removedAt).map((document) => Object.freeze(toDocument(document)))) as unknown as DocumentsData["documents"], snapshots: state.snapshots })) },
     historicalPrices: { gateway: historicalPricesGateway, queries: projection<HistoricalPricesData>(source, (state) => ({ historicalItems: state.historicalItems, estimates: state.estimates, procurements: state.procurements, documents: Object.freeze(state.documents.map((document) => Object.freeze(toDocument(document)))) as unknown as DocumentsData["documents"] })) },
     evaluations: { gateway: evaluationsGateway, queries: projection<EvaluationsData>(source, (state) => ({ snapshots: state.snapshots, events: state.events, procurements: state.procurements })) },
   };

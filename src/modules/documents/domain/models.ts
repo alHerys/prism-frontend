@@ -30,6 +30,7 @@ export interface DocumentRecord {
   revision: number;
   status: Status;
   supersededBy?: string;
+  removedAt?: string;
   candidate?: A5Values;
   reviewed?: A5Values;
   warnings: string[];

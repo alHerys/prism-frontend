@@ -11,6 +11,7 @@ export interface SaveReviewInput {
 }
 export function createDocumentsUseCases(gateway: DocumentsGateway, processing: DocumentProcessing, prices: Pick<PriceDeviationGateway, "selectGroup" | "reviewPairs" | "confirmPairs">) {
   return {
+    removeOwnerEstimate: (...args: Parameters<DocumentsGateway["removeOwnerEstimate"]>) => gateway.removeOwnerEstimate(...args),
     availableSources: () => processing.availableSources(),
     upload: async (input: { file: BinarySource; kind: DocumentKind; procurementId: string; vendorId?: string; replacement?: UploadInput["replacement"] }, onProgress: (label: string) => void) => {
       const source = await processing.process(input.file, input.kind, onProgress);
