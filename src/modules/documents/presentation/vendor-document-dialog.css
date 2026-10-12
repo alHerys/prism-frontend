@@ -16,3 +16,10 @@
   .vendor-document-cover { min-height: 120px; }
   .vendor-document-slot .upload-zone { min-height: 240px; }
 }
+
+.vendor-document-dialog > h2 { text-align: center; font-size: 26px; line-height: 1.4; padding-inline: 44px; margin-bottom: 28px; }
+.vendor-document-close { position: absolute; top: 18px; right: 18px; width: 40px; height: 40px; }
+@media (max-width: 639px) {
+  .vendor-document-dialog > h2 { font-size: 24px; }
+  .vendor-document-close { top: 16px; right: 16px; }
+}

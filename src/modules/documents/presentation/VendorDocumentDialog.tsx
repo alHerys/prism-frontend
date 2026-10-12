@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { FilePdf } from "@phosphor-icons/react/dist/csr/FilePdf";
 import { FileXls } from "@phosphor-icons/react/dist/csr/FileXls";
+import { X } from "@phosphor-icons/react/dist/csr/X";
 import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
 import { Modal } from "../../../shared/ui/modal";
 import { UploadZone } from "../../../shared/ui/upload-zone";
@@ -39,7 +40,7 @@ function DocumentSlot({ vendor, kind, document, busy, onBusyChange }: {
       <div className="vendor-document-caption">
         <strong>{document.name}</strong>
         <small>Diunggah {dateTime(document.uploadedAt)}</small>
-        <span>Buka review <ArrowRight size={17} aria-hidden="true" /></span>
+        <span>Buka <ArrowRight size={17} aria-hidden="true" /></span>
       </div>
     </Link> : <div className="upload-panel-content">
       <UploadZone ariaLabel={`Unggah ${title}`} accept={kind === "FORM_A5" ? ".pdf" : ".xlsx"} disabled={busy}
@@ -61,11 +62,11 @@ export function VendorDocumentDialog({ vendor, documents, onClose }: {
   const [busy, setBusy] = useState(false);
   const active = documents.filter(document => document.procurementId === vendor.procurementId && document.vendorId === vendor.id && !document.removedAt && !document.supersededBy).reverse();
   return <Modal className="vendor-document-dialog" open onOpenChange={open => { if (!open && !busy) onClose(); }}
-    title={vendor.name} description="Pilih dokumen untuk review atau unggah berkas yang belum tersedia.">
+    title="Pilih Dokumen">
+    <button type="button" className="icon-button vendor-document-close" aria-label="Tutup dokumen vendor" disabled={busy} onClick={onClose}><X size={22} aria-hidden="true" /></button>
     <div className="vendor-document-slots">
       {(["FORM_A5", "OFFER"] as const).map(kind => <DocumentSlot key={kind} vendor={vendor} kind={kind}
         document={active.find(document => document.kind === kind)} busy={busy} onBusyChange={setBusy} />)}
     </div>
-    <div className="modal-actions"><button type="button" className="btn" disabled={busy} onClick={onClose}>Tutup</button></div>
   </Modal>;
 }
