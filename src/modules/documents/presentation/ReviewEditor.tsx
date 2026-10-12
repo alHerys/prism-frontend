@@ -1,3 +1,4 @@
+import { DataTable } from "../../../shared/ui/data-table";
 import { CheckCircle as CheckCircle2 } from "@phosphor-icons/react/dist/csr/CheckCircle";
 import { toPercent } from "../../../shared/formatting/review-input";
 import type { A5Values, DocumentRecord } from "../domain/models";
@@ -93,16 +94,11 @@ export function ReviewEditor({
           </div>
           {d.kind === "OFFER" && (
             <div className="table-wrap review-pairs" role="region" aria-label="Pasangan komponen harga" tabIndex={0}>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Pasangan</th>
-                    <th>OE (Rp)</th>
-                    <th>Penawaran (Rp)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pairs.map((pair, i) => (
+              <DataTable rows={pairs} label="Pasangan komponen harga" columns={[
+  { label: "Pasangan", value: pair => pair.description, filter: pair => pair.matched ? "Terpasang" : "Belum dipasangkan" },
+  { label: "OE (Rp)", value: pair => pair.oe, type: "decimal" },
+  { label: "Penawaran (Rp)", value: pair => pair.offer, type: "decimal" },
+]}>{(pair, i) => (
                     <tr key={pair.id}>
                       <td>
                         <label>
@@ -144,9 +140,7 @@ export function ReviewEditor({
                         />
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  )}</DataTable>
             </div>
           )}
         </>

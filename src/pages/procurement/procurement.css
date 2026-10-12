@@ -1,3 +1,5 @@
+.procurement-detail-page .procurement-stage-content { grid-template-columns: minmax(0, 1fr); }
+.procurement-detail-page .procurement-stage-content > * { min-width: 0; }
 .procurement-detail-page .procurement-path { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0 0 24px; padding: 8px; border: 0; background: var(--surface); border-radius: 20px; }
 .procurement-detail-page .procurement-path button { padding: 15px 12px; gap: 10px; border-radius: 14px; font-size: 13px; font-weight: 500; color: var(--ink); min-width: 0; }
 .procurement-detail-page .procurement-path button > span { width: 30px; height: 30px; font-size: 12px; border-color: #d4dbd4; color: var(--muted); }

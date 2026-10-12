@@ -1,3 +1,4 @@
+import { DataTable } from "../../../shared/ui/data-table";
 import type { HEAPanelProps } from "./input-models";
 import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
 import { CheckCircle as CheckCircle2 } from "@phosphor-icons/react/dist/csr/CheckCircle";
@@ -122,17 +123,12 @@ export function HEAPanelView({
         </div>
         {docs.length ? (
           <div className="table-wrap" role="region" aria-label="Form A5 untuk evaluasi" tabIndex={0}>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Pilih</th>
-                  <th>Vendor / dokumen</th>
-                  <th>Status</th>
-                  <th>Tindakan</th>
-                </tr>
-              </thead>
-              <tbody>
-                {docs.map((d) => (
+            <DataTable rows={docs} label="Form A5 untuk evaluasi" columns={[
+  { label: "Pilih" },
+  { label: "Vendor / dokumen", value: d => `${state.vendors.find(v => v.id === d.vendorId)?.name ?? ""} ${d.name}` },
+  { label: "Status", value: d => d.status, filter: d => d.status === "CONFIRMED" ? "Terkonfirmasi" : "Perlu ditinjau" },
+  { label: "Tindakan" },
+]}>{(d) => (
                   <tr key={d.id} className={selected.includes(d.id) ? "is-selected" : undefined}>
                     <td>
                       <input
@@ -169,9 +165,7 @@ export function HEAPanelView({
                       </Link>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                )}</DataTable>
           </div>
         ) : (
           <Empty title="Form A5 belum tersedia">

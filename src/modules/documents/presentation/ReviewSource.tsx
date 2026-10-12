@@ -1,3 +1,4 @@
+import { DataTable } from "../../../shared/ui/data-table";
 import { ArrowsOut } from "@phosphor-icons/react/dist/csr/ArrowsOut";
 import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
 import { money, pct } from "../../../shared/formatting/display";
@@ -64,15 +65,10 @@ export function ReviewSource({ d, focused, p, vendor, source }: Pick<ReviewModel
               ))}
             </dl>
           ) : (
-            <div className="table-wrap" role="region" aria-label="Harga dari dokumen sumber" tabIndex={0}><table className="table">
-              <thead>
-                <tr>
-                  <th>Komponen</th>
-                  <th>Harga</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(d.priceItems || []).map((pair) => (
+            <div className="table-wrap" role="region" aria-label="Harga dari dokumen sumber" tabIndex={0}><DataTable rows={d.priceItems || []} label="Harga dari dokumen sumber" columns={[
+  { label: "Komponen", value: pair => pair.description, filter: pair => pair.category === "MATERIAL" ? "Material" : "Jasa" },
+  { label: "Harga", value: pair => d.kind === "OE" ? pair.oe : pair.offer, type: "decimal" },
+]}>{(pair) => (
                   <tr key={pair.id}>
                     <td>
                       {pair.description}
@@ -87,9 +83,7 @@ export function ReviewSource({ d, focused, p, vendor, source }: Pick<ReviewModel
                       {money(d.kind === "OE" ? pair.oe : pair.offer)}
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table></div>
+                )}</DataTable></div>
           )}
         </div>
       )}

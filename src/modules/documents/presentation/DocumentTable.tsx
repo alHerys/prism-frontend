@@ -1,3 +1,4 @@
+import { DataTable } from "../../../shared/ui/data-table";
 import { Link } from "react-router";
 import { useDocumentsData } from "./binding";
 
@@ -25,18 +26,13 @@ export function DocumentTable({
         <span className="muted">{documents.length} dokumen</span>
       </div>
       <div className="table-wrap" role="region" aria-label={title} tabIndex={0}>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Dokumen</th>
-              <th>Vendor</th>
-              <th>Jenis</th>
-              <th>Status</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {documents.map((d) => (
+        <DataTable rows={documents} label={title} empty={<Empty title="Belum ada dokumen">Unggah dokumen untuk memulai pemeriksaan.</Empty>} columns={[
+  { label: "Dokumen", value: d => d.name },
+  { label: "Vendor", value: d => state.vendors.find(v => v.id === d.vendorId)?.name || "Pengadaan" },
+  { label: "Jenis", value: d => kindLabel[d.kind], filter: d => kindLabel[d.kind] },
+  { label: "Status", value: d => d.status, filter: d => d.status === "CONFIRMED" ? "Terkonfirmasi" : "Perlu ditinjau" },
+  { label: "Tindakan" },
+]}>{(d) => (
               <tr key={d.id}>
                 <td>
                   <strong>{d.name}</strong>
@@ -61,14 +57,7 @@ export function DocumentTable({
                   </Link>
                 </td>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        {!documents.length && (
-          <Empty title="Belum ada dokumen">
-            Unggah dokumen untuk memulai pemeriksaan.
-          </Empty>
-        )}
+            )}</DataTable>
       </div>
     </section>
   );
