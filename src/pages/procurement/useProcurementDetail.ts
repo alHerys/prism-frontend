@@ -1,5 +1,5 @@
 import type { ProcurementDetailModel } from "./view-models";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router";
 import { useProcurementCommands, useProcurementData } from "../../modules/procurement/presentation/binding";
 import { errorMessage } from "../../shared/kernel/error-message";
@@ -10,7 +10,14 @@ export function useProcurementDetail() : ProcurementDetailModel {
   const service = useProcurementCommands();
   const state = useProcurementData();
   const [params, setParams] = useSearchParams();
-  const tab = params.get("tab") || (state.snapshots.some((s) => s.procurementId === id && s.module === "HEA") ? "hea" : "ringkasan");
+  const requestedTab = params.get("tab");
+  const tab = (requestedTab === "dokumen" ? "ringkasan" : requestedTab) || (state.snapshots.some((s) => s.procurementId === id && s.module === "HEA") ? "hea" : "ringkasan");
+  useEffect(() => {
+    if (requestedTab !== "dokumen") return;
+    const next = new URLSearchParams(params);
+    next.set("tab", "ringkasan");
+    setParams(next, { replace: true });
+  }, [requestedTab, params, setParams]);
   const p = state.procurements.find((p) => p.id === id);
   const toast = useToast();
   const [vendorOpen, setVendorOpen] = useState(false);

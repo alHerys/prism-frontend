@@ -2,6 +2,8 @@
 .vendor-collection-header { display: flex; align-items: flex-start; flex-wrap: wrap; justify-content: space-between; gap: 12px 16px; margin-bottom: 20px; }
 .vendor-collection-heading { flex: 1 1 200px; min-width: 0; }
 .vendor-collection-heading p { color: var(--muted); font-size: 13px; line-height: 1.6; margin-top: 6px; }
+.vendor-collection-actions { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-left: auto; }
+.vendor-collection-actions > .btn { white-space: nowrap; }
 .vendor-layout-switch { display: flex; flex-shrink: 0; gap: 6px; margin-left: auto; }
 .vendor-layout-switch .btn { gap: 6px; min-height: 36px; }
 .vendor-layout-switch .btn[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
