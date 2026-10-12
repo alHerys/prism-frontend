@@ -61,7 +61,7 @@ function VendorTable({ rows }: { rows: VendorRow[] }) {
         { label: "Tanggal Ditambahkan", value: row => row.vendor.createdAt },
         { label: "Dokumen", filter: row => row.hasA5 && row.hasOffer ? "A5 & penawaran tersedia" : row.hasA5 ? "A5 tersedia" : row.hasOffer ? "Penawaran tersedia" : "Belum ada dokumen" },
       ]}>
-        {row => <tr key={row.vendor.id} className="vendor-document-row">
+        {row => <tr key={row.vendor.id} className="procurement-vendor-table-row">
           <td><Link className="vendor-name-link" onKeyDown={event => { if (event.key === " ") { event.preventDefault(); event.currentTarget.click(); } }} to={vendorUrl(row.vendor)} aria-label={`${row.vendor.name} · Buka dokumen`}>{row.vendor.name}</Link></td>
           <td>{row.vendor.createdAt ? <time dateTime={row.vendor.createdAt}>{dateTime(row.vendor.createdAt)}</time> : <span className="muted">Tidak tercatat</span>}</td>
           <td><div className="vendor-documents-cell"><VendorDocumentChips row={row} /><ArrowRight size={18} aria-hidden="true" /></div></td>
