@@ -107,18 +107,30 @@ test("old results-stage links recover to evaluation while preserving the snapsho
   await expect(page.getByRole("button", { name: "Lihat hasil & riwayat", exact: true })).toHaveCount(0);
 });
 
-test("price results show category cards and separate counts without source controls", async ({ page }, info) => {
+test("price results share category counts with a responsive classification chart", async ({ page }, info) => {
   await page.goto("/pengadaan/proc-showcase?tab=harga");
   await expect(page.locator(".evaluation-price-sources,.evaluation-result > .alert")).toHaveCount(0);
-  await expect(page.locator(".result-category-summary > div")).toHaveCount(2);
-  await expect(page.locator(".result-category-summary")).toContainText("Barang");
+  await expect(page.locator(".result-category-summary > div")).toHaveCount(0);
   await expect(page.locator(".result-category-summary small")).toHaveCount(0);
-  await expect(page.locator(".result-counts span")).toHaveCount(2);
-  await expect(page.locator(".result-counts")).toContainText("2 Produk");
+  await expect(page.locator(".result-counts span")).toHaveCount(5);
+  await expect(page.locator(".result-counts")).toContainText("Total Item 2");
   await expect(page.getByLabel("Filter kategori hasil").locator("option[value=MATERIAL]")).toHaveText("Barang");
   await page.getByLabel("Filter kategori hasil").selectOption("MATERIAL");
-  await expect(page.locator(".result-counts")).toContainText("1 Produk");
+  await expect(page.locator(".result-counts")).toContainText("Total Item 1");
+  await expect(page.locator(".result-counts")).toContainText("Total Jasa 0");
+  await expect(page.getByLabel("Barang: 1 timpang", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Jasa: 0 tidak timpang", { exact: true })).toBeVisible();
   await page.getByLabel("Filter kategori hasil").selectOption("");
+  const chart = page.getByRole("figure", { name: "Grafik klasifikasi Harga Timpang" });
+  await expect(chart).toBeVisible();
+  await expect(page.getByLabel("Jasa: 1 tidak timpang", { exact: true })).toBeVisible();
+  const tableRegion = page.getByRole("region", { name: "Hasil perbandingan komponen harga", exact: true });
+  if (page.viewportSize()!.width >= 1200) {
+    expect((await chart.boundingBox())!.x).toBeGreaterThan((await tableRegion.boundingBox())!.x);
+  } else {
+    expect((await chart.boundingBox())!.y).toBeGreaterThan((await tableRegion.boundingBox())!.y);
+  }
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: info.outputPath("price-cards.png"), fullPage: true });
   const pending = page.waitForEvent("download");
   await page.getByRole("button", { name: "Ekspor Excel", exact: true }).click();

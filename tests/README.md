@@ -117,8 +117,10 @@ tombol Lihat Detail dan ekspor Excel juga diperiksa. Tombol preferensi kini
 berlabel Simpan; aksi simpan/konfirmasi/hitung tetap sama. Kembali dari sumber
 PDF mempertahankan halaman evaluasi dan parameter hasil asal. Harga Timpang
 hanya menampilkan hasil tersimpan, tanpa pemilihan sumber/tombol hitung.
-Ringkasan Barang/Jasa berupa dua card dan jumlah Produk/timpang dipisahkan
-berikon. Pengecualian tetap tersimpan dalam snapshot dan laporan Excel.
+Jumlah Total Item/Barang/Jasa serta Barang/Jasa timpang ditampilkan terpisah
+berikon. Grafik batang klasifikasi memakai data filter kategori yang sama dengan
+tabel, dengan skala jumlah bersama; dua kolom sama lebar mulai 1200px dan
+ditumpuk pada layar lebih kecil. Ringkasan kartu kategori lama dihapus. Pengecualian tetap tersimpan dalam snapshot dan laporan Excel.
 
 ## Impor Form A5 bertab
 

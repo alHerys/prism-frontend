@@ -20,10 +20,6 @@
 .evaluation-result .table td { padding-block: 20px; }
 .evaluation-result .result-rank { display: inline-grid; place-items: center; min-width: 34px; height: 34px; padding: 0 9px; background: var(--shell, #f5f6f5); border-radius: 12px; color: var(--accent-deep, var(--blue-deep)); font-size: 16px; }
 .evaluation-result .table tbody tr:first-child .result-rank { background: var(--accent-soft, var(--blue-soft)); }
-.result-category-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
-.result-category-summary > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px; border-radius: 14px; background: var(--accent-soft, var(--blue-soft)); }
-.result-category-summary span { color: var(--ink); font-size: 14px; font-weight: 600; }
-.result-category-summary strong { color: var(--accent-deep, var(--blue-deep)); font-size: 30px; font-weight: 600; }
 .result-counts { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; font-size: 13px; }
 .result-counts span { display: inline-flex; align-items: center; gap: 6px; }
 .result-counts svg { color: var(--accent); }
@@ -58,9 +54,6 @@
   .preference-form .toolbar .btn { justify-content: center; }
   .evaluation-result-header { width: 100%; justify-content: space-between; }
   .evaluation-result-header .btn { min-height: 44px; }
-  .result-category-summary { gap: 16px; }
-  .result-category-summary > div { flex-direction: column; align-items: flex-start; padding: 16px; }
-  .result-category-summary strong { font-size: 28px; }
   .result-filter-toolbar { align-items: flex-start; }
   .result-filter-toolbar select { width: 100%; }
   .result-trace { padding: 16px; }
@@ -88,4 +81,25 @@
 @media (max-width: 1023px) {
   .hea-workflow { grid-template-columns: minmax(0, 1fr); }
   .hea-workflow > .hea-preferences { position: static; }
+}
+
+.price-results-layout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start; }
+.price-results-layout > * { min-width: 0; }
+.price-classification-chart { margin: 0; padding: 20px; background: var(--shell); border-radius: 14px; }
+.price-classification-chart figcaption { font-size: 16px; font-weight: 600; }
+.price-classification-chart p { color: var(--muted); font-size: 13px; margin: 6px 0 20px; }
+.price-chart-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; font-size: 12px; }
+.price-chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.price-chart-legend span::before { content: ""; width: 10px; height: 10px; border-radius: 3px; }
+.price-chart-legend .unequal::before, .price-chart-track .unequal { background: #a75a06; }
+.price-chart-legend .equal::before, .price-chart-track .equal { background: var(--accent); }
+.price-chart-groups { display: grid; gap: 20px; }
+.price-chart-group h3 { font-size: 14px; margin: 0 0 12px; }
+.price-chart-row { display: grid; grid-template-columns: 92px minmax(0, 1fr) 24px; gap: 10px; align-items: center; margin-top: 10px; font-size: 12px; }
+.price-chart-row strong { text-align: right; font-variant-numeric: tabular-nums; }
+.price-chart-track { height: 16px; background: var(--surface); border-radius: 4px; overflow: hidden; }
+.price-chart-track > div { height: 100%; border-radius: 4px; }
+.price-chart-scale { margin: -4px 34px 0 102px; display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+@media (max-width: 1199px) {
+  .price-results-layout { grid-template-columns: minmax(0, 1fr); }
 }
