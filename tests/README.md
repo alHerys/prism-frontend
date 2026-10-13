@@ -117,8 +117,9 @@ tombol Lihat Detail dan ekspor Excel juga diperiksa. Tombol preferensi kini
 berlabel Simpan; aksi simpan/konfirmasi/hitung tetap sama. Kembali dari sumber
 PDF mempertahankan halaman evaluasi dan parameter hasil asal. Harga Timpang
 hanya menampilkan hasil tersimpan, tanpa pemilihan sumber/tombol hitung.
-Jumlah Total Item/Barang/Jasa serta Barang/Jasa timpang ditampilkan terpisah
-berikon. Overview di atas Detail Item berisi tiga pie chart (seluruh item, Barang, Jasa)
+Total Item dipertahankan; Barang/Jasa Timpang menampilkan jumlah timpang dari
+total kategori dengan ikon Package/Wrench. Jumlah mengikuti filter kategori.
+Overview di atas Detail Item berisi tiga pie chart (seluruh item, Barang, Jasa)
 dengan rasio hanya dari klasifikasi tersimpan yang dikenal. Overview tidak
 berubah oleh filter detail. Tabel kembali memenuhi lebar panel; tiga chart
 berdampingan mulai 768px dan ditumpuk pada layar lebih kecil. Grafik batang lama

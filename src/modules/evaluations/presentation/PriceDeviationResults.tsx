@@ -1,7 +1,6 @@
 import { Package } from "@phosphor-icons/react/dist/csr/Package";
 import { Wrench } from "@phosphor-icons/react/dist/csr/Wrench";
 import { ListBullets } from "@phosphor-icons/react/dist/csr/ListBullets";
-import { WarningCircle } from "@phosphor-icons/react/dist/csr/WarningCircle";
 import { priceSummary } from "../application/price-summary";
 import type { ResultRow } from "../domain/models";
 import { PriceDeviationTable } from "./PriceDeviationTable";
@@ -26,10 +25,8 @@ export function PriceDeviationResults({ rows, filter, setFilter }: {
       <PriceTableSearch query={query} onQueryChange={setQuery}>
       <div className="result-counts" aria-label="Jumlah hasil harga">
         <span><ListBullets size={18} aria-hidden="true" />Total Item <strong>{summary.total}</strong></span>
-        <span><Package size={18} aria-hidden="true" />Total Barang <strong>{goods.total}</strong></span>
-        <span><Wrench size={18} aria-hidden="true" />Total Jasa <strong>{services.total}</strong></span>
-        <span><WarningCircle size={18} aria-hidden="true" />Barang timpang <strong>{goods.unequal}</strong></span>
-        <span><WarningCircle size={18} aria-hidden="true" />Jasa timpang <strong>{services.unequal}</strong></span>
+        <span><Package size={18} aria-hidden="true" />Barang Timpang <strong>{goods.unequal}</strong> dari <strong>{goods.total}</strong></span>
+        <span><Wrench size={18} aria-hidden="true" />Jasa Timpang <strong>{services.unequal}</strong> dari <strong>{services.total}</strong></span>
       </div>
       </PriceTableSearch>
     </div>
