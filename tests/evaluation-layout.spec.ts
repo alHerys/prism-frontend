@@ -143,3 +143,36 @@ test("price overview pies precede full-width item details", async ({ page }, inf
   await expect(page.getByRole("heading", { name: "Belum ada hasil Harga Timpang" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Evaluasi harga", exact: true })).toHaveCount(0);
 });
+
+test("detail search slides over totals and leaves filter search unavailable", async ({ page }, info) => {
+  await page.goto("/pengadaan/proc-showcase?tab=harga");
+  await expect(page.locator(".price-search-field")).toHaveCSS("transition-duration", "0s");
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(page.locator(".price-search-field")).toHaveCSS("transition-duration", "0.26s, 0.26s, 0.26s");
+  const filter = page.getByRole("button", { name: "Filter dan urutkan Hasil perbandingan komponen harga", exact: true });
+  await filter.click();
+  await expect(page.getByLabel("Cari di tabel", { exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Tutup filter Hasil perbandingan komponen harga", exact: true }).click();
+  const trigger = page.getByRole("button", { name: "Cari item", exact: true });
+  await trigger.click();
+  const search = page.getByRole("textbox", { name: "Cari Detail Item", exact: true });
+  await expect(search).toBeFocused();
+  await expect(page.locator(".price-search-summary")).toHaveCSS("opacity", "0");
+  await search.fill("PIPA BAJA");
+  const table = page.getByRole("table", { name: "Hasil perbandingan komponen harga", exact: true });
+  await expect(table.locator("tbody tr")).toHaveCount(1);
+  await expect(table).toContainText("Pipa baja");
+  await expect(page.getByRole("region", { name: "Overview Harga Timpang" })).toContainText("50%");
+  await page.screenshot({ path: info.outputPath("detail-search.png"), fullPage: true });
+  await search.fill("tidak ditemukan");
+  await expect(table).toContainText("Tidak ada baris sesuai filter.");
+  await page.getByRole("button", { name: "Reset tabel", exact: true }).click();
+  await expect(search).toHaveValue("");
+  await expect(table.locator("tbody tr")).toHaveCount(2);
+  await search.fill("Pipa");
+  await search.press("Escape");
+  await expect(trigger).toBeFocused();
+  await expect(search).toBeHidden();
+  await expect(table.locator("tbody tr")).toHaveCount(2);
+  await expect(page.getByLabel("Jumlah hasil harga", { exact: true })).toBeVisible();
+});

@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
-import { afterEach, expect, it } from 'vitest';
+import { afterEach, expect, it, vi } from 'vitest';
 import { DataTable } from './data-table';
 afterEach(cleanup);
 it('isolates table controls, preserves row identity and supports reset after an empty search', () => {
@@ -25,4 +25,20 @@ it('pages a long collection and resets to the first page when sorting', () => {
   fireEvent.click(screen.getByRole('button', { name: 'Jumlah' }));
   expect(screen.getByLabelText('Halaman 1 dari 2')).toBeInTheDocument();
   expect(screen.getAllByRole('row')[1]).toHaveTextContent('0');
+});
+
+it('accepts external search, removes its menu input and returns to page one', () => {
+  const rows = Array.from({ length: 12 }, (_, id) => ({ id, name: `item-${id}` }));
+  const onQueryChange = vi.fn();
+  const table = (query: string) => <DataTable rows={rows} columns={[{ label: 'Nama', value: row => row.name }]} label="Eksternal" search={{ query, onQueryChange }}>{row => <tr key={row.id}><td>{row.name}</td></tr>}</DataTable>;
+  const { rerender } = render(table(''));
+  fireEvent.click(screen.getByRole('button', { name: 'Selanjutnya' }));
+  rerender(table('item-'));
+  expect(screen.getByLabelText('Halaman 1 dari 2')).toBeInTheDocument();
+  rerender(table('item-11'));
+  expect(screen.getAllByRole('row')).toHaveLength(2);
+  fireEvent.click(screen.getByRole('button', { name: 'Filter dan urutkan Eksternal' }));
+  expect(screen.queryByLabelText('Cari di tabel')).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Reset tabel' }));
+  expect(onQueryChange).toHaveBeenCalledWith('');
 });

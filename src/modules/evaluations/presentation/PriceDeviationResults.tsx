@@ -5,6 +5,8 @@ import { WarningCircle } from "@phosphor-icons/react/dist/csr/WarningCircle";
 import { priceSummary } from "../application/price-summary";
 import type { ResultRow } from "../domain/models";
 import { PriceDeviationTable } from "./PriceDeviationTable";
+import { useState } from "react";
+import { PriceTableSearch } from "./PriceTableSearch";
 
 export function PriceDeviationResults({ rows, filter, setFilter }: {
   rows: ResultRow[];
@@ -12,6 +14,7 @@ export function PriceDeviationResults({ rows, filter, setFilter }: {
   setFilter: (value: string) => void;
 }) {
   const summary = priceSummary(rows);
+  const [query, setQuery] = useState("");
   const [goods, services] = summary.categories;
   return <>
     <div className="result-filter-toolbar">
@@ -20,6 +23,7 @@ export function PriceDeviationResults({ rows, filter, setFilter }: {
         <option value="MATERIAL">Barang</option>
         <option value="SERVICE">Jasa</option>
       </select>
+      <PriceTableSearch query={query} onQueryChange={setQuery}>
       <div className="result-counts" aria-label="Jumlah hasil harga">
         <span><ListBullets size={18} aria-hidden="true" />Total Item <strong>{summary.total}</strong></span>
         <span><Package size={18} aria-hidden="true" />Total Barang <strong>{goods.total}</strong></span>
@@ -27,7 +31,8 @@ export function PriceDeviationResults({ rows, filter, setFilter }: {
         <span><WarningCircle size={18} aria-hidden="true" />Barang timpang <strong>{goods.unequal}</strong></span>
         <span><WarningCircle size={18} aria-hidden="true" />Jasa timpang <strong>{services.unequal}</strong></span>
       </div>
+      </PriceTableSearch>
     </div>
-    <PriceDeviationTable rows={rows} />
+    <PriceDeviationTable rows={rows} search={{ query, onQueryChange: setQuery }} />
   </>;
 }

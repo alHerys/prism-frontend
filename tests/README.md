@@ -122,7 +122,11 @@ berikon. Overview di atas Detail Item berisi tiga pie chart (seluruh item, Baran
 dengan rasio hanya dari klasifikasi tersimpan yang dikenal. Overview tidak
 berubah oleh filter detail. Tabel kembali memenuhi lebar panel; tiga chart
 berdampingan mulai 768px dan ditumpuk pada layar lebih kecil. Grafik batang lama
-dihapus. Pengecualian tetap tersimpan dalam snapshot dan laporan Excel.
+dihapus. Pencarian Detail Item memakai ikon toolbar yang membuka field dengan
+slide di atas jumlah, fokus otomatis, dan Escape/tutup menghapus query serta
+mengembalikan fokus. Reduced motion meniadakan transisi. DataTable menerima
+pencarian terkontrol untuk halaman ini dan tidak menampilkan pencarian di menu
+filter; tabel lain mempertahankan perilaku lama. Pengecualian tetap tersimpan dalam snapshot dan laporan Excel.
 
 ## Impor Form A5 bertab
 

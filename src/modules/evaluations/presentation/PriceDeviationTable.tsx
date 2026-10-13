@@ -2,10 +2,10 @@ import { DataTable } from "../../../shared/ui/data-table";
 import { money, pct } from "../../../shared/formatting/display";
 import type { ResultRow } from "../domain/models";
 
-export function PriceDeviationTable({ rows }: { rows: ResultRow[] }) {
+export function PriceDeviationTable({ rows, search }: { rows: ResultRow[]; search: { query: string; onQueryChange: (query: string) => void } }) {
   return (
     <div className="table-wrap" role="region" aria-label="Hasil perbandingan komponen harga" tabIndex={0}>
-      <DataTable rows={rows} label="Hasil perbandingan komponen harga" columns={[
+      <DataTable rows={rows} search={search} label="Hasil perbandingan komponen harga" columns={[
         { label: "Item / kategori", value: r => r.description, filter: r => r.category === "MATERIAL" ? "Barang" : "Jasa" },
         { label: "OE", value: r => r.oe, type: "decimal", className: "numeric" },
         { label: "Penawaran", value: r => r.offer, type: "decimal", className: "numeric" },

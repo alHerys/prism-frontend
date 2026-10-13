@@ -99,3 +99,20 @@
 @media (max-width: 767px) {
   .price-overview-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
 }
+
+.price-table-search { position: relative; flex: 1; min-width: 0; padding-right: 54px; min-height: 44px; display: flex; align-items: center; justify-content: flex-end; }
+.price-search-summary { transition: opacity 180ms ease; }
+.price-table-search[data-open="true"] .price-search-summary { opacity: 0; }
+.price-search-trigger { position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border: 1px solid var(--border); color: var(--accent); }
+.price-search-field { position: absolute; inset: 0 54px 0 0; display: flex; align-items: center; gap: 10px; background: var(--surface); clip-path: inset(0 0 0 100%); transform: translateX(12px); visibility: hidden; transition: clip-path 260ms cubic-bezier(.16, 1, .3, 1), transform 260ms cubic-bezier(.16, 1, .3, 1), visibility 260ms; }
+.price-table-search[data-open="true"] .price-search-field { clip-path: inset(-6px); transform: translateX(0); visibility: visible; }
+.price-search-field > svg { flex-shrink: 0; color: var(--accent); }
+.price-search-field input { width: 100%; min-width: 0; height: 44px; border-radius: 12px; }
+@media (max-width: 767px) {
+  .price-table-search { flex-basis: 100%; }
+  .price-search-summary { width: 100%; }
+  .price-search-summary .result-counts { gap: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .price-search-summary, .price-search-field { transition: none; }
+}

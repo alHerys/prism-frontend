@@ -12,16 +12,21 @@ import { tableRows } from './table-state';
 import type { TableColumn } from './table-state';
 import './data-table.css';
 
-export function DataTable<T>({ rows, columns, children, label, className = '', empty }: {
+export function DataTable<T>({ rows, columns, children, label, className = '', empty, search }: {
   rows: readonly T[]; columns: readonly TableColumn<T>[]; label: string;
   children: (row: T, originalIndex: number) => ReactNode; className?: string; empty?: ReactNode;
+  search?: { query: string; onQueryChange: (query: string) => void };
 }) {
   const [sort, setSort] = useState<number>();
   const [ascending, setAscending] = useState(true);
-  const [query, setQuery] = useState('');
+  const [localQuery, setLocalQuery] = useState('');
+  const query = search?.query ?? localQuery;
+  const setQuery = search?.onQueryChange ?? setLocalQuery;
   const [filters, setFilters] = useState<Record<number, string>>({});
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
+  const [previousQuery, setPreviousQuery] = useState(query);
+  if (query !== previousQuery) { setPreviousQuery(query); setPage(1); }
   const [size, setSize] = useState('10');
   const [position, setPosition] = useState({ top: 0, left: 0, width: 280, maxHeight: 400 });
   const trigger = useRef<HTMLButtonElement>(null);
@@ -57,7 +62,7 @@ export function DataTable<T>({ rows, columns, children, label, className = '', e
         {columns.map((column, index) => column.value && <label key={index}><input type="radio" name={`${id}-sort`} checked={sort === index} onChange={() => { setSort(index); setPage(1); }} />{column.label}</label>)}
       </fieldset>
       <fieldset><legend>Arah urutan</legend>{[true, false].map(value => <label key={String(value)}><input type="radio" name={`${id}-direction`} checked={ascending === value} disabled={sort === undefined} onChange={() => { setAscending(value); setPage(1); }} />{value ? 'Menaik' : 'Menurun'}</label>)}</fieldset>
-      <div className="data-table-query"><label htmlFor={`${id}-query`}>Cari di tabel</label><input id={`${id}-query`} value={query} onChange={event => { setQuery(event.target.value); setPage(1); }} /></div>
+      {!search && <div className="data-table-query"><label htmlFor={`${id}-query`}>Cari di tabel</label><input id={`${id}-query`} value={query} onChange={event => { setQuery(event.target.value); setPage(1); }} /></div>}
       {columns.map((column, index) => column.filter && <fieldset key={index}><legend>{column.label}</legend><label><input type="radio" name={`${id}-filter-${index}`} checked={!filters[index]} onChange={() => { setFilters(old => ({ ...old, [index]: '' })); setPage(1); }} />Semua</label>{[...new Set(rows.map(row => column.filter!(row)))].filter(Boolean).sort().map(option => <label key={option}><input type="radio" name={`${id}-filter-${index}`} checked={filters[index] === option} onChange={() => { setFilters(old => ({ ...old, [index]: option })); setPage(1); }} />{option}</label>)}</fieldset>)}
       <p className="data-table-count" role="status">{shown.length} dari {rows.length} baris</p><button type="button" className="btn small" onClick={reset}>Reset tabel</button>
     </Dialog.Content></Dialog.Portal>
