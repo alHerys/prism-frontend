@@ -62,3 +62,32 @@ koreksi berikutnya tidak mengubah hasil lama. Ekspor memakai snapshot tersebut,
 menghasilkan empat sheet tanpa formula finansial, dan memuat ExcelJS saat ekspor.
 Fixture sintetis dan artefak pengujian tidak membuktikan penerimaan pengguna atau
 kesiapan produksi. Data internal dan artefak build tidak masuk repository.
+
+## Impor vendor melalui Form A5
+
+Panel Identitas & vendor menerima beberapa PDF melalui drag-and-drop atau
+**Unggah Form A5**. Review batch memiliki satu tab per PDF, viewer native browser,
+koreksi identitas/nilai, pilihan konflik, dan konfirmasi per dokumen. Vendor baru
+hanya muncul setelah konfirmasi. Batas awal: 10 PDF per batch, 10 MiB per PDF,
+dan dua request ekstraksi bersamaan. Seluruh data impor bersifat sementara;
+reload penuh menghapusnya. Tambah vendor manual tetap tersedia.
+
+Frontend mengirim bytes PDF ke `POST {baseUrl}/form-a5/extractions` dengan header
+`Content-Type: application/pdf` dan `X-Document-Filename` yang di-encode.
+`VITE_DOCUMENT_API_URL` mengatur alamat layanan publik, default `/api`.
+Vite development mem-proxy `/api` ke `http://127.0.0.1:8000` dan menghapus prefix
+`/api`; deployment/preview memerlukan reverse proxy atau alamat layanan yang
+mendukung origin frontend. Jangan memasukkan API key ke variabel frontend.
+
+Respons harus memuat `sha256`, `candidate`, dan `warnings`. Kandidat menyediakan
+`vendor_name`, `vendor_quote`, serta `hpb`, `hpj`, `knb`, `tkdn_barang`, `tkdn_jasa`;
+setiap field numerik memuat decimal string/null `value`, string/null `quote`,
+dan nomor halaman/null `page`. TKDN berupa rasio 0–1. Frontend memvalidasi respons
+serta hash sumber dan tidak mengganti kegagalan backend dengan hasil palsu.
+Kredensial/model/provider dikonfigurasi di backend pada tahap integrasi berikutnya.
+
+Ekstraksi dipisahkan dari publikasi vendor melalui port application. Sumber asli,
+kandidat, koreksi dan bukti sumber dipertahankan dalam sesi. Nilai impor tidak
+memakai hasil kalkulasi fixture demo; evaluasinya belum tersedia sampai backend
+kalkulasi diintegrasikan. `npm run test:intake` menguji alur dengan transport HTTP
+uji eksplisit, bukan panggilan LLM nyata.

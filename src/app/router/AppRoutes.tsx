@@ -21,6 +21,7 @@ const VendorDocuments = lazy(() =>
 const Review = lazy(() =>
   import("../../modules/documents/presentation/Review").then((m) => ({ default: m.Review })),
 );
+const A5IntakeReview = lazy(() => import("../../modules/documents/presentation/A5IntakeReview").then(m => ({ default: m.A5IntakeReview })));
 const Bank = lazy(() => import("../../modules/historical-prices/presentation/BankPage"));
 const HistoryPage = lazy(() => import("../../pages/history/HistoryPage"));
 const SettingsPage = lazy(() => import("../../pages/settings/SettingsPage"));
@@ -51,6 +52,7 @@ export function AppRoutes() {
           path="/pengadaan/:id/review/:documentId"
           element={<Review key={location.pathname} />}
         />
+        <Route path="/pengadaan/:id/impor-a5/:batchId" element={<A5IntakeReview key={location.pathname} />} />
         <Route path="/bank" element={<Bank />} />
         <Route path="/pengaturan" element={<SettingsPage />} />
         <Route path="/bantuan" element={<HelpPage />} />

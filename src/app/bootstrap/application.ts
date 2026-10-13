@@ -1,3 +1,4 @@
+import { createA5IntakeUseCases } from "../../modules/documents/application/intake-use-cases";
 import type { SnapshotExporter } from "../../modules/evaluations/application/ports";
 import { createLocalRuntime } from "../../infrastructure/local/runtime";
 import { createProcurementUseCases } from "../../modules/procurement/application/use-cases";
@@ -17,6 +18,7 @@ export function createApplication(runtime = createLocalRuntime(true, true), expo
   const evaluations = createEvaluationsUseCases(runtime.evaluations.gateway, runtime.procurement.queries, exporter);
   return {
     procurement: { commands: createProcurementUseCases(runtime.procurement.gateway), queries: runtime.procurement.queries },
+    intake: { commands: createA5IntakeUseCases(runtime.intake.store, runtime.intake.assets, runtime.intake.extraction, runtime.intake.publication), queries: runtime.intake.store },
     documents: { commands: documents, queries: runtime.documents.queries },
     hea: { commands: createHEAUseCases(runtime.hea.gateway, runtime.delay), queries: runtime.hea.queries },
     priceDeviation: { commands: createPriceDeviationUseCases(runtime.priceDeviation.gateway, runtime.delay), queries: runtime.priceDeviation.queries },

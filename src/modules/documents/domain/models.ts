@@ -24,6 +24,8 @@ export interface DocumentRecord {
   procurementId: string;
   vendorId?: string;
   sourceId: string;
+  sha256?: string;
+  candidateVendorName?: string;
   name: string;
   kind: DocumentKind;
   uploadedAt: string;

@@ -1,15 +1,9 @@
 import { DataTable } from "../../../shared/ui/data-table";
 import { CheckCircle as CheckCircle2 } from "@phosphor-icons/react/dist/csr/CheckCircle";
-import { toPercent } from "../../../shared/formatting/review-input";
-import type { A5Values, DocumentRecord } from "../domain/models";
+import { A5ValueFields } from "./A5ValueFields";
+import type { DocumentRecord } from "../domain/models";
 import "../../../shared/styles/focus.css";
-import { CurrencyInput } from "../../../shared/ui/currency-input";
-import { fields } from "./review-fields";
 import type { ReviewModel } from "./view-models";
-
-const reviewFieldOrder: (keyof A5Values)[] = [
-  "hpb", "hpj", "knb", "tkdn_barang", "tkdn_jasa",
-];
 
 export function ReviewEditor({
   d,
@@ -45,35 +39,7 @@ export function ReviewEditor({
         </div>
       </div>
       {values ? (
-        <div className="form-grid review-values">
-          {reviewFieldOrder.map((key) => (
-            <div className={`field review-value-field${key === "knb" ? " review-value-wide" : ""}`} key={key}>
-              <label htmlFor={key}>
-                {fields[key]}{key.startsWith("tkdn") ? " (%)" : ""}
-              </label>
-              {key.startsWith("tkdn") ? <input
-                id={key}
-                value={values[key]}
-                inputMode="decimal"
-                onFocus={() => setFocused(key)}
-                onChange={(e) => changeValue(key, e.target.value)}
-              /> : <CurrencyInput
-                id={key}
-                value={values[key]}
-                onFocus={() => setFocused(key)}
-                onValueChange={(value) => changeValue(key, value)}
-              />}
-              {values[key] !==
-                  (key.startsWith("tkdn")
-                    ? toPercent(d.candidate![key])
-                    : d.candidate![key]) && (
-                <div className="review-field-meta"><span className="badge info">
-                    Dikoreksi
-                  </span></div>
-                )}
-            </div>
-          ))}
-        </div>
+        <A5ValueFields values={values} candidate={d.candidate!} onChange={changeValue} onFocus={setFocused} />
       ) : (
         <>
           <div className="field">

@@ -1,3 +1,8 @@
+import { createIntakeStore } from "./intake-store";
+import { createIntakeAssets } from "./intake-assets";
+import { createA5Publication } from "./intake-publication";
+import { createA5Intelligence } from "../http/a5-intelligence";
+import type { A5ExtractionPort } from "../../modules/documents/application/intake-ports";
 import { toDocument, toLocalUpload } from "./document-mapping";
 import { LocalStore } from "./store";
 import { initializeSession } from "./seed";
@@ -45,11 +50,13 @@ function projection<T>(source: { getState(): LocalState; subscribe(listener: () 
     },
   };
 }
-export function createLocalRuntime(seed = true, prepared = false) {
+export function createLocalRuntime(seed = true, prepared = false, extraction?: A5ExtractionPort) {
   const store = new LocalStore();
   initializeSession(store, seed, prepared);
+  const assets = createIntakeAssets();
+  const intake = { store: createIntakeStore(), assets, publication: createA5Publication(store), extraction: extraction ?? createA5Intelligence(import.meta.env.VITE_DOCUMENT_API_URL || "/api") };
   const source = { getState: store.getState, subscribe: store.subscribe };
-  const processing: DocumentProcessing = { process: async (file, kind, onProgress) => ({ ...await processLocalDocument(file, kind, onProgress), kind }), availableSources: () => availableDocuments().map((source) => ({ ...source, kind: source.kind as DocumentKind })) };
+  const processing: DocumentProcessing = { process: async (file, kind, onProgress) => ({ ...await processLocalDocument(file, kind, onProgress), kind }), availableSources: () => [...availableDocuments().map((source) => ({ ...source, kind: source.kind as DocumentKind })), ...assets.sources().map(source => ({ ...source, kind: "FORM_A5" as const }))] };
   const procurementGateway: ProcurementGateway = {
     createProcurement: (...args: Parameters<ProcurementGateway["createProcurement"]>) => createProcurement(store, ...args),
     addVendor: (...args: Parameters<ProcurementGateway["addVendor"]>) => addVendor(store, ...args),
@@ -84,6 +91,7 @@ export function createLocalRuntime(seed = true, prepared = false) {
   };
   return {
     processing,
+    intake,
     delay: (milliseconds: number) => new Promise<void>((resolve) => setTimeout(resolve, milliseconds)),
     procurement: { gateway: procurementGateway, queries: projection<ProcurementData>(source, (state) => ({ procurements: state.procurements, vendors: state.vendors, documents: Object.freeze(state.documents.filter(document => !document.supersededBy && !document.removedAt).map((document) => Object.freeze(toDocument(document)))) as unknown as DocumentsData["documents"], snapshots: state.snapshots, events: state.events })) },
     documents: { gateway: documentsGateway, queries: projection<DocumentsData>(source, (state) => ({ documents: Object.freeze(state.documents.map((document) => Object.freeze(toDocument(document)))) as unknown as DocumentsData["documents"], procurements: state.procurements, vendors: state.vendors })) },

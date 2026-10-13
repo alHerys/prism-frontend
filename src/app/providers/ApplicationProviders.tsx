@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { Application } from "../bootstrap/application";
 import { ProcurementProvider } from "../../modules/procurement/presentation/binding";
-import { DocumentsProvider } from "../../modules/documents/presentation/binding";
+import { DocumentsProvider, A5IntakeProvider } from "../../modules/documents/presentation/binding";
 import { HEAProvider } from "../../modules/hea/presentation/binding";
 import { PriceDeviationProvider } from "../../modules/price-deviation/presentation/binding";
 import { HistoricalPricesProvider } from "../../modules/historical-prices/presentation/binding";
@@ -15,6 +15,7 @@ export function ApplicationProviders({ application, preferencesStorage, children
     <HelpSearchProvider>
     <ProcurementProvider value={application.procurement}>
     <DocumentsProvider value={application.documents}>
+    <A5IntakeProvider value={application.intake}>
     <HEAProvider value={application.hea}>
     <PriceDeviationProvider value={application.priceDeviation}>
     <HistoricalPricesProvider value={application.historicalPrices}>
@@ -24,6 +25,7 @@ export function ApplicationProviders({ application, preferencesStorage, children
     </HistoricalPricesProvider>
     </PriceDeviationProvider>
     </HEAProvider>
+    </A5IntakeProvider>
     </DocumentsProvider>
     </ProcurementProvider>
     </HelpSearchProvider>

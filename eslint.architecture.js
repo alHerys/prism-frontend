@@ -5,7 +5,7 @@ import ts from "typescript";
 const root = path.dirname(fileURLToPath(import.meta.url));
 const publicViews = new Set([
   "procurement/ProcurementList", "procurement/ProcurementTable", "procurement/VendorCollection",
-  "documents/VendorDocumentDialog", "documents/Review", "documents/DocumentTable", "documents/UploadPanel",
+  "documents/A5IntakeReview", "documents/A5DropArea", "documents/VendorDocumentDialog", "documents/Review", "documents/DocumentTable", "documents/UploadPanel",
   "hea/HEAPanel", "price-deviation/PDPanel", "historical-prices/BankPage",
   "evaluations/ResultPanel", "evaluations/SnapshotInputs",
 ]);

@@ -109,7 +109,7 @@ export function AppShell() {
   const drawer = useRef<HTMLDivElement>(null);
   const narrow = useSyncExternalStore(subscribeViewport, narrowViewport, () => false);
   useEffect(() => { window.scrollTo(0, 0); }, [location.pathname]);
-  const focus = location.pathname.includes("/review/") || location.pathname.includes("/vendor/");
+  const focus = (location.pathname.includes("/review/") || location.pathname.includes("/impor-a5/")) || location.pathname.includes("/vendor/");
   const procurement = state.procurements.find(p => location.pathname === `/pengadaan/${p.id}`);
   const vendorCount = procurement ? state.vendors.filter(vendor => vendor.procurementId === procurement.id).length : 0;
   const active = [...links, ...generalLinks].find(([url]) => url === "/" ? location.pathname === url : location.pathname.startsWith(url));

@@ -7,12 +7,14 @@ import { X } from "@phosphor-icons/react/dist/csr/X";
 import "./a5-review.css";
 
 /** Presentation state only: both panes stay mounted to preserve their draft/view. */
-export function A5ReviewLayout({ name, source, editor, busy, onBack }: {
+export function A5ReviewLayout({ name, source, editor, busy, onBack, actions, tabs }: {
   name: string;
   source: ReactNode;
   editor: ReactNode;
   busy: boolean;
   onBack: () => void;
+  actions?: ReactNode;
+  tabs?: ReactNode;
 }) {
   const [open, setOpen] = useState(() => typeof window.matchMedia !== "function" || window.matchMedia("(min-width: 900px)").matches);
   const panelId = useId();
@@ -35,11 +37,13 @@ export function A5ReviewLayout({ name, source, editor, busy, onBack }: {
         <h1 title={name}>{name}</h1>
       </div>
       <div className="a5-review-header-actions">
+        {actions}
         <button ref={trigger} className={`btn small${open ? " selected" : ""}`} aria-expanded={open} aria-controls={panelId} onClick={() => open ? close() : setOpen(true)}>
           <SidebarSimple aria-hidden="true" />{open ? "Tutup nilai" : "Periksa nilai"}
         </button>
       </div>
     </header>
+    {tabs}
     <main className={`focus-content a5-review-workspace${open ? " drawer-open" : ""}`}>
       <div className="a5-review-source">{source}</div>
       <aside id={panelId} className="review-drawer" aria-label="Panel koreksi" inert={!open} onKeyDown={event => {

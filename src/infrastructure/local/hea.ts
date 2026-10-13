@@ -78,7 +78,7 @@ export function buildHEA(store: LocalStore, procurementId: string, documentIds: 
   if (
     docs.some(
       (d) =>
-        !d.reviewed || !equalValues(d.reviewed, A5_FIXTURES[d.fixtureId]),
+        !d.reviewed || !A5_FIXTURES[d.fixtureId] || !equalValues(d.reviewed, A5_FIXTURES[d.fixtureId]),
     )
   )
     throw new DomainError(

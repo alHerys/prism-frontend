@@ -97,3 +97,18 @@ di `test-results/review-source/`; baseline lama tidak diperbarui. Capture layout
 diperiksa terpisah. Native viewer tetap mengikuti dukungan browser yang dipakai.
 Kontrol zoom/cetak/unduh mengikuti viewer browser, bukan kode aplikasi.
 Pengujian memakai data sintetis frontend lokal; konfirmasi tetap wajib.
+
+## Impor Form A5 bertab
+
+`npm run test:intake` memakai Chrome pada 1376×695 dan 390×844. Transport ekstraksi
+di-intercept secara eksplisit dengan PDF sintetis dan respons kontrak uji.
+Skenario mencakup lima kandidat/konfirmasi per tab, draft persen desimal, keyboard,
+blob PDF asli yang tetap tersedia setelah publikasi, konflik nama dan hash,
+penggantian A5 dengan Penawaran Harga tetap ada, retry per file, drop pada card
+vendor dan hilangnya batch setelah reload. Screenshot observasi berada di
+`test-results/a5-intake/`; tidak ada golden yang diperbarui.
+
+Unit tests memeriksa antrean dua request, pembatalan/hasil terlambat, hash mismatch,
+field kosong, acknowledgement, query immutable, publikasi atomik, revisi stale,
+dan kontrak/error/timeout HTTP. Respons uji tidak membuktikan akurasi Gemini;
+provider asli dan backend tidak diubah atau dijalankan oleh suite ini.

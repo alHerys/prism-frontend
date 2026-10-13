@@ -1,3 +1,4 @@
+import { vendorNameKey } from "../../../shared/kernel/vendor-name";
 import { DomainError, requireText } from "../../../shared/kernel/validation";
 
 export function validateProcurement(input: { name: string; number: string; functionName: string }, existingNumbers: readonly string[]) {
@@ -9,6 +10,6 @@ export function validateProcurement(input: { name: string; number: string; funct
 }
 export function validateVendor(name: string, existingNames: readonly string[]) {
   requireText(name, "Nama vendor");
-  if (existingNames.some((existing) => existing.toLowerCase() === name.trim().toLowerCase()))
+  if (existingNames.some((existing) => vendorNameKey(existing) === vendorNameKey(name)))
     throw new DomainError("DUPLICATE", "Vendor sudah terdaftar.");
 }

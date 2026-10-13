@@ -22,7 +22,8 @@
     "fixtures:prepare": "node scripts/prepare-fixtures.mjs",
     "test:local-regression": "playwright test --config playwright.local.config.ts",
     "test:procurement": "playwright test --config playwright.procurement.config.ts",
-    "test:review": "playwright test --config playwright.review.config.ts"
+    "test:review": "playwright test --config playwright.review.config.ts",
+    "test:intake": "playwright test --config playwright.intake.config.ts"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
