@@ -20,7 +20,6 @@ export function PriceTableSearch({ query, onQueryChange, children }: {
   return <div className="price-table-search" data-open={open}>
     <div className="price-search-summary" aria-hidden={open}>{children}</div>
     <div className="price-search-field" id={id} inert={!open} aria-hidden={!open} onTransitionEnd={event => { if (open && event.target === event.currentTarget && event.propertyName === "clip-path") input.current?.focus(); }}>
-      <MagnifyingGlass size={20} aria-hidden="true" />
       <input ref={input} aria-label="Cari Detail Item" placeholder="Cari item, harga, atau klasifikasi…" value={query} onChange={event => onQueryChange(event.target.value)} onKeyDown={event => { if (event.key === "Escape") { event.preventDefault(); close(); } }} />
     </div>
     <button ref={trigger} type="button" className="icon-button price-search-trigger" aria-label={open ? "Tutup pencarian item" : "Cari item"} aria-expanded={open} aria-controls={id} onClick={() => {
