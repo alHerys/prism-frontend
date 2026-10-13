@@ -118,9 +118,11 @@ berlabel Simpan; aksi simpan/konfirmasi/hitung tetap sama. Kembali dari sumber
 PDF mempertahankan halaman evaluasi dan parameter hasil asal. Harga Timpang
 hanya menampilkan hasil tersimpan, tanpa pemilihan sumber/tombol hitung.
 Jumlah Total Item/Barang/Jasa serta Barang/Jasa timpang ditampilkan terpisah
-berikon. Grafik batang klasifikasi memakai data filter kategori yang sama dengan
-tabel, dengan skala jumlah bersama; dua kolom sama lebar mulai 1200px dan
-ditumpuk pada layar lebih kecil. Ringkasan kartu kategori lama dihapus. Pengecualian tetap tersimpan dalam snapshot dan laporan Excel.
+berikon. Overview di atas Detail Item berisi tiga pie chart (seluruh item, Barang, Jasa)
+dengan rasio hanya dari klasifikasi tersimpan yang dikenal. Overview tidak
+berubah oleh filter detail. Tabel kembali memenuhi lebar panel; tiga chart
+berdampingan mulai 768px dan ditumpuk pada layar lebih kecil. Grafik batang lama
+dihapus. Pengecualian tetap tersimpan dalam snapshot dan laporan Excel.
 
 ## Impor Form A5 bertab
 

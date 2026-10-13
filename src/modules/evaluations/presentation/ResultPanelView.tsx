@@ -1,5 +1,6 @@
 import { DownloadSimple as Download } from "@phosphor-icons/react/dist/csr/DownloadSimple";
 import { Eye } from "@phosphor-icons/react/dist/csr/Eye";
+import { PriceOverview } from "./PriceOverview";
 import { PriceDeviationResults } from "./PriceDeviationResults";
 import { HEALeaderboard } from "./HEALeaderboard";
 import { SnapshotInputs } from "./SnapshotInputs";
@@ -10,11 +11,13 @@ import type { ResultPanelModel } from "./view-models";
 export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter, exportResult, rows }: ResultPanelModel) {
 
   return (
+    <>
+    {s.module === "PRICE_DEVIATION" && <PriceOverview rows={s.rows} />}
     <section className="panel evaluation-result">
       <div className="panel-header">
         <div>
           <h2>
-            {s.module === "HEA" ? "Leaderboard HEA" : "Hasil Harga Timpang"}
+            {s.module === "HEA" ? "Leaderboard HEA" : "Detail Item"}
           </h2>
         </div>
         <div className="evaluation-result-header">
@@ -46,5 +49,6 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
         </div>
       )}
     </section>
+    </>
   );
 }

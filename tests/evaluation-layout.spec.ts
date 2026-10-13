@@ -55,7 +55,7 @@ test("compact evaluation preserves confirmed inputs, results and workbook export
   expect(rows).toContain("PT Nusa Teknik Mandiri");
   expect(rows).toContain("PT Borneo Teknik Nusantara");
   await page.getByRole("button", { name: "Harga Timpang", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Hasil Harga Timpang", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Detail Item", exact: true })).toBeVisible();
   await expect(page.locator(".stepper,.result-metadata,.evaluation-result-header .badge")).toHaveCount(0);
   expect(errors).toEqual([]);
 });
@@ -107,7 +107,7 @@ test("old results-stage links recover to evaluation while preserving the snapsho
   await expect(page.getByRole("button", { name: "Lihat hasil & riwayat", exact: true })).toHaveCount(0);
 });
 
-test("price results share category counts with a responsive classification chart", async ({ page }, info) => {
+test("price overview pies precede full-width item details", async ({ page }, info) => {
   await page.goto("/pengadaan/proc-showcase?tab=harga");
   await expect(page.locator(".evaluation-price-sources,.evaluation-result > .alert")).toHaveCount(0);
   await expect(page.locator(".result-category-summary > div")).toHaveCount(0);
@@ -118,18 +118,17 @@ test("price results share category counts with a responsive classification chart
   await page.getByLabel("Filter kategori hasil").selectOption("MATERIAL");
   await expect(page.locator(".result-counts")).toContainText("Total Item 1");
   await expect(page.locator(".result-counts")).toContainText("Total Jasa 0");
-  await expect(page.getByLabel("Barang: 1 timpang", { exact: true })).toBeVisible();
-  await expect(page.getByLabel("Jasa: 0 tidak timpang", { exact: true })).toBeVisible();
+  const overview = page.getByRole("region", { name: "Overview Harga Timpang", exact: true });
+  await expect(overview.getByRole("figure")).toHaveCount(3);
+  await expect(overview.getByRole("figure", { name: "Komposisi Seluruh Item" })).toContainText("50% · 1 item");
+  await expect(overview.getByRole("figure", { name: "Komposisi Barang", exact: true })).toContainText("100% · 1 item");
+  await expect(overview.getByRole("figure", { name: "Komposisi Jasa", exact: true })).toContainText("100% · 1 item");
   await page.getByLabel("Filter kategori hasil").selectOption("");
-  const chart = page.getByRole("figure", { name: "Grafik klasifikasi Harga Timpang" });
-  await expect(chart).toBeVisible();
-  await expect(page.getByLabel("Jasa: 1 tidak timpang", { exact: true })).toBeVisible();
   const tableRegion = page.getByRole("region", { name: "Hasil perbandingan komponen harga", exact: true });
-  if (page.viewportSize()!.width >= 1200) {
-    expect((await chart.boundingBox())!.x).toBeGreaterThan((await tableRegion.boundingBox())!.x);
-  } else {
-    expect((await chart.boundingBox())!.y).toBeGreaterThan((await tableRegion.boundingBox())!.y);
-  }
+  expect((await overview.boundingBox())!.y).toBeLessThan((await tableRegion.boundingBox())!.y);
+  const detailPanel = page.locator(".evaluation-result");
+  expect((await tableRegion.boundingBox())!.width).toBeGreaterThan((await detailPanel.boundingBox())!.width * .85);
+  await expect(page.locator(".price-classification-chart,.price-results-layout")).toHaveCount(0);
   await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: info.outputPath("price-cards.png"), fullPage: true });
   const pending = page.waitForEvent("download");

@@ -5,7 +5,6 @@ import { WarningCircle } from "@phosphor-icons/react/dist/csr/WarningCircle";
 import { priceSummary } from "../application/price-summary";
 import type { ResultRow } from "../domain/models";
 import { PriceDeviationTable } from "./PriceDeviationTable";
-import { PriceClassificationChart } from "./PriceClassificationChart";
 
 export function PriceDeviationResults({ rows, filter, setFilter }: {
   rows: ResultRow[];
@@ -29,9 +28,6 @@ export function PriceDeviationResults({ rows, filter, setFilter }: {
         <span><WarningCircle size={18} aria-hidden="true" />Jasa timpang <strong>{services.unequal}</strong></span>
       </div>
     </div>
-    <div className="price-results-layout">
-      <PriceDeviationTable rows={rows} />
-      <PriceClassificationChart summary={summary} />
-    </div>
+    <PriceDeviationTable rows={rows} />
   </>;
 }
