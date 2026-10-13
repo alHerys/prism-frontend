@@ -130,7 +130,7 @@ test('desktop shell, sidebar, keyboard dialog and unsaved correction protection'
   await expect(page.getByLabel('TKDN jasa (%)')).toHaveValue('31');
 });
 
-test('confirmed HEA and explicit price sources preserve results and XLSX traceability', async ({ page }, info) => {
+test('confirmed HEA, read-only price results and Bank Data preserve XLSX traceability', async ({ page }, info) => {
   const errors: string[] = [];
   const outbound: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -139,7 +139,7 @@ test('confirmed HEA and explicit price sources preserve results and XLSX traceab
   });
   await page.goto('/pengadaan/proc-terminal?tab=hea');
   expect(excelLoaded.has(page)).toBe(false);
-  await expect(page.getByRole('button', { name: 'Evaluasi HEA', exact: true })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Simpan', exact: true })).toBeDisabled();
   await page.getByRole('link', { name: 'Periksa dokumen' }).first().click();
   await confirm(page);
   await page.getByRole('link', { name: 'Periksa dokumen' }).nth(1).click();
@@ -150,7 +150,7 @@ test('confirmed HEA and explicit price sources preserve results and XLSX traceab
   await page.getByLabel('Preferensi barang (%)').fill('15');
   await page.getByLabel('Preferensi jasa (%)').fill('7.5');
   for (const checkbox of await page.getByRole('checkbox').all()) await checkbox.check();
-  await click(page, 'Evaluasi HEA');
+  await click(page, 'Simpan');
   await expect(page.getByRole('heading', { name: 'Leaderboard HEA' })).toBeVisible();
   await expect(page.locator('td[title="1261794759.4224293029478248835170918485030216358352"]')).toBeVisible();
   await capture(page, 'hea-result');
@@ -169,19 +169,7 @@ test('confirmed HEA and explicit price sources preserve results and XLSX traceab
     if (await warning.count()) await warning.check();
     await confirm(page);
   }
-  await page.getByLabel('OE pengadaan', { exact: true }).selectOption({ label: 'OE_Terminal.xlsx · Terkonfirmasi' });
-  await page.getByLabel('Penawaran vendor', { exact: true }).selectOption({ label: 'Penawaran_Nusa.xlsx · Terkonfirmasi' });
-  await click(page, 'Evaluasi harga');
-  await expect(page.getByRole('heading', { name: 'Hasil Harga Timpang' })).toBeVisible();
-  await expect(page.getByText('Hasil parsial · Belum dievaluasi:', { exact: false })).toBeVisible();
-  await capture(page, 'price-result');
-  const price = await exportWorkbook(page, info, 'price');
-  const rows = JSON.stringify(price.getWorksheet('Rincian')!.getSheetValues());
-  expect(rows).toContain('125%');
-  expect(rows).toContain('110%');
-  expect(rows).toContain('Tidak timpang');
-  expect(rows).not.toContain('Katup gate');
-  expect(JSON.stringify(price.getWorksheet('Ringkasan')!.getSheetValues())).toContain('Katup gate');
+  await expect(page.getByRole('heading', {name: 'Belum ada hasil Harga Timpang'})).toBeVisible();
   await page.getByRole('link', { name: 'Bank Data OE', exact: true }).click();
   await capture(page, 'bank-documents');
   await tab(page, 'Pencarian Referensi');

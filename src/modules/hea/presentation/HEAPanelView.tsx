@@ -11,7 +11,7 @@ export function HEAPanelView({ ResultView, ...model }: HEAPanelModel & Pick<HEAP
       <section className="panel hea-result-empty" aria-label="Leaderboard HEA belum tersedia">
         <WarningCircle size={36} aria-hidden="true" />
         <h2>Leaderboard belum tersedia</h2>
-        <p>Isi preferensi barang dan jasa, lalu tekan Evaluasi HEA untuk menghitung leaderboard.</p>
+        <p>Isi preferensi barang dan jasa, lalu tekan Simpan untuk menghitung leaderboard.</p>
         {!model.eligibleDocumentIds.length && <p>Konfirmasikan Form A5 vendor sebelum melakukan evaluasi.</p>}
       </section>}
   </div>;

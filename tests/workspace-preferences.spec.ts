@@ -110,7 +110,7 @@ test('muted evaluation, export and publication still perform real business actio
   const count=await page.locator('.bank-history .table tbody tr').count();
   await ready(page,'/pengadaan/proc-showcase?tab=hea');
   for(const checkbox of await page.getByRole('checkbox').all()) await checkbox.check();
-  const evaluate=page.getByRole('button',{name:'Evaluasi HEA',exact:true});
+  const evaluate=page.getByRole('button',{name:'Simpan',exact:true});
   await expect(evaluate).toBeEnabled(); await evaluate.click();
   await expect(evaluate).toBeEnabled();
   await expect(page.getByRole('heading',{name:'Leaderboard HEA',exact:true})).toBeVisible();

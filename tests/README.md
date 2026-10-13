@@ -113,7 +113,12 @@ Preferensi berada di kiri dan sticky pada desktop (mulai 1024px), lalu ditumpuk
 di atas hasil pada layar lebih kecil. Tes scroll memeriksa posisi sticky nyata.
 Leaderboard memakai urutan snapshot tanpa filter/sorting, dengan tautan PDF
 berdasarkan identitas sumber snapshot. Kondisi kosong, tautan dokumen native,
-tombol Lihat Detail dan ekspor Excel juga diperiksa.
+tombol Lihat Detail dan ekspor Excel juga diperiksa. Tombol preferensi kini
+berlabel Simpan; aksi simpan/konfirmasi/hitung tetap sama. Kembali dari sumber
+PDF mempertahankan halaman evaluasi dan parameter hasil asal. Harga Timpang
+hanya menampilkan hasil tersimpan, tanpa pemilihan sumber/tombol hitung.
+Ringkasan Barang/Jasa berupa dua card dan jumlah Produk/timpang dipisahkan
+berikon. Pengecualian tetap tersimpan dalam snapshot dan laporan Excel.
 
 ## Impor Form A5 bertab
 

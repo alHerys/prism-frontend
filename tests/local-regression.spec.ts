@@ -97,7 +97,7 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   await page.locator('.procurement-path').getByRole('button', {name: /Evaluasi/}).click();
   await page.getByLabel('Preferensi barang (%)').fill('15');
   await page.getByLabel('Preferensi jasa (%)').fill('7,5');
-  await button(page, 'Evaluasi HEA').click();
+  await button(page, 'Simpan').click();
   await expect(page.getByRole('heading', {name: 'Leaderboard HEA'})).toBeVisible();
   expect(await exportRows(page, info, 'hea')).toContain('1261794759.4224293029478248835170918485030216358352');
   await button(page, 'Kembali ke identitas & vendor').click();
@@ -109,15 +109,7 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   await button(page, 'Tutup dokumen vendor').click();
   await page.locator('.procurement-path').getByRole('button', {name: /Evaluasi/}).click();
   await button(page, 'Harga Timpang').click();
-  await page.getByLabel('OE pengadaan', {exact: true}).selectOption({label: 'OE-Terminal.xlsx · Terkonfirmasi'});
-  await page.getByLabel('Penawaran vendor', {exact: true}).selectOption({label: 'Penawaran-Nusa.xlsx · Terkonfirmasi'});
-  await button(page, 'Evaluasi harga').click();
-  await expect(page.getByRole('heading', {name: 'Hasil Harga Timpang'})).toBeVisible();
-  const rows = await exportRows(page, info, 'harga-timpang');
-  expect(rows).toContain('125%');
-  expect(rows).toContain('110%');
-  expect(rows).toContain('Tidak timpang');
-  expect(rows).not.toContain('Katup gate');
+  await expect(page.getByRole('heading', {name: 'Belum ada hasil Harga Timpang'})).toBeVisible();
   await button(page, 'HEA').click();
   await expect(page.getByRole('heading', {name: 'Leaderboard HEA'})).toBeVisible();
   expect(errors).toEqual([]);

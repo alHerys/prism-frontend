@@ -32,7 +32,7 @@ describe("Preferensi evaluasi", () => {
     render(<MemoryRouter><ApplicationProviders application={application}><ToastProvider><HEAPanel procurement={procurement} ResultView={ResultPanel} /></ToastProvider></ApplicationProviders></MemoryRouter>);
     expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
     expect(screen.queryByRole("navigation", { name: "Progres evaluasi" })).not.toBeInTheDocument();
-    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Evaluasi HEA" })); });
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Simpan" })); });
     expect(evaluate).toHaveBeenCalledWith(expect.objectContaining({ procurementId: procurement.id, documentIds: [a5[0].id] }));
     const snapshot = await evaluate.mock.results[0].value;
     expect(snapshot.inputs).toMatchObject({ documents: [expect.objectContaining({ id: a5[0].id })] });
@@ -57,9 +57,9 @@ describe("Preferensi evaluasi", () => {
     );
     expect(screen.queryByRole("button", { name: "Konfirmasi preferensi" })).not.toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("Preferensi barang (%)"), { target: { value: "" } });
-    expect(screen.getByRole("button", { name: "Evaluasi HEA" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Simpan" })).toBeDisabled();
     fireEvent.change(screen.getByLabelText("Preferensi barang (%)"), { target: { value: "20" } });
-    expect(screen.getByRole("button", { name: "Evaluasi HEA" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "Simpan" })).toBeEnabled();
     expect(
       service.getState().procurements[0].preferences?.preferensi_barang,
     ).toBe("0.15");

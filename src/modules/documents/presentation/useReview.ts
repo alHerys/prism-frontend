@@ -1,6 +1,6 @@
 import type { ReviewModel } from "./view-models";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 
 import { useDocumentsCommands, useDocumentsData } from "./binding";
 
@@ -18,6 +18,13 @@ export function useReview() : ReviewModel {
     (d) => d.id === documentId && d.procurementId === id,
   );
   const navigate = useNavigate();
+  const location = useLocation();
+  const origin: unknown = location.state?.reviewReturnTo;
+  // Accept only the evaluation page for this procurement, never an arbitrary URL.
+  const evaluationPath = `/pengadaan/${id}`;
+  const returnTo = typeof origin === "string" && origin.split("?")[0] === evaluationPath
+    && ["hea", "harga"].includes(new URLSearchParams(origin.split("?")[1]).get("tab") ?? "")
+    ? origin : undefined;
   const toast = useToast();
   const [showSource, setShowSource] = useState(true);
   const [ack, setAck] = useState(false);
@@ -52,9 +59,9 @@ export function useReview() : ReviewModel {
   const source = service.availableSources().find((f) => f.id === d?.sourceId);
   const back = () =>
     navigate(
-      d?.vendorId
+      returnTo ?? (d?.vendorId
         ? `/pengadaan/${id}?tab=ringkasan&vendor=${encodeURIComponent(d.vendorId)}`
-        : `/pengadaan/${id}?tab=ringkasan`,
+        : `/pengadaan/${id}?tab=ringkasan`),
     );
   function changeValue(key: keyof A5Values, value: string) {
     setValues((v) => (v ? { ...v, [key]: value } : v));

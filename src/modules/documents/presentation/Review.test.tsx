@@ -12,16 +12,16 @@ import { Review } from "./Review";
 // The Node Request constructor requires a Node AbortSignal rather than jsdom's.
 beforeEach(() => vi.stubGlobal("AbortController", transferableAbortController().constructor));
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
-function openReview(documentId: string) {
+function openReview(documentId: string, reviewReturnTo?: string) {
   const runtime = createLocalRuntime();
     const service = createTestSession(true, false, runtime);
   const router = createMemoryRouter([
     { path: "/pengadaan/:id/review/:documentId", element: <Review /> },
     { path: "/pengadaan/:id", element: <p>Dokumen vendor</p> },
-  ], { initialEntries: [`/pengadaan/proc-terminal/review/${documentId}`] });
+  ], { initialEntries: [{ pathname: `/pengadaan/proc-terminal/review/${documentId}`, state: { reviewReturnTo } }] });
   const application = createApplication(runtime);
   render(<ApplicationProviders application={application}><ToastProvider><RouterProvider router={router} /></ToastProvider></ApplicationProviders>);
-  return { ...service, commands: application.documents.commands, runtime };
+  return { ...service, commands: application.documents.commands, runtime, router };
 }
 it("renders unavailable document routes without initializing an editor", () => {
   openReview("unknown");
@@ -161,4 +161,14 @@ it("retains a failed deletion dialog and draft until retry succeeds", async () =
   fireEvent.click(dialog().getByRole("button", { name: "Hapus Form A5" }));
   expect(await screen.findByText("Dokumen vendor")).toBeInTheDocument();
   expect(remove).toHaveBeenCalledTimes(2);
+});
+
+it.each([
+  ["/pengadaan/proc-terminal?tab=hea&hasil=result-33", "/pengadaan/proc-terminal?tab=hea&hasil=result-33"],
+  ["https://example.com?tab=hea", "/pengadaan/proc-terminal?tab=ringkasan&vendor=vendor-nusa"],
+])("returns to the evaluation origin and rejects unrelated destinations: %s", async (origin, expected) => {
+  const { router } = openReview("doc-21", origin);
+  fireEvent.click(screen.getByRole("button", { name: "Kembali ke pengadaan" }));
+  await screen.findByText("Dokumen vendor");
+  expect(router.state.location.pathname + router.state.location.search).toBe(expected);
 });

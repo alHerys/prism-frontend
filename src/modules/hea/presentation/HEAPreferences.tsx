@@ -16,7 +16,7 @@ export function HEAPreferences({ prefs, setPrefs, busy, prefsComplete, evaluate 
         </div>
       </div>
       <div className="toolbar">
-        <button className="btn primary" disabled={busy || !prefsComplete} onClick={() => void evaluate()}>{busy ? "Mengevaluasi…" : "Evaluasi HEA"}<ArrowRight aria-hidden="true" /></button>
+        <button className="btn primary" disabled={busy || !prefsComplete} onClick={() => void evaluate()}>{busy ? "Mengevaluasi…" : "Simpan"}<ArrowRight aria-hidden="true" /></button>
       </div>
     </div>
   </section>;

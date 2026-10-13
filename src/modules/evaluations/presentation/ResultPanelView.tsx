@@ -1,5 +1,7 @@
 import { DataTable } from "../../../shared/ui/data-table";
 import { DownloadSimple as Download } from "@phosphor-icons/react/dist/csr/DownloadSimple";
+import { Package } from "@phosphor-icons/react/dist/csr/Package";
+import { WarningCircle } from "@phosphor-icons/react/dist/csr/WarningCircle";
 import { Eye } from "@phosphor-icons/react/dist/csr/Eye";
 import { money, pct } from "../../../shared/formatting/display";
 import { HEALeaderboard } from "./HEALeaderboard";
@@ -30,7 +32,7 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
           <button className="btn" aria-expanded={detail} aria-controls={`result-trace-${s.id}`} onClick={() => setDetail(!detail)}><Eye aria-hidden="true" />{detail ? "Tutup Detail" : "Lihat Detail"}</button>
         </div>
       </div>
-      {s.excluded.length > 0 && (
+      {s.module === "HEA" && s.excluded.length > 0 && (
         <div className="alert">
           Hasil parsial · Belum dievaluasi: {s.excluded.join(", ")}.
         </div>
@@ -42,7 +44,7 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
           <div className="result-category-summary">
             {(["MATERIAL", "SERVICE"] as const).map((c) => (
               <div key={c}>
-                <span>{c === "MATERIAL" ? "Material" : "Jasa"}</span>
+                <span>{c === "MATERIAL" ? "Barang" : "Jasa"}</span>
                 <strong>
                   {
                     s.rows.filter(
@@ -50,10 +52,6 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
                     ).length
                   }
                 </strong>
-                <small>
-                  komponen timpang dari{" "}
-                  {s.rows.filter((r) => r.category === c).length} terverifikasi
-                </small>
               </div>
             ))}
           </div>
@@ -63,19 +61,18 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
             >
-              <option value="">Material & jasa</option>
-              <option value="MATERIAL">Material</option>
+              <option value="">Barang & jasa</option>
+              <option value="MATERIAL">Barang</option>
               <option value="SERVICE">Jasa</option>
             </select>
-            <span className="muted">
-              {rows.length} komponen ·{" "}
-              {rows.filter((r) => r.classification === "TIMPANG").length}{" "}
-              timpang
-            </span>
+            <div className="result-counts">
+              <span><Package size={18} aria-hidden="true" />{rows.length} Produk</span>
+              <span><WarningCircle size={18} aria-hidden="true" />{rows.filter(r => r.classification === "TIMPANG").length} timpang</span>
+            </div>
           </div>
           <div className="table-wrap" role="region" aria-label="Hasil perbandingan komponen harga" tabIndex={0}>
             <DataTable rows={rows} label="Hasil perbandingan komponen harga" columns={[
-  { label: "Item / kategori", value: r => r.description, filter: r => r.category === "MATERIAL" ? "Material" : "Jasa" },
+  { label: "Item / kategori", value: r => r.description, filter: r => r.category === "MATERIAL" ? "Barang" : "Jasa" },
   { label: "OE", value: r => r.oe, type: "decimal", className: "numeric" },
   { label: "Penawaran", value: r => r.offer, type: "decimal", className: "numeric" },
   { label: "Terhadap OE", value: r => r.percentageAgainstOE, type: "decimal", className: "numeric" },
@@ -85,7 +82,7 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
                     <td>
                       <strong>{r.description}</strong>
                       <small>
-                        {r.category === "MATERIAL" ? "Material" : "Jasa"} ·{" "}
+                        {r.category === "MATERIAL" ? "Barang" : "Jasa"} ·{" "}
                         {r.unit}
                       </small>
                     </td>
