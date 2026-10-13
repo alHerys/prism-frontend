@@ -2,6 +2,7 @@
 export type Module = "HEA" | "PRICE_DEVIATION" | "BANK" | "PROCUREMENT";
 
 export interface ResultRow {
+  calculation?: HEACalculation;
   vendorId?: string;
   vendorName?: string;
   rank?: number;
@@ -15,6 +16,17 @@ export interface ResultRow {
   classification?: string;
   hea?: string;
   source?: string;
+}
+
+/** Decimal strings returned by the calculation adapter, never recomputed by reports. */
+export interface HEACalculation {
+  total: string;
+  tkdnCombined: string;
+  kpb: string;
+  kpj: string;
+  heGoods: string;
+  heServices: string;
+  heCombined: string;
 }
 
 export interface Snapshot {

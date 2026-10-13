@@ -9,6 +9,10 @@ import { createHistoricalPricesUseCases } from "../../modules/historical-prices/
 import { createEvaluationsUseCases } from "../../modules/evaluations/application/use-cases";
 
 export function createApplication(runtime = createLocalRuntime(true, true), exporter: SnapshotExporter = {
+  previewHEA: async (snapshot, procurement) => {
+    const { previewHEAReport } = await import("../../modules/evaluations/infrastructure/workbook");
+    return previewHEAReport(snapshot, procurement);
+  },
   download: async (snapshot, procurement) => {
     const { downloadSnapshot } = await import("../../modules/evaluations/infrastructure/workbook");
     await downloadSnapshot(snapshot, procurement);

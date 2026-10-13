@@ -128,6 +128,15 @@ mengembalikan fokus. Reduced motion meniadakan transisi. DataTable menerima
 pencarian terkontrol untuk halaman ini dan tidak menampilkan pencarian di menu
 filter; tabel lain mempertahankan perilaku lama. Pengecualian tetap tersimpan dalam snapshot dan laporan Excel.
 
+Lihat Detail HEA membuka modal hampir layar penuh dengan native PDF viewer,
+tautan buka/unduh, fokus kembali dan cleanup URL. Screenshot observasi plugin
+diambil setelah jeda terbatas; visibilitas embed sendiri tidak membuktikan isi PDF.
+PDF hasil unduhan, worksheet Perhitungan HEA, susunan merge/warna dan isi desimal
+diverifikasi terpisah. Worksheet pertama memakai layout bersama dengan PDF;
+empat sheet audit tetap tersedia. Nilai hilang pada snapshot lama tidak dihitung
+ulang. Tes integrasi HEA/hasil Harga Timpang/Bank berjalan pada 1366×768 dan
+1920×1080; alur dialog/unduhan juga diuji pada 1368×758 dan 390×844.
+
 ## Impor Form A5 bertab
 
 `npm run test:intake` memakai Chrome pada 1376×695 dan 390×844. Transport ekstraksi

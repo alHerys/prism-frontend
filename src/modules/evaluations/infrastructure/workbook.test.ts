@@ -29,6 +29,7 @@ describe("snapshot workbook", () => {
       number: "PRC-001",
     });
     expect(workbook.worksheets.map((s) => s.name)).toEqual([
+      "Perhitungan HEA",
       "Keterangan",
       "Ringkasan",
       "Rincian",

@@ -9,7 +9,16 @@ it("preserves all seeded values, IDs, event order and prepared snapshots from th
     const states = [createTestSession(false).getState(), createTestSession().getState(), createTestSession(true, true).getState()];
     // Updated for the approved showcase name without the "Siap Evaluasi" suffix.
     expect(states[2].procurements.find(procurement => procurement.id === "proc-showcase")?.name).toBe("Penggantian Jalur Pipa");
-    expect(createHash("sha256").update(JSON.stringify(states)).digest("hex")).toBe("14203add233410aea0a99d29ad4f6b61f80c13ca7447f2909021ca8ae3f5622d");
+    // The report adds optional intermediate values; protect every original field
+    // with the original fingerprint rather than replacing its baseline.
+    const originalShape = states.map(state => ({ ...state, snapshots: state.snapshots.map(snapshot => ({
+      ...snapshot, rows: snapshot.rows.map(row => {
+        const original = { ...row };
+        delete original.calculation;
+        return original;
+      }),
+    })) }));
+    expect(createHash("sha256").update(JSON.stringify(originalShape)).digest("hex")).toBe("14203add233410aea0a99d29ad4f6b61f80c13ca7447f2909021ca8ae3f5622d");
   } finally {
     vi.useRealTimers();
   }

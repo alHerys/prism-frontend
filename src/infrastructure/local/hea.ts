@@ -3,7 +3,8 @@ import type { Preferences } from "../../modules/hea/domain/models";
 import {
   A5_FIXTURES,
   FIXTURE_PREFERENCES,
-  HEA_RESULTS
+  HEA_RESULTS,
+  HEA_CALCULATIONS
 } from "./fixtures";
 import { snapshot } from "./snapshots";
 import type { LocalStore } from "./store";
@@ -98,6 +99,7 @@ export function buildHEA(store: LocalStore, procurementId: string, documentIds: 
       vendorName: store.state.vendors.find((v) => v.id === d.vendorId)?.name,
       rank: index + 1,
       hea: HEA_RESULTS[d.fixtureId],
+      calculation: copy(HEA_CALCULATIONS[d.fixtureId]),
       source: d.name,
     }));
   const excluded = store.state.vendors

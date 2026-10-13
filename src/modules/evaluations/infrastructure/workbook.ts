@@ -1,6 +1,8 @@
 import { downloadBytes } from "../../../infrastructure/browser/download";
 import type { Procurement } from "../../procurement/domain/models";
 import type { Snapshot } from "../domain/models";
+import { buildHEAReport } from "../application/hea-report";
+import { addHEAWorksheet } from "./hea-workbook";
 const labels: Record<string, string> = {
   vendorId: "Identitas vendor",
   vendorName: "Vendor",
@@ -14,6 +16,7 @@ const labels: Record<string, string> = {
   percentageAgainstOE: "Persentase terhadap OE",
   classification: "Klasifikasi",
   hea: "HEA (Rp)",
+  calculation: "Rincian perhitungan (presisi penuh)",
   source: "Sumber",
   hpb: "Harga penawaran barang (Rp)",
   hpj: "Harga penawaran jasa (Rp)",
@@ -130,6 +133,7 @@ export async function buildSnapshotWorkbook(
   workbook.creator = "PRISM";
   workbook.created = new Date(snapshot.createdAt);
   workbook.modified = new Date(snapshot.createdAt);
+  if (snapshot.module === "HEA") addHEAWorksheet(workbook, buildHEAReport(snapshot, procurement));
   const module =
     snapshot.module === "HEA"
       ? "Harga Evaluasi Akhir"
@@ -285,6 +289,10 @@ export async function buildSnapshotWorkbook(
     ],
   );
   return workbook;
+}
+export async function previewHEAReport(snapshot: Snapshot, procurement: Pick<Procurement, "name" | "number">) {
+  const { renderHEAPdf } = await import("./hea-pdf");
+  return renderHEAPdf(buildHEAReport(snapshot, procurement));
 }
 export async function downloadSnapshot(
   snapshot: Snapshot,

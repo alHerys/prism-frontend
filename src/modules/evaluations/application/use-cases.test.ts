@@ -27,3 +27,16 @@ it("preserves the Bank fallback and does not record a failed download", async ()
   expect(download).toHaveBeenCalledWith(snapshot, { name: "Bank Data OE", number: "OE-HISTORIS" });
   expect(recordExport).not.toHaveBeenCalled();
 });
+it("previews a snapshot without downloading or recording an export event", async () => {
+  const recordExport = vi.fn();
+  const download = vi.fn();
+  const bytes = new Uint8Array([1, 2, 3]);
+  const previewHEA = vi.fn(async () => bytes);
+  const commands = createEvaluationsUseCases({ recordExport }, { getSnapshot: () => ({ procurements: [procurement], vendors: [], documents: [], snapshots: [], events: [] }), subscribe: () => () => {} }, { download, previewHEA });
+  expect(await commands.previewHEA(snapshot)).toBe(bytes);
+  expect(previewHEA).toHaveBeenCalledWith(snapshot, procurement);
+  expect(download).not.toHaveBeenCalled();
+  expect(recordExport).not.toHaveBeenCalled();
+  await expect(commands.previewHEA({ ...snapshot, module: "BANK" })).rejects.toThrow("Pratinjau laporan HEA belum tersedia");
+  expect(previewHEA).toHaveBeenCalledTimes(1);
+});

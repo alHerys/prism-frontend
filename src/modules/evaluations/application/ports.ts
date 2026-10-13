@@ -6,4 +6,5 @@ export interface EvaluationsGateway {
 
 export interface SnapshotExporter {
   download(snapshot: Snapshot, procurement: { name: string; number: string }): Promise<void>;
+  previewHEA?(snapshot: Snapshot, procurement: { name: string; number: string }): Promise<Uint8Array>;
 }

@@ -1,0 +1,11 @@
+.hea-report-dialog.modal { width: calc(100vw - 64px); max-width: 1800px; height: calc(100svh - 64px); max-height: none; padding: 22px; display: flex; flex-direction: column; overflow: hidden; }
+.hea-report-dialog > h2 { padding-right: 44px; font-size: 20px; margin: 0 0 12px; }
+.hea-report-close { position: absolute; top: 16px; right: 16px; width: 44px; height: 44px; }
+.hea-report-actions { display: flex; justify-content: flex-end; gap: 10px; margin: 0 44px 14px 0; }
+.hea-report-pdf { width: 100%; flex: 1; min-height: 0; border: 0; background: #282828; border-radius: 12px; }
+.hea-report-state { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 16px; text-align: center; }
+@media (max-width: 639px) {
+  .hea-report-dialog.modal { width: calc(100vw - 16px); height: calc(100svh - 24px); padding: 16px; border-radius: 16px; }
+  .hea-report-dialog > h2 { font-size: 17px; }
+  .hea-report-actions { margin: 0 0 12px; justify-content: flex-start; flex-wrap: wrap; }
+}

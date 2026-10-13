@@ -55,14 +55,6 @@ async function returnToEvaluation(page: Page, module = 'HEA') {
   await page.getByRole('navigation', { name: 'Tahap pengadaan' }).getByRole('button', { name: /Evaluasi/ }).click();
   await tab(page, module);
 }
-async function confirm(page: Page) {
-  const price = await page.getByRole('heading', { name: /Periksa (Owner Estimate|Penawaran vendor)/ }).count();
-  await click(page, 'Konfirmasi data');
-  await page.getByRole('dialog').getByRole('button', { name: 'Konfirmasi data', exact: true }).click();
-  await expect(page.getByRole('dialog')).toHaveCount(0);
-  await expect(page).not.toHaveURL(/\/review\//);
-  await returnToEvaluation(page, price ? 'Harga Timpang' : 'HEA');
-}
 async function exportWorkbook(page: Page, info: TestInfo, name: string) {
   const pending = page.waitForEvent('download');
   await click(page, 'Ekspor Excel');
@@ -73,7 +65,10 @@ async function exportWorkbook(page: Page, info: TestInfo, name: string) {
   await download.saveAs(filename);
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.readFile(filename);
-  expect(workbook.worksheets.map(sheet => sheet.name)).toEqual(['Keterangan', 'Ringkasan', 'Rincian', 'Jejak Sumber']);
+  expect(workbook.worksheets.map(sheet => sheet.name)).toEqual([
+    ...(name === 'hea' ? ['Perhitungan HEA'] : []),
+    'Keterangan', 'Ringkasan', 'Rincian', 'Jejak Sumber',
+  ]);
   return workbook;
 }
 
@@ -140,13 +135,9 @@ test('confirmed HEA, read-only price results and Bank Data preserve XLSX traceab
   await page.goto('/pengadaan/proc-terminal?tab=hea');
   expect(excelLoaded.has(page)).toBe(false);
   await expect(page.getByRole('button', { name: 'Simpan', exact: true })).toBeDisabled();
-  await page.getByRole('link', { name: 'Periksa dokumen' }).first().click();
-  await confirm(page);
-  await page.getByRole('link', { name: 'Periksa dokumen' }).nth(1).click();
-  await expect(page.getByRole('button', { name: 'Konfirmasi data', exact: true })).toBeDisabled();
-  await page.getByLabel('TKDN jasa (%)').fill('35');
-  await page.getByRole('checkbox').check();
-  await confirm(page);
+  // The showcase contains explicitly confirmed synthetic A5 records. The current
+  // evaluation page no longer exposes document review selectors.
+  await page.goto('/pengadaan/proc-showcase?tab=hea');
   await page.getByLabel('Preferensi barang (%)').fill('15');
   await page.getByLabel('Preferensi jasa (%)').fill('7.5');
   for (const checkbox of await page.getByRole('checkbox').all()) await checkbox.check();
@@ -155,20 +146,17 @@ test('confirmed HEA, read-only price results and Bank Data preserve XLSX traceab
   await expect(page.locator('td[title="1261794759.4224293029478248835170918485030216358352"]')).toBeVisible();
   await capture(page, 'hea-result');
   await click(page, 'Lihat Detail');
-  await expect(page.getByText('Harga penawaran barang', { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole('dialog', {name:'Detail perhitungan HEA'}).locator('embed.hea-report-pdf')).toBeVisible();
+  await click(page, 'Tutup detail HEA');
   const hea = await exportWorkbook(page, info, 'hea');
+  expect(hea.getWorksheet('Perhitungan HEA')!.getCell('J6').value).toBe(.3769);
   expect(JSON.stringify(hea.getWorksheet('Rincian')!.getSheetValues())).toContain('1261794759.4224293029478248835170918485030216358352');
   expect(JSON.stringify(hea.getWorksheet('Jejak Sumber')!.getSheetValues())).toContain('35%');
   await tab(page, 'Harga Timpang');
-  for (const [label, filename] of [['OE pengadaan', 'OE_Terminal.xlsx'], ['Penawaran vendor', 'Penawaran_Nusa.xlsx']]) {
-    await page.getByLabel(label, { exact: true }).selectOption({ label: `${filename} · Perlu ditinjau` });
-    await page.getByRole('link', { name: 'Periksa sumber dan kelompok harga' }).click();
-    await expect(page.getByRole('button', { name: 'Konfirmasi data', exact: true })).toBeDisabled();
-    await page.getByLabel('Kelompok harga yang digunakan').selectOption('Harga satuan material dan jasa');
-    const warning = page.getByRole('checkbox', { name: /Saya telah memeriksa/ });
-    if (await warning.count()) await warning.check();
-    await confirm(page);
-  }
+  await expect(page.locator('.evaluation-price-sources')).toHaveCount(0);
+  const price = await exportWorkbook(page, info, 'price');
+  expect(JSON.stringify(price.getWorksheet('Rincian')!.getSheetValues())).toContain('125%');
+  await page.goto('/pengadaan/proc-terminal?tab=harga');
   await expect(page.getByRole('heading', {name: 'Belum ada hasil Harga Timpang'})).toBeVisible();
   await page.getByRole('link', { name: 'Bank Data OE', exact: true }).click();
   await capture(page, 'bank-documents');

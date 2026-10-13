@@ -43,7 +43,19 @@ test("compact evaluation preserves confirmed inputs, results and workbook export
     await page.evaluate(() => window.scrollTo(0, 0));
   }
   await page.getByRole("button", { name: "Lihat Detail", exact: true }).click();
-  await expect(page.locator(".result-trace")).toContainText("Form-A5-Nusa.pdf");
+  const reportDialog = page.getByRole("dialog", { name: "Detail perhitungan HEA", exact: true });
+  await expect(reportDialog.locator("embed.hea-report-pdf")).toBeVisible();
+  expect((await reportDialog.boundingBox())!.width).toBeGreaterThan(page.viewportSize()!.width * .9);
+  // Native PDF rendering finishes independently of the embed's DOM load.
+  // This bounded pause is only for the observational screenshot, not acceptance.
+  await page.waitForTimeout(800);
+  // Keep the viewport fixed: a full-page capture resizes the native PDF surface.
+  await page.screenshot({ path: info.outputPath("hea-report-dialog.png"), fullPage: false });
+  const pdfDownload = page.waitForEvent("download");
+  await reportDialog.getByRole("link", { name: "Unduh PDF", exact: true }).click();
+  await (await pdfDownload).saveAs(info.outputPath("hea-report.pdf"));
+  await reportDialog.getByRole("button", { name: "Tutup detail HEA", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Lihat Detail", exact: true })).toBeFocused();
   const pending = page.waitForEvent("download");
   await page.getByRole("button", { name: "Ekspor Excel", exact: true }).click();
   const download = await pending;
@@ -51,6 +63,11 @@ test("compact evaluation preserves confirmed inputs, results and workbook export
   await download.saveAs(filename);
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.readFile(filename);
+  const report = workbook.getWorksheet("Perhitungan HEA")!;
+  expect(report).toBeTruthy();
+  expect(report.getCell("C6").value).toBe("PT Nusa Teknik Mandiri");
+  expect(report.getCell("J6").value).toBe(.3769);
+  expect(report.getCell("I12").value).toBe(1261794759);
   const rows = JSON.stringify(workbook.getWorksheet("Rincian")!.getSheetValues());
   expect(rows).toContain("PT Nusa Teknik Mandiri");
   expect(rows).toContain("PT Borneo Teknik Nusantara");

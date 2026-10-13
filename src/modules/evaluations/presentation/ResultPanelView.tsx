@@ -4,6 +4,7 @@ import { PriceOverview } from "./PriceOverview";
 import { PriceDeviationResults } from "./PriceDeviationResults";
 import { HEALeaderboard } from "./HEALeaderboard";
 import { SnapshotInputs } from "./SnapshotInputs";
+import { HEAReportDialog } from "./HEAReportDialog";
 import "../../../shared/styles/focus.css";
 import "../../../shared/styles/fernly-evaluation.css";
 import type { ResultPanelModel } from "./view-models";
@@ -29,7 +30,7 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
             <Download />
             {busy ? "Membuat laporan…" : "Ekspor Excel"}
           </button>
-          <button className="btn" aria-expanded={detail} aria-controls={`result-trace-${s.id}`} onClick={() => setDetail(!detail)}><Eye aria-hidden="true" />{detail ? "Tutup Detail" : "Lihat Detail"}</button>
+          <button className="btn" aria-expanded={detail} aria-haspopup={s.module === "HEA" ? "dialog" : undefined} aria-controls={s.module === "HEA" ? undefined : `result-trace-${s.id}`} onClick={() => setDetail(!detail)}><Eye aria-hidden="true" />{detail ? "Tutup Detail" : "Lihat Detail"}</button>
         </div>
       </div>
       {s.module === "HEA" && s.excluded.length > 0 && (
@@ -42,7 +43,8 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
       ) : (
         <PriceDeviationResults rows={rows} filter={filter} setFilter={setFilter} />
       )}
-      {detail && (
+      {detail && s.module === "HEA" && <HEAReportDialog key={s.id} snapshot={s} onClose={() => setDetail(false)} />}
+      {detail && s.module !== "HEA" && (
         <div className="result-trace" id={`result-trace-${s.id}`}>
           <p>{s.policy}</p>
           <SnapshotInputs value={s.inputs} />
