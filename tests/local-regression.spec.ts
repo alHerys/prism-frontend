@@ -97,8 +97,6 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   await page.locator('.procurement-path').getByRole('button', {name: /Evaluasi/}).click();
   await page.getByLabel('Preferensi barang (%)').fill('15');
   await page.getByLabel('Preferensi jasa (%)').fill('7,5');
-  await button(page, 'Simpan preferensi').click();
-  await button(page, 'Konfirmasi preferensi').click();
   await button(page, 'Evaluasi HEA').click();
   await expect(page.getByRole('heading', {name: 'Leaderboard HEA'})).toBeVisible();
   expect(await exportRows(page, info, 'hea')).toContain('1261794759.4224293029478248835170918485030216358352');

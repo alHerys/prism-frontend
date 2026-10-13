@@ -104,11 +104,16 @@ Pengujian memakai data sintetis frontend lokal; konfirmasi tetap wajib.
 ## Evaluasi pengadaan ringkas
 
 `npm run test:evaluation` memeriksa halaman evaluasi ringkas pada desktop dan
-ponsel: dua tahap pengadaan, preferensi tetap perlu disimpan/dikonfirmasi,
+ponsel: dua tahap pengadaan, satu aksi simpan/konfirmasi/evaluasi preferensi,
 evaluasi seluruh A5 aktif terkonfirmasi, penghapusan A5 menghasilkan hasil
 parsial, dan ekspor Excel tetap menyimpan vendor serta sumber. Tautan lama
 `tab=riwayat` dialihkan ke evaluasi dengan parameter snapshot dipertahankan.
 Tahap riwayat pengadaan dihapus dari UI; data snapshot/aktivitas tetap disimpan.
+Preferensi berada di kiri dan sticky pada desktop (mulai 1024px), lalu ditumpuk
+di atas hasil pada layar lebih kecil. Tes scroll memeriksa posisi sticky nyata.
+Leaderboard memakai urutan snapshot tanpa filter/sorting, dengan tautan PDF
+berdasarkan identitas sumber snapshot. Kondisi kosong, tautan dokumen native,
+tombol Lihat Detail dan ekspor Excel juga diperiksa.
 
 ## Impor Form A5 bertab
 

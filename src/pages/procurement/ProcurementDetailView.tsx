@@ -31,7 +31,7 @@ export function ProcurementDetailView({ setParams, tab, p, vendorOpen, setVendor
           <div className="stage-navigation"><button className="btn primary" onClick={() => setParams({ tab: "hea" })}>Lanjut ke evaluasi <ArrowRight /></button></div>
         </>}
         {(tab === "hea" || tab === "harga") && <>
-          <div className="procurement-evaluation-heading"><div><h2>Evaluasi pengadaan</h2><p>Gunakan dokumen dan nilai yang telah diperiksa evaluator.</p></div><div className="evaluation-switch" role="group" aria-label="Pilih modul evaluasi"><button className={tab === "hea" ? "selected" : ""} aria-pressed={tab === "hea"} onClick={() => setParams({ tab: "hea" })}>HEA</button><button className={tab === "harga" ? "selected" : ""} aria-pressed={tab === "harga"} onClick={() => setParams({ tab: "harga" })}>Harga Timpang</button></div></div>
+          <div className="procurement-evaluation-heading"><div className="evaluation-switch" role="group" aria-label="Pilih modul evaluasi"><button className={tab === "hea" ? "selected" : ""} aria-pressed={tab === "hea"} onClick={() => setParams({ tab: "hea" })}>HEA</button><button className={tab === "harga" ? "selected" : ""} aria-pressed={tab === "harga"} onClick={() => setParams({ tab: "harga" })}>Harga Timpang</button></div></div>
           {tab === "hea" ? <HEAPanel procurement={p} ResultView={ResultPanel} /> : <PDPanel procurement={p} ResultView={ResultPanel} />}
           <div className="stage-navigation"><button className="btn" onClick={() => setParams({ tab: "ringkasan" })}>Kembali ke identitas & vendor</button></div>
         </>}

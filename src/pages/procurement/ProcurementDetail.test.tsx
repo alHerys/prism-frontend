@@ -52,7 +52,7 @@ it("returns from the vendor workspace and evaluation to the combined identity an
   await waitFor(() => expect(router.state.location.search).toBe("?tab=ringkasan"));
   expect(screen.queryByRole("heading", { name: "Identitas pengadaan" })).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Lanjut ke evaluasi" }));
-  expect(await screen.findByRole("heading", { name: "Evaluasi pengadaan" })).toBeInTheDocument();
+  expect(await screen.findByRole("heading", { name: "Preferensi pengadaan" })).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Kembali ke identitas & vendor" }));
   expect(screen.getByRole("heading", { name: "Owner Estimate (OE)" })).toBeInTheDocument();
   expect(screen.queryByText("Unggah & verifikasi")).not.toBeInTheDocument();

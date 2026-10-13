@@ -149,14 +149,12 @@ test('confirmed HEA and explicit price sources preserve results and XLSX traceab
   await confirm(page);
   await page.getByLabel('Preferensi barang (%)').fill('15');
   await page.getByLabel('Preferensi jasa (%)').fill('7.5');
-  await click(page, 'Simpan preferensi');
-  await click(page, 'Konfirmasi preferensi');
   for (const checkbox of await page.getByRole('checkbox').all()) await checkbox.check();
   await click(page, 'Evaluasi HEA');
   await expect(page.getByRole('heading', { name: 'Leaderboard HEA' })).toBeVisible();
   await expect(page.locator('td[title="1261794759.4224293029478248835170918485030216358352"]')).toBeVisible();
   await capture(page, 'hea-result');
-  await click(page, 'Lihat input dan jejak sumber');
+  await click(page, 'Lihat Detail');
   await expect(page.getByText('Harga penawaran barang', { exact: true }).first()).toBeVisible();
   const hea = await exportWorkbook(page, info, 'hea');
   expect(JSON.stringify(hea.getWorksheet('Rincian')!.getSheetValues())).toContain('1261794759.4224293029478248835170918485030216358352');

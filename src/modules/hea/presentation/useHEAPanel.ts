@@ -1,5 +1,6 @@
 import type { HEAPanelModel } from "./view-models";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { usesCurrentPreferences } from "../application/result-query";
 import { useSearchParams } from "react-router";
 import { useHEACommands, useHEAData } from "./binding";
 import { errorMessage } from "../../../shared/kernel/error-message";
@@ -20,12 +21,14 @@ export function useHEAPanel({ procurement: p }: { procurement: Procurement }) : 
     jasa: p.preferences ? percentInput(p.preferences.preferensi_jasa) : "",
   });
   const [busy, setBusy] = useState(false);
+  const running = useRef(false);
+  const prefsComplete = !!prefs.barang.trim() && !!prefs.jasa.trim();
   const prefDirty =
     prefs.barang !==
     (p.preferences ? percentInput(p.preferences.preferensi_barang) : "") ||
     prefs.jasa !==
     (p.preferences ? percentInput(p.preferences.preferensi_jasa) : "");
-  const chosen =
+  const snapshot =
     state.snapshots.find(
       (s) =>
         s.id === params.get("hasil") &&
@@ -33,44 +36,24 @@ export function useHEAPanel({ procurement: p }: { procurement: Procurement }) : 
         s.module === "HEA",
     ) ||
     state.snapshots.find((s) => s.procurementId === p.id && s.module === "HEA");
-  async function save() {
-    try {
-      const saved = await service.setPreferences(
-        p.id,
-        {
-          preferensi_barang: ratioInput(prefs.barang),
-          preferensi_jasa: ratioInput(prefs.jasa),
-        },
-        p.preferenceRevision,
-      );
-      if (saved.preferences) {
-        setPrefs({
-          barang: percentInput(saved.preferences.preferensi_barang),
-          jasa: percentInput(saved.preferences.preferensi_jasa),
-        });
-      }
-      toast("Preferensi disimpan. Konfirmasikan nilai yang akan digunakan.");
-    } catch (e) {
-      toast(errorMessage(e), true);
-    }
-  }
-  async function confirm() {
-    try {
-      await service.confirmPreferences(p.id, p.preferenceRevision);
-      toast("Preferensi pengadaan terkonfirmasi.");
-    } catch (e) {
-      toast(errorMessage(e), true);
-    }
-  }
+  const chosen = snapshot && prefsComplete && !prefDirty && p.preferenceConfirmed && usesCurrentPreferences(snapshot, p) ? snapshot : undefined;
   async function evaluate() {
+    if (running.current || !prefsComplete) return;
+    running.current = true;
     setBusy(true);
     try {
-      const s = await service.evaluateHEA(p.id, eligibleDocumentIds);
-      setParams({ tab: "hea", hasil: s.id });
+      const preferences = {
+        preferensi_barang: ratioInput(prefs.barang),
+        preferensi_jasa: ratioInput(prefs.jasa),
+      };
+      const result = await service.evaluateWithPreferences({ procurementId: p.id, preferences, expectedRevision: p.preferenceRevision, documentIds: eligibleDocumentIds });
+      setPrefs({ barang: percentInput(preferences.preferensi_barang), jasa: percentInput(preferences.preferensi_jasa) });
+      setParams({ tab: "hea", hasil: result.id });
       toast("Evaluasi HEA selesai. Hasil tersimpan.", false, "evaluation");
-    } catch (e) {
-      toast(errorMessage(e), true);
+    } catch (error) {
+      toast(errorMessage(error), true);
     } finally {
+      running.current = false;
       setBusy(false);
     }
   }
@@ -80,10 +63,8 @@ export function useHEAPanel({ procurement: p }: { procurement: Procurement }) : 
     prefs,
     setPrefs,
     busy,
-    prefDirty,
+    prefsComplete,
     chosen,
-    save,
-    confirm,
     evaluate,
   };
 }

@@ -6,9 +6,7 @@ export interface HEAPanelModel {
   prefs: { barang: string; jasa: string; };
   setPrefs: React.Dispatch<React.SetStateAction<{ barang: string; jasa: string; }>>;
   busy: boolean;
-  prefDirty: boolean;
+  prefsComplete: boolean;
   chosen: import("../../evaluations/domain/models").Snapshot | undefined;
-  save: () => Promise<void>;
-  confirm: () => Promise<void>;
   evaluate: () => Promise<void>;
 }

@@ -1,7 +1,8 @@
 import { DataTable } from "../../../shared/ui/data-table";
 import { DownloadSimple as Download } from "@phosphor-icons/react/dist/csr/DownloadSimple";
-import { CaretDown } from "@phosphor-icons/react/dist/csr/CaretDown";
-import { money, pct, roundedMoney } from "../../../shared/formatting/display";
+import { Eye } from "@phosphor-icons/react/dist/csr/Eye";
+import { money, pct } from "../../../shared/formatting/display";
+import { HEALeaderboard } from "./HEALeaderboard";
 import { SnapshotInputs } from "./SnapshotInputs";
 import "../../../shared/styles/focus.css";
 import "../../../shared/styles/fernly-evaluation.css";
@@ -26,6 +27,7 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
             <Download />
             {busy ? "Membuat laporan…" : "Ekspor Excel"}
           </button>
+          <button className="btn" aria-expanded={detail} aria-controls={`result-trace-${s.id}`} onClick={() => setDetail(!detail)}><Eye aria-hidden="true" />{detail ? "Tutup Detail" : "Lihat Detail"}</button>
         </div>
       </div>
       {s.excluded.length > 0 && (
@@ -34,28 +36,7 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
         </div>
       )}
       {s.module === "HEA" ? (
-        <div className="table-wrap" role="region" aria-label="Leaderboard HEA" tabIndex={0}>
-          <DataTable rows={rows} label="Leaderboard HEA" columns={[
-  { label: "Peringkat", value: r => r.rank },
-  { label: "Vendor", value: r => r.vendorName },
-  { label: "Harga Evaluasi Akhir", value: r => r.hea, type: "decimal", className: "numeric" },
-  { label: "Sumber", value: r => r.source },
-]}>{(r, i) => (
-                <tr key={i}>
-                  <td>
-                    <span className="result-rank">{r.rank}</span>
-                  </td>
-                  <td>
-                    <strong>{r.vendorName}</strong>
-                  </td>
-                  <td className="numeric" title={r.hea}>
-                    {roundedMoney(r.hea)}
-                    <small>Urutan berdasarkan nilai berpresisi penuh</small>
-                  </td>
-                  <td>{r.source}</td>
-                </tr>
-              )}</DataTable>
-        </div>
+        <HEALeaderboard snapshot={s} />
       ) : (
         <>
           <div className="result-category-summary">
@@ -127,12 +108,6 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
           </div>
         </>
       )}
-      <div className="result-footer">
-        <button className="inline-link" aria-expanded={detail} aria-controls={`result-trace-${s.id}`} onClick={() => setDetail(!detail)}>
-          {detail ? "Tutup rincian" : "Lihat input dan jejak sumber"}
-          <CaretDown aria-hidden="true" />
-        </button>
-      </div>
       {detail && (
         <div className="result-trace" id={`result-trace-${s.id}`}>
           <p>{s.policy}</p>

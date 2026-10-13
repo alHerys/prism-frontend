@@ -28,16 +28,16 @@ describe("Preferensi evaluasi", () => {
     const a5 = before.documents.filter(d => d.procurementId === procurement.id && d.kind === "FORM_A5");
     await runtime.documents.gateway.removeVendorDocument(procurement.id, a5[1].id, a5[1].revision);
     await runtime.documents.gateway.uploadDocument({ procurementId: procurement.id, vendorId: a5[0].vendorId, kind: "FORM_A5", sourceId: a5[0].sourceId, name: "Unconfirmed.pdf" });
-    const evaluate = vi.spyOn(application.hea.commands, "evaluateHEA");
+    const evaluate = vi.spyOn(application.hea.commands, "evaluateWithPreferences");
     render(<MemoryRouter><ApplicationProviders application={application}><ToastProvider><HEAPanel procurement={procurement} ResultView={ResultPanel} /></ToastProvider></ApplicationProviders></MemoryRouter>);
     expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
     expect(screen.queryByRole("navigation", { name: "Progres evaluasi" })).not.toBeInTheDocument();
     await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Evaluasi HEA" })); });
-    expect(evaluate).toHaveBeenCalledWith(procurement.id, [a5[0].id]);
+    expect(evaluate).toHaveBeenCalledWith(expect.objectContaining({ procurementId: procurement.id, documentIds: [a5[0].id] }));
     const snapshot = await evaluate.mock.results[0].value;
     expect(snapshot.inputs).toMatchObject({ documents: [expect.objectContaining({ id: a5[0].id })] });
   });
-  it("tidak mengonfirmasi atau mengevaluasi preferensi lama ketika formulir memiliki perubahan", async () => {
+  it("requires both percentage fields and keeps edits unsaved until evaluation", async () => {
     const runtime = createLocalRuntime(true, true);
     const service = createTestSession(true, false, runtime);
     const initial = service.getState().procurements[0];
@@ -55,16 +55,11 @@ describe("Preferensi evaluasi", () => {
         </ToastProvider></ApplicationProviders>
       </MemoryRouter>,
     );
-    expect(
-      screen.getByRole("button", { name: "Konfirmasi preferensi" }),
-    ).toBeEnabled();
-    fireEvent.change(screen.getByLabelText("Preferensi barang (%)"), {
-      target: { value: "20" },
-    });
-    expect(
-      screen.getByRole("button", { name: "Konfirmasi preferensi" }),
-    ).toBeDisabled();
+    expect(screen.queryByRole("button", { name: "Konfirmasi preferensi" })).not.toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Preferensi barang (%)"), { target: { value: "" } });
     expect(screen.getByRole("button", { name: "Evaluasi HEA" })).toBeDisabled();
+    fireEvent.change(screen.getByLabelText("Preferensi barang (%)"), { target: { value: "20" } });
+    expect(screen.getByRole("button", { name: "Evaluasi HEA" })).toBeEnabled();
     expect(
       service.getState().procurements[0].preferences?.preferensi_barang,
     ).toBe("0.15");

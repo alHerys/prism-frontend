@@ -15,9 +15,7 @@
 .procurement-detail-page .stage-navigation { display: flex; align-items: center; justify-content: flex-end; gap: 12px; border: 0; padding: 24px 0 0; margin: 0; }
 .procurement-detail-page .stage-navigation .btn { min-height: 44px; font-size: 13px; }
 .procurement-detail-page .stage-navigation .btn:first-child:not(.primary) { margin-right: auto; }
-.procurement-detail-page .procurement-evaluation-heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin: 0 0 22px; }
-.procurement-evaluation-heading h2 { font-size: 21px; font-weight: 500; }
-.procurement-evaluation-heading p { color: var(--muted); font-size: 13px; margin-top: 6px; }
+.procurement-detail-page .procurement-evaluation-heading { display: flex; align-items: center; justify-content: flex-end; gap: 24px; margin: 0 0 22px; }
 .procurement-detail-page .evaluation-switch { display: flex; margin: 0; background: var(--surface); border-radius: 50px; border: 1px solid var(--border); padding: 4px; flex-shrink: 0; }
 .procurement-detail-page .evaluation-switch button { min-height: 40px; padding: 9px 21px; border-radius: 50px; font-size: 13px; color: var(--muted); border: 0; background: transparent; }
 .procurement-detail-page .evaluation-switch button.selected { color: #fff; background: var(--accent, #155a37); }
