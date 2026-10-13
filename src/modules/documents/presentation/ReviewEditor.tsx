@@ -112,7 +112,7 @@ export function ReviewEditor({
           )}
         </>
       )}
-      {d.warnings.length > 0 && (
+      {d.kind !== "FORM_A5" && d.warnings.length > 0 && (
         <div className="alert review-warning">
           <strong>Perlu verifikasi evaluator</strong>
           {d.warnings.map((w) => (
@@ -140,7 +140,7 @@ export function ReviewEditor({
           disabled={
             busy ||
             (d.status === "CONFIRMED" && !dirty) ||
-            (d.warnings.length > 0 && !ack) ||
+            (d.kind !== "FORM_A5" && d.warnings.length > 0 && !ack) ||
             (!values && !group)
           }
           onClick={() => setConfirm(true)}

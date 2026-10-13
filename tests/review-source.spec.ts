@@ -98,8 +98,45 @@ test("drawer motion supports interruption, keyboard and reduced motion", async (
 test("A5 warnings still require evaluator acknowledgement", async ({ page }) => {
   await page.goto("/pengadaan/proc-terminal/review/doc-22");
   await openDrawer(page);
-  await expect(page.getByRole("button", { name: "Konfirmasi data", exact: true })).toBeDisabled();
+  await expect(page.locator(".review-editor .review-warning")).toHaveCount(0);
   await page.getByLabel("TKDN jasa (%)", { exact: true }).fill("35");
-  await page.getByRole("checkbox", { name: /Saya telah memeriksa/ }).check();
   await expect(page.getByRole("button", { name: "Konfirmasi data", exact: true })).toBeEnabled();
+  await page.getByRole("button", { name: "Konfirmasi data", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "Konfirmasi data dokumen" });
+  await expect(dialog.getByRole("button", { name: "Konfirmasi data", exact: true })).toBeDisabled();
+  await dialog.getByRole("checkbox", { name: /Saya telah memeriksa/ }).check();
+  await expect(dialog.getByRole("button", { name: "Konfirmasi data", exact: true })).toBeEnabled();
+});
+
+test("vendor file removal requires confirmation and leaves the counterpart available", async ({ page }, info) => {
+  for (const [id, label] of [["doc-25", "Form A5"], ["doc-28", "Penawaran Harga"]]) {
+    await page.goto(`/pengadaan/proc-showcase/review/${id}`);
+    const remove = page.locator("header").getByRole("button", { name: `Hapus ${label}`, exact: true });
+    await expect(remove).toBeVisible();
+    await expect(remove).toHaveCSS("color", "rgb(162, 43, 32)");
+    await remove.click();
+    const dialog = page.getByRole("dialog", { name: `Hapus ${label}?`, exact: true });
+    await expect(dialog).toBeVisible();
+    await dialog.getByRole("button", { name: "Batal", exact: true }).click();
+    await expect(remove).toBeFocused();
+    await remove.click();
+    await page.screenshot({ path: info.outputPath(`delete-${id}.png`) });
+    await dialog.getByRole("button", { name: `Hapus ${label}`, exact: true }).click();
+    const documents = page.getByRole("dialog", { name: "Pilih Dokumen", exact: true });
+    await expect(documents.getByRole("link", { name: `Buka ${label}`, exact: true })).toHaveCount(0);
+    const other = label === "Form A5" ? "Penawaran Harga" : "Form A5";
+    await expect(documents.getByRole("link", { name: `Buka ${other}`, exact: true })).toBeVisible();
+  }
+});
+
+test("OE upload date and time use stacked icon rows", async ({ page }, info) => {
+  await page.goto("/pengadaan/proc-showcase?tab=ringkasan");
+  const metadata = page.locator(".owner-estimate-uploaded");
+  await expect(metadata.locator("small svg")).toHaveCount(2);
+  const date = metadata.getByLabel(/^Tanggal unggah/);
+  const time = metadata.getByLabel(/^Jam unggah/);
+  expect((await time.boundingBox())!.y).toBeGreaterThan((await date.boundingBox())!.y);
+  await expect(time).toContainText("WIB");
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.screenshot({ path: info.outputPath("oe-upload-time.png"), fullPage: true });
 });

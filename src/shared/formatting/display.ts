@@ -47,6 +47,14 @@ export const kindLabel: Record<string, string> = {
   HISTORICAL_OE: "OE historis",
 };
 
+export function dateTimeParts(value: string, timeZone: string) {
+  const timestamp = new Date(value);
+  return {
+    date: timestamp.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric", timeZone }),
+    time: timestamp.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", timeZone, timeZoneName: "short" }),
+  };
+}
+
 export const bankMoney = (value: string) =>
   `Rp ${value.split(".")[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
 export const historyTime = (value: string) =>

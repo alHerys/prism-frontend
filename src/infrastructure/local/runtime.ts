@@ -7,7 +7,7 @@ import { toDocument, toLocalUpload } from "./document-mapping";
 import { LocalStore } from "./store";
 import { initializeSession } from "./seed";
 import { createProcurement, addVendor } from "./procurement";
-import { uploadRegisteredDocument, reviewDocument, confirmDocument, removeOwnerEstimate } from "./documents";
+import { uploadRegisteredDocument, reviewDocument, confirmDocument, removeOwnerEstimate, removeVendorDocument } from "./documents";
 import { setPreferences, confirmPreferences, evaluateHEA } from "./hea";
 import { selectGroup, reviewPairs, confirmPairs, evaluateDeviation } from "./price-deviation";
 import { setHistoricalMetadata, publishHistory, setComparable, estimate, getPreparedStatistics, createBankSnapshot } from "./historical";
@@ -63,6 +63,7 @@ export function createLocalRuntime(seed = true, prepared = false, extraction?: A
   };
   const documentsGateway: DocumentsGateway = {
     removeOwnerEstimate: (...args) => removeOwnerEstimate(store, ...args),
+    removeVendorDocument: (...args) => removeVendorDocument(store, ...args),
     uploadDocument: async (input) => toDocument(await uploadRegisteredDocument(store, toLocalUpload(input))),
     reviewDocument: async (...args: Parameters<DocumentsGateway["reviewDocument"]>) => toDocument(await reviewDocument(store, ...args)),
     confirmDocument: async (...args: Parameters<DocumentsGateway["confirmDocument"]>) => toDocument(await confirmDocument(store, ...args)),

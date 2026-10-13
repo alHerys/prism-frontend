@@ -3,7 +3,9 @@ import { Link } from "react-router";
 import type { DocumentRecord } from "../domain/models";
 import { Eye } from "@phosphor-icons/react/dist/csr/Eye";
 import { PencilSimple } from "@phosphor-icons/react/dist/csr/PencilSimple";
-import { useWorkspaceTime } from "../../../shared/ui/workspace-time";
+import { CalendarBlank } from "@phosphor-icons/react/dist/csr/CalendarBlank";
+import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
+import { useWorkspaceTimeParts } from "../../../shared/ui/workspace-time";
 import "./owner-estimate.css";
 
 export function OwnerEstimateDocument({ document, busy, onReplace }: {
@@ -11,14 +13,17 @@ export function OwnerEstimateDocument({ document, busy, onReplace }: {
   busy: boolean;
   onReplace: () => void;
 }) {
-  const dateTime = useWorkspaceTime();
+  const parts = useWorkspaceTimeParts()(document.uploadedAt);
   return (
     <div className="owner-estimate-document">
       <div className="owner-estimate-identity">
         <span className="owner-estimate-symbol"><FileXls size={28} aria-hidden="true" /></span>
         <div>
           <strong>{document.name}</strong>
-          <small>Diunggah {dateTime(document.uploadedAt)}</small>
+          <div className="owner-estimate-uploaded" aria-label="Waktu unggah">
+            <small><CalendarBlank size={14} aria-hidden="true" /><time dateTime={document.uploadedAt} aria-label={`Tanggal unggah ${parts.date}`}>{parts.date}</time></small>
+            <small><Clock size={14} aria-hidden="true" /><time dateTime={document.uploadedAt} aria-label={`Jam unggah ${parts.time}`}>{parts.time}</time></small>
+          </div>
         </div>
       </div>
       <div className="owner-estimate-actions">

@@ -90,7 +90,10 @@ Gunakan `PRISM_PREVIEW_URL` untuk memilih URL preview build lokal.
 `npm run test:review` memeriksa embed PDF bawaan browser dan respons sumber PDF,
 header nama file, drawer desktop/ponsel, fokus keyboard/Escape, animasi aktif dan
 reduced motion, serta draft saat panel dibuka/tutup. Suite juga memeriksa navigasi,
-konfirmasi evaluator dan acknowledgement. Di bawah 900px drawer mengambang dari
+konfirmasi evaluator dan acknowledgement A5 di dialog konfirmasi, bukan drawer.
+Penghapusan A5/Penawaran Harga memerlukan persetujuan eksplisit, mempertahankan
+dokumen lain milik vendor, dan mengembalikan slot unggah. Metadata OE diperiksa
+sebagai dua baris berikon untuk tanggal dan jam. Di bawah 900px drawer mengambang dari
 kanan dan tertutup saat halaman pertama dibuka; desktop membagi area PDF/drawer.
 Ukuran yang diperiksa: 1366×768, 1920×1080, 1368×695 dan 390×844. Screenshot berada
 di `test-results/review-source/`; baseline lama tidak diperbarui. Capture layout tidak dijadikan bukti isi plugin PDF: respons bytes sumber

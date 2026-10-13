@@ -21,6 +21,11 @@ export interface UploadPanelModel {
 }
 
 export interface ReviewModel {
+  removalTarget: import("../domain/models").DocumentRecord | undefined;
+  removalFailure: string;
+  requestRemoval: () => void;
+  cancelRemoval: () => void;
+  removeDocument: () => Promise<void>;
   id: string | undefined;
   state: import("../application/queries").DocumentsData;
   d: import("../domain/models").DocumentRecord | undefined;

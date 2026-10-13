@@ -13,7 +13,7 @@ export function useHEAPanel({ procurement: p }: { procurement: Procurement }) : 
   const toast = useToast();
   const [params, setParams] = useSearchParams();
   const docs = state.documents.filter(
-    (d) => d.procurementId === p.id && d.kind === "FORM_A5",
+    (d) => d.procurementId === p.id && d.kind === "FORM_A5" && !d.removedAt && !d.supersededBy,
   );
   const [selected, setSelected] = useState<string[]>([]);
   const [prefs, setPrefs] = useState({

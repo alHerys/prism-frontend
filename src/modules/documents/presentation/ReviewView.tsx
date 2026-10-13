@@ -2,6 +2,7 @@ import { ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft";
 import { Eye } from "@phosphor-icons/react/dist/csr/Eye";
 import { EyeSlash as EyeOff } from "@phosphor-icons/react/dist/csr/EyeSlash";
 import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
+import { Trash } from "@phosphor-icons/react/dist/csr/Trash";
 import { Link } from "react-router";
 import { kindLabel } from "../../../shared/formatting/display";
 import "../../../shared/styles/focus.css";
@@ -13,9 +14,11 @@ import { ReviewEditor } from "./ReviewEditor";
 import { ReviewLeaveDialog } from "./ReviewLeaveDialog";
 import { ReviewSource } from "./ReviewSource";
 import { OwnerEstimateArchiveNotice } from "./OwnerEstimateArchiveNotice";
+import { ReviewRemoval } from "./ReviewRemoval";
 
 import type { ReviewModel } from "./view-models";
 export function ReviewView({
+  removalTarget, removalFailure, requestRemoval, cancelRemoval, removeDocument,
   d,
   showSource,
   setShowSource,
@@ -67,12 +70,15 @@ export function ReviewView({
         setDirty={setDirty} failure={failure} changeValue={changeValue} editPair={editPair}
       />;
   const onBack = () => dirty ? setLeave(true) : back();
+  const removal = ["FORM_A5", "OFFER"].includes(d.kind) && !d.removedAt && !d.supersededBy
+    ? <button className="icon-button review-remove" aria-label={`Hapus ${d.kind === "FORM_A5" ? "Form A5" : "Penawaran Harga"}`} title="Hapus dokumen" disabled={busy} onClick={requestRemoval}><Trash size={20} aria-hidden="true" /></button>
+    : null;
   return (
     <div className={`focus-shell fernly-review${d.kind === "FORM_A5" ? " a5-review" : ""}`}>
       {d.kind === "FORM_A5" ? (
         <A5ReviewLayout
           name={d.name} source={evidence} editor={editor} busy={busy}
-          onBack={onBack}
+          onBack={onBack} actions={removal}
         />
       ) : <>
       <header className="focus-head">
@@ -93,6 +99,7 @@ export function ReviewView({
             </p>
           </div>
         </div>
+        {removal}
       </header>
       <main className="focus-content">
         <div className="review-document-bar">
@@ -123,7 +130,8 @@ export function ReviewView({
         </div>
       </main>
       </>}
-      <ReviewConfirmation busy={busy} confirm={confirm} setConfirm={setConfirm} confirmDocument={confirmDocument} />
+      <ReviewConfirmation d={d} ack={ack} setAck={setAck} busy={busy} confirm={confirm} setConfirm={setConfirm} confirmDocument={confirmDocument} />
+      <ReviewRemoval removalTarget={removalTarget} removalFailure={removalFailure} busy={busy} cancelRemoval={cancelRemoval} removeDocument={removeDocument} />
       <ReviewLeaveDialog busy={busy} leave={leave} setLeave={setLeave} setDirty={setDirty} blocker={blocker} leavePage={leavePage} save={save} />
     </div>
   );

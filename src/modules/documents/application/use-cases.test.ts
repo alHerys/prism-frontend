@@ -6,7 +6,7 @@ import type { PriceDeviationGateway } from "../../price-deviation/application/po
 import type { DocumentRecord } from "../domain/models";
 const document: DocumentRecord = { id: "doc", procurementId: "proc", sourceId: "source", name: "Offer", kind: "OFFER", uploadedAt: "", revision: 3, status: "REVIEW_REQUIRED", warnings: [], acknowledged: false, sources: [], groups: [], pairs: [], published: false };
 function fake() {
-  const gateway: DocumentsGateway = { removeOwnerEstimate: vi.fn(async () => {}), uploadDocument: vi.fn(async () => document), reviewDocument: vi.fn(async () => document), confirmDocument: vi.fn(async () => document) };
+  const gateway: DocumentsGateway = { removeVendorDocument: vi.fn(async () => {}), removeOwnerEstimate: vi.fn(async () => {}), uploadDocument: vi.fn(async () => document), reviewDocument: vi.fn(async () => document), confirmDocument: vi.fn(async () => document) };
   const processing: DocumentProcessing = { process: vi.fn(async () => ({ id: "source", name: "Source", path: "/source", kind: "OFFER" as const })), availableSources: () => [] };
   const prices: Pick<PriceDeviationGateway, "selectGroup" | "reviewPairs" | "confirmPairs"> = { selectGroup: vi.fn(async () => ({ ...document, revision: 4 })), reviewPairs: vi.fn(async () => document), confirmPairs: vi.fn(async () => document) };
   return { gateway, processing, prices, commands: createDocumentsUseCases(gateway, processing, prices) };

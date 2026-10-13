@@ -7,6 +7,7 @@ import {
 } from "./fixtures";
 import { snapshot } from "./snapshots";
 import type { LocalStore } from "./store";
+import { ensureCurrentDocument } from "../../modules/documents/domain/replacement";
 import { DomainError, copy, equalValues } from "../../shared/kernel/validation";
 export async function setPreferences(store: LocalStore, procurementId: string, values: Preferences, expectedRevision: number) {
   const p = store.proc(procurementId);
@@ -56,6 +57,7 @@ export function buildHEA(store: LocalStore, procurementId: string, documentIds: 
   if (!documentIds.length)
     throw new DomainError("REQUIRED", "Pilih dokumen yang akan dievaluasi.");
   const docs = [...new Set(documentIds)].map((id) => store.doc(id));
+  docs.forEach(ensureCurrentDocument);
   if (
     docs.some(
       (d) => d.procurementId !== procurementId || d.kind !== "FORM_A5",

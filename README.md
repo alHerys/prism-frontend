@@ -88,6 +88,6 @@ Kredensial/model/provider dikonfigurasi di backend pada tahap integrasi berikutn
 
 Ekstraksi dipisahkan dari publikasi vendor melalui port application. Sumber asli,
 kandidat, koreksi dan bukti sumber dipertahankan dalam sesi. Nilai impor tidak
-memakai hasil kalkulasi fixture demo; evaluasinya belum tersedia sampai backend
+memakai hasil kalkulasi fixture; evaluasinya belum tersedia sampai backend
 kalkulasi diintegrasikan. `npm run test:intake` menguji alur dengan transport HTTP
 uji eksplisit, bukan panggilan LLM nyata.

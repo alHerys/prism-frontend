@@ -59,6 +59,7 @@ export function buildDeviation(store: LocalStore, procurementId: string, oeId: s
   const oe = store.doc(oeId),
     offer = store.doc(offerId);
   ensureCurrentDocument(oe);
+  ensureCurrentDocument(offer);
   if (
     oe.procurementId !== procurementId ||
     offer.procurementId !== procurementId ||

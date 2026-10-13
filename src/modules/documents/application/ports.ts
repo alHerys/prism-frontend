@@ -5,6 +5,7 @@ import type { UploadInput } from "../domain/models";
 import type { BinarySource } from "../../../shared/kernel/binary-source";
 
 export interface DocumentsGateway {
+  removeVendorDocument(procurementId: string, documentId: string, expectedRevision: number): Promise<void>;
   removeOwnerEstimate(procurementId: string, documentId: string, expectedRevision: number): Promise<void>;
   uploadDocument(input: UploadInput): Promise<DocumentRecord>;
   reviewDocument(id: string, values: A5Values, expectedRevision: number): Promise<DocumentRecord>;

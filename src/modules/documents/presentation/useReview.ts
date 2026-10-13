@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router";
 import { useDocumentsCommands, useDocumentsData } from "./binding";
 
 import { toPercent, toRatio } from "../../../shared/formatting/review-input";
-import type { A5Values } from "../domain/models";
+import type { A5Values, DocumentRecord } from "../domain/models";
 import type { PricePair } from "../../price-deviation/domain/models";
 import { useToast } from "../../../shared/ui/toast-provider";
 import { useUnsavedReview } from "./useUnsavedReview";
@@ -40,6 +40,8 @@ export function useReview() : ReviewModel {
   const [group, setGroup] = useState(d?.selectedGroup || "");
   const [dirty, setDirty] = useState(false);
   const [failure, setFailure] = useState("");
+  const [removalTarget, setRemovalTarget] = useState<DocumentRecord>();
+  const [removalFailure, setRemovalFailure] = useState("");
   const blocker = useUnsavedReview(dirty);
   const leavePage = () => {
     if (blocker.state === "blocked") blocker.proceed();
@@ -99,6 +101,30 @@ export function useReview() : ReviewModel {
       setBusy(false);
     }
   }
+  function requestRemoval() {
+    if (busy || !d || d.removedAt || d.supersededBy) return;
+    setRemovalFailure("");
+    setRemovalTarget(d);
+  }
+  function cancelRemoval() {
+    if (!busy) setRemovalTarget(undefined);
+  }
+  async function removeDocument() {
+    if (!removalTarget || busy) return;
+    setBusy(true);
+    setRemovalFailure("");
+    try {
+      await service.removeVendorDocument(removalTarget.procurementId, removalTarget.id, removalTarget.revision);
+      setDirty(false);
+      setRemovalTarget(undefined);
+      toast("Dokumen dihapus dari vendor.");
+      setTimeout(back, 0);
+    } catch (error) {
+      setRemovalFailure(error instanceof Error ? error.message : "Dokumen belum dapat dihapus.");
+    } finally {
+      setBusy(false);
+    }
+  }
   function editPair(
     index: number,
     key: "oe" | "offer" | "matched",
@@ -111,6 +137,7 @@ export function useReview() : ReviewModel {
     setAck(false);
   }
   return {
+    removalTarget, removalFailure, requestRemoval, cancelRemoval, removeDocument,
     id,
     state,
     d,
