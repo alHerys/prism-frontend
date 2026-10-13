@@ -12,7 +12,11 @@
 .modal.a5-upload-dialog { width: min(640px, calc(100vw - 32px)); }
 .a5-upload-dialog h2 { padding-right: 40px; }
 .a5-upload-dialog .upload-zone { margin-top: 24px; min-height: 220px; }
-.a5-upload-dialog .a5-manual-add { margin-top: 16px; }
+.a5-upload-dialog .upload-description { display: grid; gap: 6px; }
+.a5-upload-dialog .upload-description p { margin: 0; }
+.a5-upload-dialog .upload-picker-trigger { min-height: 36px; padding: 6px 12px; font-size: 12px; }
+.a5-upload-dialog .a5-manual-add { margin-top: 16px; border-color: var(--accent-border); box-shadow: none; color: var(--muted); font-size: 13px; }
+.a5-upload-dialog .a5-manual-add:hover { border-color: var(--accent); color: var(--ink); }
 .a5-batch-tabs { flex-shrink: 0; display: flex; overflow-x: auto; gap: 4px; padding: 6px 12px 0; background: var(--bg); border-bottom: 1px solid var(--border); }
 .a5-batch-tabs > button { flex: 0 0 220px; min-width: 0; min-height: 57px; padding: 9px 14px; text-align: left; background: transparent; border: 1px solid transparent; border-bottom: 0; border-radius: 10px 10px 0 0; color: var(--ink); }
 .a5-batch-tabs > button[aria-selected="true"] { background: var(--surface); border-color: var(--border); }

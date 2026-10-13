@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { UploadSimple } from "@phosphor-icons/react/dist/csr/UploadSimple";
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { X } from "@phosphor-icons/react/dist/csr/X";
+import { PencilSimple } from "@phosphor-icons/react/dist/csr/PencilSimple";
 import { Modal } from "../../../shared/ui/modal";
 import { UploadZone } from "../../../shared/ui/upload-zone";
 import { useA5IntakeCommands, useA5IntakeData } from "./binding";
@@ -46,7 +47,7 @@ export function A5DropArea({ procurementId, onManualAdd, children }: { procureme
         <small>Maks. 10 PDF sekaligus · 10 MiB per file</small>
       </UploadZone>
       {failure && <p role="alert" className="alert error">{failure}</p>}
-      <button type="button" className="btn quiet small a5-manual-add" disabled={busy} onClick={() => { setOpen(false); onManualAdd(); }}>Isi nama vendor secara manual</button>
+      <button type="button" className="btn small a5-manual-add" disabled={busy} onClick={() => { setOpen(false); onManualAdd(); }}><PencilSimple size={16} aria-hidden="true" />Isi nama vendor secara manual</button>
     </Modal>
   </>;
 }
