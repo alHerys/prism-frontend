@@ -2,15 +2,12 @@ import { DataTable } from "../../../shared/ui/data-table";
 import { DownloadSimple as Download } from "@phosphor-icons/react/dist/csr/DownloadSimple";
 import { CaretDown } from "@phosphor-icons/react/dist/csr/CaretDown";
 import { money, pct, roundedMoney } from "../../../shared/formatting/display";
-import { useWorkspaceTime } from "../../../shared/ui/workspace-time";
 import { SnapshotInputs } from "./SnapshotInputs";
 import "../../../shared/styles/focus.css";
 import "../../../shared/styles/fernly-evaluation.css";
-import { Status } from "../../../shared/ui/status";
 import type { ResultPanelModel } from "./view-models";
 
 export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter, exportResult, rows }: ResultPanelModel) {
-  const dateTime = useWorkspaceTime();
 
   return (
     <section className="panel evaluation-result">
@@ -19,10 +16,8 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
           <h2>
             {s.module === "HEA" ? "Leaderboard HEA" : "Hasil Harga Timpang"}
           </h2>
-          <p>Hasil tersimpan dengan input dan jejak sumber evaluasi.</p>
         </div>
         <div className="evaluation-result-header">
-          <Status value={s.status} />
           <button
             className="btn"
             disabled={busy}
@@ -32,11 +27,6 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
             {busy ? "Membuat laporan…" : "Ekspor Excel"}
           </button>
         </div>
-      </div>
-      <div className="result-metadata">
-        <span>{dateTime(s.createdAt)}</span>
-        <span>Hasil <strong>{s.id}</strong></span>
-        <span>{s.rows.length} {s.module === "HEA" ? "vendor dievaluasi" : "komponen dievaluasi"}</span>
       </div>
       {s.excluded.length > 0 && (
         <div className="alert">
@@ -142,9 +132,6 @@ export function ResultPanelView({ s, busy, detail, setDetail, filter, setFilter,
           {detail ? "Tutup rincian" : "Lihat input dan jejak sumber"}
           <CaretDown aria-hidden="true" />
         </button>
-        <span className="muted">
-          Hasil evaluasi mendukung pemeriksaan; tidak menetapkan pemenang.
-        </span>
       </div>
       {detail && (
         <div className="result-trace" id={`result-trace-${s.id}`}>

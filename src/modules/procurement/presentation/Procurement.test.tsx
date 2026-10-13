@@ -8,7 +8,7 @@ import {
   screen,
 } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { createLocalRuntime } from "../../../infrastructure/local/runtime";
 import { createApplication } from "../../../app/bootstrap/application";
 import { ApplicationProviders } from "../../../app/providers/ApplicationProviders";
@@ -20,6 +20,23 @@ import { HEAPanel } from "../../hea/presentation/HEAPanel";
 import { ProcurementTable } from "./ProcurementTable.tsx";
 afterEach(cleanup);
 describe("Preferensi evaluasi", () => {
+  it("evaluates all current confirmed A5 files without a selection panel", async () => {
+    const runtime = createLocalRuntime(true, true);
+    const application = createApplication(runtime);
+    const before = runtime.documents.queries.getSnapshot();
+    const procurement = before.procurements.find(p => p.id === "proc-showcase")!;
+    const a5 = before.documents.filter(d => d.procurementId === procurement.id && d.kind === "FORM_A5");
+    await runtime.documents.gateway.removeVendorDocument(procurement.id, a5[1].id, a5[1].revision);
+    await runtime.documents.gateway.uploadDocument({ procurementId: procurement.id, vendorId: a5[0].vendorId, kind: "FORM_A5", sourceId: a5[0].sourceId, name: "Unconfirmed.pdf" });
+    const evaluate = vi.spyOn(application.hea.commands, "evaluateHEA");
+    render(<MemoryRouter><ApplicationProviders application={application}><ToastProvider><HEAPanel procurement={procurement} ResultView={ResultPanel} /></ToastProvider></ApplicationProviders></MemoryRouter>);
+    expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+    expect(screen.queryByRole("navigation", { name: "Progres evaluasi" })).not.toBeInTheDocument();
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Evaluasi HEA" })); });
+    expect(evaluate).toHaveBeenCalledWith(procurement.id, [a5[0].id]);
+    const snapshot = await evaluate.mock.results[0].value;
+    expect(snapshot.inputs).toMatchObject({ documents: [expect.objectContaining({ id: a5[0].id })] });
+  });
   it("tidak mengonfirmasi atau mengevaluasi preferensi lama ketika formulir memiliki perubahan", async () => {
     const runtime = createLocalRuntime(true, true);
     const service = createTestSession(true, false, runtime);

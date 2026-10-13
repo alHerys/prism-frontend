@@ -4,7 +4,6 @@ import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
 import { Link } from "react-router";
 import "../../../shared/styles/focus.css";
 import "../../../shared/styles/fernly-evaluation.css";
-import { Stepper } from "../../../shared/ui/stepper";
 import { Status } from "../../../shared/ui/status";
 import type { PDPanelModel } from "./view-models";
 
@@ -12,7 +11,6 @@ export function PDPanelView({ ResultView, p, docs, oe, setOe, offer, setOffer, b
 
   return (
     <div className="evaluation-workflow price-workflow">
-      <Stepper stage={chosen ? 4 : oe && offer ? 2 : 0} />
       {chosen && <ResultView snapshot={chosen} procurement={p} />}
       <section className="panel evaluation-price-sources">
         <div className="panel-header">

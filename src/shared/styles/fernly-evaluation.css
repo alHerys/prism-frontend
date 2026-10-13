@@ -1,5 +1,4 @@
 .evaluation-workflow { display: grid; gap: 24px; min-width: 0; }
-.evaluation-workflow > .stepper { margin: 0; }
 .evaluation-workflow > .panel,
 .evaluation-result { margin-bottom: 0; min-width: 0; border: 0; border-radius: 20px; background: var(--surface); padding: 22px; }
 .evaluation-workflow .panel-header,
@@ -8,28 +7,15 @@
 .evaluation-result .panel-header h2 { font-size: 19px; color: var(--ink); }
 .evaluation-workflow .panel-header p,
 .evaluation-result .panel-header p { max-width: 65ch; font-size: 14px; }
-.preference-layout { display: grid; grid-template-columns: minmax(180px, 0.8fr) minmax(0, 2fr); gap: 32px; }
-.preference-context { padding-right: 24px; border-right: 1px solid var(--border); }
-.preference-context h3 { font-size: 15px; margin-bottom: 10px; }
-.preference-context p { color: var(--muted); font-size: 14px; max-width: 32ch; }
-.preference-context .badge { margin-top: 18px; }
 .preference-form { min-width: 0; }
 .preference-form .form-grid { gap: 20px; }
 .preference-form .field { margin-bottom: 0; }
-.preference-form .toolbar { margin-bottom: 0; flex-wrap: wrap; }
-.preference-form .toolbar > .muted { width: 100%; font-size: 13px; }
+.preference-form .toolbar { margin: 20px 0 0; padding-top: 20px; border-top: 1px solid var(--border); justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+.preference-draft { margin: 12px 0 0; font-size: 13px; }
+.preference-form .toolbar .btn { min-height: 44px; font-size: 13px; }
 .evaluation-workflow .field input,
 .evaluation-workflow .field select { min-height: 48px; border-radius: 12px; background: var(--shell, #f5f6f5); }
-.evaluation-selection .table-wrap,
 .evaluation-result .table-wrap { max-width: 100%; border-radius: 12px; }
-.evaluation-selection .table { min-width: 580px; }
-.evaluation-selection .table th:first-child { width: 64px; }
-.evaluation-selection .table tbody tr.is-selected { background: var(--accent-soft, var(--blue-soft)); }
-.evaluation-selection .table tbody tr.is-selected td { border-bottom-color: var(--accent-border); }
-.evaluation-selection .table td:first-child { text-align: center; }
-.evaluation-selection input[type="checkbox"] { width: 19px; height: 19px; }
-.evaluation-selection .table td strong { font-size: 15px; }
-.evaluation-selection .table td small { margin-top: 6px; }
 .evaluation-source-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
 .evaluation-source-field { margin-bottom: 0; min-width: 0; padding: 20px; border-radius: 16px; background: var(--shell, #f5f6f5); }
 .evaluation-source-field > label { display: flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 600; margin-bottom: 14px; }
@@ -39,9 +25,6 @@
 .evaluation-source-meta a { font-size: 13px; }
 .evaluation-price-sources > .alert { margin-top: 24px; margin-bottom: 0; }
 .evaluation-result-header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 0; }
-.result-metadata { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 24px; padding: 0 0 20px; color: var(--muted); font-size: 13px; }
-.result-metadata span { overflow-wrap: anywhere; }
-.result-metadata strong { color: var(--ink); font-weight: 500; }
 .evaluation-result .table { min-width: 650px; }
 .evaluation-result .table td { padding-block: 20px; }
 .evaluation-result .result-rank { display: inline-grid; place-items: center; min-width: 34px; height: 34px; padding: 0 9px; background: var(--shell, #f5f6f5); border-radius: 12px; color: var(--accent-deep, var(--blue-deep)); font-size: 16px; }
@@ -55,7 +38,6 @@
 .result-filter-toolbar select { min-width: 190px; min-height: 44px; border-radius: 12px; background-color: var(--shell, #f5f6f5); }
 .result-filter-toolbar .muted { font-size: 13px; }
 .result-footer { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 14px 24px; padding-top: 22px; margin-top: 4px; border-top: 1px solid var(--border); }
-.result-footer .muted { max-width: 48ch; font-size: 13px; }
 .result-footer .inline-link { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; min-height: 28px; }
 .result-trace { padding: 22px; margin-top: 20px; border-radius: 14px; background: var(--shell, #f5f6f5); }
 .result-trace > p { margin-bottom: 16px; font-size: 14px; }
@@ -74,13 +56,6 @@
 .fernly-documents .table { min-width: 680px; }
 .fernly-documents .table td { padding-block: 18px; }
 .fernly-documents .table small { margin-top: 5px; }
-@media (max-width: 1023px) {
-  .preference-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-  .preference-context { padding: 0 0 20px; border-right: 0; border-bottom: 1px solid var(--border); }
-  .preference-context p { max-width: 65ch; }
-  .preference-context .badge { margin-top: 12px; }
-  .evaluation-workflow > .stepper { overflow-x: auto; }
-}
 @media (max-width: 639px) {
   .evaluation-workflow { gap: 18px; }
   .evaluation-workflow > .panel,
@@ -95,7 +70,6 @@
   .preference-form .toolbar .btn { justify-content: center; }
   .evaluation-result-header { width: 100%; justify-content: space-between; }
   .evaluation-result-header .btn { min-height: 44px; }
-  .result-metadata { flex-direction: column; align-items: flex-start; gap: 6px; }
   .result-category-summary { gap: 16px; }
   .result-category-summary > div { grid-template-columns: minmax(0, 1fr); }
   .result-category-summary strong { grid-column: auto; grid-row: auto; font-size: 28px; }

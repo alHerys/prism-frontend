@@ -24,7 +24,7 @@ test("OE card and vendor layouts keep review links, document availability and re
   const tableToggle = await page.getByRole("button", { name: "Tabel", exact: true }).boundingBox();
   expect(addButton!.x + addButton!.width).toBeGreaterThanOrEqual(tableToggle!.x + tableToggle!.width);
   await expect(page.locator(".owner-estimate-document")).toContainText("OE-Terminal.xlsx");
-  await expect(page.getByRole("navigation", { name: "Tahap pengadaan" }).getByRole("button")).toHaveCount(3);
+  await expect(page.getByRole("navigation", { name: "Tahap pengadaan" }).getByRole("button")).toHaveCount(2);
   await expect(page.getByRole("button", { name: /Unggah & verifikasi/ })).toHaveCount(0);
   await expect(page.locator(".owner-estimate-document .badge")).toHaveCount(0);
   await expect(page.locator(".owner-estimate-uploaded")).not.toContainText("Revisi");
@@ -87,8 +87,8 @@ test("OE deletion requires confirmation, supports cancel and permits a freshly r
   await dialog.getByRole("button", { name: "Hapus OE", exact: true }).click();
   await expect(dialog).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Unggah Owner Estimate (OE)", exact: true })).toBeVisible();
-  await page.getByRole("navigation", { name: "Tahap pengadaan" }).getByRole("button", { name: /Hasil & jejak sumber/ }).click();
-  await expect(page.getByRole("button", { name: "Buka hasil", exact: true })).toHaveCount(2);
+  await page.getByRole("navigation", { name: "Tahap pengadaan" }).getByRole("button", { name: /Evaluasi/ }).click();
+  await expect(page.getByRole("heading", { name: "Leaderboard HEA", exact: true })).toBeVisible();
   await page.getByRole("navigation", { name: "Tahap pengadaan" }).getByRole("button", { name: /Identitas & vendor/ }).click();
   await page.getByLabel("Pilih berkas dokumen", { exact: true }).setInputFiles(path.resolve("public/files/OE-Terminal.xlsx"));
   await expect(page).toHaveURL(/\/review\/doc-/);

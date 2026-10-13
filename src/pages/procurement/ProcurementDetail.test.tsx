@@ -28,7 +28,7 @@ it("redirects the retired document stage while preserving parameters and all wor
   expect(screen.queryByRole("heading", { name: "Identitas pengadaan" })).not.toBeInTheDocument();
   expect(screen.getByRole("heading", { name: "Owner Estimate (OE)" })).toBeInTheDocument();
   const stages = screen.getByRole("navigation", { name: "Tahap pengadaan" });
-  expect(within(stages).getAllByRole("button")).toHaveLength(3);
+  expect(within(stages).getAllByRole("button")).toHaveLength(2);
   expect(within(stages).getByRole("button", { name: /Identitas & vendor/ })).toHaveAttribute("aria-current", "step");
   fireEvent.click(screen.getByRole("button", { name: "Tabel" }));
   fireEvent.click(screen.getByRole("button", { name: "Tambah vendor" }));
@@ -56,4 +56,14 @@ it("returns from the vendor workspace and evaluation to the combined identity an
   fireEvent.click(screen.getByRole("button", { name: "Kembali ke identitas & vendor" }));
   expect(screen.getByRole("heading", { name: "Owner Estimate (OE)" })).toBeInTheDocument();
   expect(screen.queryByText("Unggah & verifikasi")).not.toBeInTheDocument();
+});
+
+it("redirects the retired results stage to evaluation without losing the selected snapshot", async () => {
+  const { router, runtime } = setup("/pengadaan/proc-showcase?tab=riwayat&hasil=result-33");
+  const before = runtime.evaluations.queries.getSnapshot().snapshots;
+  await waitFor(() => expect(router.state.location.search).toBe("?tab=hea&hasil=result-33"));
+  expect(within(screen.getByRole("navigation", { name: "Tahap pengadaan" })).getAllByRole("button")).toHaveLength(2);
+  expect(screen.queryByText("Hasil & jejak sumber")).not.toBeInTheDocument();
+  expect(screen.queryByText("Hasil evaluasi tersimpan")).not.toBeInTheDocument();
+  expect(runtime.evaluations.queries.getSnapshot().snapshots).toEqual(before);
 });

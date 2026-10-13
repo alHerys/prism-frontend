@@ -12,10 +12,9 @@ export function useHEAPanel({ procurement: p }: { procurement: Procurement }) : 
   const state = useHEAData();
   const toast = useToast();
   const [params, setParams] = useSearchParams();
-  const docs = state.documents.filter(
-    (d) => d.procurementId === p.id && d.kind === "FORM_A5" && !d.removedAt && !d.supersededBy,
-  );
-  const [selected, setSelected] = useState<string[]>([]);
+  const eligibleDocumentIds = state.documents.filter(
+    d => d.procurementId === p.id && d.kind === "FORM_A5" && d.status === "CONFIRMED" && !d.removedAt && !d.supersededBy,
+  ).map(document => document.id);
   const [prefs, setPrefs] = useState({
     barang: p.preferences ? percentInput(p.preferences.preferensi_barang) : "",
     jasa: p.preferences ? percentInput(p.preferences.preferensi_jasa) : "",
@@ -66,7 +65,7 @@ export function useHEAPanel({ procurement: p }: { procurement: Procurement }) : 
   async function evaluate() {
     setBusy(true);
     try {
-      const s = await service.evaluateHEA(p.id, selected);
+      const s = await service.evaluateHEA(p.id, eligibleDocumentIds);
       setParams({ tab: "hea", hasil: s.id });
       toast("Evaluasi HEA selesai. Hasil tersimpan.", false, "evaluation");
     } catch (e) {
@@ -77,10 +76,7 @@ export function useHEAPanel({ procurement: p }: { procurement: Procurement }) : 
   }
   return {
     p,
-    state,
-    docs,
-    selected,
-    setSelected,
+    eligibleDocumentIds,
     prefs,
     setPrefs,
     busy,

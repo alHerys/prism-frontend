@@ -2,10 +2,7 @@ import type * as React from "react";
 
 export interface HEAPanelModel {
   p: import("../../procurement/domain/models").Procurement;
-  state: import("../application/queries").HEAData;
-  docs: import("../../documents/domain/models").DocumentRecord[];
-  selected: string[];
-  setSelected: React.Dispatch<React.SetStateAction<string[]>>;
+  eligibleDocumentIds: string[];
   prefs: { barang: string; jasa: string; };
   setPrefs: React.Dispatch<React.SetStateAction<{ barang: string; jasa: string; }>>;
   busy: boolean;

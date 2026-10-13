@@ -5,26 +5,29 @@ import { useProcurementCommands, useProcurementData } from "../../modules/procur
 import { errorMessage } from "../../shared/kernel/error-message";
 import { useToast } from "../../shared/ui/toast-provider";
 
+const retiredTabs: Record<string, string> = { dokumen: "ringkasan", riwayat: "hea" };
+
 export function useProcurementDetail() : ProcurementDetailModel {
   const { id } = useParams();
   const service = useProcurementCommands();
   const state = useProcurementData();
   const [params, setParams] = useSearchParams();
   const requestedTab = params.get("tab");
-  const tab = (requestedTab === "dokumen" ? "ringkasan" : requestedTab) || (state.snapshots.some((s) => s.procurementId === id && s.module === "HEA") ? "hea" : "ringkasan");
+  const replacementTab = requestedTab ? retiredTabs[requestedTab] : undefined;
+  const defaultTab = state.snapshots.some(s => s.procurementId === id && s.module === "HEA") ? "hea" : "ringkasan";
+  const tab = replacementTab || requestedTab || defaultTab;
   useEffect(() => {
-    if (requestedTab !== "dokumen") return;
+    if (!replacementTab) return;
     const next = new URLSearchParams(params);
-    next.set("tab", "ringkasan");
+    next.set("tab", replacementTab);
     setParams(next, { replace: true });
-  }, [requestedTab, params, setParams]);
+  }, [replacementTab, params, setParams]);
   const p = state.procurements.find((p) => p.id === id);
   const toast = useToast();
   const [vendorOpen, setVendorOpen] = useState(false);
   const [vendorName, setVendorName] = useState("");
   const docs = state.documents.filter((d) => d.procurementId === id);
   const vendors = state.vendors.filter((v) => v.procurementId === id);
-  const results = state.snapshots.filter((s) => s.procurementId === id);
   async function addVendor(e: React.FormEvent) {
     e.preventDefault();
     try {
@@ -38,7 +41,6 @@ export function useProcurementDetail() : ProcurementDetailModel {
   }
   return {
     id,
-    state,
     setParams,
     tab,
     p,
@@ -48,7 +50,6 @@ export function useProcurementDetail() : ProcurementDetailModel {
     setVendorName,
     docs,
     vendors,
-    results,
     addVendor,
   };
 }

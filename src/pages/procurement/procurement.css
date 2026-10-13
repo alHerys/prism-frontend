@@ -1,6 +1,6 @@
 .procurement-detail-page .procurement-stage-content { grid-template-columns: minmax(0, 1fr); }
 .procurement-detail-page .procurement-stage-content > * { min-width: 0; }
-.procurement-detail-page .procurement-path { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0 0 24px; padding: 8px; border: 0; background: var(--surface); border-radius: 20px; }
+.procurement-detail-page .procurement-path { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0 0 24px; padding: 8px; border: 0; background: var(--surface); border-radius: 20px; }
 .procurement-detail-page .procurement-path button { padding: 15px 12px; gap: 10px; border-radius: 14px; font-size: 13px; font-weight: 500; color: var(--ink); min-width: 0; }
 .procurement-detail-page .procurement-path button > span { width: 30px; height: 30px; font-size: 12px; border-color: #d4dbd4; color: var(--muted); }
 .procurement-detail-page .procurement-path button.current { background: var(--accent, #155a37); color: #fff; box-shadow: none; }
@@ -21,30 +21,11 @@
 .procurement-detail-page .evaluation-switch { display: flex; margin: 0; background: var(--surface); border-radius: 50px; border: 1px solid var(--border); padding: 4px; flex-shrink: 0; }
 .procurement-detail-page .evaluation-switch button { min-height: 40px; padding: 9px 21px; border-radius: 50px; font-size: 13px; color: var(--muted); border: 0; background: transparent; }
 .procurement-detail-page .evaluation-switch button.selected { color: #fff; background: var(--accent, #155a37); }
-.procurement-history-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 20px; align-items: start; }
-.procurement-history-layout > .panel { margin: 0; min-width: 0; }
-.procurement-snapshot-row { display: flex; align-items: center; gap: 14px; padding: 20px 0; border-bottom: 1px solid var(--border); }
-.procurement-snapshot-row:last-child { border-bottom: 0; padding-bottom: 0; }
-.procurement-result-symbol { width: 44px; height: 44px; border-radius: 13px; background: var(--accent-soft); color: var(--accent, #155a37); display: grid; place-items: center; flex-shrink: 0; }
-.procurement-snapshot-row > div { flex: 1; min-width: 0; }
-.procurement-snapshot-row strong { font-size: 14px; font-weight: 500; }
-.procurement-snapshot-row small { display: block; margin: 5px 0 9px; font-size: 11px; }
-.procurement-snapshot-row .btn { flex-shrink: 0; min-height: 36px; font-size: 11px; }
-.procurement-events { list-style: none; padding: 0; margin: 0; }
-.procurement-events li { display: flex; gap: 12px; align-items: flex-start; position: relative; padding: 0 0 24px 19px; }
-.procurement-events li::before { content: ""; position: absolute; top: 6px; left: 0; height: 6px; width: 6px; border-radius: 50%; background: var(--accent, #155a37); }
-.procurement-events li > div { flex: 1; min-width: 0; }
-.procurement-events strong { display: block; font-size: 13px; line-height: 1.6; font-weight: 400; }
-.procurement-events small { display: block; font-size: 11px; margin-top: 6px; }
-.procurement-events li:last-child { padding-bottom: 0; }
-.procurement-events .badge { font-size: 10px; margin-top: 2px; flex-shrink: 0; }
 @media (max-width: 1199px) {
   .procurement-summary-layout { grid-template-columns: minmax(230px, .7fr) minmax(0, 1.5fr); }
 }
 @media (max-width: 1023px) {
-  .procurement-detail-page .procurement-path { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .procurement-detail-page .procurement-path button:last-child { grid-column: 1 / -1; }
-  .procurement-summary-layout, .procurement-history-layout { grid-template-columns: minmax(0, 1fr); }
+  .procurement-summary-layout { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 639px) {
   .procurement-detail-page .procurement-path { gap: 4px; padding: 5px; margin-bottom: 18px; border-radius: 17px; }
@@ -58,8 +39,4 @@
   .procurement-detail-page .procurement-evaluation-heading { flex-direction: column; align-items: stretch; gap: 17px; }
   .procurement-detail-page .evaluation-switch { align-self: flex-start; }
   .procurement-detail-page .evaluation-switch button { min-height: 38px; padding-inline: 22px; }
-  .procurement-snapshot-row { gap: 10px; flex-wrap: wrap; }
-  .procurement-snapshot-row .btn { margin-left: 54px; }
-  .procurement-events li { flex-wrap: wrap; gap: 8px; }
-  .procurement-events li > div { flex-basis: calc(100% - 19px); }
 }

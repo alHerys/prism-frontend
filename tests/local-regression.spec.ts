@@ -9,7 +9,10 @@ async function confirm(page: Page) {
   const ack = page.getByRole('checkbox', {name: /Saya telah memeriksa/});
   if (await ack.count()) await ack.check();
   await button(page, 'Konfirmasi data').click();
-  await page.getByRole('dialog').getByRole('button', {name: 'Konfirmasi data', exact: true}).click();
+  const confirmation = page.getByRole('dialog', { name: 'Konfirmasi data dokumen', exact: true });
+  const warning = confirmation.getByRole('checkbox', { name: /Saya telah memeriksa/ });
+  if (await warning.count()) await warning.check();
+  await confirmation.getByRole('button', {name: 'Konfirmasi data', exact: true}).click();
   await expect(page.getByRole('dialog', {name: 'Konfirmasi data dokumen'})).toHaveCount(0);
   await expect(page).not.toHaveURL(/\/review\//);
 }
@@ -88,7 +91,6 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   await expect(page.getByRole('heading', {name: 'Pilih Dokumen', exact: true})).toBeVisible();
   await upload(page, 'Form-A5-Borneo.pdf', 'Unggah Form A5');
   await expect(page.getByLabel('TKDN jasa (%)')).toHaveValue('30');
-  await expect(button(page, 'Konfirmasi data')).toBeDisabled();
   await page.getByLabel('TKDN jasa (%)').fill('35');
   await confirm(page);
   await button(page, 'Tutup dokumen vendor').click();
@@ -97,7 +99,6 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   await page.getByLabel('Preferensi jasa (%)').fill('7,5');
   await button(page, 'Simpan preferensi').click();
   await button(page, 'Konfirmasi preferensi').click();
-  for (const choice of await page.getByRole('checkbox').all()) await choice.check();
   await button(page, 'Evaluasi HEA').click();
   await expect(page.getByRole('heading', {name: 'Leaderboard HEA'})).toBeVisible();
   expect(await exportRows(page, info, 'hea')).toContain('1261794759.4224293029478248835170918485030216358352');
@@ -119,9 +120,8 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   expect(rows).toContain('110%');
   expect(rows).toContain('Tidak timpang');
   expect(rows).not.toContain('Katup gate');
-  await button(page, 'Lihat hasil & riwayat').click();
-  await expect(page.getByRole('heading', {name: 'Hasil evaluasi tersimpan'})).toBeVisible();
-  await expect(button(page, 'Buka hasil')).toHaveCount(2);
+  await button(page, 'HEA').click();
+  await expect(page.getByRole('heading', {name: 'Leaderboard HEA'})).toBeVisible();
   expect(errors).toEqual([]);
   expect(external).toEqual([]);
   await page.reload();
