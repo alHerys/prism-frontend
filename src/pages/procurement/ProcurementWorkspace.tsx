@@ -1,6 +1,5 @@
 import { useSearchParams } from "react-router";
 import { VendorDocumentDialog } from "../../modules/documents/presentation/VendorDocumentDialog";
-import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import type { Procurement, Vendor } from "../../modules/procurement/domain/models";
 import type { DocumentRecord } from "../../modules/documents/domain/models";
 import { UploadPanel } from "../../modules/documents/presentation/UploadPanel";
@@ -25,10 +24,10 @@ export function ProcurementWorkspace({ procurement, documents, vendors, onAddVen
       {selectedVendor && <VendorDocumentDialog key={selectedVendor.id} vendor={selectedVendor} documents={documents}
         onClose={closeDocuments} />}
       <UploadPanel procurementId={procurement.id} scope="procurement" />
-      <A5DropArea procurementId={procurement.id}>{(uploadButton, emptyUpload) => (
+      <A5DropArea procurementId={procurement.id} onManualAdd={onAddVendor}>{(addButton, emptyUpload) => (
         <VendorCollection vendors={vendors} documents={documents}
           heading={{ title: "Identitas & vendor", description: "Tambahkan vendor dan periksa dokumennya sebelum evaluasi." }}
-          actions={<>{uploadButton}<button type="button" className="btn" onClick={onAddVendor}><Plus size={18} aria-hidden="true" /> Tambah vendor</button></>}
+          actions={addButton}
           empty={emptyUpload} />
       )}</A5DropArea>
     </div>

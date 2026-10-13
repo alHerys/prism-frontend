@@ -66,6 +66,7 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   await expect(page.locator('[aria-current="step"]')).toContainText('Identitas & vendor');
   for (const name of ['PT Nusa Teknik Mandiri', 'PT Borneo Teknik Nusantara']) {
     await button(page, 'Tambah vendor').click();
+    await page.getByRole("button", { name: "Isi nama vendor secara manual", exact: true }).click();
     await page.getByLabel('Nama badan usaha').fill(name);
     await page.getByRole('dialog').getByRole('button', {name: 'Tambah vendor'}).click();
   }

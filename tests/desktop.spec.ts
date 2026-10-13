@@ -212,6 +212,7 @@ test('real file upload rejects unsupported bytes and accepts registered PDF thro
   await page.goto('/pengadaan/proc-terminal?tab=dokumen');
   // A new vendor has an empty Form A5 slot in the document picker.
   await page.getByRole('button', { name: 'Tambah vendor', exact: true }).click();
+  await page.getByRole("button", { name: "Isi nama vendor secara manual", exact: true }).click();
   await page.getByLabel('Nama badan usaha').fill('PT Nusa Teknik Mandiri Uji Unggah');
   await page.getByRole('dialog').getByRole('button', { name: 'Tambah vendor', exact: true }).click();
   await page.getByRole('link', { name: 'PT Nusa Teknik Mandiri Uji Unggah · Buka dokumen', exact: true }).click();

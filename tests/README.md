@@ -105,7 +105,8 @@ Pengujian memakai data sintetis frontend lokal; konfirmasi tetap wajib.
 
 `npm run test:intake` memakai Chrome pada 1376×695 dan 390×844. Transport ekstraksi
 di-intercept secara eksplisit dengan PDF sintetis dan respons kontrak uji.
-Skenario mencakup lima kandidat/konfirmasi per tab, draft persen desimal, keyboard,
+Skenario mencakup popup Tambah vendor (multi-PDF, drag-and-drop, batal/Escape dan
+fokus kembali), lima kandidat/konfirmasi per tab, draft persen desimal, keyboard,
 blob PDF asli yang tetap tersedia setelah publikasi, konflik nama dan hash,
 penggantian A5 dengan Penawaran Harga tetap ada, retry per file, drop pada card
 vendor dan hilangnya batch setelah reload. Screenshot observasi berada di

@@ -70,7 +70,9 @@ Panel Identitas & vendor menerima beberapa PDF melalui drag-and-drop atau
 koreksi identitas/nilai, pilihan konflik, dan konfirmasi per dokumen. Vendor baru
 hanya muncul setelah konfirmasi. Batas awal: 10 PDF per batch, 10 MiB per PDF,
 dan dua request ekstraksi bersamaan. Seluruh data impor bersifat sementara;
-reload penuh menghapusnya. Tambah vendor manual tetap tersedia.
+reload penuh menghapusnya. Tombol utama **Tambah vendor** membuka popup unggah
+beberapa PDF yang mendukung drag-and-drop. Pengisian manual tetap tersedia
+melalui opsi sekunder di popup tersebut.
 
 Frontend mengirim bytes PDF ke `POST {baseUrl}/form-a5/extractions` dengan header
 `Content-Type: application/pdf` dan `X-Document-Filename` yang di-encode.

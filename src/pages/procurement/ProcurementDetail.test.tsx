@@ -32,6 +32,10 @@ it("redirects the retired document stage while preserving parameters and all wor
   expect(within(stages).getByRole("button", { name: /Identitas & vendor/ })).toHaveAttribute("aria-current", "step");
   fireEvent.click(screen.getByRole("button", { name: "Tabel" }));
   fireEvent.click(screen.getByRole("button", { name: "Tambah vendor" }));
+  const upload = within(screen.getByRole("dialog", { name: "Tambah vendor" }));
+  expect(upload.getByText("Unggah satu atau beberapa PDF Form A5. Setiap file mewakili satu vendor.")).toBeInTheDocument();
+  expect(upload.getByLabelText("Pilih Form A5 vendor")).toHaveAttribute("multiple");
+  fireEvent.click(upload.getByRole("button", { name: "Isi nama vendor secara manual" }));
   fireEvent.change(screen.getByLabelText("Nama badan usaha"), { target: { value: "Vendor Gabungan" } });
   fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Tambah vendor" }));
   await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());

@@ -35,6 +35,7 @@ test('simplified review and vendor headers fit all layout boundaries with readab
       await expect(page.locator('.stage-vendors .vendor-collection-heading p')).toHaveText('Tambahkan vendor dan periksa dokumennya sebelum evaluasi.');
       const trigger = page.getByRole('button', { name: 'Tambah vendor', exact: true });
       await trigger.click();
+      await page.getByRole('button', { name: 'Isi nama vendor secara manual', exact: true }).click();
       const dialog = page.getByRole('dialog', { name: 'Tambah vendor', exact: true });
       await expect(dialog.locator(':scope > p')).toHaveCount(0);
       await expect(dialog).not.toHaveAttribute('aria-describedby');

@@ -27,7 +27,7 @@ test("OE card and vendor layouts keep review links, document availability and re
   await expect(page.getByRole("navigation", { name: "Tahap pengadaan" }).getByRole("button")).toHaveCount(3);
   await expect(page.getByRole("button", { name: /Unggah & verifikasi/ })).toHaveCount(0);
   await expect(page.locator(".owner-estimate-document .badge")).toHaveCount(0);
-  await expect(page.locator(".owner-estimate-identity small")).not.toContainText("Revisi");
+  await expect(page.locator(".owner-estimate-uploaded")).not.toContainText("Revisi");
   await expect(page.locator(".procurement-vendor-card").first().getByLabel("Form A5: tersedia")).toHaveCSS("color", "rgb(34, 99, 63)");
   await expect(page.locator(".procurement-vendor-card").last().getByLabel("Penawaran Harga: belum tersedia")).toHaveCSS("color", "rgb(162, 43, 32)");
   await expect(page.getByRole("heading", { name: "Dokumen OE", exact: true })).toHaveCount(0);
@@ -60,6 +60,7 @@ test("OE card and vendor layouts keep review links, document availability and re
   await expect(page.getByRole("dialog", { name: "Pilih Dokumen", exact: true })).toBeVisible();
   await page.goto("/pengadaan/proc-showcase?tab=ringkasan");
   await page.getByRole("button", { name: "Tambah vendor", exact: true }).click();
+  await page.getByRole("button", { name: "Isi nama vendor secara manual", exact: true }).click();
   await page.getByLabel("Nama badan usaha").fill("Vendor Baru Review");
   await page.getByRole("dialog", { name: "Tambah vendor" }).getByRole("button", { name: "Tambah vendor", exact: true }).click();
   await page.getByRole("button", { name: "Tabel", exact: true }).click();
@@ -190,6 +191,7 @@ test("vendor document dialog supports available, mixed and empty slots and retur
   await capture(page, info, "vendor-documents-mixed");
   await dialog.getByRole("button", { name: "Tutup dokumen vendor", exact: true }).click();
   await page.getByRole("button", { name: "Tambah vendor", exact: true }).click();
+  await page.getByRole("button", { name: "Isi nama vendor secara manual", exact: true }).click();
   await page.getByLabel("Nama badan usaha").fill("Vendor Dokumen Baru");
   await page.getByRole("dialog", { name: "Tambah vendor", exact: true }).getByRole("button", { name: "Tambah vendor", exact: true }).click();
   await expect(page.getByRole("dialog", { name: "Tambah vendor", exact: true })).toHaveCount(0);
