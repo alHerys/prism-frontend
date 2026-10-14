@@ -29,6 +29,25 @@ function setup() {
 const click = (name: string) => fireEvent.click(screen.getByRole("button", { name }));
 const dialog = () => within(screen.getByRole("dialog", { name: "Perubahan belum disimpan" }));
 
+it("merges description headers and main rows, separates readonly bullets and centers subtotals", () => {
+  const { cell } = setup();
+  expect(screen.getByRole("treegrid")).toHaveAttribute("aria-colcount", "5");
+  expect(screen.getByRole("columnheader", { name: "Uraian Pekerjaan" })).toHaveAttribute("colspan", "2");
+  expect(cell("description", 14)).toHaveAttribute("colspan", "2");
+  expect(cell("description", 15)).toHaveAttribute("colspan", "1");
+  expect(cell("description", 15).parentElement!.querySelector(".oe-marker")).toHaveTextContent("-");
+  expect(cell("description", 15).parentElement!.querySelector(".oe-marker")).toHaveAttribute("aria-readonly", "true");
+  expect(cell("description", 19)).toHaveAttribute("colspan", "2");
+  expect(cell("description", 19)).toHaveStyle({ textAlign: "center" });
+  expect(cell("description", 25)).toHaveAttribute("colspan", "4");
+  expect(cell("description", 15).querySelector(".oe-cell-content")).not.toHaveAttribute("style");
+  click("Edit OE");
+  fireEvent.focus(cell("description", 15));
+  fireEvent.click(cell("description", 15));
+  fireEvent.keyDown(cell("description", 15), { key: "Tab" });
+  expect(cell("material", 15)).toHaveFocus();
+});
+
 it("starts read-only, edits with keyboard, preserves hidden drafts and cancels a cell with Escape", () => {
   const { cell, change } = setup();
   expect(screen.getByRole("treegrid").querySelector("input,textarea")).toBeNull();

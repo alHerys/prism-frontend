@@ -4,11 +4,13 @@ import { parseOEMoney } from "../../domain/owner-estimate";
 import { oeCellInput, oeCellKey } from "../../application/oe-review-draft";
 import { exactMoney } from "../../../../shared/formatting/display";
 import type { OEReviewModel } from "./useOEReview";
+import type { OERowLayout } from "./oe-row-layout";
 import type { ChangeEvent, KeyboardEvent } from "react";
 
 const labels: Record<OEField, string> = { description: "Uraian Pekerjaan", material: "Jumlah Harga Material", services: "Jumlah Harga Jasa", combined: "Jumlah Harga Gabungan" };
-export function OECell({ row, field, model, active, selected, onSelect, onStart, onKeyDown, onStop, register }: {
+export function OECell({ row, field, layout, model, active, selected, onSelect, onStart, onKeyDown, onStop, register }: {
   row: OERow; field: OEField; model: OEReviewModel; active: boolean; selected: boolean;
+  layout: OERowLayout;
   onSelect: () => void; onStart: () => void; onStop: () => void;
   onKeyDown: (event: KeyboardEvent<HTMLTableCellElement>) => void;
   register: (node: HTMLTableCellElement | null) => void;
@@ -29,13 +31,14 @@ export function OECell({ row, field, model, active, selected, onSelect, onStart,
     value: raw, disabled: model.busy, onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => model.change(row.id, field, event.target.value), onBlur: onStop };
   return <td role="gridcell" ref={register} tabIndex={selected ? 0 : -1} aria-selected={model.edit && selected} aria-readonly={!model.edit}
     className={`oe-cell oe-${field}${model.changed.has(key) ? " is-changed" : ""}${issue ? " has-issue" : ""}`}
-    data-field={field} data-changed={model.changed.has(key) || undefined} colSpan={field === "combined" ? 2 : field === "description" && row.scope === "NONE" ? 3 : undefined}
+    data-field={field} data-changed={model.changed.has(key) || undefined} colSpan={field === "combined" ? 2 : field === "description" ? layout.descriptionSpan : undefined}
+    style={field === "description" ? { textAlign: layout.descriptionAlignment } : undefined}
     onClick={onSelect} onDoubleClick={() => { if (model.edit && !model.busy) onStart(); }} onKeyDown={onKeyDown}>
     {active ? <div className="oe-cell-editor">
       {field === "description" ? <textarea ref={node => { input.current = node; }} {...inputProps} rows={2} /> : <input ref={node => { input.current = node; }} {...inputProps} inputMode="decimal" autoComplete="off" />}
       {amount?.state === "UNAVAILABLE" && <button type="button" className="inline-link" onMouseDown={event => event.preventDefault()} onClick={() => { model.change(row.id, field, ""); onStop(); }}>Tandai kosong</button>}
       {issue && <span className="oe-cell-error" id={errorId}>{issue.message}</span>}
-    </div> : <span className="oe-cell-content" style={field === "description" ? { paddingInlineStart: `${row.level * 18}px` } : undefined}>
+    </div> : <span className="oe-cell-content">
       {display || (issue ? <span className="oe-unavailable">Belum tersedia</span> : "")}
     </span>}
   </td>;

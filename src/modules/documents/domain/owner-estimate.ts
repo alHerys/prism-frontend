@@ -13,6 +13,8 @@ export interface OERow {
   parentId?: string;
   level: number;
   number: string;
+  numberSource?: { cell: string; position: "NO" | "CHILD" };
+  bullet?: { value: "-"; cell: string };
   description: string;
   descriptionCells: string[];
   descriptionUnavailable?: boolean;

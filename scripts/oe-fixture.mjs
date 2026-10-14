@@ -43,7 +43,16 @@ export async function addOEDetail(workbook) {
     const id=`Rincian OE:r${r}`;
     const scope=kind==='NOTE'&&level===0?'NONE':kind==='TOTAL'&&material===null?'COMBINED':'SPLIT';
     const amount=(value,column)=>({state:value===null?'BLANK':'VALUE',value,cell:`${column}${r}`});
-    rows.push({id,sourceRow:r,...(level>0?{parentId:kind==='SUBTOTAL'?parent:level===2?numbered:parent}:{}),level,number:no,description,descriptionCells:[`${descriptionCell}${r}`],descriptionUnavailable:false,kind,scope,material:amount(material,'P'),services:amount(services,'Q'),...(scope==='COMBINED'?{combined:amount(services,'Q')}:{})});
+    rows.push({
+      id, sourceRow: r,
+      ...(level > 0 ? { parentId: kind === 'SUBTOTAL' ? parent : level === 2 ? numbered : parent } : {}),
+      level, number: no,
+      ...(no ? { numberSource: { cell: `A${r}`, position: 'NO' } } : {}),
+      ...(level === 2 ? { bullet: { value: '-', cell: `B${r}` } } : {}),
+      description, descriptionCells: [`${descriptionCell}${r}`], descriptionUnavailable: false,
+      kind, scope, material: amount(material, 'P'), services: amount(services, 'Q'),
+      ...(scope === 'COMBINED' ? { combined: amount(services, 'Q') } : {}),
+    });
     if(kind==='CATEGORY')parent=id;
     if(no&&kind==='ITEM')numbered=id;
   }

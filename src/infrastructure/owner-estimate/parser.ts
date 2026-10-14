@@ -49,6 +49,10 @@ function parseRows(name: string, source: Map<number, XMLCell[]>, layout: Layout,
     if (r < layout.firstRow || r > lastRow) continue;
     const texts = cells.filter(c => c.column >= layout.no && c.column <= layout.descriptionEnd && (c.text.trim() || c.formula !== undefined));
     const numbering = texts.find(c => c.column <= layout.no + 1 && /^(?:[IVX]+|[A-Z]|\d+(?:\.\d+)+)$/.test(c.text.trim()));
+    const numberSource: OERow["numberSource"] = numbering ? {
+      cell: numbering.address, position: numbering.column === layout.no ? "NO" : "CHILD",
+    } : undefined;
+    const bullet = texts.find(c => c.column === layout.no + 1 && c.text.trim() === "-");
     const descriptions = texts.filter(c => c !== numbering && c.text.trim() !== "-");
     let missingDescription = descriptions.some(c => c.type === "e" || (c.formula !== undefined && !c.cached));
     const descriptionCells = descriptions.map(c => c.address);
@@ -85,7 +89,9 @@ function parseRows(name: string, source: Map<number, XMLCell[]>, layout: Layout,
     const kind = subtotal ? "SUBTOTAL" : total ? "TOTAL" : note ? "NOTE" : isRoman || isAlphabet || heading?.category ? "CATEGORY" : number ? "ITEM" : "NOTE";
     const scope = note ? "NONE" : total && material.state === "BLANK" ? "COMBINED" : "SPLIT";
     const row: OERow = { id: `${name}:r${r}`, sourceRow: r, ...(parent && !total && !note ? { parentId: parent.id } : {}), level,
-      number, description, descriptionCells, descriptionUnavailable: missingDescription,
+      number, ...(numberSource ? { numberSource } : {}),
+      ...(bullet ? { bullet: { value: "-" as const, cell: bullet.address } } : {}),
+      description, descriptionCells, descriptionUnavailable: missingDescription,
       kind, scope, material, services, ...(scope === "COMBINED" ? { combined: services } : {}) };
     result.push(row);
     if (isRoman) roman = row;

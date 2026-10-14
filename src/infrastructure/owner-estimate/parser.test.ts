@@ -18,6 +18,34 @@ it("reads the synthetic detail sheet without changing legacy unit-price cells", 
   expect(rows.find(row => row.sourceRow === 13)?.material.state).toBe("BLANK");
   expect(rows.find(row => row.sourceRow === 21)?.services.value).toBe("0");
   expect(rows.find(row => row.sourceRow === 24)?.scope).toBe("COMBINED");
+  expect(rows.find(row => row.sourceRow === 14)?.numberSource).toEqual({ cell: "A14", position: "NO" });
+  expect(rows.find(row => row.sourceRow === 15)?.bullet).toEqual({ cell: "B15", value: "-" });
+});
+
+it("preserves numbering and bullets by source column rather than numeric depth", async () => {
+  const zip = await JSZip.loadAsync(file());
+  const xml = new DOMParser().parseFromString(await zip.file("xl/worksheets/sheet2.xml")!.async("string"), "application/xml");
+  const cells = [...xml.getElementsByTagNameNS("*", "c")];
+  function text(address: string, value: string) {
+    const cell = cells.find(cell => cell.getAttribute("r") === address)!;
+    cell.setAttribute("t", "inlineStr");
+    cell.innerHTML = `<x:is><x:t>${value}</x:t></x:is>`;
+  }
+  text("A13", "2.1.3.1");
+  text("A20", "A");
+  text("B15", "1.2.1");
+  text("B17", "2.1.3.1");
+  zip.file("xl/worksheets/sheet2.xml", new XMLSerializer().serializeToString(xml));
+  const [sheet] = await parseOwnerEstimate(await zip.generateAsync({ type: "arraybuffer" }));
+  for (const [sourceRow, number, position, cell] of [[13, "2.1.3.1", "NO", "A13"], [20, "A", "NO", "A20"], [15, "1.2.1", "CHILD", "B15"], [17, "2.1.3.1", "CHILD", "B17"]] as const) {
+    expect(sheet.rows.find(row => row.sourceRow === sourceRow)).toMatchObject({ number, numberSource: { position, cell } });
+  }
+  expect(sheet.rows.find(row => row.sourceRow === 15)?.description).toBe(fixture.rows[3].description);
+  text("B15", "");
+  zip.file("xl/worksheets/sheet2.xml", new XMLSerializer().serializeToString(xml));
+  const [unmarked] = await parseOwnerEstimate(await zip.generateAsync({ type: "arraybuffer" }));
+  expect(unmarked.rows.find(row => row.sourceRow === 15)?.bullet).toBeUndefined();
+  expect(unmarked.rows.find(row => row.sourceRow === 15)?.number).toBe("");
 });
 
 it("keeps cached blanks, unavailable formulas, exact decimals and renamed sheets distinct", async () => {
@@ -103,6 +131,9 @@ if (process.env.PRISM_OE_REFERENCE) it("locally verifies reference structure wit
   expect(detail.rows.find(row => row.sourceRow === 105)?.parentId).toBe("Sheet4:r104");
   expect(detail.rows.find(row => row.sourceRow === 237)?.scope).toBe("COMBINED");
   expect(detail.rows.find(row => row.sourceRow === 241)?.scope).toBe("NONE");
+  expect(detail.rows.find(row => row.sourceRow === 37)?.numberSource).toEqual({ cell: "A37", position: "NO" });
+  expect(detail.rows.find(row => row.sourceRow === 38)?.numberSource).toEqual({ cell: "B38", position: "CHILD" });
+  expect(detail.rows.find(row => row.sourceRow === 16)?.bullet).toEqual({ cell: "B16", value: "-" });
   expect(detail.rows.length).toBeGreaterThan(200);
   expect(createHash("sha256").update(readFileSync(path)).digest("hex")).toBe(before);
 });

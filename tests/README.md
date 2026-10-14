@@ -157,14 +157,17 @@ provider asli dan backend tidak diubah atau dijalankan oleh suite ini.
 ## Spreadsheet Owner Estimate
 
 `npm run test:oe` memakai 1520×842 dan 390×844. Suite memeriksa mode read-only,
-header gabungan, blank/nol, total gabungan, sticky header/kolom, search dan konteks
+header Uraian gabungan, subkolom nomor/poin 96px, subtotal terpusat, tanpa indentasi,
+blank/nol, total gabungan, hanya header sticky, scroll seluruh kolom, search dan konteks
 induk, seluruh hierarki terbuka tanpa kontrol collapse, navigasi keyboard, Escape, draft tersembunyi, highlight, semua
 pilihan dialog keluar dan browser Back. Unggahan XLSX nyata mencakup kegagalan
 berkas rusak, pilihan beberapa sheet sebelum publikasi, sumber blob asli dan
-konfirmasi awal tanpa dialog tambahan. Screenshot observasi disimpan di
+nomor anakan dari kolom sumber, kode panjang yang membungkus tanpa mengecilkan font,
+dan konfirmasi awal tanpa dialog tambahan. Screenshot observasi disimpan di
 `test-results/owner-estimate-review/`.
 
-Unit tests mencakup tabel detail berulang dalam satu sheet, nomor berulang,
+Unit tests mencakup layout utama/anakan/legacy tanpa tebakan, poin dan anakan tanpa
+penanda, posisi nomor dari alamat sel, tabel detail berulang dalam satu sheet, nomor berulang,
 induk berharga dengan anak keterangan, nilai desimal panjang, cached blank versus
 cache rumus yang tidak tersedia, pembatasan XML/baris, validasi Indonesia, dirty
 yang kembali bersih, kandidat utuh, konflik revisi, arsip, kegagalan simpan,

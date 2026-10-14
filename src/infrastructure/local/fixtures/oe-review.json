@@ -23,6 +23,10 @@
         "state": "BLANK",
         "value": null,
         "cell": "Q12"
+      },
+      "numberSource": {
+        "cell": "A12",
+        "position": "NO"
       }
     },
     {
@@ -47,6 +51,10 @@
         "state": "VALUE",
         "value": "75000",
         "cell": "Q13"
+      },
+      "numberSource": {
+        "cell": "A13",
+        "position": "NO"
       }
     },
     {
@@ -71,6 +79,10 @@
         "state": "BLANK",
         "value": null,
         "cell": "Q14"
+      },
+      "numberSource": {
+        "cell": "A14",
+        "position": "NO"
       }
     },
     {
@@ -95,6 +107,10 @@
         "state": "BLANK",
         "value": null,
         "cell": "Q15"
+      },
+      "bullet": {
+        "value": "-",
+        "cell": "B15"
       }
     },
     {
@@ -119,6 +135,10 @@
         "state": "VALUE",
         "value": "150000",
         "cell": "Q16"
+      },
+      "numberSource": {
+        "cell": "A16",
+        "position": "NO"
       }
     },
     {
@@ -143,6 +163,10 @@
         "state": "BLANK",
         "value": null,
         "cell": "Q17"
+      },
+      "bullet": {
+        "value": "-",
+        "cell": "B17"
       }
     },
     {
@@ -167,6 +191,10 @@
         "state": "BLANK",
         "value": null,
         "cell": "Q18"
+      },
+      "numberSource": {
+        "cell": "A18",
+        "position": "NO"
       }
     },
     {
@@ -214,6 +242,10 @@
         "state": "BLANK",
         "value": null,
         "cell": "Q20"
+      },
+      "numberSource": {
+        "cell": "A20",
+        "position": "NO"
       }
     },
     {
@@ -238,6 +270,10 @@
         "state": "VALUE",
         "value": "0",
         "cell": "Q21"
+      },
+      "numberSource": {
+        "cell": "A21",
+        "position": "NO"
       }
     },
     {

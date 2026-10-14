@@ -16,11 +16,23 @@ async function change(page: Page, value: string) {
 }
 const file = () => readFile("public/files/OE-Terminal.xlsx");
 
-test("read-only spreadsheet keeps hierarchy, blank values, combined total and sticky columns", async ({ page }, info) => {
+test("read-only spreadsheet keeps hierarchy, blank values, combined total and header-only sticky layout", async ({ page }, info) => {
   const errors: string[] = []; page.on("pageerror", e => errors.push(e.message));
   await open(page);
   await expect(page.getByRole("treegrid").locator("input,textarea")).toHaveCount(0);
   await expect(page.getByRole("columnheader", { name: "Jumlah Harga", exact: true })).toHaveAttribute("colspan", "2");
+  await expect(page.getByRole("treegrid")).toHaveAttribute("aria-colcount", "5");
+  await expect(page.getByRole("columnheader", { name: "Uraian Pekerjaan", exact: true })).toHaveAttribute("colspan", "2");
+  await expect(cell(page, 14, "description")).toHaveAttribute("colspan", "2");
+  await expect(cell(page, 15, "description")).toHaveAttribute("colspan", "1");
+  const marker = page.locator('[data-source-row="15"] .oe-marker');
+  await expect(marker).toHaveText("-");
+  await expect(marker).toHaveAttribute("aria-readonly", "true");
+  expect((await marker.boundingBox())!.width).toBeCloseTo(96, 0);
+  await expect(cell(page, 19, "description")).toHaveCSS("text-align", "center");
+  await expect(cell(page, 19, "description")).toHaveAttribute("colspan", "2");
+  await expect(cell(page, 25, "description")).toHaveAttribute("colspan", "4");
+  await expect(cell(page, 15, "description").locator(".oe-cell-content")).toHaveCSS("padding-inline-start", "0px");
   await expect(cell(page, 13)).toHaveText("");
   await expect(cell(page, 21, "services")).toContainText("Rp 0");
   await expect(cell(page, 24, "combined")).toHaveAttribute("colspan", "2");
@@ -29,10 +41,18 @@ test("read-only spreadsheet keeps hierarchy, blank values, combined total and st
   await page.screenshot({ path: info.outputPath("oe-view.png"), fullPage: false });
   const scroll = page.locator(".oe-table-scroll");
   const header = page.getByRole("columnheader", { name: "Uraian Pekerjaan", exact: true });
+  // Constrain the desktop region to exercise overflow without changing the page shell.
+  if (info.project.name.startsWith("desktop")) await scroll.evaluate(el => { el.style.maxWidth = "860px"; });
   const start = await header.boundingBox();
   await scroll.evaluate(el => { el.scrollTop = 200; el.scrollLeft = 180; });
   const end = await header.boundingBox();
-  expect(Math.abs(start!.x - end!.x)).toBeLessThan(1);
+  const offset = await scroll.evaluate(el => el.scrollLeft);
+  expect(offset).toBeGreaterThan(0);
+  expect(start!.x - end!.x).toBeCloseTo(offset, 0);
+  await expect(cell(page, 14, "description")).not.toHaveCSS("position", "sticky");
+  await expect(page.locator('[data-source-row="14"] .oe-no')).not.toHaveCSS("position", "sticky");
+  await scroll.evaluate(el => { el.scrollLeft = el.scrollWidth; });
+  await expect(cell(page, 21, "services")).toBeInViewport();
   expect(Math.abs(start!.y - end!.y)).toBeLessThan(1);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await expect(page.getByRole("button", { name: /Buka Semua|Tutup Semua/ })).toHaveCount(0);
@@ -109,7 +129,11 @@ test("actual upload chooses between detail sheets before replacement and confirm
   const rel = await zip.file("xl/_rels/workbook.xml.rels")!.async("string");
   zip.file("xl/workbook.xml", wb.replace('</x:sheets>', '<x:sheet name="Pilihan kedua" sheetId="3" r:id="rIdExtra" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/></x:sheets>'));
   zip.file("xl/_rels/workbook.xml.rels", rel.replace('</Relationships>', '<Relationship Id="rIdExtra" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet3.xml"/></Relationships>'));
-  zip.file("xl/worksheets/sheet3.xml", (await zip.file("xl/worksheets/sheet2.xml")!.async("string")).replace('<x:v>200000</x:v>', '<x:v>300000</x:v>'));
+  const longCode = "2.1.3.1.12345678901234567890";
+  let detail = (await zip.file("xl/worksheets/sheet2.xml")!.async("string")).replace('<x:v>200000</x:v>', '<x:v>300000</x:v>');
+  detail = detail.replace(/(<x:c[^>]*r="B15"[^>]*><x:v>)-(<\/x:v>)/, (_, prefix, suffix) => `${prefix}1.2.1${suffix}`)
+    .replace(/(<x:c[^>]*r="B17"[^>]*><x:v>)-(<\/x:v>)/, (_, prefix, suffix) => `${prefix}${longCode}${suffix}`);
+  zip.file("xl/worksheets/sheet3.xml", detail);
   await upload.setInputFiles({ name: "OE Pilihan.xlsx", mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", buffer: await zip.generateAsync({ type: "nodebuffer" }) });
   await expect(page.getByText("Pilih tabel detail dari OE Pilihan.xlsx", { exact: true })).toBeVisible();
   await expect(page.locator(".owner-estimate-document")).toContainText("OE-Terminal.xlsx");
@@ -117,6 +141,19 @@ test("actual upload chooses between detail sheets before replacement and confirm
   await page.getByRole("button", { name: "Gunakan Tabel", exact: true }).click();
   await expect(page.getByRole("treegrid")).toBeVisible();
   await expect(cell(page)).toContainText("300.000");
+  await expect(page.locator('[data-source-row="15"] .oe-no')).toHaveText("");
+  await expect(page.locator('[data-source-row="15"] .oe-marker')).toHaveText("1.2.1");
+  await expect(page.locator('[data-source-row="17"] .oe-marker')).toHaveText(longCode);
+  const childCode = page.locator('[data-source-row="17"] .oe-marker');
+  await expect(childCode).toHaveCSS("font-size", "14px");
+  expect(await childCode.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+  await page.getByRole("button", { name: "Edit OE", exact: true }).click();
+  await cell(page, 15, "description").focus(); await page.keyboard.press("Tab");
+  await expect(cell(page, 15, "material")).toBeFocused();
+  await page.getByRole("button", { name: "Keluar Mode Edit", exact: true }).click();
+  await page.getByLabel("Cari nomor atau uraian pekerjaan").fill("2.1.3.1");
+  await expect(page.locator('[data-source-row="17"] .oe-marker')).toHaveText(longCode);
+  await page.getByRole("button", { name: "Hapus pencarian OE", exact: true }).click();
   const source = page.getByRole("link", { name: "Buka berkas asli", exact: true });
   const url = await source.getAttribute("href"); expect(url).toMatch(/^blob:/);
   expect(await page.evaluate(async url => (await (await fetch(url!)).arrayBuffer()).byteLength, url)).toBeGreaterThan(1000);

@@ -4,6 +4,7 @@ import type { OEField, OERow } from "../../domain/owner-estimate";
 import { oeCellKey } from "../../application/oe-review-draft";
 import type { OEReviewModel } from "./useOEReview";
 import { OECell } from "./OECell";
+import { oeRowLayout } from "./oe-row-layout";
 import type { KeyboardEvent } from "react";
 
 interface Selection { rowId: string; field: OEField; }
@@ -71,15 +72,19 @@ export function OESpreadsheet({ model, onLeaveGrid }: { model: OEReviewModel; on
     }
   }
   return <div className="oe-table-scroll" role="region" aria-label="Spreadsheet Owner Estimate" tabIndex={-1}>
-    <table className="oe-spreadsheet" role="treegrid" aria-label="Rincian Owner Estimate" aria-readonly={!model.edit} aria-colcount={4}>
-      <colgroup><col className="oe-col-no" /><col className="oe-col-description" /><col className="oe-col-price" /><col className="oe-col-price" /></colgroup>
-      <thead><tr><th rowSpan={2} className="oe-no" scope="col">No.</th><th rowSpan={2} className="oe-description" scope="col">Uraian Pekerjaan</th><th colSpan={2} scope="colgroup">Jumlah Harga</th></tr><tr><th scope="col">Material</th><th scope="col">Jasa</th></tr></thead>
-      <tbody>{rows.map(row => <tr key={row.id} role="row" aria-level={row.level + 1} data-source-row={row.sourceRow} className={`oe-row oe-row-${row.kind.toLowerCase()}`}>
-        <td className="oe-no" role="gridcell"><div className="oe-number"><span>{row.number}</span></div></td>
-        {editableOEFields(row).map(field => <OECell key={field} row={row} field={field} model={model} active={!!isEditing(row, field)} selected={!!isSelected(row, field)}
-          register={node => { const key = oeCellKey(row.id, field); if (node) nodes.current.set(key, node); else nodes.current.delete(key); }}
-          onSelect={() => setSelected({ rowId: row.id, field })} onStart={() => start(row, field)} onStop={() => setEditing(undefined)} onKeyDown={event => keyboard(event, row, field)} />)}
-      </tr>)}</tbody>
+    <table className="oe-spreadsheet" role="treegrid" aria-label="Rincian Owner Estimate" aria-readonly={!model.edit} aria-colcount={5}>
+      <colgroup><col className="oe-col-no" /><col className="oe-col-marker" /><col className="oe-col-description" /><col className="oe-col-price" /><col className="oe-col-price" /></colgroup>
+      <thead><tr><th rowSpan={2} className="oe-no" scope="col">No.</th><th rowSpan={2} colSpan={2} className="oe-description" scope="colgroup">Uraian Pekerjaan</th><th colSpan={2} scope="colgroup">Jumlah Harga</th></tr><tr><th scope="col">Material</th><th scope="col">Jasa</th></tr></thead>
+      <tbody>{rows.map(row => {
+        const layout = oeRowLayout(row);
+        return <tr key={row.id} role="row" aria-level={row.level + 1} data-source-row={row.sourceRow} className={`oe-row oe-row-${row.kind.toLowerCase()}`}>
+          <td className="oe-no" role="gridcell" aria-readonly="true"><div className="oe-number"><span>{layout.mainNumber}</span></div></td>
+          {layout.childMarker !== null && <td className="oe-marker" role="gridcell" aria-readonly="true">{layout.childMarker}</td>}
+          {editableOEFields(row).map(field => <OECell key={field} row={row} field={field} layout={layout} model={model} active={!!isEditing(row, field)} selected={!!isSelected(row, field)}
+            register={node => { const key = oeCellKey(row.id, field); if (node) nodes.current.set(key, node); else nodes.current.delete(key); }}
+            onSelect={() => setSelected({ rowId: row.id, field })} onStart={() => start(row, field)} onStop={() => setEditing(undefined)} onKeyDown={event => keyboard(event, row, field)} />)}
+        </tr>;
+      })}</tbody>
     </table>
     {!rows.length && <p className="oe-empty">Tidak ada baris sesuai pencarian.</p>}
   </div>;
