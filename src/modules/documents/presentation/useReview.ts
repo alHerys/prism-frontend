@@ -57,12 +57,13 @@ export function useReview() : ReviewModel {
   const p = state.procurements.find((p) => p.id === id)!;
   const vendor = state.vendors.find((v) => v.id === d?.vendorId);
   const source = service.availableSources().find((f) => f.id === d?.sourceId);
-  const back = () =>
-    navigate(
-      returnTo ?? (d?.vendorId
-        ? `/pengadaan/${id}?tab=ringkasan&vendor=${encodeURIComponent(d.vendorId)}`
-        : `/pengadaan/${id}?tab=ringkasan`),
-    );
+  const back = () => {
+    if (d?.kind === "OFFER" && new URLSearchParams(location.search).get("view") === "pairs")
+      return navigate(location.pathname, { state: location.state });
+    return navigate(returnTo ?? (d?.vendorId
+      ? `/pengadaan/${id}?tab=ringkasan&vendor=${encodeURIComponent(d.vendorId)}`
+      : `/pengadaan/${id}?tab=ringkasan`));
+  };
   function changeValue(key: keyof A5Values, value: string) {
     setValues((v) => (v ? { ...v, [key]: value } : v));
     setDirty(true);

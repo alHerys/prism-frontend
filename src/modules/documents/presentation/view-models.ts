@@ -1,6 +1,9 @@
 import type * as React from "react";
 
 export interface UploadPanelModel {
+  offerChoice: import("../application/owner-estimate-ports").PreparedOE | undefined;
+  chooseOfferSheet: (id: string) => Promise<void>;
+  cancelOfferImport: () => void;
   oeChoice: import("../application/owner-estimate-ports").PreparedOE | undefined;
   chooseOESheet: (id: string) => Promise<void>;
   cancelOEImport: () => void;

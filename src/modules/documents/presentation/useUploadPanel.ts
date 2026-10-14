@@ -7,6 +7,7 @@ import { currentOwnerEstimate } from "../application/queries";
 import { errorMessage } from "../../../shared/kernel/error-message";
 import type { DocumentKind, DocumentRecord } from "../domain/models";
 import { useToast } from "../../../shared/ui/toast-provider";
+import { useSpreadsheetImport } from "./useSpreadsheetImport";
 import { useOwnerEstimateImport } from "./useOwnerEstimateImport";
 
 export function useUploadPanel({
@@ -33,9 +34,13 @@ export function useUploadPanel({
   const [localProcessing, setProcessing] = useState("");
   const [localFailure, setFailure] = useState("");
   const oe = useOwnerEstimateImport(procurementId, currentDocument);
-  const busy = localBusy || oe.busy;
-  const processing = oe.progress || localProcessing;
-  const failure = localFailure || oe.failure;
+  const offer = useSpreadsheetImport({ prepare: service.prepareOfferSpreadsheet, release: service.releaseOfferSpreadsheet,
+    publish: (pendingId, sheetId) => service.publishOfferSpreadsheet({ pendingId, sheetId, procurementId, vendorId: vendor }),
+    successMessage: "Tabel penawaran selesai dibaca. Periksa data sebelum konfirmasi.",
+  });
+  const busy = localBusy || oe.busy || offer.busy;
+  const processing = oe.progress || offer.progress || localProcessing;
+  const failure = localFailure || oe.failure || offer.failure;
   const [replacing, setReplacing] = useState(false);
   const [removalTarget, setRemovalTarget] = useState<DocumentRecord>();
   const [removalFailure, setRemovalFailure] = useState("");
@@ -68,6 +73,7 @@ export function useUploadPanel({
       setFailure("Pilih vendor sebelum mengunggah dokumen.");
       return;
     }
+    if (kind === "OFFER") { await offer.upload(file); return; }
     setBusy(true);
     try {
       const document = await service.upload({ file, procurementId, kind,
@@ -83,5 +89,5 @@ export function useUploadPanel({
       setProcessing("");
     }
   }
-  return { scope, embedded, kind, setKind, busy, processing, failure, upload, currentDocument, replacing, beginReplacement, cancelReplacement, removalTarget, removalFailure, requestRemoval, cancelRemoval, removeOwnerEstimate, oeChoice: oe.choice, chooseOESheet: oe.choose, cancelOEImport: oe.cancel };
+  return { scope, embedded, kind, setKind, busy, processing, failure, upload, currentDocument, replacing, beginReplacement, cancelReplacement, removalTarget, removalFailure, requestRemoval, cancelRemoval, removeOwnerEstimate, offerChoice: offer.choice, chooseOfferSheet: offer.choose, cancelOfferImport: offer.cancel, oeChoice: oe.choice, chooseOESheet: oe.choose, cancelOEImport: oe.cancel };
 }

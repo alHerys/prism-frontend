@@ -1,0 +1,70 @@
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { createMemoryRouter, RouterProvider } from "react-router";
+import { transferableAbortController } from "node:util";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { createLocalRuntime } from "../../../../infrastructure/local/runtime";
+import { createApplication } from "../../../../app/bootstrap/application";
+import { ApplicationProviders } from "../../../../app/providers/ApplicationProviders";
+import { ToastProvider } from "../../../../shared/ui/toast-provider";
+import { Review } from "../Review";
+beforeEach(() => { HTMLElement.prototype.scrollIntoView = vi.fn(); vi.stubGlobal("AbortController", transferableAbortController().constructor); });
+afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
+function setup() {
+  const runtime = createLocalRuntime(true, true);
+  const app = createApplication(runtime);
+  const router = createMemoryRouter([{ path: "/pengadaan/:id/review/:documentId", element: <Review /> }, { path: "/pengadaan/:id", element: <h1>Dokumen vendor</h1> }],
+    { initialEntries: ["/pengadaan/proc-showcase", "/pengadaan/proc-showcase/review/doc-28"], initialIndex: 1 });
+  render(<ApplicationProviders application={app}><ToastProvider><RouterProvider router={router} /></ToastProvider></ApplicationProviders>);
+  const cell = (field = "material", row = 13) => screen.getByRole("treegrid").querySelector<HTMLElement>(`[data-source-row="${row}"] [data-field="${field}"]`)!;
+  const change = (value: string) => { fireEvent.doubleClick(cell()); fireEvent.change(screen.getByLabelText("Jumlah Harga Material 1.2"), { target: { value } }); fireEvent.blur(screen.getByLabelText("Jumlah Harga Material 1.2")); };
+  return { runtime, app, router, cell, change };
+}
+const click = (name: string) => fireEvent.click(screen.getByRole("button", { name }));
+it("defaults to the readonly source-styled sheet, keeps bullets and blank rows, and opens the separate pairing view", async () => {
+  const { cell, router } = setup();
+  expect(screen.getByRole("treegrid").querySelector("input,textarea,.oe-expand")).toBeNull();
+  expect(cell()).toHaveTextContent("250.000");
+  expect(cell()).not.toHaveTextContent("Rp");
+  expect(cell("services", 23)).toHaveTextContent("-");
+  expect(cell("material", 12)).toHaveTextContent("");
+  expect(screen.getByRole("treegrid").querySelector('[data-source-row="19"] [data-field]')).toBeNull();
+  click("Periksa Pasangan Harga");
+  await screen.findByLabelText("Kelompok harga yang digunakan");
+  expect(router.state.location.search).toBe("?view=pairs");
+  click("Kembali ke pengadaan");
+  await screen.findByRole("treegrid");
+});
+it("retains failed saves, handles invalid hidden cells and keeps stored evaluation data untouched", async () => {
+  const { runtime, app, cell, change } = setup();
+  const before = structuredClone(runtime.documents.queries.getSnapshot().documents.find(d => d.id === "doc-28")!);
+  vi.spyOn(app.documents.commands, "saveAndConfirmOfferSpreadsheet").mockRejectedValueOnce(new Error("Revisi berubah"));
+  click("Edit Penawaran"); change("-1");
+  fireEvent.change(screen.getByLabelText("Cari nomor atau uraian pekerjaan"), { target: { value: "tidak ada" } });
+  click("Simpan Perubahan");
+  await waitFor(() => expect(screen.getByLabelText("Jumlah Harga Material 1.2")).toHaveFocus());
+  expect(screen.getByLabelText("Jumlah Harga Material 1.2")).toHaveAttribute("aria-invalid", "true");
+  change("300.000,123456789");
+  click("Simpan Perubahan");
+  await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("Revisi berubah"));
+  expect(cell()).toHaveAttribute("data-changed", "true");
+  expect(runtime.documents.queries.getSnapshot().documents.find(d => d.id === before.id)).toEqual(before);
+  click("Simpan Perubahan");
+  await waitFor(() => expect(screen.getByRole("button", { name: "Edit Penawaran" })).toBeVisible());
+  const after = runtime.documents.queries.getSnapshot().documents.find(d => d.id === before.id)!;
+  expect(after.offerSpreadsheet?.reviewed?.rows.find(r => r.sourceRow === 13)?.material.value).toBe("300000.123456789");
+  expect(after.offerSpreadsheet?.candidate).toEqual(before.offerSpreadsheet?.candidate);
+  expect(after.pairs).toEqual(before.pairs);
+});
+it("guards browser Back and deletion, then deletes using the revision returned by save", async () => {
+  const { router, cell, change } = setup();
+  click("Edit Penawaran"); change("300.000");
+  await act(() => router.navigate(-1));
+  const dialog = () => within(screen.getByRole("dialog", { name: "Perubahan belum disimpan" }));
+  fireEvent.click(dialog().getByRole("button", { name: "Lanjut Mengedit" }));
+  expect(cell()).toHaveTextContent("300.000");
+  click("Hapus Penawaran Harga");
+  fireEvent.click(dialog().getByRole("button", { name: "Simpan Perubahan" }));
+  await screen.findByRole("dialog", { name: "Hapus Penawaran Harga?" });
+  fireEvent.click(within(screen.getByRole("dialog", { name: "Hapus Penawaran Harga?" })).getByRole("button", { name: "Hapus Penawaran Harga" }));
+  await screen.findByRole("heading", { name: "Dokumen vendor" });
+});

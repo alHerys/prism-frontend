@@ -18,12 +18,12 @@
 .oe-col-marker { width: var(--oe-marker-width); }
 .oe-col-description { width: var(--oe-description-width); }
 .oe-col-price { width: 180px; }
-.oe-spreadsheet th, .oe-spreadsheet td { padding: 10px 12px; border-right: 1px solid #a7b3aa; border-bottom: 1px solid #bbc3be; vertical-align: middle; overflow-wrap: anywhere; }
-.oe-spreadsheet th { position: sticky; top: 0; height: 40px; padding: 8px 12px; text-align: center; background: #c5d9f1; z-index: 3; }
+.oe-spreadsheet th, .oe-spreadsheet td { padding: 10px 12px; border-right: 1px solid #a7b3aa; border-bottom: 1px var(--oe-row-border-style, solid) #bbc3be; vertical-align: middle; overflow-wrap: anywhere; }
+.oe-spreadsheet th { position: sticky; top: 0; height: 40px; padding: 8px 12px; text-align: center; text-transform: var(--oe-header-text-transform, none); background: var(--oe-header-background, #c5d9f1); z-index: 3; }
 .oe-spreadsheet thead tr:nth-child(2) th { top: 40px; }
 .oe-spreadsheet .oe-no { text-align: left; padding-inline: 8px; }
 .oe-marker { text-align: left; font-variant-numeric: tabular-nums; }
-.oe-spreadsheet td { background: var(--oe-row-background, white); min-height: 40px; }
+.oe-spreadsheet td { background: var(--oe-cell-background, var(--oe-row-background, white)); min-height: 40px; }
 .oe-row-category { --oe-row-background: #e2efda; font-weight: 700; }
 .oe-row-subtotal { --oe-row-background: #fce4d6; font-weight: 700; }
 .oe-row-total { --oe-row-background: #f1f4f2; font-weight: 700; }

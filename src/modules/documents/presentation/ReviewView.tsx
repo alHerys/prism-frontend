@@ -63,6 +63,8 @@ export function ReviewView({
   const evidence = <ReviewSource d={d} focused={focused} p={p} vendor={vendor} source={source} />;
   const editor = d.removedAt || d.supersededBy
     ? <OwnerEstimateArchiveNotice document={d} />
+    : d.kind === "OFFER" && !d.groups.length
+    ? <section className="panel"><h2>Pasangan harga belum tersedia</h2><p>Spreadsheet dokumen dapat diperiksa, tetapi pasangan untuk evaluasi berkas ini belum tersedia. Tidak ada pasangan yang dibuat otomatis.</p></section>
     : <ReviewEditor
         d={d} ack={ack} setAck={setAck} busy={busy}
         setConfirm={setConfirm} setFocused={setFocused} values={values}

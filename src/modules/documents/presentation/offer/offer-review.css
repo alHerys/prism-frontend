@@ -1,0 +1,5 @@
+@media (max-width: 899px) {
+  .offer-review .oe-review-header { display: grid; grid-template-columns: 48px minmax(0, 1fr); }
+  .offer-review .oe-review-title { grid-column: 2; }
+  .offer-review .oe-review-actions { grid-column: 1 / -1; width: 100%; margin-left: 0; }
+}

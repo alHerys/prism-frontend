@@ -1,4 +1,5 @@
 import JSZip from "jszip";
+import type { CellStyle } from "../spreadsheet/style-types";
 
 const MAX_XML_BYTES = 50 * 1024 * 1024;
 export const elements = (node: Document | Element, name: string) => [...node.getElementsByTagNameNS("*", name)];
@@ -65,8 +66,8 @@ export function decimalLexeme(raw: string): string | undefined {
   return value.length <= 80 ? value.replace(/^0+(?=\d)/, "") : undefined;
 }
 
-export interface XMLCell { address: string; column: number; text: string; raw?: string; formula?: string; type: string; cached: boolean; bold: boolean; category: boolean; }
-export function readCells(xml: Document, shared: string[], styles?: Document) {
+export interface XMLCell { address: string; column: number; text: string; raw?: string; formula?: string; type: string; cached: boolean; bold: boolean; category: boolean; style?: CellStyle; }
+export function readCells(xml: Document, shared: string[], styles?: Document, cellStyles?: Map<number, CellStyle>) {
   const fonts = styles ? elements(styles, "fonts")[0]?.children : undefined;
   const fills = styles ? elements(styles, "fills")[0]?.children : undefined;
   const formats = styles ? elements(styles, "cellXfs")[0]?.children : undefined;
@@ -97,6 +98,7 @@ export function readCells(xml: Document, shared: string[], styles?: Document) {
         }
       }
       return { address, column: columnNumber(address), type, raw, text, formula, cached: !!value,
+        ...(cellStyles ? { style: cellStyles.get(Number(c.getAttribute("s") ?? 0)) } : {}),
         bold: !!font && !!child(font, "b"), category: !!solid && theme === "6" };
     });
     rows.set(rowNumber, cells);

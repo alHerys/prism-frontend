@@ -12,11 +12,11 @@ import { Modal } from "../../../shared/ui/modal";
 import { OwnerEstimateRemoval } from "./OwnerEstimateRemoval";
 import { OESheetChoice } from "./OESheetChoice";
 
-export function UploadPanelView({ scope, embedded, kind, setKind, busy, processing, failure, upload, currentDocument, replacing, beginReplacement, cancelReplacement, removalTarget, removalFailure, requestRemoval, cancelRemoval, removeOwnerEstimate, oeChoice, chooseOESheet, cancelOEImport }: UploadPanelModel) {
+export function UploadPanelView({ scope, embedded, kind, setKind, busy, processing, failure, upload, currentDocument, replacing, beginReplacement, cancelReplacement, removalTarget, removalFailure, requestRemoval, cancelRemoval, removeOwnerEstimate, offerChoice, chooseOfferSheet, cancelOfferImport, oeChoice, chooseOESheet, cancelOEImport }: UploadPanelModel) {
 
   const title = scope === "vendor" ? "Unggah dokumen" : currentDocument ? "Owner Estimate (OE)" : "Unggah Owner Estimate (OE)";
   const uploadContent = <div className="upload-panel-content">
-    {oeChoice ? <OESheetChoice key={oeChoice.id} choice={oeChoice} busy={busy} onChoose={chooseOESheet} onCancel={cancelOEImport} /> : <UploadZone
+    {offerChoice ? <OESheetChoice key={offerChoice.id} label="Penawaran" choice={offerChoice} busy={busy} onChoose={chooseOfferSheet} onCancel={cancelOfferImport} /> : oeChoice ? <OESheetChoice key={oeChoice.id} choice={oeChoice} busy={busy} onChoose={chooseOESheet} onCancel={cancelOEImport} /> : <UploadZone
       ariaLabel={currentDocument ? "Pilih berkas OE terbaru" : "Pilih berkas dokumen"}
       accept={kind === "FORM_A5" ? ".pdf" : ".xlsx"}
       disabled={busy}

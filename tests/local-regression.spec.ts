@@ -6,6 +6,7 @@ import ExcelJS from 'exceljs';
 const file = (name: string) => path.resolve('public/files', name);
 const button = (page: Page, name: string) => page.getByRole('button', {name, exact: true});
 async function confirm(page: Page) {
+  const pairing = new URL(page.url()).searchParams.get("view") === "pairs";
   const ack = page.getByRole('checkbox', {name: /Saya telah memeriksa/});
   if (await ack.count()) await ack.check();
   await button(page, 'Konfirmasi data').click();
@@ -14,6 +15,7 @@ async function confirm(page: Page) {
   if (await warning.count()) await warning.check();
   await confirmation.getByRole('button', {name: 'Konfirmasi data', exact: true}).click();
   await expect(page.getByRole('dialog', {name: 'Konfirmasi data dokumen'})).toHaveCount(0);
+  if (pairing) await button(page, "Kembali ke pengadaan").click();
   await expect(page).not.toHaveURL(/\/review\//);
 }
 async function upload(page: Page, name: string, label = 'Pilih berkas dokumen') {
@@ -33,10 +35,11 @@ async function upload(page: Page, name: string, label = 'Pilih berkas dokumen') 
     observer.observe(document.body, { childList: true, subtree: true, characterData: true });
   });
   await page.getByLabel(label, {exact: true}).setInputFiles(file(name));
-  if (name !== 'OE-Terminal.xlsx') await expect(page.locator('html')).toHaveAttribute('data-upload-progress-seen', 'true');
+  if (!name.endsWith('.xlsx')) await expect(page.locator('html')).toHaveAttribute('data-upload-progress-seen', 'true');
   await expect(page).toHaveURL(/\/review\/doc-/);
 }
 async function group(page: Page) {
+  await button(page, "Periksa Pasangan Harga").click();
   await page.getByLabel('Kelompok harga yang digunakan').selectOption('Harga satuan material dan jasa');
   await confirm(page);
 }

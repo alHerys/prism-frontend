@@ -13,7 +13,7 @@ it("preserves all seeded values, IDs, event order and prepared snapshots from th
     // with the original fingerprint rather than replacing its baseline.
     const withoutOE = (value: unknown): unknown => {
       if (Array.isArray(value)) return value.map(withoutOE);
-      if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).filter(([key]) => key !== "ownerEstimate").map(([key, child]) => [key, withoutOE(child)]));
+      if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).filter(([key]) => key !== "ownerEstimate" && key !== "offerSpreadsheet").map(([key, child]) => [key, withoutOE(child)]));
       return value;
     };
     const originalShape = states.map(state => ({ ...state, snapshots: state.snapshots.map(snapshot => ({

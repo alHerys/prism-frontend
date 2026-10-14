@@ -33,6 +33,7 @@ export function prepareShowcase(store: LocalStore) {
   for (const doc of docs) {
     doc.status = "CONFIRMED";
     doc.acknowledged = true;
+    if (doc.offerSpreadsheet) { doc.offerSpreadsheet.status = "CONFIRMED"; doc.offerSpreadsheet.acknowledged = true; }
     if (doc.reviewed) {
       doc.reviewed = copy(A5_FIXTURES[doc.fixtureId]);
       if (doc.fixtureId === "a5-borneo") doc.revision = 2;

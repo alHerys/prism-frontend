@@ -176,3 +176,27 @@ dibaca ketika `PRISM_OE_REFERENCE` menunjuk berkas lokal; tes memeriksa struktur
 dan hash sebelum/sesudah tanpa menghasilkan salinan atau output isinya.
 `OE-Terminal.xlsx` adalah fixture sintetis: sheet Harga dan lokasi/nilai unit
 lamanya tetap; Rincian OE ditambahkan secara independen oleh `scripts/oe-fixture.mjs`.
+
+## Spreadsheet Penawaran Harga
+
+`npm run test:spreadsheets` menjalankan review penawaran dan regresi OE pada
+1520×842 serta 390×844. Penawaran memakai lima kolom ringkas, header gabungan,
+nomor/poin anakan read-only, subtotal tengah, tanpa indentasi/collapse, dan
+hanya header sticky. Tes memeriksa warna dari sumber, format akuntansi tanpa Rp,
+nol versus kosong, baris pemisah, keyboard, presisi draft, highlight, pencarian,
+validasi dan seluruh pilihan dialog keluar.
+
+Unggah penawaran membaca XLSX nyata, memilih tabel sebelum publikasi, menyimpan
+sumber blob asli, serta mengonfirmasi spreadsheet tanpa mengonfirmasi pasangan.
+Akses `?view=pairs` mempertahankan alur Harga Timpang yang tersedia. Unggahan
+arbitrer tidak memperoleh pasangan demo; tampilan pencocokan menjelaskan jika
+pasangan belum tersedia. Tes unit memeriksa simpan atomik, konflik revisi,
+arsip, penghapusan setelah simpan, kandidat tetap utuh dan snapshot tidak berubah.
+
+Pembaca OOXML/draft/validasi/renderer dipakai bersama; OE mempertahankan profil,
+kontrak dan format rupiahnya. Referensi internal hanya dibaca melalui
+`PRISM_OFFER_REFERENCE`; tes memastikan batas blok dan integritas hash tanpa
+menyalin isinya. Fixture penawaran sintetis mempertahankan seluruh nilai dan
+alamat sheet Harga lama. `scripts/offer-fixture.mjs` mengarang detail sintetis;
+`scripts/read-offer-fixtures.mjs` membaca metadata seed dari berkas publik,
+bukan dari sumber Pertamina. Tidak ada persistensi atau perhitungan ulang otomatis.

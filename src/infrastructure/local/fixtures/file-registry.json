@@ -201,7 +201,7 @@
     ],
     "warnings": [],
     "groups": ["Harga satuan material dan jasa"],
-    "sha256": "9be9b93aaa551494a008e60d70218579bdb66e99832c8f04e58199d3ec0a1c72"
+    "sha256": "0b14971a336be0aafa5375232d501b699ff6a008f8a76bf1417cc1aaad31d465"
   },
   {
     "id": "bid-borneo",
@@ -258,7 +258,7 @@
     ],
     "warnings": ["Dua kelompok harga tersedia; pilih sumber secara eksplisit."],
     "groups": ["Harga satuan material dan jasa", "Ringkasan total"],
-    "sha256": "cb50c39bfe2cf8534c65372d796b7a3732ccfb508d1049514e88dc4c48e45a31"
+    "sha256": "ba505c0ef01165b27d44f35df0aca0603b2e4ffeebbd74e77e52f1a4ae4f330e"
   },
   {
     "id": "history-2024",

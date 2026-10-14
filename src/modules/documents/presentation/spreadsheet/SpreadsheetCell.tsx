@@ -1,29 +1,29 @@
 import { useEffect, useRef } from "react";
-import type { OEField, OERow } from "../../domain/owner-estimate";
-import { parseOEMoney } from "../../domain/owner-estimate";
-import { oeCellInput, oeCellKey } from "../../application/oe-review-draft";
-import { exactMoney } from "../../../../shared/formatting/display";
-import type { OEReviewModel } from "./useOEReview";
-import type { OERowLayout } from "./oe-row-layout";
+import type { SpreadsheetField, SpreadsheetRow } from "../../domain/spreadsheet";
+import { parseSpreadsheetMoney } from "../../domain/spreadsheet";
+import { spreadsheetCellInput, spreadsheetCellKey } from "../../application/spreadsheet-draft";
+import type { SpreadsheetProfile } from "./profiles";
+import type { SpreadsheetReviewModel } from "./useSpreadsheetReview";
+import type { SpreadsheetRowLayout } from "./row-layout";
 import type { ChangeEvent, KeyboardEvent } from "react";
 
-const labels: Record<OEField, string> = { description: "Uraian Pekerjaan", material: "Jumlah Harga Material", services: "Jumlah Harga Jasa", combined: "Jumlah Harga Gabungan" };
-export function OECell({ row, field, layout, model, active, selected, onSelect, onStart, onKeyDown, onStop, register }: {
-  row: OERow; field: OEField; model: OEReviewModel; active: boolean; selected: boolean;
-  layout: OERowLayout;
+const labels: Record<SpreadsheetField, string> = { description: "Uraian Pekerjaan", material: "Jumlah Harga Material", services: "Jumlah Harga Jasa", combined: "Jumlah Harga Gabungan" };
+export function SpreadsheetCell({ row, field, layout, profile, model, active, selected, onSelect, onStart, onKeyDown, onStop, register }: {
+  row: SpreadsheetRow; field: SpreadsheetField; model: SpreadsheetReviewModel; active: boolean; selected: boolean;
+  layout: SpreadsheetRowLayout; profile: SpreadsheetProfile;
   onSelect: () => void; onStart: () => void; onStop: () => void;
   onKeyDown: (event: KeyboardEvent<HTMLTableCellElement>) => void;
   register: (node: HTMLTableCellElement | null) => void;
 }) {
-  const key = oeCellKey(row.id, field);
-  const raw = model.draft[key] ?? oeCellInput(row, field);
+  const key = spreadsheetCellKey(row.id, field);
+  const raw = model.draft[key] ?? spreadsheetCellInput(row, field);
   const issue = model.issues.find(issue => issue.rowId === row.id && issue.field === field);
   const input = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
   useEffect(() => { if (active) { input.current?.focus(); input.current?.select(); } }, [active]);
   const amount = field === "description" ? undefined : row[field];
   let display = raw;
   if (field !== "description") {
-    try { const value = parseOEMoney(raw); display = value === null ? "" : exactMoney(value); } catch { /* Keep the invalid draft visible until corrected. */ }
+    try { const value = parseSpreadsheetMoney(raw); display = value === null ? "" : profile.formatAmount(value, amount?.format); } catch { /* Keep the invalid draft visible until corrected. */ }
   }
   const errorId = `oe-error-${row.sourceRow}-${field}`;
   const accessible = `${labels[field]} ${row.number || `baris ${row.sourceRow}`}`;
@@ -32,7 +32,7 @@ export function OECell({ row, field, layout, model, active, selected, onSelect, 
   return <td role="gridcell" ref={register} tabIndex={selected ? 0 : -1} aria-selected={model.edit && selected} aria-readonly={!model.edit}
     className={`oe-cell oe-${field}${model.changed.has(key) ? " is-changed" : ""}${issue ? " has-issue" : ""}`}
     data-field={field} data-changed={model.changed.has(key) || undefined} colSpan={field === "combined" ? 2 : field === "description" ? layout.descriptionSpan : undefined}
-    style={field === "description" ? { textAlign: layout.descriptionAlignment } : undefined}
+    style={{ ...profile.cellStyle(row, field), ...(field === "description" ? { textAlign: layout.descriptionAlignment } : {}) }}
     onClick={onSelect} onDoubleClick={() => { if (model.edit && !model.busy) onStart(); }} onKeyDown={onKeyDown}>
     {active ? <div className="oe-cell-editor">
       {field === "description" ? <textarea ref={node => { input.current = node; }} {...inputProps} rows={2} /> : <input ref={node => { input.current = node; }} {...inputProps} inputMode="decimal" autoComplete="off" />}

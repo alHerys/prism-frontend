@@ -11,6 +11,7 @@ import { LoadingState } from "../../../shared/ui/loading-state";
 import { useWorkspaceTime } from "../../../shared/ui/workspace-time";
 import type { Vendor } from "../../procurement/domain/models";
 import type { DocumentRecord } from "../domain/models";
+import { OESheetChoice } from "./OESheetChoice";
 import { useUploadPanel } from "./useUploadPanel";
 import "../../../shared/styles/fernly-evaluation.css";
 import "./owner-estimate.css";
@@ -43,12 +44,12 @@ function DocumentSlot({ vendor, kind, document, busy, onBusyChange }: {
         <span>Buka <ArrowRight size={17} aria-hidden="true" /></span>
       </div>
     </Link> : <div className="upload-panel-content">
-      <UploadZone ariaLabel={`Unggah ${title}`} accept={kind === "FORM_A5" ? ".pdf" : ".xlsx"} disabled={busy}
+      {model.offerChoice ? <OESheetChoice key={model.offerChoice.id} label="Penawaran" choice={model.offerChoice} busy={busy || model.busy} onChoose={async id => { onBusyChange(true); try { await model.chooseOfferSheet(id); } finally { onBusyChange(false); } }} onCancel={model.cancelOfferImport} /> : <UploadZone ariaLabel={`Unggah ${title}`} accept={kind === "FORM_A5" ? ".pdf" : ".xlsx"} disabled={busy}
         onFiles={files => { if (files[0]) void upload(files[0]); }}>
         <p><strong>{model.busy ? `${model.processing}…` : `Unggah ${title}`}</strong></p>
         <small>Tarik berkas ke sini atau pilih berkas. Maks. 10 MiB.</small>
         {model.busy && <LoadingState label={model.processing} />}
-      </UploadZone>
+      </UploadZone>}
       {model.failure && <ErrorState message={`${model.failure} Pilih berkas kembali untuk mencoba ulang.`} />}
     </div>}
   </section>;

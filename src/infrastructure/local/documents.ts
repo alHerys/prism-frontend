@@ -2,6 +2,7 @@ import { toDocument, toLocalDocument } from "./document-mapping";
 import { reviewedDocument, confirmedDocument } from "../../modules/documents/domain/review";
 import { ensureCurrentDocument, validateOwnerEstimateReplacement } from "../../modules/documents/domain/replacement";
 import registry from "./fixtures/file-registry.json";
+import offerReview from "./fixtures/offer-review.json";
 import oeReview from "./fixtures/oe-review.json";
 import type { OESheet } from "../../modules/documents/domain/owner-estimate";
 import { identifyOESheet } from "../../modules/documents/domain/owner-estimate";
@@ -37,6 +38,9 @@ export function makeDocument(store: LocalStore, input: UploadInput): DocumentRec
       }))
       : undefined,
     ...(input.kind === "OE" && input.fixtureId === "oe-terminal" ? { ownerEstimate: { candidate: identifyOESheet(oeReview as OESheet, id) } } : {}),
+    ...(input.kind === "OFFER" && Object.hasOwn(offerReview, input.fixtureId) ? {
+      offerSpreadsheet: { candidate: identifyOESheet((offerReview as Record<string, OESheet>)[input.fixtureId], id), status: "REVIEW_REQUIRED" as const, acknowledged: false },
+    } : {}),
     period: input.period ?? file?.period,
     historicalItems:
       input.kind === "HISTORICAL_OE"

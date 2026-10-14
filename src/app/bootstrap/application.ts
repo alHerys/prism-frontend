@@ -18,7 +18,7 @@ export function createApplication(runtime = createLocalRuntime(true, true), expo
     await downloadSnapshot(snapshot, procurement);
   },
 }) {
-  const documents = createDocumentsUseCases(runtime.documents.gateway, runtime.processing, runtime.priceDeviation.gateway, runtime.ownerEstimate);
+  const documents = createDocumentsUseCases(runtime.documents.gateway, runtime.processing, runtime.priceDeviation.gateway, runtime.ownerEstimate, runtime.offerSpreadsheet);
   const evaluations = createEvaluationsUseCases(runtime.evaluations.gateway, runtime.procurement.queries, exporter);
   return {
     procurement: { commands: createProcurementUseCases(runtime.procurement.gateway), queries: runtime.procurement.queries },

@@ -14,6 +14,7 @@ import { setHistoricalMetadata, publishHistory, setComparable, estimate, getPrep
 import { recordExport } from "./snapshots";
 import { processLocalDocument } from "./process-document";
 import { availableDocuments } from "./file-registry";
+import { createOfferSpreadsheetAdapter } from "./offer-spreadsheet";
 import { createOwnerEstimateAdapter } from "./owner-estimate";
 import type { ReadStore } from "../../shared/kernel/read-store";
 import type { LocalState } from "./state";
@@ -56,9 +57,10 @@ export function createLocalRuntime(seed = true, prepared = false, extraction?: A
   initializeSession(store, seed, prepared);
   const assets = createIntakeAssets();
   const ownerEstimate = createOwnerEstimateAdapter(store);
+  const offerSpreadsheet = createOfferSpreadsheetAdapter(store);
   const intake = { store: createIntakeStore(), assets, publication: createA5Publication(store), extraction: extraction ?? createA5Intelligence(import.meta.env.VITE_DOCUMENT_API_URL || "/api") };
   const source = { getState: store.getState, subscribe: store.subscribe };
-  const processing: DocumentProcessing = { process: async (file, kind, onProgress) => ({ ...await processLocalDocument(file, kind, onProgress), kind }), availableSources: () => [...availableDocuments().map((source) => ({ ...source, kind: source.kind as DocumentKind })), ...assets.sources().map(source => ({ ...source, kind: "FORM_A5" as const })), ...ownerEstimate.sources()] };
+  const processing: DocumentProcessing = { process: async (file, kind, onProgress) => ({ ...await processLocalDocument(file, kind, onProgress), kind }), availableSources: () => [...availableDocuments().map((source) => ({ ...source, kind: source.kind as DocumentKind })), ...assets.sources().map(source => ({ ...source, kind: "FORM_A5" as const })), ...ownerEstimate.sources(), ...offerSpreadsheet.sources()] };
   const procurementGateway: ProcurementGateway = {
     createProcurement: (...args: Parameters<ProcurementGateway["createProcurement"]>) => createProcurement(store, ...args),
     addVendor: (...args: Parameters<ProcurementGateway["addVendor"]>) => addVendor(store, ...args),
@@ -94,6 +96,7 @@ export function createLocalRuntime(seed = true, prepared = false, extraction?: A
   };
   return {
     ownerEstimate,
+    offerSpreadsheet,
     processing,
     intake,
     delay: (milliseconds: number) => new Promise<void>((resolve) => setTimeout(resolve, milliseconds)),

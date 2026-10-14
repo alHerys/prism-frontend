@@ -23,6 +23,7 @@
     "test:local-regression": "playwright test --config playwright.local.config.ts",
     "test:procurement": "playwright test --config playwright.procurement.config.ts",
     "test:review": "playwright test --config playwright.review.config.ts",
+    "test:spreadsheets": "playwright test --config playwright.spreadsheet.config.ts",
     "test:oe": "playwright test --config playwright.oe.config.ts",
     "test:intake": "playwright test --config playwright.intake.config.ts",
     "test:evaluation": "playwright test --config playwright.evaluation.config.ts"

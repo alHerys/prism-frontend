@@ -204,7 +204,7 @@ test("vendor document dialog supports available, mixed and empty slots and retur
   await page.getByRole("button", { name: "Kembali ke pengadaan", exact: true }).click();
   await expect(dialog.getByRole("link", { name: "Buka Form A5", exact: true })).toBeVisible();
   await dialog.getByLabel("Unggah Penawaran Harga", { exact: true }).setInputFiles(path.resolve("public/files/Penawaran-Nusa.xlsx"));
-  await expect(page.locator(".review-document-identity")).toContainText("Penawaran-Nusa.xlsx");
+  await expect(page.locator(".oe-review-title")).toContainText("Penawaran-Nusa.xlsx");
   await page.getByRole("button", { name: "Kembali ke pengadaan", exact: true }).click();
   await expect(dialog.getByRole("link", { name: "Buka Penawaran Harga", exact: true })).toBeVisible();
   await page.keyboard.press("Escape");

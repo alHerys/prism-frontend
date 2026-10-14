@@ -12,13 +12,13 @@ import { Review } from "./Review";
 // The Node Request constructor requires a Node AbortSignal rather than jsdom's.
 beforeEach(() => vi.stubGlobal("AbortController", transferableAbortController().constructor));
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
-function openReview(documentId: string, reviewReturnTo?: string) {
+function openReview(documentId: string, reviewReturnTo?: string, search = "") {
   const runtime = createLocalRuntime();
     const service = createTestSession(true, false, runtime);
   const router = createMemoryRouter([
     { path: "/pengadaan/:id/review/:documentId", element: <Review /> },
     { path: "/pengadaan/:id", element: <p>Dokumen vendor</p> },
-  ], { initialEntries: [{ pathname: `/pengadaan/proc-terminal/review/${documentId}`, state: { reviewReturnTo } }] });
+  ], { initialEntries: [{ pathname: `/pengadaan/proc-terminal/review/${documentId}`, search, state: { reviewReturnTo } }] });
   const application = createApplication(runtime);
   render(<ApplicationProviders application={application}><ToastProvider><RouterProvider router={router} /></ToastProvider></ApplicationProviders>);
   return { ...service, commands: application.documents.commands, runtime, router };
@@ -80,12 +80,12 @@ it("keeps invalid corrections on screen and never confirms a rejected save", asy
   expect(screen.getByRole("dialog", { name: "Perubahan belum disimpan" })).toBeInTheDocument();
 });
 it("saves selected group and pairs before confirming their returned revision", async () => {
-  const service = openReview("doc-24");
+  const service = openReview("doc-24", undefined, "?view=pairs");
   const confirm = vi.spyOn(service.commands, "confirmReview");
   fireEvent.change(screen.getByLabelText("Kelompok harga yang digunakan"), { target: { value: "Harga satuan material dan jasa" } });
   expect(screen.getByRole("button", { name: "Konfirmasi data" })).toBeEnabled();
   await confirmDraft();
-  expect(await screen.findByText("Dokumen vendor")).toBeInTheDocument();
+  expect(await screen.findByRole("heading", { name: "Penawaran Harga" })).toBeInTheDocument();
   const document = service.getState().documents.find(d => d.id === "doc-24")!;
   expect(document.selectedGroup).toBe("Harga satuan material dan jasa");
   expect(document.status).toBe("CONFIRMED");

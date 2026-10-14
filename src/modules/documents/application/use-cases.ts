@@ -3,6 +3,7 @@ import type { PriceDeviationGateway } from "../../price-deviation/application/po
 import type { BinarySource } from "../../../shared/kernel/binary-source";
 import type { A5Values, DocumentKind, DocumentRecord, UploadInput } from "../domain/models";
 import type { PricePair } from "../../price-deviation/domain/models";
+import type { OfferSpreadsheetPort } from "./offer-spreadsheet-ports";
 import type { OwnerEstimatePort } from "./owner-estimate-ports";
 export interface SaveReviewInput {
   document: DocumentRecord;
@@ -10,9 +11,14 @@ export interface SaveReviewInput {
   group?: string;
   pairs: PricePair[];
 }
-export function createDocumentsUseCases(gateway: DocumentsGateway, processing: DocumentProcessing, prices: Pick<PriceDeviationGateway, "selectGroup" | "reviewPairs" | "confirmPairs">, ownerEstimate?: OwnerEstimatePort) {
+export function createDocumentsUseCases(gateway: DocumentsGateway, processing: DocumentProcessing, prices: Pick<PriceDeviationGateway, "selectGroup" | "reviewPairs" | "confirmPairs">, ownerEstimate?: OwnerEstimatePort, offerSpreadsheet?: OfferSpreadsheetPort) {
   const oe = () => { if (!ownerEstimate) throw new Error("Pembacaan OE belum tersedia."); return ownerEstimate; };
+  const offer = () => { if (!offerSpreadsheet) throw new Error("Pembacaan penawaran belum tersedia."); return offerSpreadsheet; };
   return {
+    prepareOfferSpreadsheet: (...args: Parameters<OfferSpreadsheetPort["prepare"]>) => offer().prepare(...args),
+    publishOfferSpreadsheet: (...args: Parameters<OfferSpreadsheetPort["publish"]>) => offer().publish(...args),
+    releaseOfferSpreadsheet: (id: string) => offer().release(id),
+    saveAndConfirmOfferSpreadsheet: (...args: Parameters<OfferSpreadsheetPort["saveAndConfirm"]>) => offer().saveAndConfirm(...args),
     prepareOwnerEstimate: (...args: Parameters<OwnerEstimatePort["prepare"]>) => oe().prepare(...args),
     publishOwnerEstimate: (...args: Parameters<OwnerEstimatePort["publish"]>) => oe().publish(...args),
     releaseOwnerEstimate: (id: string) => oe().release(id),
