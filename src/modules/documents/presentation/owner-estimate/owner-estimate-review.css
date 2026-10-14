@@ -12,8 +12,6 @@
 .oe-review .oe-toolbar .oe-search input { flex: 1; min-width: 0; min-height: 44px; border: 0; border-radius: 0; background: transparent; padding: 10px 0; box-shadow: none; }
 .oe-search:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
 .oe-search .icon-button { width: 28px; height: 28px; padding: 0; }
-.oe-tree-actions { display: flex; gap: 8px; }
-.oe-tree-actions .icon-button { width: 44px; height: 44px; color: var(--accent); }
 .oe-table-scroll { flex: 1; min-height: 0; overflow: auto; border: 1px solid #88958d; border-radius: 10px; background: white; scrollbar-color: #9caec2 #edf2f5; scrollbar-width: thin; }
 .oe-spreadsheet { --oe-no-width: 76px; --oe-description-width: max(320px, calc(100% - 436px)); border-collapse: separate; border-spacing: 0; width: 100%; min-width: 900px; table-layout: fixed; font: 14px/1.45 Arial, sans-serif; color: #17231e; }
 .oe-col-no { width: var(--oe-no-width); }
@@ -31,8 +29,6 @@
 .oe-row-total { --oe-row-background: #f1f4f2; font-weight: 700; }
 .oe-row-subtotal td, .oe-row-total td { border-top: 1px solid #536358; }
 .oe-number { display: flex; gap: 3px; align-items: center; }
-.oe-expand { border: 0; padding: 0; width: 20px; height: 28px; display: inline-grid; place-items: center; flex-shrink: 0; background: transparent; color: inherit; cursor: pointer; }
-.oe-expand:disabled { opacity: .45; cursor: default; }
 .oe-material, .oe-services, .oe-combined { text-align: right; font-variant-numeric: tabular-nums; }
 .oe-cell-content { display: block; white-space: pre-wrap; }
 .oe-cell.is-changed { background: #fff4c9; }

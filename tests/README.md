@@ -158,7 +158,7 @@ provider asli dan backend tidak diubah atau dijalankan oleh suite ini.
 
 `npm run test:oe` memakai 1520×842 dan 390×844. Suite memeriksa mode read-only,
 header gabungan, blank/nol, total gabungan, sticky header/kolom, search dan konteks
-induk, collapse, navigasi keyboard, Escape, draft tersembunyi, highlight, semua
+induk, seluruh hierarki terbuka tanpa kontrol collapse, navigasi keyboard, Escape, draft tersembunyi, highlight, semua
 pilihan dialog keluar dan browser Back. Unggahan XLSX nyata mencakup kegagalan
 berkas rusak, pilihan beberapa sheet sebelum publikasi, sumber blob asli dan
 konfirmasi awal tanpa dialog tambahan. Screenshot observasi disimpan di

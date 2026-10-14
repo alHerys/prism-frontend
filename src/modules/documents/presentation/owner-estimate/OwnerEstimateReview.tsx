@@ -2,8 +2,6 @@ import { useRef } from "react";
 import { ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft";
 import { PencilSimple } from "@phosphor-icons/react/dist/csr/PencilSimple";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
-import { ArrowsOutLineVertical } from "@phosphor-icons/react/dist/csr/ArrowsOutLineVertical";
-import { ArrowsInLineVertical } from "@phosphor-icons/react/dist/csr/ArrowsInLineVertical";
 import { X } from "@phosphor-icons/react/dist/csr/X";
 import { Link } from "react-router";
 import { useDocumentsCommands } from "../binding";
@@ -39,10 +37,7 @@ export function OwnerEstimateReview({ document }: { document: DocumentRecord }) 
       {model.baseline ? <>
         <div className="oe-toolbar">
           <label className="oe-search"><MagnifyingGlass size={18} aria-hidden="true" /><input aria-label="Cari nomor atau uraian pekerjaan" placeholder="Cari nomor atau uraian pekerjaan…" value={model.query} onChange={event => model.setQuery(event.target.value)} />{model.query && <button type="button" className="icon-button" aria-label="Hapus pencarian OE" onClick={() => model.setQuery("")}><X size={16} aria-hidden="true" /></button>}</label>
-          <div className="oe-tree-actions">
-            <button type="button" className="icon-button" aria-label="Buka Semua" title="Buka Semua" disabled={!!model.query.trim()} onClick={() => model.setCollapsed(new Set())}><ArrowsOutLineVertical size={22} aria-hidden="true" /></button>
-            <button type="button" className="icon-button" aria-label="Tutup Semua" title="Tutup Semua" disabled={!!model.query.trim()} onClick={() => model.setCollapsed(new Set(model.children))}><ArrowsInLineVertical size={22} aria-hidden="true" /></button>
-          </div>
+
         </div>
         {document.warnings.length > 0 && <div className="oe-source-warning">{document.warnings.map(warning => <p key={warning}>{warning}</p>)}{!model.archived && <label><input type="checkbox" checked={model.ack} disabled={model.busy} onChange={event => model.setAck(event.target.checked)} /> Saya telah memeriksa peringatan sumber OE.</label>}</div>}
         {model.failure && !model.dialogOpen && <div className="alert error" role="alert">{model.failure}</div>}

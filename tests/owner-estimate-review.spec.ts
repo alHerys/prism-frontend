@@ -35,8 +35,10 @@ test("read-only spreadsheet keeps hierarchy, blank values, combined total and st
   expect(Math.abs(start!.x - end!.x)).toBeLessThan(1);
   expect(Math.abs(start!.y - end!.y)).toBeLessThan(1);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.getByRole("button", { name: "Tutup Semua", exact: true }).click();
-  await expect(cell(page)).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /Buka Semua|Tutup Semua/ })).toHaveCount(0);
+  await expect(page.locator(".oe-expand, .oe-tree-actions")).toHaveCount(0);
+  await expect(page.locator(".oe-spreadsheet tbody tr")).toHaveCount(14);
+  await expect(cell(page)).toBeAttached();
   await expect(cell(page, 19, "services")).toBeAttached();
   await page.getByLabel("Cari nomor atau uraian pekerjaan").fill("perlindungan");
   await expect(cell(page, 14, "description")).toContainText("pipa baja 4 inci");
@@ -58,8 +60,6 @@ test("keyboard edits, hidden drafts, undo and all three dirty-leave choices work
   await page.keyboard.press("Shift+Tab"); await expect(cell(page)).toBeFocused();
   await page.keyboard.press("Enter"); await page.keyboard.press("Enter");
   await expect(cell(page, 15)).toBeFocused();
-  await page.getByRole("button", { name: "Tutup Semua", exact: true }).click();
-  await page.getByRole("button", { name: "Buka Semua", exact: true }).click();
   await expect(cell(page)).toHaveAttribute("data-changed", "true");
   await page.getByRole("button", { name: "Keluar Mode Edit", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "Perubahan belum disimpan" });
@@ -87,7 +87,6 @@ test("keyboard edits, hidden drafts, undo and all three dirty-leave choices work
 test("invalid hidden values reopen and focus the cell without losing the draft", async ({ page }) => {
   await open(page); await page.getByRole("button", { name: "Edit OE", exact: true }).click();
   await change(page, "-1");
-  await page.getByRole("button", { name: "Tutup Semua", exact: true }).click();
   await page.getByLabel("Cari nomor atau uraian pekerjaan").fill("tidak cocok");
   await page.getByRole("button", { name: "Simpan Perubahan", exact: true }).click();
   const input = page.getByLabel("Jumlah Harga Material 1.2", { exact: true });

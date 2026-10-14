@@ -19,7 +19,6 @@ export function useOEReview(document: DocumentRecord) {
   const [edit, setEdit] = useState(false);
   const [draft, setDraft] = useState<OEDraft>({});
   const [query, setQuery] = useState("");
-  const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set());
   const [busy, setBusy] = useState(false);
   const [failure, setFailure] = useState("");
   const [ack, setAck] = useState(document.acknowledged);
@@ -40,8 +39,7 @@ export function useOEReview(document: DocumentRecord) {
   useEffect(() => {
     if (!dirty && !busy && afterClean.current) { const action = afterClean.current; afterClean.current = undefined; action(); }
   }, [dirty, busy]);
-  const rows = useMemo(() => baseline ? visibleOERows(baseline.rows, collapsed, query, draft) : [], [baseline, collapsed, query, draft]);
-  const children = useMemo(() => new Set(baseline?.rows.flatMap(row => row.parentId ? [row.parentId] : []) ?? []), [baseline]);
+  const rows = useMemo(() => baseline ? visibleOERows(baseline.rows, query, draft) : [], [baseline, query, draft]);
   function back() {
     const path = `/pengadaan/${document.procurementId}`;
     const origin: unknown = location.state?.reviewReturnTo;
@@ -78,13 +76,12 @@ export function useOEReview(document: DocumentRecord) {
     });
     setFailure("");
   }
-  function toggle(id: string) { setCollapsed(previous => { const next = new Set(previous); if (next.has(id)) next.delete(id); else next.add(id); return next; }); }
   async function save(leave = false) {
     if (lock.current || !baseline) return;
     const first = assessment.issues[0];
     if (first) {
       if (!editingSource) setEditingSource({ sheet: baseline, revision: document.revision });
-      setFailure(first.message); setEdit(true); setQuery(""); setCollapsed(new Set());
+      setFailure(first.message); setEdit(true); setQuery("");
       continueEditing();
       setAttention(previous => ({ rowId: first.rowId, field: first.field, token: (previous?.token ?? 0) + 1, before: draft[oeCellKey(first.rowId, first.field)] }));
       return;
@@ -101,7 +98,7 @@ export function useOEReview(document: DocumentRecord) {
     } catch (error) { if (mounted.current) setFailure(error instanceof Error ? error.message : "OE belum dapat disimpan."); }
     finally { lock.current = false; if (mounted.current) setBusy(false); }
   }
-  return { baseline, archived, edit, enterEdit, draft, query, setQuery, collapsed, setCollapsed, children, toggle, rows,
+  return { baseline, archived, edit, enterEdit, draft, query, setQuery, rows,
     busy, failure, ack, setAck, dirty, changed: assessment.changed, issues: assessment.issues, attention,
     dialogOpen: exit !== undefined || blocker.state === "blocked", requestExit, continueEditing, discard, save, change };
 }

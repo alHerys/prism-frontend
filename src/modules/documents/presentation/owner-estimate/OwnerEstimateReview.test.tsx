@@ -32,6 +32,8 @@ const dialog = () => within(screen.getByRole("dialog", { name: "Perubahan belum 
 it("starts read-only, edits with keyboard, preserves hidden drafts and cancels a cell with Escape", () => {
   const { cell, change } = setup();
   expect(screen.getByRole("treegrid").querySelector("input,textarea")).toBeNull();
+  expect(screen.getByRole("treegrid").querySelector(".oe-expand,[aria-expanded]")).toBeNull();
+  expect(screen.queryByRole("button", { name: /Buka Semua|Tutup Semua/ })).toBeNull();
   click("Edit OE");
   fireEvent.keyDown(cell(), { key: "Enter" });
   const input = screen.getByLabelText("Jumlah Harga Material 1.2");
@@ -42,10 +44,9 @@ it("starts read-only, edits with keyboard, preserves hidden drafts and cancels a
   expect(screen.queryByRole("button", { name: "Simpan Perubahan" })).toBeNull();
   change("300.000");
   expect(cell()).toHaveAttribute("data-changed", "true");
-  click("Tutup Semua");
   fireEvent.change(screen.getByLabelText("Cari nomor atau uraian pekerjaan"), { target: { value: "perlindungan" } });
   expect(screen.getByRole("treegrid")).toHaveTextContent("pipa baja 4 inci");
-  click("Hapus pencarian OE"); click("Buka Semua");
+  click("Hapus pencarian OE");
   expect(cell()).toHaveTextContent("300.000");
   fireEvent.doubleClick(cell());
   fireEvent.keyDown(screen.getByLabelText("Jumlah Harga Material 1.2"), { key: "Tab" });
@@ -93,7 +94,7 @@ it("blocks browser Back, preserves a failed save and proceeds after discard", as
 
 it("opens and focuses an invalid hidden price before saving and keeps the draft", async () => {
   const { change } = setup();
-  click("Edit OE"); change("-1"); click("Tutup Semua");
+  click("Edit OE"); change("-1");
   fireEvent.change(screen.getByLabelText("Cari nomor atau uraian pekerjaan"), { target: { value: "tidak ada" } });
   click("Simpan Perubahan");
   const input = await screen.findByLabelText("Jumlah Harga Material 1.2");

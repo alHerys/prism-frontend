@@ -25,12 +25,11 @@ it("keeps the candidate immutable and treats returning to the baseline as clean"
   expect(JSON.stringify(sheet)).toBe(before);
   expect(() => applyOEEdits(sheet, [{ rowId: "unowned", field: "material", value: "1" }])).toThrow("struktur");
 });
-it("retains ancestors and subtotal context during search and collapse", () => {
-  const collapsed = new Set(["Rincian OE:r12"]);
-  const visible = visibleOERows(sheet.rows, collapsed, "");
-  expect(visible.some(row => row.sourceRow === 14)).toBe(false);
+it("shows all hierarchy rows by default and retains ancestor/subtotal context during search", () => {
+  const visible = visibleOERows(sheet.rows, "");
+  expect(visible).toEqual(sheet.rows);
   expect(visible.some(row => row.sourceRow === 19)).toBe(true);
-  const search = visibleOERows(sheet.rows, collapsed, "perlindungan");
+  const search = visibleOERows(sheet.rows, "perlindungan");
   expect(search.map(row => row.sourceRow)).toEqual(expect.arrayContaining([12, 14, 15, 19, 23, 24]));
 });
 it("requires explicit resolution of unavailable prices without making an untouched sheet dirty", () => {

@@ -29,7 +29,7 @@ export function reviewOEDraft(sheet: OESheet, draft: OEDraft) {
     changed: new Set([...edits, ...issues].map(cell => oeCellKey(cell.rowId, cell.field))) };
 }
 
-export function visibleOERows(rows: OERow[], collapsed: ReadonlySet<string>, query: string, draft: OEDraft = {}): OERow[] {
+export function visibleOERows(rows: OERow[], query: string, draft: OEDraft = {}): OERow[] {
   const byId = new Map(rows.map(row => [row.id, row]));
   const ancestors = (row: OERow) => {
     const ids: string[] = [];
@@ -44,8 +44,5 @@ export function visibleOERows(rows: OERow[], collapsed: ReadonlySet<string>, que
     const retained = new Set(found.flatMap(row => [row.id, ...ancestors(row)]));
     return rows.filter(row => retained.has(row.id) || row.kind === "TOTAL" || (row.kind === "SUBTOTAL" && row.parentId && retained.has(row.parentId)));
   }
-  return rows.filter(row => {
-    const parents = ancestors(row);
-    return !parents.some(id => collapsed.has(id) && !(row.kind === "SUBTOTAL" && id === row.parentId));
-  });
+  return rows;
 }
