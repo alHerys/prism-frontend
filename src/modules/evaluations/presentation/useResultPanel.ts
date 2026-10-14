@@ -18,7 +18,6 @@ export function useResultPanel({
   const toast = useToast();
   const [busy, setBusy] = useState(false);
   const [detail, setDetail] = useState(false);
-  const [filter, setFilter] = useState("");
   async function exportResult() {
     setBusy(true);
     try {
@@ -30,6 +29,5 @@ export function useResultPanel({
       setBusy(false);
     }
   }
-  const rows = s.rows.filter((r) => !filter || r.category === filter);
-  return { s, p, busy, detail, setDetail, filter, setFilter, exportResult, rows };
+  return { s, p, busy, detail, setDetail, exportResult };
 }

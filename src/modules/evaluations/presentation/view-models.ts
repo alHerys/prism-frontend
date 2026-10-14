@@ -6,8 +6,5 @@ export interface ResultPanelModel {
   busy: boolean;
   detail: boolean;
   setDetail: React.Dispatch<React.SetStateAction<boolean>>;
-  filter: string;
-  setFilter: React.Dispatch<React.SetStateAction<string>>;
   exportResult: () => Promise<void>;
-  rows: import("../domain/models").ResultRow[];
 }

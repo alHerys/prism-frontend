@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { ResultRow } from "../domain/models";
 import { priceComposition } from "../application/price-composition";
 
@@ -19,10 +20,10 @@ function CompositionPie({ label, rows }: { label: string; rows: ResultRow[] }) {
   </figure>;
 }
 
-/** Overview describes the whole saved result, independent of the detail table filter. */
-export function PriceOverview({ rows }: { rows: ResultRow[] }) {
+/** Ratios describe the whole saved result, including every classified item. */
+export function PriceOverview({ rows, actions }: { rows: ResultRow[]; actions?: ReactNode }) {
   return <section className="panel price-overview" aria-label="Overview Harga Timpang">
-    <div className="panel-header"><h2>Overview</h2></div>
+    <div className="panel-header"><h2>Overview</h2>{actions}</div>
     <div className="price-overview-grid">
       <CompositionPie label="Seluruh Item" rows={rows} />
       <CompositionPie label="Barang" rows={rows.filter(row => row.category === "MATERIAL")} />

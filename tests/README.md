@@ -117,17 +117,12 @@ tombol Lihat Detail dan ekspor Excel juga diperiksa. Tombol preferensi kini
 berlabel Simpan; aksi simpan/konfirmasi/hitung tetap sama. Kembali dari sumber
 PDF mempertahankan halaman evaluasi dan parameter hasil asal. Harga Timpang
 hanya menampilkan hasil tersimpan, tanpa pemilihan sumber/tombol hitung.
-Total Item dipertahankan; Barang/Jasa Timpang menampilkan jumlah timpang dari
-total kategori dengan ikon Package/Wrench. Jumlah mengikuti filter kategori.
-Overview di atas Detail Item berisi tiga pie chart (seluruh item, Barang, Jasa)
-dengan rasio hanya dari klasifikasi tersimpan yang dikenal. Overview tidak
-berubah oleh filter detail. Tabel kembali memenuhi lebar panel; tiga chart
-berdampingan mulai 768px dan ditumpuk pada layar lebih kecil. Grafik batang lama
-dihapus. Pencarian Detail Item memakai ikon toolbar yang membuka field dengan
-slide di atas jumlah, fokus otomatis, dan Escape/tutup menghapus query serta
-mengembalikan fokus. Reduced motion meniadakan transisi. DataTable menerima
-pencarian terkontrol untuk halaman ini dan tidak menampilkan pencarian di menu
-filter; tabel lain mempertahankan perilaku lama. Pengecualian tetap tersimpan dalam snapshot dan laporan Excel.
+Overview Harga Timpang berisi tiga pie chart (seluruh item, Barang, Jasa)
+dengan rasio dari klasifikasi snapshot tersimpan. Tombol Ekspor Excel berada
+pada header Overview dan tetap mengekspor seluruh rincian snapshot. Bagian
+Detail Item beserta filter, pencarian dan tombol detail telah dihapus.
+Tiga chart berdampingan mulai 768px dan ditumpuk pada layar lebih kecil.
+Pengecualian tetap tersimpan dalam snapshot dan laporan Excel.
 
 Lihat Detail HEA membuka modal hampir layar penuh dengan native PDF viewer,
 tautan buka/unduh, fokus kembali dan cleanup URL. Screenshot observasi plugin
