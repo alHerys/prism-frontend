@@ -30,7 +30,7 @@ export function OwnerEstimateDocument({ document, busy, onReplace }: {
         <Link className="btn small" aria-disabled={busy || undefined} onClick={event => { if (busy) event.preventDefault(); }} to={`/pengadaan/${document.procurementId}/review/${document.id}`}>
           <Eye size={17} aria-hidden="true" /> Lihat
         </Link>
-        <button type="button" className="btn small" disabled={busy} onClick={onReplace}><PencilSimple size={17} aria-hidden="true" /> Edit</button>
+        <button type="button" className="btn small" disabled={busy} onClick={onReplace}><PencilSimple size={17} aria-hidden="true" /> Ganti OE</button>
       </div>
     </div>
   );

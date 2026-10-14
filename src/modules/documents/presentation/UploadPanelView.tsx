@@ -10,12 +10,13 @@ import { X } from "@phosphor-icons/react/dist/csr/X";
 import { Trash } from "@phosphor-icons/react/dist/csr/Trash";
 import { Modal } from "../../../shared/ui/modal";
 import { OwnerEstimateRemoval } from "./OwnerEstimateRemoval";
+import { OESheetChoice } from "./OESheetChoice";
 
-export function UploadPanelView({ scope, embedded, kind, setKind, busy, processing, failure, upload, currentDocument, replacing, beginReplacement, cancelReplacement, removalTarget, removalFailure, requestRemoval, cancelRemoval, removeOwnerEstimate }: UploadPanelModel) {
+export function UploadPanelView({ scope, embedded, kind, setKind, busy, processing, failure, upload, currentDocument, replacing, beginReplacement, cancelReplacement, removalTarget, removalFailure, requestRemoval, cancelRemoval, removeOwnerEstimate, oeChoice, chooseOESheet, cancelOEImport }: UploadPanelModel) {
 
   const title = scope === "vendor" ? "Unggah dokumen" : currentDocument ? "Owner Estimate (OE)" : "Unggah Owner Estimate (OE)";
   const uploadContent = <div className="upload-panel-content">
-    <UploadZone
+    {oeChoice ? <OESheetChoice key={oeChoice.id} choice={oeChoice} busy={busy} onChoose={chooseOESheet} onCancel={cancelOEImport} /> : <UploadZone
       ariaLabel={currentDocument ? "Pilih berkas OE terbaru" : "Pilih berkas dokumen"}
       accept={kind === "FORM_A5" ? ".pdf" : ".xlsx"}
       disabled={busy}
@@ -24,7 +25,7 @@ export function UploadPanelView({ scope, embedded, kind, setKind, busy, processi
       <p><strong>{busy ? `${processing}…` : "Tarik dokumen ke sini atau pilih berkas"}</strong></p>
       <small>Dokumen akan diperiksa sebelum digunakan untuk evaluasi.</small>
       {busy && <LoadingState label={processing} />}
-    </UploadZone>
+    </UploadZone>}
     {failure && <ErrorState message={`${failure} Pilih berkas kembali untuk mencoba ulang.`} />}
   </div>;
 
@@ -48,9 +49,9 @@ export function UploadPanelView({ scope, embedded, kind, setKind, busy, processi
         </div>
       </div>}
       {!currentDocument && uploadContent}
-      <Modal className="owner-estimate-edit" open={replacing} onOpenChange={open => { if (!open) cancelReplacement(); }} title={<span className="owner-estimate-edit-title"><PencilSimple size={24} aria-hidden="true" /> Edit Owner Estimate (OE)</span>}
+      <Modal className="owner-estimate-edit" open={replacing} onOpenChange={open => { if (!open) cancelReplacement(); }} title={<span className="owner-estimate-edit-title"><PencilSimple size={24} aria-hidden="true" /> Ganti Owner Estimate (OE)</span>}
         description="Ganti berkas XLSX atau hapus OE. Berkas baru perlu dikonfirmasi.">
-        <button type="button" className="icon-button owner-estimate-edit-close" aria-label="Tutup edit OE" disabled={busy} onClick={cancelReplacement}><X size={22} aria-hidden="true" /></button>
+        <button type="button" className="icon-button owner-estimate-edit-close" aria-label="Tutup ganti OE" disabled={busy} onClick={cancelReplacement}><X size={22} aria-hidden="true" /></button>
         {uploadContent}
         <div className="modal-actions owner-estimate-edit-actions">
           <button type="button" className="btn danger" disabled={busy} onClick={requestRemoval}><Trash size={17} aria-hidden="true" /> Hapus</button>

@@ -1,0 +1,343 @@
+{
+  "id": "Rincian OE",
+  "name": "Rincian OE",
+  "rows": [
+    {
+      "id": "Rincian OE:r12",
+      "sourceRow": 12,
+      "level": 0,
+      "number": "I",
+      "description": "Pekerjaan Persiapan",
+      "descriptionCells": [
+        "B12"
+      ],
+      "descriptionUnavailable": false,
+      "kind": "CATEGORY",
+      "scope": "SPLIT",
+      "material": {
+        "state": "BLANK",
+        "value": null,
+        "cell": "P12"
+      },
+      "services": {
+        "state": "BLANK",
+        "value": null,
+        "cell": "Q12"
+      }
+    },
+    {
+      "id": "Rincian OE:r13",
+      "sourceRow": 13,
+      "parentId": "Rincian OE:r12",
+      "level": 1,
+      "number": "1.1",
+      "description": "Mobilisasi dan demobilisasi",
+      "descriptionCells": [
+        "B13"
+      ],
+      "descriptionUnavailable": false,
+      "kind": "ITEM",
+      "scope": "SPLIT",
+      "material": {
+        "state": "BLANK",
+        "value": null,
+        "cell": "P13"
+      },
+      "services": {
+        "state": "VALUE",
+        "value": "75000",
+        "cell": "Q13"
+      }
+    },
+    {
+      "id": "Rincian OE:r14",
+      "sourceRow": 14,
+      "parentId": "Rincian OE:r12",
+      "level": 1,
+      "number": "1.2",
+      "description": "Pengadaan pipa baja 4 inci",
+      "descriptionCells": [
+        "B14"
+      ],
+      "descriptionUnavailable": false,
+      "kind": "ITEM",
+      "scope": "SPLIT",
+      "material": {
+        "state": "VALUE",
+        "value": "200000",
+        "cell": "P14"
+      },
+      "services": {
+        "state": "BLANK",
+        "value": null,
+        "cell": "Q14"
+      }
+    },
+    {
+      "id": "Rincian OE:r15",
+      "sourceRow": 15,
+      "parentId": "Rincian OE:r14",
+      "level": 2,
+      "number": "",
+      "description": "Pipa termasuk sambungan dan perlindungan selama pengiriman.",
+      "descriptionCells": [
+        "C15"
+      ],
+      "descriptionUnavailable": false,
+      "kind": "NOTE",
+      "scope": "SPLIT",
+      "material": {
+        "state": "BLANK",
+        "value": null,
+        "cell": "P15"
+      },
+      "services": {
+        "state": "BLANK",
+        "value": null,
+        "cell": "Q15"
+      }
+    },
+    {
+      "id": "Rincian OE:r16",
+      "sourceRow": 16,
+      "parentId": "Rincian OE:r12",
+      "level": 1,
+      "number": "1.3",
+      "description": "Pemasangan pipa",
+      "descriptionCells": [
+        "B16"
+      ],
+      "descriptionUnavailable": false,
+      "kind": "ITEM",
+      "scope": "SPLIT",
+      "material": {
+        "state": "BLANK",
+        "value": null,
+        "cell": "P16"
+      },
+      "services": {
+        "state": "VALUE",
+        "value": "150000",
+        "cell": "Q16"
+      }
+    },
+    {
+      "id": "Rincian OE:r17",
+      "sourceRow": 17,
+      "parentId": "Rincian OE:r16",
+      "level": 2,
+      "number": "",
+      "description": "Mencakup persiapan area, pemasangan dan pemeriksaan sambungan.",
+      "descriptionCells": [
+        "C17"
+      ],
+      "descriptionUnavailable": false,
+      "kind": "NOTE",
+      "scope": "SPLIT",
+      "material": {
+        "state": "BLANK",
+        "value": null,
+        "cell": "P17"
+      },
+      "services": {
+        "state": "BLANK",
+        "value": null,
+        "cell": "Q17"
+      }
+    },
+    {
+      "id": "Rincian OE:r18",
+      "sourceRow": 18,
+      "parentId": "Rincian OE:r12",
+      "level": 1,
+      "number": "1.4",
+      "description": "Katup gate 4 inci",
+      "descriptionCells": [
+        "B18"
+      ],
+      "descriptionUnavailable": false,
+      "kind": "ITEM",
+      "scope": "SPLIT",
+      "material": {
+        "state": "VALUE",
+        "value": "850000",
+        "cell": "P18"
+      },
+      "services": {
+        "state": "BLANK",
+        "value": null,
+        "cell": "Q18"
+      }
+    },
+    {
+      "id": "Rincian OE:r19",
+      "sourceRow": 19,
+      "parentId": "Rincian OE:r12",
+      "level": 1,
+      "number": "",
+      "description": "SUBTOTAL",
+      "descriptionCells": [
+        "B19"
+      ],
+      "descriptionUnavailable": false,
+      "kind": "SUBTOTAL",
+      "scope": "SPLIT",
+      "material": {
+        "state": "VALUE",
+        "value": "1050000",
+        "cell": "P19"
+      },
+      "services": {
+        "state": "VALUE",
+        "value": "225000",
+        "cell": "Q19"
+      }
+    },
+    {
+      "id": "Rincian OE:r20",
+      "sourceRow": 20,
+      "level": 0,
+      "number": "II",
+      "description": "Pekerjaan Finishing",
+      "descriptionCells": [
+        "B20"
+      ],
+      "descriptionUnavailable": false,
+      "kind": "CATEGORY",
+      "scope": "SPLIT",
+      "material": {
+        "state": "BLANK",
+        "value": null,
+        "cell": "P20"
+      },
+      "services": {
+        "state": "BLANK",
+        "value": null,
+        "cell": "Q20"
+      }
+    },
+    {
+      "id": "Rincian OE:r21",
+      "sourceRow": 21,
+      "parentId": "Rincian OE:r20",
+      "level": 1,
+      "number": "1.1",
+      "description": "Pengujian sambungan",
+      "descriptionCells": [
+        "B21"
+      ],
+      "descriptionUnavailable": false,
+      "kind": "ITEM",
+      "scope": "SPLIT",
+      "material": {
+        "state": "BLANK",
+        "value": null,
+        "cell": "P21"
+      },
+      "services": {
+        "state": "VALUE",
+        "value": "0",
+        "cell": "Q21"
+      }
+    },
+    {
+      "id": "Rincian OE:r22",
+      "sourceRow": 22,
+      "parentId": "Rincian OE:r20",
+      "level": 1,
+      "number": "",
+      "description": "SUBTOTAL",
+      "descriptionCells": [
+        "B22"
+      ],
+      "descriptionUnavailable": false,
+      "kind": "SUBTOTAL",
+      "scope": "SPLIT",
+      "material": {
+        "state": "VALUE",
+        "value": "0",
+        "cell": "P22"
+      },
+      "services": {
+        "state": "VALUE",
+        "value": "0",
+        "cell": "Q22"
+      }
+    },
+    {
+      "id": "Rincian OE:r23",
+      "sourceRow": 23,
+      "level": 0,
+      "number": "",
+      "description": "TOTAL SUB JUMLAH I-II",
+      "descriptionCells": [
+        "B23"
+      ],
+      "descriptionUnavailable": false,
+      "kind": "TOTAL",
+      "scope": "SPLIT",
+      "material": {
+        "state": "VALUE",
+        "value": "1050000",
+        "cell": "P23"
+      },
+      "services": {
+        "state": "VALUE",
+        "value": "225000",
+        "cell": "Q23"
+      }
+    },
+    {
+      "id": "Rincian OE:r24",
+      "sourceRow": 24,
+      "level": 0,
+      "number": "",
+      "description": "TOTAL SUB JUMLAH",
+      "descriptionCells": [
+        "B24"
+      ],
+      "descriptionUnavailable": false,
+      "kind": "TOTAL",
+      "scope": "COMBINED",
+      "material": {
+        "state": "BLANK",
+        "value": null,
+        "cell": "P24"
+      },
+      "services": {
+        "state": "VALUE",
+        "value": "1275000",
+        "cell": "Q24"
+      },
+      "combined": {
+        "state": "VALUE",
+        "value": "1275000",
+        "cell": "Q24"
+      }
+    },
+    {
+      "id": "Rincian OE:r25",
+      "sourceRow": 25,
+      "level": 0,
+      "number": "",
+      "description": "TERBILANG: SATU JUTA DUA RATUS TUJUH PULUH LIMA RIBU RUPIAH",
+      "descriptionCells": [
+        "B25"
+      ],
+      "descriptionUnavailable": false,
+      "kind": "NOTE",
+      "scope": "NONE",
+      "material": {
+        "state": "BLANK",
+        "value": null,
+        "cell": "P25"
+      },
+      "services": {
+        "state": "BLANK",
+        "value": null,
+        "cell": "Q25"
+      }
+    }
+  ],
+  "warnings": []
+}

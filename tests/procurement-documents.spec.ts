@@ -73,7 +73,7 @@ test("OE card and vendor layouts keep review links, document availability and re
 
 test("OE deletion requires confirmation, supports cancel and permits a freshly reviewed upload", async ({ page }, info) => {
   await page.goto("/pengadaan/proc-showcase?tab=dokumen");
-  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByRole("button", { name: "Ganti OE", exact: true }).click();
   const remove = page.getByRole("button", { name: "Hapus", exact: true });
   await expect(remove).toHaveCSS("color", "rgb(162, 43, 32)");
   await remove.click();
@@ -92,7 +92,7 @@ test("OE deletion requires confirmation, supports cancel and permits a freshly r
   await page.getByRole("navigation", { name: "Tahap pengadaan" }).getByRole("button", { name: /Identitas & vendor/ }).click();
   await page.getByLabel("Pilih berkas dokumen", { exact: true }).setInputFiles(path.resolve("public/files/OE-Terminal.xlsx"));
   await expect(page).toHaveURL(/\/review\/doc-/);
-  await expect(page.locator(".review-document-identity")).toContainText("Perlu ditinjau");
+  await expect(page.locator(".oe-review-header")).toContainText("Perlu ditinjau");
 });
 
 test("OE replacement survives failure, requires review, preserves old evidence and supports an empty procurement", async ({ page }, info) => {
@@ -103,12 +103,12 @@ test("OE replacement survives failure, requires review, preserves old evidence a
   const oldReview = await card.getByRole("link", { name: "Lihat", exact: true }).getAttribute("href");
   await card.getByRole("link", { name: "Lihat", exact: true }).click();
   await page.getByRole("button", { name: "Kembali ke pengadaan", exact: true }).click();
-  await card.getByRole("button", { name: "Edit", exact: true }).click();
-  const replacement = page.getByRole("dialog", { name: "Edit Owner Estimate (OE)" });
+  await card.getByRole("button", { name: "Ganti OE", exact: true }).click();
+  const replacement = page.getByRole("dialog", { name: "Ganti Owner Estimate (OE)" });
   await expect(replacement).toBeVisible();
-  await expect(card.getByRole("button", { name: "Edit", exact: true, includeHidden: true })).toBeVisible();
+  await expect(card.getByRole("button", { name: "Ganti OE", exact: true, includeHidden: true })).toBeVisible();
   await capture(page, info, "documents-replace");
-  await expect(replacement.getByRole("heading")).toContainText("Edit Owner Estimate (OE)");
+  await expect(replacement.getByRole("heading")).toContainText("Ganti Owner Estimate (OE)");
   await expect(replacement.getByRole("heading").locator("svg")).toHaveCount(1);
   await expect(replacement.getByRole("button", { name: "Tutup", exact: true })).toHaveCount(0);
   const zone = await replacement.locator(".upload-zone").boundingBox();
@@ -122,33 +122,29 @@ test("OE replacement survives failure, requires review, preserves old evidence a
   const errorBounds = await replacement.getByRole("alert").boundingBox();
   expect(errorBounds!.y - (zoneBounds!.y + zoneBounds!.height)).toBeGreaterThanOrEqual(16);
   await capture(page, info, "documents-replace-error");
-  await page.getByRole("dialog", { name: "Edit Owner Estimate (OE)" }).getByRole("button", { name: "Tutup edit OE" }).click();
+  await page.getByRole("dialog", { name: "Ganti Owner Estimate (OE)" }).getByRole("button", { name: "Tutup ganti OE" }).click();
   await expect(page.getByRole("alert")).toHaveCount(0);
   await expect(page.getByLabel("Pilih berkas OE terbaru", { exact: true })).toHaveCount(0);
-  await card.getByRole("button", { name: "Edit", exact: true }).click();
+  await card.getByRole("button", { name: "Ganti OE", exact: true }).click();
   await page.getByLabel("Pilih berkas OE terbaru", { exact: true }).setInputFiles({ name: "OE-Terbaru.xlsx", mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", buffer: await readFile(path.resolve("public/files/OE-Terminal.xlsx")) });
   await expect(page).toHaveURL(/\/review\/doc-/);
-  await expect(page.locator(".review-document-identity")).toContainText("OE-Terbaru.xlsx");
-  await expect(page.locator(".review-document-identity")).toContainText("Perlu ditinjau");
+  await expect(page.locator(".oe-review-header")).toContainText("OE-Terbaru.xlsx");
+  await expect(page.locator(".oe-review-header")).toContainText("Perlu ditinjau");
   await page.getByRole("button", { name: "Kembali ke pengadaan", exact: true }).click();
   await expect(card).toContainText("OE-Terbaru.xlsx");
   await expect(card.locator(".badge")).toHaveCount(0);
   await expect(page.getByLabel("Pilih berkas dokumen", { exact: true })).toHaveCount(0);
   await card.getByRole("link", { name: "Lihat", exact: true }).click();
-  await page.getByLabel("Kelompok harga yang digunakan").selectOption({ label: "Harga satuan material dan jasa" });
-  const ack = page.getByRole("checkbox", { name: /Saya telah memeriksa/ });
-  if (await ack.count()) await ack.check();
-  await page.getByRole("button", { name: "Konfirmasi data", exact: true }).click();
-  await page.getByRole("dialog", { name: "Konfirmasi data dokumen" }).getByRole("button", { name: "Konfirmasi data", exact: true }).click();
-  await expect(page).toHaveURL(/tab=ringkasan/);
+  await page.getByRole("button", { name: "Konfirmasi Data", exact: true }).click();
+  await expect(page.getByText("Terkonfirmasi", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Kembali ke pengadaan", exact: true }).click();
   await expect(card.locator(".badge")).toHaveCount(0);
-  // Browser Back preserves the in-memory runtime; page.goto would reset it.
+  // Browser Back preserves the in-memory runtime and the archived source.
   for (let step = 0; step < 6 && !page.url().endsWith(oldReview!); step++) await page.goBack();
   await expect(page).toHaveURL(new RegExp(`${oldReview}$`));
-  await expect(page.getByRole("heading", { name: "OE telah diganti", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Konfirmasi data", exact: true })).toHaveCount(0);
-  await page.getByRole("link", { name: "Buka OE terbaru", exact: true }).click();
-  await expect(page.locator(".review-document-identity")).toContainText("OE-Terbaru.xlsx");
+  await expect(page.getByText("Data ditampilkan sebagai arsip", { exact: false })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Edit OE", exact: true })).toBeDisabled();
+  await expect(page.getByRole("treegrid")).toBeVisible();
   await page.goto("/pengadaan/proc-tank?tab=dokumen");
   await expect(page.getByRole("heading", { name: "Unggah Owner Estimate (OE)", exact: true })).toBeVisible();
   await expect(page.getByLabel("Pilih berkas dokumen", { exact: true })).toHaveAttribute("accept", ".xlsx");

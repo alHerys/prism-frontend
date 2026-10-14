@@ -1,17 +1,16 @@
 import { expect, test } from "@playwright/test";
 
-test("confirmed OE shows full-width evidence without a redundant review panel", async ({ page }, info) => {
+test("confirmed OE opens the read-only spreadsheet across the page", async ({ page }, info) => {
   await page.goto("/pengadaan/proc-showcase/review/doc-27");
-  await expect(page.getByRole("heading", { name: "Periksa Owner Estimate", exact: true })).toBeVisible();
-  await expect(page.locator(".review-editor")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Owner Estimate", exact: true })).toBeVisible();
+  await expect(page.locator(".review-editor, #review-source")).toHaveCount(0);
   await expect(page.getByLabel("Kelompok harga yang digunakan")).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Konfirmasi data", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Tutup bukti sumber", exact: true })).toHaveCount(0);
-  const evidence = page.locator("#review-source");
-  await expect(evidence).toContainText("Pipa baja 4 inci");
-  expect((await evidence.boundingBox())!.width).toBeGreaterThan((await page.locator(".focus-content").boundingBox())!.width * .85);
+  await expect(page.getByRole("treegrid").locator("input,textarea")).toHaveCount(0);
+  const evidence = page.getByRole("region", { name: "Spreadsheet Owner Estimate" });
+  await expect(evidence).toContainText("pipa baja 4 inci");
+  expect((await evidence.boundingBox())!.width).toBeGreaterThan(page.viewportSize()!.width * .85);
   await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.screenshot({ path: info.outputPath("oe-source-only.png"), fullPage: true });
+  await page.screenshot({ path: info.outputPath("oe-spreadsheet.png"), fullPage: false });
   await page.getByRole("button", { name: "Kembali ke pengadaan", exact: true }).click();
   await expect(page).not.toHaveURL(/review/);
 });

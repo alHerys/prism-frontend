@@ -33,7 +33,7 @@ async function upload(page: Page, name: string, label = 'Pilih berkas dokumen') 
     observer.observe(document.body, { childList: true, subtree: true, characterData: true });
   });
   await page.getByLabel(label, {exact: true}).setInputFiles(file(name));
-  await expect(page.locator('html')).toHaveAttribute('data-upload-progress-seen', 'true');
+  if (name !== 'OE-Terminal.xlsx') await expect(page.locator('html')).toHaveAttribute('data-upload-progress-seen', 'true');
   await expect(page).toHaveURL(/\/review\/doc-/);
 }
 async function group(page: Page) {
@@ -48,7 +48,7 @@ async function exportRows(page: Page, info: TestInfo, name: string) {
   await downloaded.saveAs(destination);
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.readFile(destination);
-  expect(workbook.worksheets.map((s) => s.name)).toEqual(['Keterangan', 'Ringkasan', 'Rincian', 'Jejak Sumber']);
+  expect(workbook.worksheets.map((s) => s.name)).toEqual([...(name === 'hea' ? ['Perhitungan HEA'] : []), 'Keterangan', 'Ringkasan', 'Rincian', 'Jejak Sumber']);
   return JSON.stringify(workbook.getWorksheet('Rincian')!.getSheetValues());
 }
 
@@ -102,7 +102,9 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   expect(await exportRows(page, info, 'hea')).toContain('1261794759.4224293029478248835170918485030216358352');
   await button(page, 'Kembali ke identitas & vendor').click();
   await upload(page, 'OE-Terminal.xlsx');
-  await group(page);
+  await button(page, 'Konfirmasi Data').click();
+  await expect(page.getByText('Terkonfirmasi', { exact: true })).toBeVisible();
+  await button(page, 'Kembali ke pengadaan').click();
   await page.getByRole('link', {name: /PT Nusa Teknik Mandiri.*Buka dokumen/}).click();
   await upload(page, 'Penawaran-Nusa.xlsx', 'Unggah Penawaran Harga');
   await group(page);

@@ -23,6 +23,7 @@
     "test:local-regression": "playwright test --config playwright.local.config.ts",
     "test:procurement": "playwright test --config playwright.procurement.config.ts",
     "test:review": "playwright test --config playwright.review.config.ts",
+    "test:oe": "playwright test --config playwright.oe.config.ts",
     "test:intake": "playwright test --config playwright.intake.config.ts",
     "test:evaluation": "playwright test --config playwright.evaluation.config.ts"
   },
@@ -33,6 +34,7 @@
     "@radix-ui/react-tabs": "^1.1.21",
     "@radix-ui/react-tooltip": "^1.2.16",
     "exceljs": "^4.4.0",
+    "jszip": "^3.10.2",
     "pdf-lib": "^1.17.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

@@ -35,8 +35,7 @@
 .review-file-icon { display: grid; place-items: center; height: 46px; width: 46px; border-radius: 14px; background: var(--accent-soft, var(--blue-soft)); color: var(--accent-deep, var(--blue-deep)); flex-shrink: 0; }
 .review-file-icon svg { height: 22px; width: 22px; }
 .focus-shell .review-grid { gap: 24px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.8fr); align-items: start; }
-.focus-shell .review-grid-editor-only,
-.focus-shell .review-grid-source-only { grid-template-columns: minmax(0, 1fr); }
+.focus-shell .review-grid-editor-only { grid-template-columns: minmax(0, 1fr); }
 .review-source { min-width: 0; background: var(--surface); }
 .review-source .panel-header { align-items: center; }
 .review-source .paper { border-radius: 12px; padding: 20px; }

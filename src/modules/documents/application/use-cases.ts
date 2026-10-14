@@ -3,14 +3,20 @@ import type { PriceDeviationGateway } from "../../price-deviation/application/po
 import type { BinarySource } from "../../../shared/kernel/binary-source";
 import type { A5Values, DocumentKind, DocumentRecord, UploadInput } from "../domain/models";
 import type { PricePair } from "../../price-deviation/domain/models";
+import type { OwnerEstimatePort } from "./owner-estimate-ports";
 export interface SaveReviewInput {
   document: DocumentRecord;
   values?: A5Values;
   group?: string;
   pairs: PricePair[];
 }
-export function createDocumentsUseCases(gateway: DocumentsGateway, processing: DocumentProcessing, prices: Pick<PriceDeviationGateway, "selectGroup" | "reviewPairs" | "confirmPairs">) {
+export function createDocumentsUseCases(gateway: DocumentsGateway, processing: DocumentProcessing, prices: Pick<PriceDeviationGateway, "selectGroup" | "reviewPairs" | "confirmPairs">, ownerEstimate?: OwnerEstimatePort) {
+  const oe = () => { if (!ownerEstimate) throw new Error("Pembacaan OE belum tersedia."); return ownerEstimate; };
   return {
+    prepareOwnerEstimate: (...args: Parameters<OwnerEstimatePort["prepare"]>) => oe().prepare(...args),
+    publishOwnerEstimate: (...args: Parameters<OwnerEstimatePort["publish"]>) => oe().publish(...args),
+    releaseOwnerEstimate: (id: string) => oe().release(id),
+    saveAndConfirmOwnerEstimate: (...args: Parameters<OwnerEstimatePort["saveAndConfirm"]>) => oe().saveAndConfirm(...args),
     removeVendorDocument: (...args: Parameters<DocumentsGateway["removeVendorDocument"]>) => gateway.removeVendorDocument(...args),
     removeOwnerEstimate: (...args: Parameters<DocumentsGateway["removeOwnerEstimate"]>) => gateway.removeOwnerEstimate(...args),
     availableSources: () => processing.availableSources(),

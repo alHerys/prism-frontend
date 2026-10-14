@@ -2,6 +2,9 @@ import { toDocument, toLocalDocument } from "./document-mapping";
 import { reviewedDocument, confirmedDocument } from "../../modules/documents/domain/review";
 import { ensureCurrentDocument, validateOwnerEstimateReplacement } from "../../modules/documents/domain/replacement";
 import registry from "./fixtures/file-registry.json";
+import oeReview from "./fixtures/oe-review.json";
+import type { OESheet } from "../../modules/documents/domain/owner-estimate";
+import { identifyOESheet } from "../../modules/documents/domain/owner-estimate";
 import type { A5Values } from "../../modules/documents/domain/models";
 import type { LocalDocumentRecord as DocumentRecord, LocalUploadInput as UploadInput } from "./state";
 import {
@@ -33,6 +36,7 @@ export function makeDocument(store: LocalStore, input: UploadInput): DocumentRec
         source: row.source,
       }))
       : undefined,
+    ...(input.kind === "OE" && input.fixtureId === "oe-terminal" ? { ownerEstimate: { candidate: identifyOESheet(oeReview as OESheet, id) } } : {}),
     period: input.period ?? file?.period,
     historicalItems:
       input.kind === "HISTORICAL_OE"

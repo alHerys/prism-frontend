@@ -7,7 +7,7 @@
 
 Aplikasi desktop untuk pengadaan/vendor, review dan konfirmasi dokumen, HEA,
 Harga Timpang, Bank Data OE, riwayat, serta ekspor hasil yang dapat ditelusuri.
-Menggunakan React 19, TypeScript, Vite, React Router, Radix, dan ExcelJS.
+Menggunakan React 19, TypeScript, Vite, React Router, Radix, ExcelJS, dan JSZip.
 
 ## Struktur dan dependensi
 
@@ -53,7 +53,8 @@ Petunjuk dan ukuran bundle di [pengujian](tests/README.md).
 
 State masih dalam memori dan dimulai ulang saat reload. Adapter lokal mengenali
 berkas terdaftar melalui SHA-256 dan menyediakan kandidat/hasil yang disiapkan;
-parser umum dan backend belum terhubung. Persistensi dan autentikasi belum tersedia.
+OE memiliki parser XLSX lokal khusus struktur detail referensi; parser dokumen
+lain dan backend kalkulasi belum terhubung. Persistensi dan autentikasi belum tersedia.
 Perhitungan finansial otoritatif tetap berada di backend; model lokal belum
 mengimplementasikan wire contract server.
 
@@ -62,6 +63,40 @@ koreksi berikutnya tidak mengubah hasil lama. Ekspor memakai snapshot tersebut,
 menghasilkan empat sheet tanpa formula finansial, dan memuat ExcelJS saat ekspor.
 Fixture sintetis dan artefak pengujian tidak membuktikan penerimaan pengguna atau
 kesiapan produksi. Data internal dan artefak build tidak masuk repository.
+
+## Preview dan review Owner Estimate
+
+**Lihat** membuka spreadsheet read-only dengan No., Uraian Pekerjaan, serta
+Jumlah Harga Material/Jasa. Pencarian mempertahankan induk, kategori dapat
+dibuka/ditutup, dan header/dua kolom awal sticky di dalam area scroll.
+Di bawah 900px, lebar minimum tabel 576px mempertahankan Arial 14px dan memakai
+horizontal scrolling; desktop menggunakan lebar minimum 900px.
+
+Ikon pensil memasuki Mode Edit dengan pemilihan sel, double-click/Enter/ketik
+untuk mengedit, Tab/Shift+Tab antar-sel, Enter/Shift+Enter antar-baris, dan Escape
+untuk membatalkan sel aktif. **Simpan Perubahan** memvalidasi seluruh draft,
+menyimpan dan mengonfirmasi dalam satu operasi, lalu kembali ke Mode Lihat.
+Draft mempertahankan revisi saat edit dimulai. Keluar dengan perubahan memakai
+dialog Simpan/Buang/Lanjut Mengedit; refresh/tutup tab memakai peringatan native.
+Subtotal/total berasal dari dokumen dan tidak dihitung ulang. Harga satuan serta
+snapshot evaluasi lama tidak berubah oleh edit Jumlah Harga.
+
+Unggah/Ganti OE membaca bytes XLSX nyata, mendeteksi header detail tanpa
+bergantung pada nama sheet, dan meminta pilihan bila ada beberapa tabel.
+Kosong, nol, cache rumus kosong dan cache tidak tersedia dibedakan. Rumus serta
+tautan eksternal tidak dijalankan. Nilai tak tersedia wajib diisi atau ditandai
+kosong oleh evaluator sebelum konfirmasi; peringatan sumber diperiksa inline.
+Batas teknis: berkas 10 MiB, 2.000 bagian ZIP, total XML yang dibaca 50 MiB,
+10.000 baris unik dan 200.000 sel per worksheet. Struktur yang berbeda atau
+berkas rusak ditolak tanpa penggantian dengan data sintetis. Sumber asli dan kandidat dipertahankan;
+dokumen yang dihapus/diganti menjadi arsip read-only dalam sesi.
+
+`npm run test:oe` memeriksa browser desktop/ponsel. Verifikasi referensi lokal
+opsional (tanpa menyalin isinya ke Git):
+
+```sh
+PRISM_OE_REFERENCE=/absolute/path/OE.xlsx npm test -- src/infrastructure/owner-estimate/parser.test.ts
+```
 
 ## Impor vendor melalui Form A5
 

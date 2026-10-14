@@ -3,13 +3,15 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { Workbook, SpreadsheetFile } from '@oai/artifact-tool';
+import { addOEDetail } from './oe-fixture.mjs';
 
 const root = path.resolve(process.argv[2] || 'frontend');
 const registryPath = path.join(root, 'src/infrastructure/local/fixtures/file-registry.json');
 const registry = JSON.parse(await fs.readFile(registryPath, 'utf8'));
 const previews = '/private/tmp/prism-fixture-previews';
 await fs.mkdir(previews, { recursive: true });
-for (const descriptor of registry.filter(d => d.kind !== 'FORM_A5')) {
+const selected = process.argv[3];
+for (const descriptor of registry.filter(d => d.kind !== 'FORM_A5' && (!selected || d.id === selected))) {
   const wb = Workbook.create();
   const sheet = wb.worksheets.add('Harga');
   const isOffer = descriptor.kind === 'OFFER';
@@ -32,6 +34,13 @@ for (const descriptor of registry.filter(d => d.kind !== 'FORM_A5')) {
   sheet.getRange(`A5:F${4+descriptor.rows.length}`).format.rowHeight = 28;
   sheet.getRange(`E5:F${4+descriptor.rows.length}`).setNumberFormat('"Rp "#,##0');
   sheet.getRange(`A4:F${4+descriptor.rows.length}`).format.borders = {preset:'all',style:'thin',color:'#E2E8F0'};
+  if(descriptor.kind==='OE') {
+    const detail=await addOEDetail(wb);
+    wb.recalculate();
+    await fs.writeFile(path.join(root,'src/infrastructure/local/fixtures/oe-review.json'),JSON.stringify(detail,null,2)+'\n');
+    const detailPreview=await wb.render({sheetName:'Rincian OE',range:'A9:Q25',scale:1,format:'png'});
+    await fs.writeFile(path.join(previews,'oe-review.png'),new Uint8Array(await detailPreview.arrayBuffer()));
+  }
   const preview = await wb.render({sheetName:'Harga',range:`A1:F${5+descriptor.rows.length}`,scale:1,format:'png'});
   await fs.writeFile(path.join(previews,descriptor.id+'.png'),new Uint8Array(await preview.arrayBuffer()));
   const xlsx = await SpreadsheetFile.exportXlsx(wb);
@@ -39,4 +48,4 @@ for (const descriptor of registry.filter(d => d.kind !== 'FORM_A5')) {
 }
 for (const d of registry) d.sha256 = createHash('sha256').update(await fs.readFile(path.join(root,'public',d.path))).digest('hex');
 await fs.writeFile(registryPath,JSON.stringify(registry,null,2)+'\n');
-console.log('Created 6 workbooks; all 8 source fingerprints registered.');
+console.log('Selected workbooks generated; source fingerprints registered.');

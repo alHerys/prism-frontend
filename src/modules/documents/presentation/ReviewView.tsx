@@ -60,10 +60,8 @@ export function ReviewView({
         </Link>
       </main>
     );
-  const sourceOnly = d.kind === "OE" && d.status === "CONFIRMED" && !d.removedAt && !d.supersededBy;
-  const sourceVisible = sourceOnly || showSource;
   const evidence = <ReviewSource d={d} focused={focused} p={p} vendor={vendor} source={source} />;
-  const editor = sourceOnly ? null : d.removedAt || d.supersededBy
+  const editor = d.removedAt || d.supersededBy
     ? <OwnerEstimateArchiveNotice document={d} />
     : <ReviewEditor
         d={d} ack={ack} setAck={setAck} busy={busy}
@@ -114,7 +112,7 @@ export function ReviewView({
             </div>
             <Status value={dirty ? "REVIEW_REQUIRED" : d.status} />
           </div>
-          {!sourceOnly && <button
+          <button
             className="btn"
             aria-expanded={showSource}
             aria-controls="review-source"
@@ -122,10 +120,10 @@ export function ReviewView({
           >
             {showSource ? <EyeOff /> : <Eye />}
             {showSource ? "Tutup bukti sumber" : "Tampilkan bukti sumber"}
-          </button>}
+          </button>
         </div>
-        <div className={`review-grid${sourceOnly ? " review-grid-source-only" : sourceVisible ? "" : " review-grid-editor-only"}`}>
-          {sourceVisible && (
+        <div className={`review-grid${showSource ? "" : " review-grid-editor-only"}`}>
+          {showSource && (
             evidence
           )}
           {editor}

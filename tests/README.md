@@ -153,3 +153,23 @@ Unit tests memeriksa antrean dua request, pembatalan/hasil terlambat, hash misma
 field kosong, acknowledgement, query immutable, publikasi atomik, revisi stale,
 dan kontrak/error/timeout HTTP. Respons uji tidak membuktikan akurasi Gemini;
 provider asli dan backend tidak diubah atau dijalankan oleh suite ini.
+
+## Spreadsheet Owner Estimate
+
+`npm run test:oe` memakai 1520×842 dan 390×844. Suite memeriksa mode read-only,
+header gabungan, blank/nol, total gabungan, sticky header/kolom, search dan konteks
+induk, collapse, navigasi keyboard, Escape, draft tersembunyi, highlight, semua
+pilihan dialog keluar dan browser Back. Unggahan XLSX nyata mencakup kegagalan
+berkas rusak, pilihan beberapa sheet sebelum publikasi, sumber blob asli dan
+konfirmasi awal tanpa dialog tambahan. Screenshot observasi disimpan di
+`test-results/owner-estimate-review/`.
+
+Unit tests mencakup tabel detail berulang dalam satu sheet, nomor berulang,
+induk berharga dengan anak keterangan, nilai desimal panjang, cached blank versus
+cache rumus yang tidak tersedia, pembatasan XML/baris, validasi Indonesia, dirty
+yang kembali bersih, kandidat utuh, konflik revisi, arsip, kegagalan simpan,
+peringatan sumber serta input invalid tersembunyi. Referensi internal hanya
+dibaca ketika `PRISM_OE_REFERENCE` menunjuk berkas lokal; tes memeriksa struktur
+dan hash sebelum/sesudah tanpa menghasilkan salinan atau output isinya.
+`OE-Terminal.xlsx` adalah fixture sintetis: sheet Harga dan lokasi/nilai unit
+lamanya tetap; Rincian OE ditambahkan secara independen oleh `scripts/oe-fixture.mjs`.

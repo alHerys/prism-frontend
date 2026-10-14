@@ -1,6 +1,9 @@
 import type * as React from "react";
 
 export interface UploadPanelModel {
+  oeChoice: import("../application/owner-estimate-ports").PreparedOE | undefined;
+  chooseOESheet: (id: string) => Promise<void>;
+  cancelOEImport: () => void;
   removalTarget: import("../domain/models").DocumentRecord | undefined;
   removalFailure: string;
   requestRemoval: () => void;

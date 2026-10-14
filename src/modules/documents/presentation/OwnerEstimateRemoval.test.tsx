@@ -22,7 +22,7 @@ it("keeps OE until explicit confirmation and restores the uploader after deletio
   const before = runtime.documents.queries.getSnapshot();
   expect(screen.getByRole("link", { name: "Lihat" })).toBeInTheDocument();
   expect(screen.queryByText("Terkonfirmasi")).not.toBeInTheDocument();
-  fireEvent.click(screen.getByRole("button", { name: "Edit" }));
+  fireEvent.click(screen.getByRole("button", { name: "Ganti OE" }));
   fireEvent.click(screen.getByRole("button", { name: "Hapus" }));
   const dialog = screen.getByRole("dialog", { name: "Hapus OE?" });
   expect(runtime.documents.queries.getSnapshot()).toBe(before);
@@ -39,7 +39,7 @@ it("keeps a failed deletion visible and lets the evaluator retry without losing 
   const { runtime, application } = setup();
   const before = runtime.documents.queries.getSnapshot();
   const remove = vi.spyOn(application.documents.commands, "removeOwnerEstimate").mockRejectedValueOnce(new Error("Data telah berubah. Buka kembali versi terbaru."));
-  fireEvent.click(screen.getByRole("button", { name: "Edit" }));
+  fireEvent.click(screen.getByRole("button", { name: "Ganti OE" }));
   fireEvent.click(screen.getByRole("button", { name: "Hapus" }));
   fireEvent.click(within(screen.getByRole("dialog", { name: "Hapus OE?" })).getByRole("button", { name: "Hapus OE" }));
   expect(await screen.findByRole("alert")).toHaveTextContent("Data telah berubah");

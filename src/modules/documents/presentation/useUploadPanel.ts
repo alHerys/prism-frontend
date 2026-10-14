@@ -7,6 +7,7 @@ import { currentOwnerEstimate } from "../application/queries";
 import { errorMessage } from "../../../shared/kernel/error-message";
 import type { DocumentKind, DocumentRecord } from "../domain/models";
 import { useToast } from "../../../shared/ui/toast-provider";
+import { useOwnerEstimateImport } from "./useOwnerEstimateImport";
 
 export function useUploadPanel({
   procurementId,
@@ -28,9 +29,13 @@ export function useUploadPanel({
   const navigate = useNavigate();
   const [kind, setKind] = useState<DocumentKind>(scope === "procurement" ? "OE" : initialKind ?? "FORM_A5");
   const vendor = vendorId || "";
-  const [busy, setBusy] = useState(false);
-  const [processing, setProcessing] = useState("");
-  const [failure, setFailure] = useState("");
+  const [localBusy, setBusy] = useState(false);
+  const [localProcessing, setProcessing] = useState("");
+  const [localFailure, setFailure] = useState("");
+  const oe = useOwnerEstimateImport(procurementId, currentDocument);
+  const busy = localBusy || oe.busy;
+  const processing = oe.progress || localProcessing;
+  const failure = localFailure || oe.failure;
   const [replacing, setReplacing] = useState(false);
   const [removalTarget, setRemovalTarget] = useState<DocumentRecord>();
   const [removalFailure, setRemovalFailure] = useState("");
@@ -42,6 +47,7 @@ export function useUploadPanel({
     setRemovalFailure("");
     try {
       await service.removeOwnerEstimate(procurementId, removalTarget.id, removalTarget.revision);
+      oe.cancel();
       setRemovalTarget(undefined);
       setReplacing(false);
       setFailure("");
@@ -53,18 +59,19 @@ export function useUploadPanel({
     }
   }
   const beginReplacement = () => { setFailure(""); setReplacing(true); };
-  const cancelReplacement = () => { if (!busy) { setFailure(""); setReplacing(false); } };
+  const cancelReplacement = () => { if (!busy) { oe.cancel(); setFailure(""); setReplacing(false); } };
   async function upload(file: File) {
     setFailure("");
     if (busy) return;
-    if (kind !== "OE" && !vendor) {
+    if (kind === "OE") { await oe.upload(file); return; }
+    if (!vendor) {
       setFailure("Pilih vendor sebelum mengunggah dokumen.");
       return;
     }
     setBusy(true);
     try {
       const document = await service.upload({ file, procurementId, kind,
-        vendorId: kind === "OE" ? undefined : vendor,
+        vendorId: vendor,
         ...(currentDocument ? { replacement: { id: currentDocument.id, revision: currentDocument.revision } } : {}),
       }, setProcessing);
       toast("Dokumen selesai dibaca. Periksa data sebelum konfirmasi.");
@@ -76,5 +83,5 @@ export function useUploadPanel({
       setProcessing("");
     }
   }
-  return { scope, embedded, kind, setKind, busy, processing, failure, upload, currentDocument, replacing, beginReplacement, cancelReplacement, removalTarget, removalFailure, requestRemoval, cancelRemoval, removeOwnerEstimate };
+  return { scope, embedded, kind, setKind, busy, processing, failure, upload, currentDocument, replacing, beginReplacement, cancelReplacement, removalTarget, removalFailure, requestRemoval, cancelRemoval, removeOwnerEstimate, oeChoice: oe.choice, chooseOESheet: oe.choose, cancelOEImport: oe.cancel };
 }

@@ -1,5 +1,6 @@
 import type { A5Values, DocumentRecord } from "./models";
 import { copy, decimal, DomainError, equalValues } from "../../../shared/kernel/validation";
+import { oeIssues } from "./owner-estimate";
 export function reviewedDocument(current: DocumentRecord, values: A5Values): DocumentRecord | undefined {
   if (!current.candidate) throw new DomainError("WRONG_KIND", "Dokumen ini bukan Form A5.");
   Object.entries(values).forEach(([key, value]) => decimal(value, key.startsWith("tkdn")));
@@ -7,6 +8,8 @@ export function reviewedDocument(current: DocumentRecord, values: A5Values): Doc
   return { ...copy(current), reviewed: copy(values), revision: current.revision + 1, status: "REVIEW_REQUIRED", acknowledged: false };
 }
 export function confirmedDocument(current: DocumentRecord, acknowledged: boolean): DocumentRecord | undefined {
+  if (current.kind === "OE" && current.ownerEstimate && oeIssues(current.ownerEstimate.reviewed ?? current.ownerEstimate.candidate).length)
+    throw new DomainError("OE_UNRESOLVED", "Periksa sel OE yang nilainya belum tersedia sebelum konfirmasi.");
   if (current.status === "CONFIRMED") return undefined;
   if (current.warnings.length && !acknowledged) throw new DomainError("WARNING_REQUIRED", "Verifikasi seluruh peringatan sebelum konfirmasi.");
   return { ...copy(current), status: "CONFIRMED", acknowledged };

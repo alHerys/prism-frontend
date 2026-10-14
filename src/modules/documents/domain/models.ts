@@ -1,5 +1,6 @@
 import type { PriceSourceItem, PricePair } from "../../price-deviation/domain/models";
 import type { HistoricalItem } from "../../historical-prices/domain/models";
+import type { OEReview } from "./owner-estimate";
 
 export type DocumentKind = "FORM_A5" | "OE" | "OFFER" | "HISTORICAL_OE";
 
@@ -46,6 +47,7 @@ export interface DocumentRecord {
   published: boolean;
   historicalItems?: HistoricalItem[];
   priceItems?: PriceSourceItem[];
+  ownerEstimate?: OEReview;
 }
 
 export interface UploadInput {
