@@ -11,10 +11,10 @@ import { Modal } from "../../../../shared/ui/modal";
 import "../../../../shared/styles/focus.css";
 import "../owner-estimate/owner-estimate-review.css";
 
-export function SpreadsheetReviewPage({ model, profile, name, subtitle, label, editLabel, confirmed, warnings, source, headerActions, toolbarActions, missing }: {
-  model: SpreadsheetReviewModel; profile: SpreadsheetProfile; name: string; subtitle?: string;
+export function SpreadsheetReviewPage({ model, profile, name, label, editLabel, confirmed, warnings, source, headerActions, missing }: {
+  model: SpreadsheetReviewModel; profile: SpreadsheetProfile; name: string;
   label: string; editLabel: string; confirmed: boolean; warnings: string[];
-  source?: string; headerActions?: ReactNode; toolbarActions?: ReactNode; missing: ReactNode;
+  source?: string; headerActions?: ReactNode; missing: ReactNode;
 }) {
   const canConfirm = !model.edit && !confirmed && !!model.baseline && !model.archived;
   const exitButton = useRef<HTMLButtonElement>(null);
@@ -24,7 +24,7 @@ export function SpreadsheetReviewPage({ model, profile, name, subtitle, label, e
   }}>
     <header className="oe-review-header">
       <button type="button" className="icon-button review-back" aria-label="Kembali ke pengadaan" disabled={model.busy} onClick={() => model.requestExit("back")}><ArrowLeft size={24} aria-hidden="true" /></button>
-      <div className="oe-review-title"><h1>{profile.title}</h1><p>{name}{subtitle ? ` · ${subtitle}` : ""}</p></div>
+      <div className="oe-review-title"><h1>{profile.title}</h1><p>{name}</p></div>
       <div className={`oe-review-actions${model.edit ? " is-editing" : ""}`}>
         {model.edit && <span className="oe-mode">Mode Edit</span>}
         {model.edit && model.dirty && <button ref={saveButton} type="button" className="btn primary" disabled={model.busy || model.archived} onClick={() => void model.save()}>{model.busy ? "Menyimpan…" : "Simpan Perubahan"}</button>}
@@ -35,11 +35,9 @@ export function SpreadsheetReviewPage({ model, profile, name, subtitle, label, e
     </header>
     <main className="oe-review-main" aria-busy={model.busy}>
       {model.archived && <div className="alert">Dokumen ini telah dihapus atau diganti. Data ditampilkan sebagai arsip dan tidak dapat diedit.</div>}
-      {!model.baseline && toolbarActions && <div className="oe-toolbar">{toolbarActions}</div>}
       {model.baseline ? <>
         <div className="oe-toolbar">
           <label className="oe-search"><MagnifyingGlass size={18} aria-hidden="true" /><input aria-label="Cari nomor atau uraian pekerjaan" placeholder="Cari nomor atau uraian pekerjaan…" value={model.query} onChange={event => model.setQuery(event.target.value)} />{model.query && <button type="button" className="icon-button" aria-label={`Hapus pencarian ${label}`} onClick={() => model.setQuery("")}><X size={16} aria-hidden="true" /></button>}</label>
-          {toolbarActions}
         </div>
         {warnings.length > 0 && <div className="oe-source-warning">{warnings.map(warning => <p key={warning}>{warning}</p>)}{!model.archived && <label><input type="checkbox" checked={model.ack} disabled={model.busy} onChange={event => model.setAck(event.target.checked)} /> Saya telah memeriksa peringatan sumber {label}.</label>}</div>}
         {model.failure && !model.dialogOpen && <div className="alert error" role="alert">{model.failure}</div>}

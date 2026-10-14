@@ -79,18 +79,10 @@ it("keeps invalid corrections on screen and never confirms a rejected save", asy
   fireEvent.click(screen.getByRole("button", { name: "Kembali ke pengadaan" }));
   expect(screen.getByRole("dialog", { name: "Perubahan belum disimpan" })).toBeInTheDocument();
 });
-it("saves selected group and pairs before confirming their returned revision", async () => {
-  const service = openReview("doc-24", undefined, "?view=pairs");
-  const confirm = vi.spyOn(service.commands, "confirmReview");
-  fireEvent.change(screen.getByLabelText("Kelompok harga yang digunakan"), { target: { value: "Harga satuan material dan jasa" } });
-  expect(screen.getByRole("button", { name: "Konfirmasi data" })).toBeEnabled();
-  await confirmDraft();
+it("keeps old pairing URLs on the offer spreadsheet", async () => {
+  openReview("doc-24", undefined, "?view=pairs");
   expect(await screen.findByRole("heading", { name: "Penawaran Harga" })).toBeInTheDocument();
-  const document = service.getState().documents.find(d => d.id === "doc-24")!;
-  expect(document.selectedGroup).toBe("Harga satuan material dan jasa");
-  expect(document.status).toBe("CONFIRMED");
-  expect(confirm.mock.calls[0][0].revision).toBe(document.revision);
-  expect(confirm.mock.calls[0][1]).toBe(false);
+  expect(screen.queryByLabelText("Kelompok harga yang digunakan")).not.toBeInTheDocument();
 });
 it("requires fresh warning acknowledgement after a correction", async () => {
   const service = openReview("doc-22");

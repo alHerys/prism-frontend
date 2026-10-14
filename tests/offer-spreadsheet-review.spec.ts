@@ -52,7 +52,7 @@ test("readonly offer uses source styling, merged headers, child markers and head
   expect(errors).toEqual([]);
 });
 
-test("keyboard edits retain exact precision, highlight and separate pair data after save", async ({ page }) => {
+test("keyboard edits retain exact precision and highlight after save", async ({ page }) => {
   await open(page); await page.getByRole("button", { name: "Edit Penawaran", exact: true }).click();
   await cell(page, 15, "description").focus(); await page.keyboard.press("Tab");
   await expect(cell(page, 15)).toBeFocused();
@@ -71,10 +71,6 @@ test("keyboard edits retain exact precision, highlight and separate pair data af
   await page.getByRole("button", { name: "Edit Penawaran", exact: true }).click();
   await cell(page).dblclick(); await expect(page.getByLabel("Jumlah Harga Material 1.2", { exact: true })).toHaveValue("300000,123456789");
   await page.keyboard.press("Escape"); await page.getByRole("button", { name: "Keluar Mode Edit", exact: true }).click();
-  await page.getByRole("button", { name: "Periksa Pasangan Harga", exact: true }).click();
-  await expect(page.getByLabel("Penawaran Pipa baja 4 inci", { exact: true })).toHaveValue("125000");
-  await page.getByRole("button", { name: "Kembali ke pengadaan", exact: true }).click();
-  await expect(page.getByRole("treegrid")).toBeVisible();
 });
 
 test("invalid edits and all dirty leave choices retain or discard the correct spreadsheet", async ({ page }) => {
@@ -85,7 +81,7 @@ test("invalid edits and all dirty leave choices retain or discard the correct sp
   await expect(page.getByLabel("Jumlah Harga Material 1.2", { exact: true })).toBeFocused();
   await expect(page.getByLabel("Jumlah Harga Material 1.2", { exact: true })).toHaveAttribute("aria-invalid", "true");
   await page.getByLabel("Jumlah Harga Material 1.2", { exact: true }).fill("300.000"); await page.keyboard.press("Tab");
-  await page.getByRole("button", { name: "Periksa Pasangan Harga", exact: true }).click();
+  await page.getByRole("button", { name: "Keluar Mode Edit", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "Perubahan belum disimpan", exact: true });
   await dialog.getByRole("button", { name: "Lanjut Mengedit", exact: true }).click();
   await expect(cell(page)).toHaveAttribute("data-changed", "true");
@@ -93,10 +89,8 @@ test("invalid edits and all dirty leave choices retain or discard the correct sp
   await dialog.getByRole("button", { name: "Buang Perubahan", exact: true }).click();
   await expect(cell(page)).toHaveText("250.000");
   await page.getByRole("button", { name: "Edit Penawaran", exact: true }).click(); await change(page, "300.000");
-  await page.getByRole("button", { name: "Periksa Pasangan Harga", exact: true }).click();
+  await page.getByRole("button", { name: "Keluar Mode Edit", exact: true }).click();
   await dialog.getByRole("button", { name: "Simpan Perubahan", exact: true }).click();
-  await expect(page.getByLabel("Kelompok harga yang digunakan")).toBeVisible();
-  await page.getByRole("button", { name: "Kembali ke pengadaan", exact: true }).click();
   await expect(cell(page)).toHaveText("300.000");
 });
 
@@ -121,6 +115,5 @@ test("actual upload requires detail choice, confirms only the sheet and preserve
   await page.getByRole("button", { name: "Konfirmasi Data", exact: true }).click();
   await expect(page.getByRole("button", { name: "Konfirmasi Data", exact: true })).toHaveCount(0);
   await expect(page.getByRole("dialog")).toHaveCount(0);
-  await page.getByRole("button", { name: "Periksa Pasangan Harga", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Pasangan harga belum tersedia", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Periksa Pasangan Harga", exact: true })).toHaveCount(0);
 });

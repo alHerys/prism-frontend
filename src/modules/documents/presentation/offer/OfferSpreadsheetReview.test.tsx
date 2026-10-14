@@ -20,7 +20,7 @@ function setup() {
   return { runtime, app, router, cell, change };
 }
 const click = (name: string) => fireEvent.click(screen.getByRole("button", { name }));
-it("defaults to the readonly source-styled sheet, keeps bullets and blank rows, and opens the separate pairing view", async () => {
+it("defaults to the readonly source-styled sheet, keeps bullets and blank rows, and keeps legacy pairing URLs on the spreadsheet", async () => {
   const { cell, router } = setup();
   expect(screen.getByRole("treegrid").querySelector("input,textarea,.oe-expand")).toBeNull();
   expect(cell()).toHaveTextContent("250.000");
@@ -28,11 +28,11 @@ it("defaults to the readonly source-styled sheet, keeps bullets and blank rows, 
   expect(cell("services", 23)).toHaveTextContent("-");
   expect(cell("material", 12)).toHaveTextContent("");
   expect(screen.getByRole("treegrid").querySelector('[data-source-row="19"] [data-field]')).toBeNull();
-  click("Periksa Pasangan Harga");
-  await screen.findByLabelText("Kelompok harga yang digunakan");
-  expect(router.state.location.search).toBe("?view=pairs");
-  click("Kembali ke pengadaan");
-  await screen.findByRole("treegrid");
+  expect(screen.queryByRole("button", { name: "Periksa Pasangan Harga" })).not.toBeInTheDocument();
+  expect(document.querySelector(".oe-review-title p")).toHaveTextContent(/^Penawaran-Nusa.xlsx$/);
+  await act(() => router.navigate("/pengadaan/proc-showcase/review/doc-28?view=pairs"));
+  expect(screen.getByRole("treegrid")).toBeVisible();
+  expect(screen.queryByLabelText("Kelompok harga yang digunakan")).not.toBeInTheDocument();
 });
 it("retains failed saves, handles invalid hidden cells and keeps stored evaluation data untouched", async () => {
   const { runtime, app, cell, change } = setup();

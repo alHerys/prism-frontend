@@ -188,9 +188,9 @@ validasi dan seluruh pilihan dialog keluar.
 
 Unggah penawaran membaca XLSX nyata, memilih tabel sebelum publikasi, menyimpan
 sumber blob asli, serta mengonfirmasi spreadsheet tanpa mengonfirmasi pasangan.
-Akses `?view=pairs` mempertahankan alur Harga Timpang yang tersedia. Unggahan
-arbitrer tidak memperoleh pasangan demo; tampilan pencocokan menjelaskan jika
-pasangan belum tersedia. Tes unit memeriksa simpan atomik, konflik revisi,
+Tombol dan halaman pasangan harga telah dihapus. URL lama `?view=pairs`
+tetap membuka spreadsheet penawaran. Header hanya menampilkan nama berkas.
+Unggahan arbitrer tidak memperoleh pasangan sintetis. Tes unit memeriksa simpan atomik, konflik revisi,
 arsip, penghapusan setelah simpan, kandidat tetap utuh dan snapshot tidak berubah.
 
 Pembaca OOXML/draft/validasi/renderer dipakai bersama; OE mempertahankan profil,
