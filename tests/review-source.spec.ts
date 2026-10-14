@@ -1,5 +1,21 @@
 import { expect, test } from "@playwright/test";
 
+test("confirmed OE shows full-width evidence without a redundant review panel", async ({ page }, info) => {
+  await page.goto("/pengadaan/proc-showcase/review/doc-27");
+  await expect(page.getByRole("heading", { name: "Periksa Owner Estimate", exact: true })).toBeVisible();
+  await expect(page.locator(".review-editor")).toHaveCount(0);
+  await expect(page.getByLabel("Kelompok harga yang digunakan")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Konfirmasi data", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Tutup bukti sumber", exact: true })).toHaveCount(0);
+  const evidence = page.locator("#review-source");
+  await expect(evidence).toContainText("Pipa baja 4 inci");
+  expect((await evidence.boundingBox())!.width).toBeGreaterThan((await page.locator(".focus-content").boundingBox())!.width * .85);
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.screenshot({ path: info.outputPath("oe-source-only.png"), fullPage: true });
+  await page.getByRole("button", { name: "Kembali ke pengadaan", exact: true }).click();
+  await expect(page).not.toHaveURL(/review/);
+});
+
 async function openDrawer(page: import("@playwright/test").Page) {
   await expect(page.locator(".a5-review-header")).toBeVisible();
   const opener = page.getByRole("button", { name: "Periksa nilai", exact: true });
