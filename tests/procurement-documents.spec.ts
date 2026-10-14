@@ -92,7 +92,7 @@ test("OE deletion requires confirmation, supports cancel and permits a freshly r
   await page.getByRole("navigation", { name: "Tahap pengadaan" }).getByRole("button", { name: /Identitas & vendor/ }).click();
   await page.getByLabel("Pilih berkas dokumen", { exact: true }).setInputFiles(path.resolve("public/files/OE-Terminal.xlsx"));
   await expect(page).toHaveURL(/\/review\/doc-/);
-  await expect(page.locator(".oe-review-header")).toContainText("Perlu ditinjau");
+  await expect(page.getByRole("button", { name: "Konfirmasi Data", exact: true })).toBeVisible();
 });
 
 test("OE replacement survives failure, requires review, preserves old evidence and supports an empty procurement", async ({ page }, info) => {
@@ -129,14 +129,14 @@ test("OE replacement survives failure, requires review, preserves old evidence a
   await page.getByLabel("Pilih berkas OE terbaru", { exact: true }).setInputFiles({ name: "OE-Terbaru.xlsx", mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", buffer: await readFile(path.resolve("public/files/OE-Terminal.xlsx")) });
   await expect(page).toHaveURL(/\/review\/doc-/);
   await expect(page.locator(".oe-review-header")).toContainText("OE-Terbaru.xlsx");
-  await expect(page.locator(".oe-review-header")).toContainText("Perlu ditinjau");
+  await expect(page.getByRole("button", { name: "Konfirmasi Data", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Kembali ke pengadaan", exact: true }).click();
   await expect(card).toContainText("OE-Terbaru.xlsx");
   await expect(card.locator(".badge")).toHaveCount(0);
   await expect(page.getByLabel("Pilih berkas dokumen", { exact: true })).toHaveCount(0);
   await card.getByRole("link", { name: "Lihat", exact: true }).click();
   await page.getByRole("button", { name: "Konfirmasi Data", exact: true }).click();
-  await expect(page.getByText("Terkonfirmasi", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Konfirmasi Data", exact: true })).toHaveCount(0);
   await page.getByRole("button", { name: "Kembali ke pengadaan", exact: true }).click();
   await expect(card.locator(".badge")).toHaveCount(0);
   // Browser Back preserves the in-memory runtime and the archived source.

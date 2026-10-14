@@ -114,7 +114,8 @@ it("confirms an unchanged initial extraction in view mode and keeps replaced OE 
   });
   expect(screen.getByRole("treegrid").querySelector("input,textarea")).toBeNull();
   click("Konfirmasi Data");
-  await waitFor(() => expect(screen.getByText("Terkonfirmasi", { exact: true })).toBeInTheDocument());
+  await waitFor(() => expect(screen.queryByRole("button", { name: "Konfirmasi Data" })).toBeNull());
+  expect(screen.getByRole("button", { name: "Edit OE" })).toBeEnabled();
   expect(screen.queryByRole("dialog")).toBeNull();
   expect(runtime.documents.queries.getSnapshot().documents.find(d => d.id === newId)?.revision).toBe(2);
   await act(() => router.navigate("/pengadaan/proc-showcase/review/doc-27"));

@@ -70,7 +70,7 @@ test("keyboard edits, hidden drafts, undo and all three dirty-leave choices work
   await dialog.getByRole("button", { name: "Lanjut Mengedit", exact: true }).click();
   await page.getByRole("button", { name: "Keluar Mode Edit", exact: true }).click();
   await dialog.getByRole("button", { name: "Buang Perubahan", exact: true }).click();
-  await expect(page.getByText("Mode Lihat", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Edit OE", exact: true })).toBeVisible();
   await expect(cell(page)).toContainText("200.000");
   await page.getByRole("button", { name: "Edit OE", exact: true }).click();
   await change(page, "300.000,123456789");
@@ -79,7 +79,7 @@ test("keyboard edits, hidden drafts, undo and all three dirty-leave choices work
   await expect(page).not.toHaveURL(/review/);
   await page.locator(".owner-estimate-document").getByRole("link", { name: "Lihat", exact: true }).click();
   await expect(cell(page)).toContainText("300.000");
-  await expect(page.getByText("Terkonfirmasi", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Konfirmasi Data", exact: true })).toHaveCount(0);
   await expect(cell(page, 24, "combined")).toContainText("1.275.000");
   await expect(page.getByRole("treegrid").locator("input,textarea")).toHaveCount(0);
 });
@@ -122,7 +122,7 @@ test("actual upload chooses between detail sheets before replacement and confirm
   const url = await source.getAttribute("href"); expect(url).toMatch(/^blob:/);
   expect(await page.evaluate(async url => (await (await fetch(url!)).arrayBuffer()).byteLength, url)).toBeGreaterThan(1000);
   await page.getByRole("button", { name: "Konfirmasi Data", exact: true }).click();
-  await expect(page.getByText("Terkonfirmasi", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Konfirmasi Data", exact: true })).toHaveCount(0);
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await page.goBack(); await page.goBack();
   expect(errors).toEqual([]);

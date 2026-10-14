@@ -103,7 +103,7 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   await button(page, 'Kembali ke identitas & vendor').click();
   await upload(page, 'OE-Terminal.xlsx');
   await button(page, 'Konfirmasi Data').click();
-  await expect(page.getByText('Terkonfirmasi', { exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Konfirmasi Data', exact: true })).toHaveCount(0);
   await button(page, 'Kembali ke pengadaan').click();
   await page.getByRole('link', {name: /PT Nusa Teknik Mandiri.*Buka dokumen/}).click();
   await upload(page, 'Penawaran-Nusa.xlsx', 'Unggah Penawaran Harga');
