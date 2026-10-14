@@ -110,14 +110,14 @@ test("actual upload chooses between detail sheets before replacement and confirm
   const rel = await zip.file("xl/_rels/workbook.xml.rels")!.async("string");
   zip.file("xl/workbook.xml", wb.replace('</x:sheets>', '<x:sheet name="Pilihan kedua" sheetId="3" r:id="rIdExtra" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/></x:sheets>'));
   zip.file("xl/_rels/workbook.xml.rels", rel.replace('</Relationships>', '<Relationship Id="rIdExtra" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet3.xml"/></Relationships>'));
-  zip.file("xl/worksheets/sheet3.xml", await zip.file("xl/worksheets/sheet2.xml")!.async("string"));
+  zip.file("xl/worksheets/sheet3.xml", (await zip.file("xl/worksheets/sheet2.xml")!.async("string")).replace('<x:v>200000</x:v>', '<x:v>300000</x:v>'));
   await upload.setInputFiles({ name: "OE Pilihan.xlsx", mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", buffer: await zip.generateAsync({ type: "nodebuffer" }) });
   await expect(page.getByText("Pilih tabel detail dari OE Pilihan.xlsx", { exact: true })).toBeVisible();
   await expect(page.locator(".owner-estimate-document")).toContainText("OE-Terminal.xlsx");
   await page.getByLabel("Pilih tabel detail dari OE Pilihan.xlsx").selectOption("Pilihan kedua");
   await page.getByRole("button", { name: "Gunakan Tabel", exact: true }).click();
   await expect(page.getByRole("treegrid")).toBeVisible();
-  await expect(page.locator(".oe-table-meta")).toContainText("Pilihan kedua");
+  await expect(cell(page)).toContainText("300.000");
   const source = page.getByRole("link", { name: "Buka berkas asli", exact: true });
   const url = await source.getAttribute("href"); expect(url).toMatch(/^blob:/);
   expect(await page.evaluate(async url => (await (await fetch(url!)).arrayBuffer()).byteLength, url)).toBeGreaterThan(1000);
