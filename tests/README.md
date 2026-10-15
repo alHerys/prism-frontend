@@ -122,7 +122,16 @@ dengan rasio dari klasifikasi snapshot tersimpan. Tombol Ekspor Excel berada
 pada header Overview dan tetap mengekspor seluruh rincian snapshot. Bagian
 Detail Item beserta filter, pencarian dan tombol detail telah dihapus.
 Tiga chart berdampingan mulai 768px dan ditumpuk pada layar lebih kecil.
-Pengecualian tetap tersimpan dalam snapshot dan laporan Excel.
+Pengecualian dan jejak sumber tetap tersimpan di PRISM. Ekspor Harga Timpang
+memakai satu sheet Rekap File Harga Timpang: header tiga tingkat A–AC, kolom
+Penawaran Awal tersembunyi, dan format akuntansi/persen referensi. Harga satuan,
+rasio dan klasifikasi berasal dari snapshot; volume dan total yang tidak
+tersedia tetap kosong. Angka hanya menjadi sel numerik jika maksimal 15 digit
+signifikan dan lolos round-trip; selain itu teks utuh dibungkus tanpa pembulatan.
+Tes memeriksa unduhan Overview/riwayat, merge, dimensi, warna, format cetak A4
+portrait skala 20%, serta snapshot tetap utuh. PRISM_PRICE_REPORT_QA_DIR dapat
+dipakai saat tes unit untuk menulis workbook sintetis pendek/panjang bagi
+pemeriksaan render lokal. Data referensi internal tidak menjadi fixture Git.
 
 Lihat Detail HEA membuka modal hampir layar penuh dengan native PDF viewer,
 tautan buka/unduh, fokus kembali dan cleanup URL. Screenshot observasi plugin

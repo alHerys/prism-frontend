@@ -78,12 +78,10 @@ describe("snapshot workbook", () => {
       name: "Pemeliharaan terminal",
       number: "PRC-001",
     });
-    const ws = workbook.getWorksheet("Rincian")!;
-    expect(ws.getRow(1).values).toContain("Persentase terhadap OE");
-    expect(ws.getRow(2).values).toContain("125%");
-    expect(ws.getRow(2).values).toContain("Material");
-    expect(ws.getRow(2).values).toContain("Timpang");
-    expect(ws.getRow(2).values).not.toContain(".25");
+    const ws = workbook.getWorksheet("Rekap File Harga Timpang")!;
+    expect(ws.getCell("Z10").value).toBe(1.25);
+    expect(ws.getCell("Z10").numFmt).toBe("0%");
+    expect(ws.getCell("AB10").value).toBe("Harga Timpang");
     expect(percentageText("1.10")).toBe("110%");
     expect(percentageText("0.80")).toBe("80%");
     expect(percentageText(".075")).toBe("7,5%");
@@ -93,10 +91,8 @@ describe("snapshot workbook", () => {
     const { default: ExcelJS } = await import("exceljs");
     const reopened = new ExcelJS.Workbook();
     await reopened.xlsx.load(await workbook.xlsx.writeBuffer());
-    expect(reopened.getWorksheet("Rincian")!.getRow(2).values).toContain(
-      "125%",
-    );
-    expect(reopened.getWorksheet("Jejak Sumber")!.rowCount).toBeGreaterThan(2);
+    expect(reopened.getWorksheet("Rekap File Harga Timpang")!.getCell("Z10").value).toBe(1.25);
+    expect(reopened.worksheets).toHaveLength(1);
   });
   it("exports only the statistics present in the saved Bank snapshot", async () => {
     const result: Snapshot = {

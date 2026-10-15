@@ -65,10 +65,10 @@ async function exportWorkbook(page: Page, info: TestInfo, name: string) {
   await download.saveAs(filename);
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.readFile(filename);
-  expect(workbook.worksheets.map(sheet => sheet.name)).toEqual([
-    ...(name === 'hea' ? ['Perhitungan HEA'] : []),
-    'Keterangan', 'Ringkasan', 'Rincian', 'Jejak Sumber',
-  ]);
+  const sheets = name === 'price' ? ['Rekap File Harga Timpang'] : [
+    ...(name === 'hea' ? ['Perhitungan HEA'] : []), 'Keterangan', 'Ringkasan', 'Rincian', 'Jejak Sumber',
+  ];
+  expect(workbook.worksheets.map(sheet => sheet.name)).toEqual(sheets);
   return workbook;
 }
 
@@ -155,7 +155,7 @@ test('confirmed HEA, read-only price results and Bank Data preserve XLSX traceab
   await tab(page, 'Harga Timpang');
   await expect(page.locator('.evaluation-price-sources')).toHaveCount(0);
   const price = await exportWorkbook(page, info, 'price');
-  expect(JSON.stringify(price.getWorksheet('Rincian')!.getSheetValues())).toContain('125%');
+  expect(price.getWorksheet('Rekap File Harga Timpang')!.getCell('Z10').value).toBe(1.25);
   await page.goto('/pengadaan/proc-terminal?tab=harga');
   await expect(page.getByRole('heading', {name: 'Belum ada hasil Harga Timpang'})).toBeVisible();
   await page.getByRole('link', { name: 'Bank Data OE', exact: true }).click();

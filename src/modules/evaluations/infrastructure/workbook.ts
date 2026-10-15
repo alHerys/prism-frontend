@@ -3,6 +3,8 @@ import type { Procurement } from "../../procurement/domain/models";
 import type { Snapshot } from "../domain/models";
 import { buildHEAReport } from "../application/hea-report";
 import { addHEAWorksheet } from "./hea-workbook";
+import { buildPriceDeviationReport } from "../application/price-deviation-report";
+import { addPriceDeviationWorksheet } from "./price-workbook";
 const labels: Record<string, string> = {
   vendorId: "Identitas vendor",
   vendorName: "Vendor",
@@ -133,13 +135,15 @@ export async function buildSnapshotWorkbook(
   workbook.creator = "PRISM";
   workbook.created = new Date(snapshot.createdAt);
   workbook.modified = new Date(snapshot.createdAt);
+  if (snapshot.module === "PRICE_DEVIATION") {
+    addPriceDeviationWorksheet(workbook, buildPriceDeviationReport(snapshot));
+    return workbook;
+  }
   if (snapshot.module === "HEA") addHEAWorksheet(workbook, buildHEAReport(snapshot, procurement));
   const module =
     snapshot.module === "HEA"
       ? "Harga Evaluasi Akhir"
-      : snapshot.module === "PRICE_DEVIATION"
-        ? "Harga Timpang"
-        : "Bank Data OE";
+      : "Bank Data OE";
   function sheet(name: string, headers: string[], rows: string[][]) {
     const ws = workbook.addWorksheet(name);
     ws.columns = headers.map((header, i) => ({
