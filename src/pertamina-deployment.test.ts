@@ -1,4 +1,5 @@
 // @vitest-environment node
+import config from "../vercel.json";
 import { expect, it, vi } from "vitest";
 import { digest, packageAssets, remotePackage } from "../scripts/pertamina-package.mjs";
 const fixture = () => {
@@ -41,4 +42,14 @@ it("verifies downloaded package bytes and keeps signed URLs out of failures", as
     fetcher.mockRejectedValue(new Error("token=private"));
     await expect(remotePackage("https://storage.invalid/package?token=private", digest(bytes))).rejects.not.toThrow("private");
   } finally { vi.unstubAllGlobals(); }
+});
+
+it("declares the correct production MIME for every extensionless asset and displays PDFs inline", () => {
+  for (const [url, asset] of packageAssets(fixture())) {
+    if (url.endsWith(".json")) continue;
+    const rule = config.headers.find(rule => rule.source === url);
+    const headers = Object.fromEntries(rule?.headers.map(header => [header.key.toLowerCase(), header.value]) ?? []);
+    expect(headers["content-type"], url).toBe(asset.mime);
+    if (asset.mime === "application/pdf") expect(headers["content-disposition"], url).toBe("inline");
+  }
 });

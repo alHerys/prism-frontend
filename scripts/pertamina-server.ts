@@ -21,6 +21,7 @@ export async function pertaminaServer(): Promise<Plugin> {
         if (!asset || !["GET", "HEAD"].includes(request.method ?? "")) { response.statusCode = 404; response.end(); return; }
         response.setHeader("Content-Type", asset.mime); response.setHeader("Cache-Control", "no-store");
         response.setHeader("Content-Length", asset.bytes.length);
+        if (asset.mime === "application/pdf") response.setHeader("Content-Disposition", "inline");
         response.end(request.method === "HEAD" ? undefined : asset.bytes);
       });
     },
