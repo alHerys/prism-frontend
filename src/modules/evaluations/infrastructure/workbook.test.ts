@@ -60,6 +60,8 @@ describe("snapshot workbook", () => {
     const result: Snapshot = {
       ...snapshot,
       module: "PRICE_DEVIATION",
+      vendorId: "vendor-a", vendorName: "Synthetic Supplier",
+      inputs: { oe: { id: "oe", name: "oe.xlsx", kind: "OE", procurementId: "p1" }, offer: { id: "offer", name: "offer.xlsx", kind: "OFFER", procurementId: "p1", vendorId: "vendor-a" } },
       rows: [
         {
           description: "Pipa baja 4 inci",

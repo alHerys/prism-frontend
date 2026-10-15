@@ -80,6 +80,8 @@ export function buildDeviation(store: LocalStore, procurementId: string, oeId: s
       "CONFIRMATION_REQUIRED",
       "Pilih kelompok dan konfirmasi kedua sumber.",
     );
+  const vendor = store.state.vendors.find(v => v.id === offer.vendorId && v.procurementId === procurementId);
+  if (!vendor) throw new DomainError("WRONG_SCOPE", "Penawaran harus dimiliki vendor dalam pengadaan ini.");
   const oeSource = registry.find(
     (file) => file.id === oe.fixtureId && file.kind === "OE",
   );
@@ -137,6 +139,8 @@ export function buildDeviation(store: LocalStore, procurementId: string, oeId: s
   return snapshot(store, {
     procurementId,
     module: "PRICE_DEVIATION",
+    vendorId: vendor.id,
+    vendorName: vendor.name,
     rows,
     excluded,
     status: excluded.length ? "PARTIAL" : "COMPLETE",

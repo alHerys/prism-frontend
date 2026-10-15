@@ -11,7 +11,10 @@ PRISM_PERTAMINA_REFERENCE="/absolute/workspace/data-pertamina/demo/pertamina-v1/
 
 The suite checks both desktop and phone: source uploads, single-action saving,
 dynamic HEA, unchanged prepared price results, PDF/Excel and historical exports,
-layout overflow and absence of backend/provider requests. All artifacts stay in
+layout overflow and absence of backend/provider requests. Price Deviation starts
+without a vendor selection; selecting the prepared offer owner shows its result,
+while the other vendor has no offer. URL conflicts, Back navigation, vendor report
+identity and filename are checked on both sizes. All artifacts stay in
 the Git-ignored `test-results/pertamina-local/` directory. The suite skips when
 no private catalog is explicitly selected; original data is never a CI fixture.
 
@@ -139,7 +142,8 @@ berdasarkan identitas sumber snapshot. Kondisi kosong, tautan dokumen native,
 tombol Lihat Detail dan ekspor Excel juga diperiksa. Tombol preferensi kini
 berlabel Simpan; aksi simpan/konfirmasi/hitung tetap sama. Kembali dari sumber
 PDF mempertahankan halaman evaluasi dan parameter hasil asal. Harga Timpang
-hanya menampilkan hasil tersimpan, tanpa pemilihan sumber/tombol hitung.
+meminta pilihan vendor, lalu hanya menampilkan hasil tersimpan miliknya dengan
+sumber OE/penawaran aktif yang sesuai. Tidak ada tombol hitung.
 Overview Harga Timpang berisi tiga pie chart (seluruh item, Barang, Jasa)
 dengan rasio dari klasifikasi snapshot tersimpan. Tombol Ekspor Excel berada
 pada header Overview dan tetap mengekspor seluruh rincian snapshot. Bagian
@@ -155,6 +159,17 @@ Tes memeriksa unduhan Overview/riwayat, merge, dimensi, warna, format cetak A4
 portrait skala 20%, serta snapshot tetap utuh. PRISM_PRICE_REPORT_QA_DIR dapat
 dipakai saat tes unit untuk menulis workbook sintetis pendek/panjang bagi
 pemeriksaan render lokal. Data referensi internal tidak menjadi fixture Git.
+
+Tes domain/application/interaksi memeriksa dua vendor sintetis dengan jumlah
+dan komposisi berbeda, semua keadaan sumber kosong/belum tersimpan, pilihan awal
+kosong, URL vendor di luar pengadaan, konflik `vendor`/`hasil`, navigasi Back,
+provenance legacy dan metadata ambigu. Penggantian/penghapusan penawaran tidak
+menghapus hasil vendor lain; perubahan OE bersama menonaktifkan keduanya.
+Ekspor mengunci snapshot saat diklik, menguji pergantian konteks saat unduhan
+tertunda, serta membuka kembali XLSX untuk memeriksa vendor/baris/nama berkas.
+Baris identitas vendor memakai B5:Y5; header 7–9, data mulai 10, hidden R–U,
+format angka dan cetak tetap sama. Shared SelectField tetap controlled saat
+nilainya kosong agar Back mengembalikan placeholder dengan benar.
 
 Lihat Detail HEA membuka modal hampir layar penuh dengan native PDF viewer,
 tautan buka/unduh, fokus kembali dan cleanup URL. Screenshot observasi plugin

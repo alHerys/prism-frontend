@@ -1,3 +1,4 @@
+import { selectPriceVendor } from "./helpers/price-vendor";
 import { test, expect } from '@playwright/test';
 import type { Page, TestInfo } from '@playwright/test';
 import ExcelJS from 'exceljs';
@@ -153,11 +154,12 @@ test('confirmed HEA, read-only price results and Bank Data preserve XLSX traceab
   expect(JSON.stringify(hea.getWorksheet('Rincian')!.getSheetValues())).toContain('1261794759.4224293029478248835170918485030216358352');
   expect(JSON.stringify(hea.getWorksheet('Jejak Sumber')!.getSheetValues())).toContain('35%');
   await tab(page, 'Harga Timpang');
+  await selectPriceVendor(page, 'PT Nusa Teknik Mandiri');
   await expect(page.locator('.evaluation-price-sources')).toHaveCount(0);
   const price = await exportWorkbook(page, info, 'price');
   expect(price.getWorksheet('Rekap File Harga Timpang')!.getCell('Z10').value).toBe(1.25);
   await page.goto('/pengadaan/proc-terminal?tab=harga');
-  await expect(page.getByRole('heading', {name: 'Belum ada hasil Harga Timpang'})).toBeVisible();
+  await expect(page.getByRole('heading', {name: 'Pilih vendor untuk melihat hasil Harga Timpang.'})).toBeVisible();
   await page.getByRole('link', { name: 'Bank Data OE', exact: true }).click();
   await capture(page, 'bank-documents');
   await expect(page.getByRole('tab')).toHaveCount(0);

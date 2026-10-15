@@ -11,7 +11,8 @@ import path from "node:path";
 const snapshot: Snapshot = {
   id: "price-report-test", procurementId: "p1", module: "PRICE_DEVIATION",
   createdAt: "2026-10-15T00:00:00Z", status: "PARTIAL", policy: "saved-policy",
-  inputs: { unrelated: "Never copy live source amounts" }, excluded: ["Unconfirmed item"],
+  vendorId: "vendor-a", vendorName: "Synthetic Supplier A",
+  inputs: { oe: { id: "oe", name: "oe.xlsx", kind: "OE", procurementId: "p1" }, offer: { id: "offer-a", name: "offer.xlsx", kind: "OFFER", procurementId: "p1", vendorId: "vendor-a" } }, excluded: ["Unconfirmed item"],
   rows: [
     { description: "Synthetic material", category: "MATERIAL", unit: "m", oe: "100000", offer: "125000", percentageAgainstOE: "1.25", deviation: "0.25", classification: "TIMPANG" },
     { description: "Synthetic service", category: "SERVICE", unit: "set", oe: "50000.125", offer: "0", percentageAgainstOE: "0", classification: "TIDAK_TIMPANG" },
@@ -55,6 +56,7 @@ it("round-trips a single reference-shaped sheet with exact snapshot values and n
   await reopened.xlsx.load(await workbook.xlsx.writeBuffer());
   expect(reopened.worksheets.map(sheet => sheet.name)).toEqual([layout.sheetName]);
   const sheet = reopened.worksheets[0];
+  expect(sheet.getCell("B5").value).toBe("Vendor: Synthetic Supplier A");
   expect(sheet.getCell("B10").value).toBe("Synthetic material");
   expect(sheet.getCell("M10").value).toBe("m");
   expect(sheet.getCell("N10").value).toBe(100000);
@@ -71,7 +73,7 @@ it("round-trips a single reference-shaped sheet with exact snapshot values and n
   expect(sheet.getRow(12).height).toBeGreaterThan(14.45);
   for (const address of ["A10", "C10", "L10", "O10", "P10", "Q10", "R10", "S10", "T10", "U10", "X10", "Y10", "V12", "AB12", "N13", "AB13", "Q17", "Y17"])
     expect(sheet.getCell(address).value, address).toBeNull();
-  expect([...sheet.model.merges].sort()).toEqual(layout.headers.map(header => header.range).sort());
+  expect([...sheet.model.merges].sort()).toEqual(["B5:Y5", ...layout.headers.map(header => header.range)].sort());
   layout.widths.forEach((width, index) => expect(sheet.getColumn(index + 1).width).toBe(width));
   for (let column = 1; column <= 29; column++) expect(sheet.getColumn(column).hidden).toBe(column >= 18 && column <= 21);
   expect(sheet.getCell("N10").numFmt).toBe(layout.formats.accounting2.replaceAll("\\", ""));
@@ -111,4 +113,20 @@ it("keeps formula-like text literal and closes an empty report without inventing
   expect(empty.worksheets[0].getCell("B10").value).toBeNull();
   expect(empty.worksheets[0].getCell("B11").value).toBe("SUBTOTAL");
   expect(empty.worksheets[0].pageSetup.printArea).toBe("A5:AC18");
+});
+
+it("exports distinct vendor names, components and filenames for two supplier results", async () => {
+  const { priceData } = await import("../../price-deviation/testing/fixtures");
+  const { snapshotWorkbookFilename } = await import("./workbook");
+  const data = priceData(), before = structuredClone(data);
+  for (const saved of data.snapshots) {
+    const workbook = await buildSnapshotWorkbook(saved, { name: "Test", number: "TEST-001" });
+    const reopened = new ExcelJS.Workbook(); await reopened.xlsx.load(await workbook.xlsx.writeBuffer());
+    const report = reopened.worksheets[0];
+    expect(report.getCell("B5").value).toBe(`Vendor: ${saved.vendorName}`);
+    expect(report.getCell("AB10").value).toBe(saved.vendorId === "a" ? "Harga Timpang" : "Harga Tidak Timpang");
+    expect(report.getCell(`B${11 + saved.rows.length}`).value).toBe("SUBTOTAL");
+    expect(snapshotWorkbookFilename(saved, { number: "TEST-001" })).toContain(saved.vendorName!.replace(/[^\w-]/g, "-"));
+  }
+  expect(data).toEqual(before);
 });

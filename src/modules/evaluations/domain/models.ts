@@ -30,6 +30,8 @@ export interface HEACalculation {
 }
 
 export interface Snapshot {
+  vendorId?: string;
+  vendorName?: string;
   id: string;
   procurementId: string;
   module: "HEA" | "PRICE_DEVIATION" | "BANK";

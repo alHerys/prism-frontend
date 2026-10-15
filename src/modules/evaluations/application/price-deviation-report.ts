@@ -1,3 +1,4 @@
+import { requirePriceSnapshot } from "../../price-deviation/application/queries";
 import type { Snapshot } from "../domain/models";
 
 export interface PriceDeviationReportRow {
@@ -5,7 +6,7 @@ export interface PriceDeviationReportRow {
   unit?: string;
   component?: { category: "MATERIAL" | "SERVICE"; oe?: string; offer?: string; ratio?: string; classification?: string };
 }
-export interface PriceDeviationReport { rows: PriceDeviationReportRow[]; }
+export interface PriceDeviationReport { vendor: { id: string; name: string }; rows: PriceDeviationReportRow[]; }
 
 const classifications = new Map([
   ["TIMPANG", "Harga Timpang"],
@@ -15,7 +16,9 @@ const classifications = new Map([
 /** Project saved components without matching, merging or recalculating their values. */
 export function buildPriceDeviationReport(snapshot: Snapshot): PriceDeviationReport {
   if (snapshot.module !== "PRICE_DEVIATION") throw new Error("Laporan ini hanya untuk Harga Timpang.");
+  const owned = requirePriceSnapshot(snapshot);
   return {
+    vendor: { id: owned.vendorId, name: owned.vendorName },
     rows: snapshot.rows.map(row => ({
       description: row.description,
       unit: row.unit,

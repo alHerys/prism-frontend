@@ -1,3 +1,4 @@
+import { currentPriceSources } from "../../modules/price-deviation/application/queries";
 import type { LocalStore } from "../local/store";
 import type { PertaminaCatalog } from "./catalog";
 import { decimalHEACalculator, localHEAPolicy } from "../../modules/hea/infrastructure/decimal-calculator";
@@ -25,23 +26,34 @@ export function createEvaluationCoordinator(store: LocalStore, catalog: Pertamin
     heaInputs.set(procurementId, fingerprint); hea.set(procurementId, result.id);
     return result;
   }
+  const priceKey = (procurementId: string, vendorId: string) => JSON.stringify([procurementId, vendorId]);
   function refreshPrice(procurementId: string) {
-    const sources = store.state.documents.filter(d => d.procurementId === procurementId && active(d) && d.status === "CONFIRMED");
+    const documents = store.state.documents.filter(d => d.procurementId === procurementId && active(d));
+    const vendors = store.state.vendors.filter(v => v.procurementId === procurementId);
     const oeHash = catalog.sources.find(s => s.kind === "OE")!.sha256;
     const offerHash = catalog.sources.find(s => s.kind === "OFFER")!.sha256;
-    const oe = sources.find(d => d.kind === "OE" && d.sha256 === oeHash);
-    const vendorName = catalog.a5.find(a => a.sourceId === "HEA-001")!.candidate.vendorName;
-    const owner = store.state.vendors.find(v => v.procurementId === procurementId && (vendorNameKey(v.name) === vendorNameKey(vendorName) || sources.some(d => d.vendorId === v.id && d.sha256 === catalog.a5.find(a => a.sourceId === "HEA-001")!.candidate.sha256)));
-    const offer = sources.find(d => d.kind === "OFFER" && d.sha256 === offerHash && d.vendorId === owner?.id);
-    if (!oe || !offer) { price.delete(procurementId); priceInputs.delete(procurementId); return; }
-    // Review revisions are deliberately absent: table corrections do not change this report.
-    const fingerprint = `${oe.id}/${offer.id}/${oeHash}/${offerHash}`;
-    if (priceInputs.get(procurementId) === fingerprint) return;
-    const result = snapshot(store, { procurementId, module: "PRICE_DEVIATION", rows: copy(catalog.priceRows), excluded: [], status: "COMPLETE",
-      inputs: { oe: copy(oe), offer: copy(offer), referenceHash: catalog.referenceHash },
-      policy: "Harga satuan material dan jasa; harga penawaran > 110% OE diklasifikasikan timpang." });
-    priceInputs.set(procurementId, fingerprint); price.set(procurementId, result.id);
+    const a5 = catalog.a5.find(a => a.sourceId === "HEA-001")!;
+    for (const vendor of vendors) {
+      const key = priceKey(procurementId, vendor.id);
+      const { oe, offer } = currentPriceSources(documents, procurementId, vendor.id);
+      const knownOwner = vendorNameKey(vendor.name) === vendorNameKey(a5.candidate.vendorName) || documents.some(d => d.vendorId === vendor.id && d.kind === "FORM_A5" && d.sha256 === a5.candidate.sha256);
+      if (!knownOwner || !oe || oe.status !== "CONFIRMED" || oe.sha256 !== oeHash || !offer || offer.status !== "CONFIRMED" || offer.sha256 !== offerHash) {
+        price.delete(key); priceInputs.delete(key); continue;
+      }
+      // Review revisions are deliberately absent: table corrections do not change this report.
+      const fingerprint = `${oe.id}/${offer.id}/${oeHash}/${offerHash}`;
+      if (priceInputs.get(key) === fingerprint) continue;
+      const result = snapshot(store, { procurementId, module: "PRICE_DEVIATION", vendorId: vendor.id, vendorName: vendor.name,
+        rows: copy(catalog.priceRows), excluded: [], status: "COMPLETE",
+        inputs: { oe: copy(oe), offer: copy(offer), referenceHash: catalog.referenceHash },
+        policy: "Harga satuan material dan jasa; harga penawaran > 110% OE diklasifikasikan timpang." });
+      priceInputs.set(key, fingerprint); price.set(key, result.id);
+    }
+    for (const key of price.keys()) {
+      const [id, vendorId] = JSON.parse(key) as [string, string];
+      if (id === procurementId && !vendors.some(v => v.id === vendorId)) { price.delete(key); priceInputs.delete(key); }
+    }
   }
-  return { refreshHEA, refreshPrice, currentHEA: (id: string) => hea.get(id), currentPrice: (id: string) => price.get(id) };
+  return { refreshHEA, refreshPrice, currentHEA: (id: string) => hea.get(id), currentPrice: (id: string, vendorId: string) => price.get(priceKey(id, vendorId)) };
 }
 export type EvaluationCoordinator = ReturnType<typeof createEvaluationCoordinator>;

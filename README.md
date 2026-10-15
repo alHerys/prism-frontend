@@ -71,6 +71,14 @@ tetap immutable; penyimpanan identik tidak membuat hasil duplikat. Harga Timpang
 memakai hasil referensi yang disiapkan; koreksi tabel OE/penawaran tidak mengubah
 evaluasi. Data sesi hilang setelah reload.
 
+Harga Timpang meminta pilihan vendor terlebih dahulu dan menyimpannya pada URL
+`vendor`. Seluruh vendor tersedia pada pilihan; grafik dan ekspor hanya muncul
+untuk hasil aktif milik vendor tersebut dengan OE/penawaran yang sudah tersimpan.
+Vendor tanpa penawaran mendapat tautan ke dokumennya. Hasil Pertamina yang
+disiapkan tetap hanya untuk pemilik penawaran terdaftar; tidak dibagikan ke
+vendor lain. Penggantian penawaran menonaktifkan hasil vendor terkait, sementara
+penggantian OE bersama menonaktifkan seluruh hasil terkait. Snapshot lama utuh.
+
 Katalog, PDF/XLSX asli dan hasil internal tetap berada di luar Git. Server lokal
 hanya menyajikan aset pada allowlist. Build tanpa konfigurasi paket memakai
 runtime sintetis dan tidak menyertakan data Pertamina.
@@ -137,8 +145,12 @@ Perhitungan finansial otoritatif tetap berada di backend; model lokal belum
 mengimplementasikan wire contract server.
 
 Snapshot menyimpan input, sumber, revisi, hasil, dan pengecualian saat evaluasi;
-koreksi berikutnya tidak mengubah hasil lama. Ekspor memakai snapshot tersebut,
-menghasilkan empat sheet tanpa formula finansial, dan memuat ExcelJS saat ekspor.
+koreksi berikutnya tidak mengubah hasil lama. Snapshot Harga Timpang baru juga
+menyimpan `vendorId`/`vendorName`. Data lama hanya dapat dipakai jika pemilik
+penawarannya jelas dan konsisten. Ekspor memakai snapshot tersebut tanpa formula
+finansial dan memuat ExcelJS saat diperlukan. Harga Timpang memakai satu sheet
+dengan identitas vendor sebelum header dan pada nama berkas; HEA/Bank tetap
+menggunakan struktur laporan masing-masing.
 Fixture sintetis dan artefak pengujian tidak membuktikan penerimaan pengguna atau
 kesiapan produksi. Data internal dan artefak build tidak masuk repository.
 

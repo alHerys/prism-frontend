@@ -112,6 +112,12 @@ function addClosingBlock(sheet: ExcelJS.Worksheet, subtotal: number) {
 export function addPriceDeviationWorksheet(workbook: ExcelJS.Workbook, report: PriceDeviationReport) {
   const sheet = workbook.addWorksheet(layout.sheetName, { properties: { defaultRowHeight: 14.45 } });
   sheet.columns = layout.widths.map((width, index) => ({ width, hidden: index >= 17 && index <= 20 }));
+  sheet.mergeCells("B5:Y5");
+  const identity = sheet.getCell("B5");
+  identity.value = `Vendor: ${report.vendor.name}`;
+  identity.font = { name: "Arial", size: 11, bold: true, color: black };
+  identity.alignment = { vertical: "middle", wrapText: true };
+  sheet.getRow(5).height = 28;
   addHeaders(sheet);
   report.rows.forEach((item, index) => {
     const row = layout.firstDataRow + index;

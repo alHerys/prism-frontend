@@ -1,3 +1,4 @@
+import { selectPriceVendor } from "./helpers/price-vendor";
 import { test, expect } from "@playwright/test";
 import type { Page, TestInfo } from "@playwright/test";
 import { readFileSync } from "node:fs";
@@ -116,6 +117,7 @@ test("raw uploads save without confirmation and make HEA/price available", async
   await vendorDialog.getByRole("button", { name: "Tutup dokumen vendor", exact: true }).click();
   await page.getByRole("button", { name: /2 Evaluasi/ }).click();
   await page.getByRole("button", { name: "Harga Timpang", exact: true }).click();
+  await selectPriceVendor(page, catalog!.a5[0].candidate.vendorName);
   await expect(page.getByRole("region", { name: "Overview Harga Timpang", exact: true }).getByRole("figure")).toHaveCount(3);
   const workbook = await exportExcel(page, info, "harga-upload.xlsx");
   expect(workbook.worksheets.map(s => s.name)).toEqual(["Rekap File Harga Timpang"]);
@@ -126,6 +128,7 @@ test("raw uploads save without confirmation and make HEA/price available", async
 
 test("spreadsheet edits leave evaluation unchanged", async ({ page }, info) => {
   await page.goto(`${complete}?tab=harga`);
+  await selectPriceVendor(page, catalog!.a5[0].candidate.vendorName);
   const original = await exportExcel(page, info, "price-before.xlsx");
   await page.getByRole("button", { name: "Kembali ke identitas & vendor", exact: true }).click();
   await page.locator(".owner-estimate-document").getByRole("link", { name: "Lihat", exact: true }).click();
@@ -137,9 +140,49 @@ test("spreadsheet edits leave evaluation unchanged", async ({ page }, info) => {
   await page.getByRole("button", { name: "Kembali ke pengadaan", exact: true }).click();
   await page.getByRole("button", { name: /2 Evaluasi/ }).click();
   await page.getByRole("button", { name: "Harga Timpang", exact: true }).click();
+  await selectPriceVendor(page, catalog!.a5[0].candidate.vendorName);
   const after = await exportExcel(page, info, "price-after.xlsx");
   expect(after.worksheets[0].getSheetValues()).toEqual(original.worksheets[0].getSheetValues());
   await openHistory(page);
   await expect(page.getByRole("tab", { name: "Hasil Evaluasi", exact: true })).toHaveCount(0);
   await expect(page.getByRole("tab", { name: "Aktivitas", exact: true })).toBeVisible();
+});
+
+test("price vendor selection prevents another supplier inheriting the prepared result", async ({ page }, info) => {
+  await page.goto(`${complete}?tab=harga`);
+  const selector = page.getByRole("combobox", { name: "Vendor Harga Timpang", exact: true });
+  await expect(selector).toHaveText("Pilih vendor");
+  await expect(page.getByRole("figure")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Ekspor Excel", exact: true })).toHaveCount(0);
+  await selectPriceVendor(page, catalog!.a5[0].candidate.vendorName);
+  const ownerId = new URL(page.url()).searchParams.get("vendor")!;
+  await expect(page.getByRole("figure")).toHaveCount(3);
+  await expect(page.getByText(`Penawaran: ${catalog!.sources.find(s => s.kind === "OFFER")!.name}`, { exact: true })).toBeVisible();
+  const pending = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Ekspor Excel", exact: true }).click();
+  const download = await pending;
+  expect(download.suggestedFilename()).toContain(catalog!.a5[0].candidate.vendorName.replace(/[^\w-]/g, "-"));
+  const file = info.outputPath("price-owned.xlsx"); await download.saveAs(file);
+  const workbook = new ExcelJS.Workbook(); await workbook.xlsx.readFile(file);
+  expect(workbook.worksheets[0].getCell("B5").value).toBe(`Vendor: ${catalog!.a5[0].candidate.vendorName}`);
+  await checkLayout(page);
+  await page.screenshot({ path: info.outputPath("price-vendor-result.png"), fullPage: true });
+  await selectPriceVendor(page, catalog!.a5[1].candidate.vendorName);
+  await expect(page.getByRole("heading", { name: "Belum ada penawaran harga untuk vendor ini", exact: true })).toBeVisible();
+  await expect(page.getByRole("figure")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Ekspor Excel", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Buka dokumen vendor", exact: true })).toBeVisible();
+  await page.screenshot({ path: info.outputPath("price-vendor-empty.png"), fullPage: true });
+  await page.goBack();
+  await expect(selector).toContainText(catalog!.a5[0].candidate.vendorName);
+  await expect(page.getByRole("figure")).toHaveCount(3);
+  await page.goBack();
+  await expect(selector).toHaveText("Pilih vendor");
+  await expect(page.getByRole("figure")).toHaveCount(0);
+  await page.goto(`${complete}?tab=harga&vendor=outside&hasil=unknown`);
+  await expect(selector).toHaveText("Pilih vendor");
+  await expect(page.getByRole("figure")).toHaveCount(0);
+  await page.goto(`${complete}?tab=harga&vendor=${encodeURIComponent(ownerId)}&hasil=outside`);
+  await expect(page.getByRole("figure")).toHaveCount(3);
+  await expect(page).not.toHaveURL(/hasil=/);
 });

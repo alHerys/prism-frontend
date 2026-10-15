@@ -1,3 +1,4 @@
+import { resolvePriceSnapshotScope } from "../../modules/price-deviation/application/queries";
 import { createLocalRuntime } from "../local/runtime-factory";
 import { createOwnerEstimateAdapter } from "../local/owner-estimate";
 import { createOfferSpreadsheetAdapter } from "../local/offer-spreadsheet";
@@ -57,7 +58,7 @@ export function createPertaminaRuntime(catalog: PertaminaCatalog, sheets: { oe: 
   });
   return { ...runtime,
     hea: { ...runtime.hea, queries: currentResultStore(runtime.hea.queries, s => s.module !== "HEA" || evaluations.currentHEA(s.procurementId) === s.id) },
-    priceDeviation: { ...runtime.priceDeviation, queries: currentResultStore(runtime.priceDeviation.queries, s => s.module !== "PRICE_DEVIATION" || evaluations.currentPrice(s.procurementId) === s.id) },
+    priceDeviation: { ...runtime.priceDeviation, queries: currentResultStore(runtime.priceDeviation.queries, s => s.module !== "PRICE_DEVIATION" || evaluations.currentPrice(s.procurementId, resolvePriceSnapshotScope(s)?.vendorId ?? "") === s.id) },
   };
 }
 

@@ -155,3 +155,36 @@ if (process.env.PRISM_PERTAMINA_REFERENCE) it("locally verifies real-source HEA 
   expect(latestHEA(runtime).id).not.toBe(before.snapshots.find(s => s.module === "HEA" && s.procurementId === complete)!.id);
   expect(buffers[0].equals(readFileSync(path.join(root, original.sources.find(s => s.kind === "OE")!.relativePath)))).toBe(true);
 });
+
+it("keeps price results tied to their offer owner and does not reuse them for another vendor", async () => {
+  const runtime = setup();
+  const data = runtime.priceDeviation.queries.getSnapshot();
+  const original = structuredClone(data.snapshots.find(s => s.module === "PRICE_DEVIATION")!);
+  const owner = data.vendors.find(v => v.id === original.vendorId)!;
+  const other = data.vendors.find(v => v.procurementId === complete && v.id !== owner.id)!;
+  expect(original.vendorName).toBe(owner.name);
+  const bytes = new Uint8Array(readFileSync(path.resolve("public/files/Penawaran-Nusa.xlsx"))).buffer;
+  const pending = await runtime.offerSpreadsheet.prepare({ name: "Renamed.xlsx", size: bytes.byteLength, arrayBuffer: async () => bytes }, () => {});
+  const published = await runtime.offerSpreadsheet.publish({ procurementId: complete, vendorId: other.id, pendingId: pending.id, sheetId: pending.sheets[0].id });
+  const saved = await runtime.offerSpreadsheet.saveAndConfirm({ documentId: published.id, expectedRevision: published.revision, acknowledged: true, edits: [] });
+  const current = runtime.priceDeviation.queries.getSnapshot().snapshots.filter(s => s.module === "PRICE_DEVIATION");
+  expect(current).toEqual([original]);
+  expect(current.some(s => s.vendorId === other.id)).toBe(false);
+  await runtime.documents.gateway.removeVendorDocument(complete, saved.id, saved.revision);
+  expect(runtime.priceDeviation.queries.getSnapshot().snapshots.find(s => s.module === "PRICE_DEVIATION")).toEqual(original);
+});
+it("invalidates only the replaced offer until saved and preserves archived snapshots after OE removal", async () => {
+  const runtime = setup();
+  const original = structuredClone(runtime.priceDeviation.queries.getSnapshot().snapshots.find(s => s.module === "PRICE_DEVIATION")!);
+  const bytes = new Uint8Array(readFileSync(path.resolve("public/files/Penawaran-Nusa.xlsx"))).buffer;
+  const pending = await runtime.offerSpreadsheet.prepare({ name: "Replacement.xlsx", size: bytes.byteLength, arrayBuffer: async () => bytes }, () => {});
+  const published = await runtime.offerSpreadsheet.publish({ procurementId: complete, vendorId: original.vendorId!, pendingId: pending.id, sheetId: pending.sheets[0].id });
+  expect(runtime.priceDeviation.queries.getSnapshot().snapshots.filter(s => s.module === "PRICE_DEVIATION")).toHaveLength(0);
+  await runtime.offerSpreadsheet.saveAndConfirm({ documentId: published.id, expectedRevision: published.revision, acknowledged: true, edits: [] });
+  const current = runtime.priceDeviation.queries.getSnapshot().snapshots.find(s => s.module === "PRICE_DEVIATION")!;
+  expect(current.vendorId).toBe(original.vendorId); expect(current.id).not.toBe(original.id);
+  const oe = runtime.documents.queries.getSnapshot().documents.find(d => d.procurementId === complete && d.kind === "OE" && !d.removedAt && !d.supersededBy)!;
+  await runtime.documents.gateway.removeOwnerEstimate(complete, oe.id, oe.revision);
+  expect(runtime.priceDeviation.queries.getSnapshot().snapshots.filter(s => s.module === "PRICE_DEVIATION")).toHaveLength(0);
+  expect(runtime.evaluations.queries.getSnapshot().snapshots.find(s => s.id === original.id)).toEqual(original);
+});

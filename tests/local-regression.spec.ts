@@ -108,7 +108,7 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   await button(page, 'Tutup dokumen vendor').click();
   await page.locator('.procurement-path').getByRole('button', {name: /Evaluasi/}).click();
   await button(page, 'Harga Timpang').click();
-  await expect(page.getByRole('heading', {name: 'Belum ada hasil Harga Timpang'})).toBeVisible();
+  await expect(page.getByRole('heading', {name: 'Pilih vendor untuk melihat hasil Harga Timpang.'})).toBeVisible();
   await button(page, 'HEA').click();
   await expect(page.getByRole('heading', {name: 'Leaderboard HEA'})).toBeVisible();
   expect(errors).toEqual([]);

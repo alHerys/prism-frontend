@@ -92,3 +92,9 @@
 @media (max-width: 767px) {
   .price-overview-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
 }
+.price-vendor-selector { display: flex; align-items: end; gap: 24px; flex-wrap: wrap; }
+.price-vendor-selector .field { flex: 1 1 280px; max-width: 480px; margin: 0; min-width: 0; }
+.price-vendor-selector .select-trigger { width: 100%; min-height: 48px; }
+.price-vendor-selector .select-trigger > span:first-child { white-space: normal; overflow-wrap: anywhere; text-align: left; }
+.price-vendor-context { flex: 1 1 240px; min-width: 0; overflow-wrap: anywhere; }
+.price-vendor-context p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }

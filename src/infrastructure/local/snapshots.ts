@@ -1,7 +1,10 @@
+import { resolvePriceSnapshotScope } from "../../modules/price-deviation/application/queries";
 import type { Snapshot } from "../../modules/evaluations/domain/models";
 import type { LocalStore } from "./store";
 import { DomainError, copy } from "../../shared/kernel/validation";
 export function snapshot(store: LocalStore, input: Omit<Snapshot, "id" | "createdAt">) {
+  if (input.module === "PRICE_DEVIATION" && (!input.vendorId || !input.vendorName || !resolvePriceSnapshotScope(input, store.state.vendors)))
+    throw new DomainError("WRONG_SCOPE", "Hasil Harga Timpang memerlukan vendor dan sumber yang sesuai.");
   const s: Snapshot = {
     ...copy(input),
     id: store.id("result"),

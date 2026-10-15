@@ -16,13 +16,16 @@ it("preserves all seeded values, IDs, event order and prepared snapshots from th
       if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).filter(([key]) => key !== "ownerEstimate" && key !== "offerSpreadsheet").map(([key, child]) => [key, withoutOE(child)]));
       return value;
     };
-    const originalShape = states.map(state => ({ ...state, snapshots: state.snapshots.map(snapshot => ({
-      ...snapshot, rows: snapshot.rows.map(row => {
+    const originalShape = states.map(state => ({ ...state, snapshots: state.snapshots.map(snapshot => {
+      const originalSnapshot = { ...snapshot };
+      delete originalSnapshot.vendorId;
+      delete originalSnapshot.vendorName;
+      return { ...originalSnapshot, rows: snapshot.rows.map(row => {
         const original = { ...row };
         delete original.calculation;
         return original;
       }),
-    })) }));
+    }; }) }));
     expect(createHash("sha256").update(JSON.stringify(withoutOE(originalShape))).digest("hex")).toBe("14203add233410aea0a99d29ad4f6b61f80c13ca7447f2909021ca8ae3f5622d");
   } finally {
     vi.useRealTimers();

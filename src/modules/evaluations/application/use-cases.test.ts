@@ -40,3 +40,24 @@ it("previews a snapshot without downloading or recording an export event", async
   await expect(commands.previewHEA({ ...snapshot, module: "BANK" })).rejects.toThrow("Pratinjau laporan HEA belum tersedia");
   expect(previewHEA).toHaveBeenCalledTimes(1);
 });
+
+it("captures the selected vendor snapshot while its download is pending", async () => {
+  const { priceData, priceProcurement } = await import("../../price-deviation/testing/fixtures");
+  const data = priceData(), selected = structuredClone(data.snapshots[0]);
+  let finish: () => void = () => {};
+  const download = vi.fn(async () => new Promise<void>(resolve => { finish = resolve; }));
+  const recordExport = vi.fn();
+  const commands = createEvaluationsUseCases({ recordExport }, { getSnapshot: () => ({ ...data, procurements: [priceProcurement], events: [] }), subscribe: () => () => {} }, { download });
+  const pending = commands.exportSnapshot(selected);
+  data.vendors.reverse(); data.snapshots.reverse();
+  finish(); await pending;
+  expect(download).toHaveBeenCalledWith(selected, priceProcurement);
+  expect(recordExport).toHaveBeenCalledWith(selected.id);
+});
+it("rejects ambiguous price ownership before downloading or recording export", async () => {
+  const { priceData, priceProcurement } = await import("../../price-deviation/testing/fixtures");
+  const data = priceData(), download = vi.fn(), recordExport = vi.fn();
+  const commands = createEvaluationsUseCases({ recordExport }, { getSnapshot: () => ({ ...data, procurements: [priceProcurement], events: [] }), subscribe: () => () => {} }, { download });
+  await expect(commands.exportSnapshot({ ...data.snapshots[0], vendorId: "b" })).rejects.toThrow("Identitas vendor");
+  expect(download).not.toHaveBeenCalled(); expect(recordExport).not.toHaveBeenCalled();
+});

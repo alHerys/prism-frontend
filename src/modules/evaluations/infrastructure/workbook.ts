@@ -1,3 +1,4 @@
+import { requirePriceSnapshot } from "../../price-deviation/application/queries";
 import { downloadBytes } from "../../../infrastructure/browser/download";
 import type { Procurement } from "../../procurement/domain/models";
 import type { Snapshot } from "../domain/models";
@@ -304,5 +305,10 @@ export async function downloadSnapshot(
 ) {
   const workbook = await buildSnapshotWorkbook(snapshot, procurement);
   const bytes = await workbook.xlsx.writeBuffer();
-  downloadBytes(new Uint8Array(bytes), `PRISM-${snapshot.module}-${procurement.number.replace(/[^\w-]/g, "-")}-${snapshot.id.replace(/[^\w-]/g, "-")}.xlsx`);
+  downloadBytes(new Uint8Array(bytes), snapshotWorkbookFilename(snapshot, procurement));
+}
+
+export function snapshotWorkbookFilename(snapshot: Snapshot, procurement: Pick<Procurement, "number">) {
+  const vendor = snapshot.module === "PRICE_DEVIATION" ? `-${requirePriceSnapshot(snapshot).vendorName.replace(/[^\w-]/g, "-").slice(0, 80)}` : "";
+  return `PRISM-${snapshot.module}-${procurement.number.replace(/[^\w-]/g, "-")}-${snapshot.id.replace(/[^\w-]/g, "-")}${vendor}.xlsx`;
 }

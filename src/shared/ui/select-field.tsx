@@ -23,7 +23,7 @@ export function SelectField({
 }) {
   return (
     <Select.Root
-      value={value || undefined}
+      value={value}
       onValueChange={onValueChange}
       disabled={disabled}
     >
