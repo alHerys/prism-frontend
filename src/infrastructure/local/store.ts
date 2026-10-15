@@ -10,6 +10,8 @@ export class LocalStore {
   state: LocalState;
   private listeners = new Set<() => void>();
   private sequence = 20;
+  private transactionDepth = 0;
+  private pendingPublication = false;
   constructor() {
     this.state = {
       procurements: [],
@@ -58,9 +60,28 @@ export class LocalStore {
     freeze(this.view);
   };
   emit = () => {
+    if (this.transactionDepth) { this.pendingPublication = true; return; }
     this.updateView();
     this.listeners.forEach((fn) => fn());
   };
+  transaction<T>(change: () => T): T {
+    const previous = this.state, sequence = this.sequence, pending = this.pendingPublication;
+    this.state = copy(previous);
+    this.transactionDepth++;
+    let result: T;
+    try {
+      result = change();
+    } catch (error) {
+      this.state = previous; this.sequence = sequence; this.pendingPublication = pending; this.transactionDepth--;
+      throw error;
+    }
+    this.transactionDepth--;
+    if (!this.transactionDepth) {
+      if (this.pendingPublication) { this.pendingPublication = false; this.emit(); }
+      else this.state = previous;
+    }
+    return result;
+  }
   event = (event: Omit<Activity, "id" | "createdAt">) => {
     this.state.events.unshift({
       ...event,

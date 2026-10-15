@@ -18,11 +18,11 @@ export function createApplication(runtime = createLocalRuntime(true, true), expo
     await downloadSnapshot(snapshot, procurement);
   },
 }) {
-  const documents = createDocumentsUseCases(runtime.documents.gateway, runtime.processing, runtime.priceDeviation.gateway, runtime.ownerEstimate, runtime.offerSpreadsheet);
+  const documents = createDocumentsUseCases(runtime.documents.gateway, runtime.processing, runtime.priceDeviation.gateway, runtime.ownerEstimate, runtime.offerSpreadsheet, runtime.reviewWorkflow);
   const evaluations = createEvaluationsUseCases(runtime.evaluations.gateway, runtime.procurement.queries, exporter);
   return {
     procurement: { commands: createProcurementUseCases(runtime.procurement.gateway), queries: runtime.procurement.queries },
-    intake: { commands: createA5IntakeUseCases(runtime.intake.store, runtime.intake.assets, runtime.intake.extraction, runtime.intake.publication), queries: runtime.intake.store },
+    intake: { commands: createA5IntakeUseCases(runtime.intake.store, runtime.intake.assets, runtime.intake.extraction, runtime.intake.publication, runtime.reviewWorkflow), queries: runtime.intake.store },
     documents: { commands: documents, queries: runtime.documents.queries },
     hea: { commands: createHEAUseCases(runtime.hea.gateway, runtime.delay), queries: runtime.hea.queries },
     priceDeviation: { commands: createPriceDeviationUseCases(runtime.priceDeviation.gateway, runtime.delay), queries: runtime.priceDeviation.queries },

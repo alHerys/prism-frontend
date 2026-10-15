@@ -1,0 +1,235 @@
+[
+  {
+    "name": "ordinary",
+    "values": {
+      "hpb": "1000",
+      "hpj": "400",
+      "knb": "5",
+      "tkdn_barang": "0.5",
+      "tkdn_jasa": "0.4"
+    },
+    "preferences": {
+      "preferensi_barang": "0.25",
+      "preferensi_jasa": "0.075"
+    },
+    "expected": {
+      "hea": "1282.2384034519956850053937432578209277238403451996",
+      "calculation": {
+        "total": "1400",
+        "kpb": "0.125",
+        "kpj": "0.0300",
+        "heGoods": "888.88888888888888888888888888888888888888888888889",
+        "heServices": "388.34951456310679611650485436893203883495145631068",
+        "heCombined": "1277.2384034519956850053937432578209277238403451996",
+        "tkdnCombined": "0.47142857142857142857142857142857142857142857142857"
+      }
+    }
+  },
+  {
+    "name": "thresholds",
+    "values": {
+      "hpb": "1000",
+      "hpj": "400",
+      "knb": "5",
+      "tkdn_barang": "0.25",
+      "tkdn_jasa": "0.30"
+    },
+    "preferences": {
+      "preferensi_barang": "0.25",
+      "preferensi_jasa": "0.075"
+    },
+    "expected": {
+      "hea": "1337.3745145980152452178915576010355242341435351647",
+      "calculation": {
+        "total": "1400",
+        "kpb": "0.0625",
+        "kpj": "0.02250",
+        "heGoods": "941.17647058823529411764705882352941176470588235294",
+        "heServices": "391.19804400977995110024449877750611246943765281174",
+        "heCombined": "1332.3745145980152452178915576010355242341435351647",
+        "tkdnCombined": "0.26428571428571428571428571428571428571428571428571"
+      }
+    }
+  },
+  {
+    "name": "below thresholds",
+    "values": {
+      "hpb": "1000",
+      "hpj": "400",
+      "knb": "5",
+      "tkdn_barang": "0.2499",
+      "tkdn_jasa": "0.2999"
+    },
+    "preferences": {
+      "preferensi_barang": "0.25",
+      "preferensi_jasa": "0.075"
+    },
+    "expected": {
+      "hea": "1405",
+      "calculation": {
+        "total": "1400",
+        "kpb": "0",
+        "kpj": "0",
+        "heGoods": "1000",
+        "heServices": "400",
+        "heCombined": "1400",
+        "tkdnCombined": "0.26418571428571428571428571428571428571428571428571"
+      }
+    }
+  },
+  {
+    "name": "zero totals",
+    "values": {
+      "hpb": "0",
+      "hpj": "0",
+      "knb": "5",
+      "tkdn_barang": "0.5",
+      "tkdn_jasa": "0.4"
+    },
+    "preferences": {
+      "preferensi_barang": "0.25",
+      "preferensi_jasa": "0.075"
+    },
+    "expected": {
+      "hea": "5",
+      "calculation": {
+        "total": "0",
+        "kpb": "0.125",
+        "kpj": "0.0300",
+        "heGoods": "0",
+        "heServices": "0",
+        "heCombined": "0"
+      }
+    }
+  },
+  {
+    "name": "zero preferences",
+    "values": {
+      "hpb": "1000",
+      "hpj": "400",
+      "knb": "5",
+      "tkdn_barang": "0.5",
+      "tkdn_jasa": "0.4"
+    },
+    "preferences": {
+      "preferensi_barang": "0",
+      "preferensi_jasa": "0"
+    },
+    "expected": {
+      "hea": "1405",
+      "calculation": {
+        "total": "1400",
+        "kpb": "0.0",
+        "kpj": "0.0",
+        "heGoods": "1000",
+        "heServices": "400",
+        "heCombined": "1400",
+        "tkdnCombined": "0.47142857142857142857142857142857142857142857142857"
+      }
+    }
+  },
+  {
+    "name": "maximum percentages",
+    "values": {
+      "hpb": "1000",
+      "hpj": "400",
+      "knb": "5",
+      "tkdn_barang": "1",
+      "tkdn_jasa": "1"
+    },
+    "preferences": {
+      "preferensi_barang": "1",
+      "preferensi_jasa": "1"
+    },
+    "expected": {
+      "hea": "705",
+      "calculation": {
+        "total": "1400",
+        "kpb": "1",
+        "kpj": "1",
+        "heGoods": "500",
+        "heServices": "200",
+        "heCombined": "700",
+        "tkdnCombined": "1"
+      }
+    }
+  },
+  {
+    "name": "fractional nominal",
+    "values": {
+      "hpb": "1234567.000000000123456789",
+      "hpj": "98765.4321987654321",
+      "knb": "0.005",
+      "tkdn_barang": "0.5",
+      "tkdn_jasa": "0.4"
+    },
+    "preferences": {
+      "preferensi_barang": "0.25",
+      "preferensi_jasa": "0.075"
+    },
+    "expected": {
+      "hea": "1193281.6630139039812496161121898597626752966558792",
+      "calculation": {
+        "total": "1333332.432198765555556789",
+        "kpb": "0.125",
+        "kpj": "0.0300",
+        "heGoods": "1097392.8888888889986282568888888888888888888888889",
+        "heServices": "95888.769125014982621359223300970873786407766990291",
+        "heCombined": "1193281.6580139039812496161121898597626752966558792",
+        "tkdnCombined": "0.49259258757878604968572522532216822593037616615005"
+      }
+    }
+  },
+  {
+    "name": "large precision",
+    "values": {
+      "hpb": "12345678901234567890123456789012345678901234567890.123456789",
+      "hpj": "400",
+      "knb": "5",
+      "tkdn_barang": "0.5",
+      "tkdn_jasa": "0.4"
+    },
+    "preferences": {
+      "preferensi_barang": "0.25",
+      "preferensi_jasa": "0.075"
+    },
+    "expected": {
+      "hea": "10973936801097393680109739368010973936801097394073",
+      "calculation": {
+        "total": "12345678901234567890123456789012345678901234568290",
+        "kpb": "0.125",
+        "kpj": "0.0300",
+        "heGoods": "10973936801097393680109739368010973936801097393680",
+        "heServices": "388.34951456310679611650485436893203883495145631068",
+        "heCombined": "10973936801097393680109739368010973936801097394068",
+        "tkdnCombined": "0.49999999999999999999999999999999999999999999999677"
+      }
+    }
+  },
+  {
+    "name": "one side zero",
+    "values": {
+      "hpb": "1000",
+      "hpj": "0",
+      "knb": "5",
+      "tkdn_barang": "0.5",
+      "tkdn_jasa": "0.4"
+    },
+    "preferences": {
+      "preferensi_barang": "0.25",
+      "preferensi_jasa": "0.075"
+    },
+    "expected": {
+      "hea": "893.88888888888888888888888888888888888888888888889",
+      "calculation": {
+        "total": "1000",
+        "kpb": "0.125",
+        "kpj": "0.0300",
+        "heGoods": "888.88888888888888888888888888888888888888888888889",
+        "heServices": "0",
+        "heCombined": "888.88888888888888888888888888888888888888888888889",
+        "tkdnCombined": "0.5"
+      }
+    }
+  }
+]

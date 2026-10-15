@@ -4,6 +4,7 @@ import { PencilSimple } from "@phosphor-icons/react/dist/csr/PencilSimple";
 import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
 import { X } from "@phosphor-icons/react/dist/csr/X";
 import type { ReactNode } from "react";
+import type { ReviewWorkflow } from "../../application/ports";
 import { SpreadsheetGrid } from "./SpreadsheetGrid";
 import type { SpreadsheetReviewModel } from "./useSpreadsheetReview";
 import type { SpreadsheetProfile } from "./profiles";
@@ -11,11 +12,13 @@ import { Modal } from "../../../../shared/ui/modal";
 import "../../../../shared/styles/focus.css";
 import "../owner-estimate/owner-estimate-review.css";
 
-export function SpreadsheetReviewPage({ model, profile, name, label, editLabel, confirmed, warnings, source, headerActions, missing }: {
+export function SpreadsheetReviewPage({ model, profile, name, label, editLabel, confirmed, warnings, source, headerActions, missing, reviewWorkflow }: {
   model: SpreadsheetReviewModel; profile: SpreadsheetProfile; name: string;
   label: string; editLabel: string; confirmed: boolean; warnings: string[];
   source?: string; headerActions?: ReactNode; missing: ReactNode;
+  reviewWorkflow?: ReviewWorkflow;
 }) {
+  const saveConfirms = reviewWorkflow === "SAVE_CONFIRMS";
   const canConfirm = !model.edit && !confirmed && !!model.baseline && !model.archived;
   const exitButton = useRef<HTMLButtonElement>(null);
   const saveButton = useRef<HTMLButtonElement>(null);
@@ -39,12 +42,12 @@ export function SpreadsheetReviewPage({ model, profile, name, label, editLabel, 
         <div className="oe-toolbar">
           <label className="oe-search"><MagnifyingGlass size={18} aria-hidden="true" /><input aria-label="Cari nomor atau uraian pekerjaan" placeholder="Cari nomor atau uraian pekerjaan…" value={model.query} onChange={event => model.setQuery(event.target.value)} />{model.query && <button type="button" className="icon-button" aria-label={`Hapus pencarian ${label}`} onClick={() => model.setQuery("")}><X size={16} aria-hidden="true" /></button>}</label>
         </div>
-        {warnings.length > 0 && <div className="oe-source-warning">{warnings.map(warning => <p key={warning}>{warning}</p>)}{!model.archived && <label><input type="checkbox" checked={model.ack} disabled={model.busy} onChange={event => model.setAck(event.target.checked)} /> Saya telah memeriksa peringatan sumber {label}.</label>}</div>}
+        {warnings.length > 0 && <div className="oe-source-warning">{warnings.map(warning => <p key={warning}>{warning}</p>)}{!model.archived && !saveConfirms && <label><input type="checkbox" checked={model.ack} disabled={model.busy} onChange={event => model.setAck(event.target.checked)} /> Saya telah memeriksa peringatan sumber {label}.</label>}</div>}
         {model.failure && !model.dialogOpen && <div className="alert error" role="alert">{model.failure}</div>}
         <SpreadsheetGrid profile={profile} model={model} onLeaveGrid={() => (saveButton.current ?? exitButton.current)?.focus()} />
         {(source || canConfirm) && <footer className="oe-review-footer">
           {source && <a href={source} download={name}>Buka berkas asli</a>}
-          {canConfirm && <button ref={saveButton} type="button" className="btn primary" disabled={model.busy} onClick={() => void model.save()}>{model.busy ? "Menyimpan…" : "Konfirmasi Data"}</button>}
+          {canConfirm && <button ref={saveButton} type="button" className="btn primary" disabled={model.busy} onClick={() => void model.save()}>{model.busy ? "Menyimpan…" : saveConfirms ? "Simpan Data" : "Konfirmasi Data"}</button>}
         </footer>}
       </> : <div className="oe-missing">{missing}</div>}
     </main>

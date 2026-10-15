@@ -16,6 +16,7 @@ const phaseLabels = { queued: "Menunggu", reading: "Membaca", ready: "Perlu dipe
 export function A5IntakeReview() {
   const { id = "", batchId = "" } = useParams();
   const commands = useA5IntakeCommands();
+  const saveConfirms = commands.reviewWorkflow === "SAVE_CONFIRMS";
   const data = useA5IntakeData();
   const batch = data.batches.find(b => b.id === batchId && b.procurementId === id);
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ export function A5IntakeReview() {
     if (!active) return;
     setError("");
     if (conflicts.some(c => c.items.some(i => i.id === active.id))) { setConflictOpen(true); return; }
-    try { validateIntakeDraft(active); setConfirm(true); }
+    try { validateIntakeDraft(saveConfirms ? { ...active, acknowledged: true } : active); if (saveConfirms) void confirmActive(); else setConfirm(true); }
     catch (e) { setError(e instanceof Error ? e.message : "Periksa data kembali."); }
   }
   async function confirmActive() {
@@ -75,7 +76,7 @@ export function A5IntakeReview() {
         return <button key={item.id} role="tab" id={`tab-${item.id}`} aria-selected={active?.id === item.id} aria-controls={`panel-${item.id}`} tabIndex={active?.id === item.id ? 0 : -1} title={item.source.name} onClick={() => { setActive(item.id); setError(""); }} onKeyDown={e => {
           const nextIndex = e.key === "ArrowRight" ? (index + 1) % batch.items.length : e.key === "ArrowLeft" ? (index - 1 + batch.items.length) % batch.items.length : e.key === "Home" ? 0 : e.key === "End" ? batch.items.length - 1 : -1;
           if (nextIndex < 0) return; e.preventDefault(); setActive(batch.items[nextIndex].id); setError(""); tabs.current?.querySelector<HTMLButtonElement>(`#tab-${batch.items[nextIndex].id}`)?.focus();
-        }}><strong>{item.vendorName || item.source.name}</strong><span className={`a5-tab-status ${conflict ? "conflict" : item.phase}`}>{conflict ? "Konflik" : phaseLabels[item.phase]}</span></button>;
+        }}><strong>{item.vendorName || item.source.name}</strong><span className={`a5-tab-status ${conflict ? "conflict" : item.phase}`}>{conflict ? "Konflik" : saveConfirms && item.phase === "confirmed" ? "Tersimpan" : phaseLabels[item.phase]}</span></button>;
       })}</div>{batch.items.filter(i => i.id !== active?.id).map(i => <div key={i.id} id={`panel-${i.id}`} role="tabpanel" aria-labelledby={`tab-${i.id}`} hidden />)}</>}
       source={active ? <section id={`panel-${active.id}`} role="tabpanel" aria-labelledby={`tab-${active.id}`} className="review-source"><embed key={active.id} className="review-pdf-preview" src={active.source.path} type="application/pdf" title={`Preview PDF ${active.source.name}`} /></section> : <div className="a5-no-files"><h2>Tidak ada PDF yang dapat diproses</h2><p>Periksa jenis berkas dan batas ukuran, lalu unggah kembali.</p><button className="btn" onClick={exit}>Kembali ke pengadaan</button></div>}
       editor={active ? <A5IntakeEditor key={active.id} item={active} batchId={batchId} commands={commands} pending={pending} conflict={[...conflicts, ...hashConflicts].some(c => c.items.some(i => i.id === active.id))} onConflict={() => { if (hashConflicts.some(c => c.items.some(i => i.id === active.id))) setHashOpen(true); else setConflictOpen(true); }} onConfirm={requestConfirm} error={error} /> : <div className="panel review-editor"><h2>Berkas tidak diproses</h2>{batch.rejected.map((r, i) => <p key={i}>{r.name}: {r.reason}</p>)}</div>} />

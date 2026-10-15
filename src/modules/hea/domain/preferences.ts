@@ -2,7 +2,7 @@ import type { Preferences } from "./models";
 import { copy, decimal, DomainError, equalValues } from "../../../shared/kernel/validation";
 interface PreferenceState { preferences?: Preferences; preferenceRevision: number; preferenceConfirmed: boolean; }
 export function reviewedPreferences(current: PreferenceState, values: Preferences): PreferenceState | undefined {
-  Object.values(values).forEach((value) => decimal(value, true));
+  for (const key of ["preferensi_barang", "preferensi_jasa"] as const) decimal(values[key], true);
   if (current.preferences && equalValues(values, current.preferences)) return undefined;
   return { preferences: copy(values), preferenceRevision: current.preferenceRevision + 1, preferenceConfirmed: false };
 }

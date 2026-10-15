@@ -36,7 +36,7 @@ export function useUploadPanel({
   const oe = useOwnerEstimateImport(procurementId, currentDocument);
   const offer = useSpreadsheetImport({ prepare: service.prepareOfferSpreadsheet, release: service.releaseOfferSpreadsheet,
     publish: (pendingId, sheetId) => service.publishOfferSpreadsheet({ pendingId, sheetId, procurementId, vendorId: vendor }),
-    successMessage: "Tabel penawaran selesai dibaca. Periksa data sebelum konfirmasi.",
+    successMessage: service.reviewWorkflow === "SAVE_CONFIRMS" ? "Tabel penawaran selesai dibaca. Periksa lalu simpan data." : "Tabel penawaran selesai dibaca. Periksa data sebelum konfirmasi.",
   });
   const busy = localBusy || oe.busy || offer.busy;
   const processing = oe.progress || offer.progress || localProcessing;

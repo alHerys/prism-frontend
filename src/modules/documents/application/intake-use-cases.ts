@@ -4,8 +4,9 @@ import { emptyA5, intakeConflicts, intakeHashConflicts, unfinished, validateInta
 import type { IntakeBatch, IntakeItem } from "../domain/intake";
 import type { A5Values } from "../domain/models";
 import type { A5ExtractionPort, A5PublicationPort, IntakeAssets, IntakeStore } from "./intake-ports";
+import type { ReviewWorkflow } from "./ports";
 
-export function createA5IntakeUseCases(store: IntakeStore, assets: IntakeAssets, extraction: A5ExtractionPort, publication: A5PublicationPort) {
+export function createA5IntakeUseCases(store: IntakeStore, assets: IntakeAssets, extraction: A5ExtractionPort, publication: A5PublicationPort, reviewWorkflow: ReviewWorkflow = "SEPARATE_CONFIRMATION") {
   let sequence = 0;
   let active = 0;
   const running = new Set<string>();
@@ -43,10 +44,11 @@ export function createA5IntakeUseCases(store: IntakeStore, assets: IntakeAssets,
     }
   }
   return {
+    reviewWorkflow,
     start: async (procurementId: string, files: readonly BinarySource[]) => {
       const batch: IntakeBatch = { id: `intake-${++sequence}`, procurementId, items: [], rejected: [] };
       const existingHashes = publication.existing(procurementId).flatMap(v => v.document?.sha256 ? [v.document.sha256] : []);
-      const hashes = new Set([...existingHashes, ...store.getSnapshot().batches.filter(b => b.procurementId === procurementId).flatMap(b => b.items.filter(unfinished).map(i => i.source.sha256))]);
+      const hashes = new Set([...(reviewWorkflow === "SAVE_CONFIRMS" ? [] : existingHashes), ...store.getSnapshot().batches.filter(b => b.procurementId === procurementId).flatMap(b => b.items.filter(unfinished).map(i => i.source.sha256))]);
       for (const [index, file] of files.entries()) {
         if (index >= 10) { batch.rejected.push({ name: file.name, reason: "Maksimal 10 PDF per batch." }); continue; }
         try {
@@ -98,10 +100,11 @@ export function createA5IntakeUseCases(store: IntakeStore, assets: IntakeAssets,
       if (intakeHashConflicts(batch).length) throw new Error("Pilih satu PDF identik sebelum konfirmasi.");
       if (batch.items.some(i => i.phase === "queued" || i.phase === "reading")) throw new Error("Tunggu pembacaan batch selesai sebelum konfirmasi.");
       if (intakeConflicts(batch, publication.existing(batch.procurementId)).some(c => c.items.some(i => i.id === itemId))) throw new Error("Selesaikan konflik dokumen sebelum konfirmasi.");
-      validateIntakeDraft(entry);
+      const reviewed = reviewWorkflow === "SAVE_CONFIRMS" ? { ...entry, acknowledged: true } : entry;
+      validateIntakeDraft(reviewed);
       change(id, itemId, { publishing: true, error: undefined });
       try {
-        const result = await publication.publish(batch.procurementId, copy(entry));
+        const result = await publication.publish(batch.procurementId, copy(reviewed));
         change(id, itemId, { phase: "confirmed", documentId: result.documentId, publishing: false });
       } catch (error) {
         change(id, itemId, { publishing: false, error: error instanceof Error ? error.message : "Konfirmasi gagal." }); throw error;

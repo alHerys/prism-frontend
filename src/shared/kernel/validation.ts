@@ -26,7 +26,7 @@ export const requireText = (text: string, label: string) => {
 };
 export const decimal = (text: string, ratio = false) => {
   if (
-    text.length > 80 ||
+    typeof text !== "string" || text.length > 80 ||
     !/^(?:\d+(?:\.\d+)?|\.\d+)$/.test(text.trim()) ||
     (ratio && !/^(?:0(?:\.\d+)?|1(?:\.0+)?)$/.test(normalize(text)))
   )

@@ -1,5 +1,28 @@
 # Desktop acceptance
 
+## Private Pertamina workflow
+
+Run `npm run demo:pertamina`, then select the private catalog explicitly:
+
+```sh
+PRISM_PERTAMINA_REFERENCE="/absolute/workspace/data-pertamina/demo/pertamina-v1/catalog.json" \
+  npx playwright test --config playwright.pertamina.config.ts
+```
+
+The suite checks both desktop and phone: source uploads, single-action saving,
+dynamic HEA, unchanged prepared price results, PDF/Excel and historical exports,
+layout overflow and absence of backend/provider requests. All artifacts stay in
+the Git-ignored `test-results/pertamina-local/` directory. The suite skips when
+no private catalog is explicitly selected; original data is never a CI fixture.
+
+The same environment variable enables an optional local Vitest reference check.
+Default unit tests use independently authored data and Python Decimal oracle
+vectors. `scripts/hea-oracle.py` accepts synthetic vectors on stdin; its output
+is checked against the isolated decimal.js calculator, including boundary,
+zero, precision and tie cases. Default standard-runtime regressions remain intact.
+
+## Standard synthetic acceptance
+
 Run the frontend preview at `http://127.0.0.1:5175`, then `npm run test:desktop`.
 `PRISM_PREVIEW_URL` overrides that URL; `PRISM_BROWSER_PATH` overrides the local
 Chrome executable. This suite uses the installed `@playwright/test` runner and

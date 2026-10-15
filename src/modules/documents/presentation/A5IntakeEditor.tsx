@@ -22,6 +22,7 @@ export function A5IntakeEditor({ item, batchId, commands, pending, conflict, onC
     } else commands.edit(batchId, item.id, { values: { ...item.values, [key]: value } });
   }
   const fixed = item.phase === "confirmed" || item.phase === "skipped";
+  const saveConfirms = commands.reviewWorkflow === "SAVE_CONFIRMS";
   return <section className="panel review-editor a5-intake-editor">
     <div className="panel-header"><div><h2>Periksa vendor & data</h2><p>Sesuaikan identitas dan nilai dengan Form A5.</p></div></div>
     {!item.candidate ? <div className="a5-extraction-state" role="status">
@@ -36,12 +37,12 @@ export function A5IntakeEditor({ item, batchId, commands, pending, conflict, onC
           {item.candidate.sources.find(s => s.field === "vendor_name")?.quote && <small className="a5-identity-evidence">Sumber: {item.candidate.sources.find(s => s.field === "vendor_name")!.quote}</small>}
         </div>
         <A5ValueFields values={displayed} candidate={item.candidate.values} onChange={changeValue} idPrefix="intake-" />
-        {item.candidate.warnings.length > 0 && <div className="alert review-warning"><strong>Perlu diperiksa</strong>{item.candidate.warnings.map((w, i) => <p key={i}>{w}</p>)}<label className="notice"><input type="checkbox" checked={item.acknowledged} onChange={e => commands.edit(batchId, item.id, { acknowledged: e.target.checked })} />Saya telah memeriksa peringatan dan memastikan data sesuai sumber.</label></div>}
+        {item.candidate.warnings.length > 0 && <div className="alert review-warning"><strong>Perlu diperiksa</strong>{item.candidate.warnings.map((w, i) => <p key={i}>{w}</p>)}{!saveConfirms && <label className="notice"><input type="checkbox" checked={item.acknowledged} onChange={e => commands.edit(batchId, item.id, { acknowledged: e.target.checked })} />Saya telah memeriksa peringatan dan memastikan data sesuai sumber.</label>}</div>}
       </fieldset>
       {item.target && <p className="a5-target-notice">{item.target.document ? `Mengganti ${item.target.document.name}` : `Menambahkan A5 untuk ${item.target.name}`}</p>}
       {(error || item.error) && <p className="alert error" role="alert">{error || item.error}</p>}
-      {fixed ? <div className="a5-target-notice" role="status">{item.phase === "confirmed" ? "Vendor dan data telah dikonfirmasi." : "Dokumen ini dilewati."}</div> : <div className="review-action">
-        {conflict ? <button className="btn" onClick={onConflict}>Pilih A5 yang digunakan</button> : <button className="btn primary" disabled={pending || item.publishing || (item.candidate.warnings.length > 0 && !item.acknowledged)} onClick={onConfirm}><CheckCircle aria-hidden="true" />{item.publishing ? "Mengonfirmasi…" : "Konfirmasi vendor & data"}</button>}
+      {fixed ? <div className="a5-target-notice" role="status">{item.phase === "confirmed" ? saveConfirms ? "Vendor dan data telah disimpan." : "Vendor dan data telah dikonfirmasi." : "Dokumen ini dilewati."}</div> : <div className="review-action">
+        {conflict ? <button className="btn" onClick={onConflict}>Pilih A5 yang digunakan</button> : <button className="btn primary" disabled={pending || item.publishing || (!saveConfirms && item.candidate.warnings.length > 0 && !item.acknowledged)} onClick={onConfirm}><CheckCircle aria-hidden="true" />{item.publishing ? "Menyimpan…" : saveConfirms ? "Simpan" : "Konfirmasi vendor & data"}</button>}
         {pending && <small>Menunggu pembacaan batch selesai.</small>}
         <button className="btn quiet" disabled={item.publishing} onClick={() => commands.skip(batchId, item.id)}>Lewati dokumen</button>
       </div>}

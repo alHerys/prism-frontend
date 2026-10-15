@@ -49,6 +49,28 @@ Petunjuk dan ukuran bundle di [pengujian](tests/README.md).
 `npm run fixtures:prepare` menyiapkan paket pengujian dari bytes asli
 `public/files/`.
 
+## Pengadaan Pertamina lokal
+
+`npm run demo:pertamina` memverifikasi empat sumber terdaftar dan referensi lokal,
+menyiapkan katalog privat di `../data-pertamina/demo/pertamina-v1/`, kemudian
+menjalankan aplikasi di `http://127.0.0.1:5178`. Sumber asli dibaca tanpa diubah.
+Python hanya diperlukan saat menyiapkan paket; runtime browser tidak memanggil
+backend, provider AI, atau layanan Python. `PRISM_PYTHON` dapat memilih executable
+Python dan `PRISM_DEMO_PORT` mengganti port lokal.
+
+Tiga pengadaan memakai kode PGD-001 (unggah dari awal), PGD-002 (A5/OE tersedia),
+dan PGD-003 (sumber dan hasil lengkap). Form A5 dikenali berdasarkan SHA-256,
+bukan nama berkas. Simpan langsung mengonfirmasi nilai. HEA dihitung ulang dari
+A5 dan preferensi tersimpan menggunakan konteks decimal.js 50 digit. Hasil lama
+tetap immutable; penyimpanan identik tidak membuat hasil duplikat. Harga Timpang
+memakai hasil referensi yang disiapkan; koreksi tabel OE/penawaran tidak mengubah
+evaluasi. Data sesi hilang setelah reload.
+
+Mode ini khusus localhost. Katalog, PDF/XLSX asli dan hasil internal tidak masuk
+Git, `public/`, atau bundle standar. Server hanya menyajikan aset pada allowlist.
+`npm run dev`, build standar dan fixture sintetis tetap menggunakan runtime lama.
+Perhitungan lokal bukan implementasi wire contract backend atau persistensi.
+
 ## Status integrasi
 
 State masih dalam memori dan dimulai ulang saat reload. Adapter lokal mengenali

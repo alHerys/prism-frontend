@@ -8,8 +8,9 @@ import type { LocalStore } from "./store";
 import { toDocument } from "./document-mapping";
 import { makeDocument } from "./documents";
 import registry from "./fixtures/file-registry.json";
+import type { SpreadsheetLifecycle } from "./spreadsheet-lifecycle";
 
-export function createOfferSpreadsheetAdapter(store: LocalStore): OfferSpreadsheetPort & { sources(): DocumentSource[] } {
+export function createOfferSpreadsheetAdapter(store: LocalStore, lifecycle: SpreadsheetLifecycle = {}): OfferSpreadsheetPort & { sources(): DocumentSource[] } {
   let sequence = 0;
   const pending = new Map<string, { name: string; bytes: ArrayBuffer; sha256: string; sheets: SpreadsheetSheet[] }>();
   const sources = new Map<string, DocumentSource>();
@@ -29,7 +30,7 @@ export function createOfferSpreadsheetAdapter(store: LocalStore): OfferSpreadshe
       return { id, name: file.name, sheets: sheets.map(s => ({ id: s.id, name: s.name, rows: s.rows.length })) };
     },
     release: id => { pending.delete(id); },
-    publish: async input => {
+    publish: async input => store.transaction(() => {
       store.proc(input.procurementId);
       if (!store.state.vendors.some(v => v.id === input.vendorId && v.procurementId === input.procurementId))
         throw new DomainError("VENDOR_REQUIRED", "Pilih vendor pemilik penawaran.");
@@ -46,12 +47,13 @@ export function createOfferSpreadsheetAdapter(store: LocalStore): OfferSpreadshe
         sources.set(input.pendingId, { id: input.pendingId, name: original.name, path, kind: "OFFER" });
       }
       store.state.documents.unshift(d);
+      lifecycle.published?.(d.id);
       store.event({ procurementId: d.procurementId, module: "PRICE_DEVIATION", type: "UPLOADED", summary: `${d.name} selesai dibaca; menunggu pemeriksaan dokumen` });
       pending.delete(input.pendingId);
       store.emit();
       return toDocument(copy(d));
-    },
-    saveAndConfirm: async input => {
+    }),
+    saveAndConfirm: async input => store.transaction(() => {
       const current = store.doc(input.documentId);
       ensureCurrentDocument(current);
       store.check(current.revision, input.expectedRevision);
@@ -66,8 +68,9 @@ export function createOfferSpreadsheetAdapter(store: LocalStore): OfferSpreadshe
       current.offerSpreadsheet = { candidate: table.candidate, reviewed, status: "CONFIRMED", acknowledged: input.acknowledged };
       current.revision++;
       store.event({ procurementId: current.procurementId, module: "PRICE_DEVIATION", type: "CONFIRMED", summary: `Spreadsheet ${current.name} disimpan dan dikonfirmasi` });
+      lifecycle.saved?.(current.id);
       store.emit();
       return toDocument(copy(current));
-    },
+    }),
   };
 }

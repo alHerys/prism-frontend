@@ -77,7 +77,7 @@ export function useReview() : ReviewModel {
       await service.saveReview(saveInput());
       setDirty(false);
       toast(
-        "Perubahan disimpan. Konfirmasi diperlukan untuk data yang berubah.",
+        service.reviewWorkflow === "SAVE_CONFIRMS" ? "Perubahan disimpan." : "Perubahan disimpan. Konfirmasi diperlukan untuk data yang berubah.",
       );
       return true;
     } catch (e) {
@@ -143,6 +143,7 @@ export function useReview() : ReviewModel {
     setAck(false);
   }
   return {
+    reviewWorkflow: service.reviewWorkflow,
     removalTarget, removalFailure, requestRemoval, cancelRemoval, removeDocument,
     id,
     state,

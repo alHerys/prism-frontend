@@ -25,17 +25,20 @@ export async function createProcurement(store: LocalStore, input: {
   store.emit();
   return copy(p);
 }
-export async function addVendor(store: LocalStore, procurementId: string, name: string) {
-  store.proc(procurementId);
-  validateVendor(name, store.state.vendors.filter((v) => v.procurementId === procurementId).map((v) => v.name));
-  const v = { id: store.id("vendor"), procurementId, name: name.trim(), createdAt: new Date().toISOString() };
-  store.state.vendors.push(v);
-  store.event({
-    procurementId,
-    module: "PROCUREMENT",
-    type: "VENDOR_ADDED",
-    summary: `Vendor ${name} ditambahkan`,
+export async function addVendor(store: LocalStore, procurementId: string, name: string, afterSave?: (procurementId: string) => void) {
+  return store.transaction(() => {
+    store.proc(procurementId);
+    validateVendor(name, store.state.vendors.filter((v) => v.procurementId === procurementId).map((v) => v.name));
+    const v = { id: store.id("vendor"), procurementId, name: name.trim(), createdAt: new Date().toISOString() };
+    store.state.vendors.push(v);
+    store.event({
+      procurementId,
+      module: "PROCUREMENT",
+      type: "VENDOR_ADDED",
+      summary: `Vendor ${name} ditambahkan`,
+    });
+    afterSave?.(procurementId);
+    store.emit();
+    return copy(v);
   });
-  store.emit();
-  return copy(v);
 }

@@ -21,7 +21,10 @@ export function ReviewEditor({
   failure,
   changeValue,
   editPair,
-}: Pick<ReviewModel, "d" | "ack" | "setAck" | "busy" | "setConfirm" | "setFocused" | "values" | "pairs" | "group" | "setGroup" | "dirty" | "setDirty" | "failure" | "changeValue" | "editPair"> & { d: DocumentRecord }) {
+  reviewWorkflow,
+  save,
+}: Pick<ReviewModel, "d" | "ack" | "setAck" | "busy" | "setConfirm" | "setFocused" | "values" | "pairs" | "group" | "setGroup" | "dirty" | "setDirty" | "failure" | "changeValue" | "editPair" | "reviewWorkflow" | "save"> & { d: DocumentRecord }) {
+  const saveConfirms = reviewWorkflow === "SAVE_CONFIRMS";
   return (
     <section className="panel review-editor">
       <div className="panel-header">
@@ -134,6 +137,7 @@ export function ReviewEditor({
           {failure}
         </div>
       )}
+      {saveConfirms && d.kind === "FORM_A5" && d.warnings.map(warning => <p className="alert review-warning" key={warning}>{warning}</p>)}
       <div className="review-action">
         <button
           className="btn primary"
@@ -143,10 +147,10 @@ export function ReviewEditor({
             (d.kind !== "FORM_A5" && d.warnings.length > 0 && !ack) ||
             (!values && !group)
           }
-          onClick={() => setConfirm(true)}
+          onClick={() => { if (saveConfirms) void save(); else setConfirm(true); }}
         >
           <CheckCircle2 />
-          {busy ? "Mengonfirmasi…" : "Konfirmasi data"}
+          {busy ? "Menyimpan…" : saveConfirms ? "Simpan" : "Konfirmasi data"}
         </button>
       </div>
     </section>

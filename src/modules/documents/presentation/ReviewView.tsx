@@ -18,6 +18,7 @@ import { ReviewRemoval } from "./ReviewRemoval";
 
 import type { ReviewModel } from "./view-models";
 export function ReviewView({
+  reviewWorkflow,
   removalTarget, removalFailure, requestRemoval, cancelRemoval, removeDocument,
   d,
   showSource,
@@ -67,7 +68,7 @@ export function ReviewView({
         d={d} ack={ack} setAck={setAck} busy={busy}
         setConfirm={setConfirm} setFocused={setFocused} values={values}
         pairs={pairs} group={group} setGroup={setGroup} dirty={dirty}
-        setDirty={setDirty} failure={failure} changeValue={changeValue} editPair={editPair}
+        setDirty={setDirty} failure={failure} changeValue={changeValue} editPair={editPair} reviewWorkflow={reviewWorkflow} save={save}
       />;
   const onBack = () => dirty ? setLeave(true) : back();
   const removal = ["FORM_A5", "OFFER"].includes(d.kind) && !d.removedAt && !d.supersededBy

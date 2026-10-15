@@ -27,6 +27,7 @@ export interface UploadPanelModel {
 }
 
 export interface ReviewModel {
+  reviewWorkflow?: import("../application/ports").ReviewWorkflow;
   removalTarget: import("../domain/models").DocumentRecord | undefined;
   removalFailure: string;
   requestRemoval: () => void;

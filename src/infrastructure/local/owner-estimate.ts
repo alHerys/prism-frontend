@@ -8,8 +8,9 @@ import { toDocument } from "./document-mapping";
 import type { DocumentSource } from "../../modules/documents/application/ports";
 import registry from "./fixtures/file-registry.json";
 import { makeDocument } from "./documents";
+import type { SpreadsheetLifecycle } from "./spreadsheet-lifecycle";
 
-export function createOwnerEstimateAdapter(store: LocalStore): OwnerEstimatePort & { sources(): DocumentSource[] } {
+export function createOwnerEstimateAdapter(store: LocalStore, lifecycle: SpreadsheetLifecycle = {}): OwnerEstimatePort & { sources(): DocumentSource[] } {
   let sequence = 0;
   const pending = new Map<string, { name: string; bytes: ArrayBuffer; sha256: string; sheets: OESheet[] }>();
   const sources = new Map<string, DocumentSource>();
@@ -29,7 +30,7 @@ export function createOwnerEstimateAdapter(store: LocalStore): OwnerEstimatePort
       return { id, name: file.name, sheets: sheets.map(s => ({ id: s.id, name: s.name, rows: s.rows.length })) };
     },
     release: id => { pending.delete(id); },
-    publish: async input => {
+    publish: async input => store.transaction(() => {
       store.proc(input.procurementId);
       const original = pending.get(input.pendingId);
       const sheet = original?.sheets.find(s => s.id === input.sheetId);
@@ -46,12 +47,13 @@ export function createOwnerEstimateAdapter(store: LocalStore): OwnerEstimatePort
       if (current) current.supersededBy = d.id;
       if (!fixture) { d.groups = []; sources.set(input.pendingId, { id: input.pendingId, name: original.name, path, kind: "OE" }); }
       store.state.documents.unshift(d);
+      lifecycle.published?.(d.id);
       store.event({ procurementId: d.procurementId, module: "PRICE_DEVIATION", type: "UPLOADED", summary: `${d.name} selesai dibaca; menunggu pemeriksaan` });
       pending.delete(input.pendingId);
       store.emit();
       return toDocument(copy(d));
-    },
-    saveAndConfirm: async input => {
+    }),
+    saveAndConfirm: async input => store.transaction(() => {
       const current = store.doc(input.documentId);
       ensureCurrentDocument(current);
       store.check(current.revision, input.expectedRevision);
@@ -68,8 +70,9 @@ export function createOwnerEstimateAdapter(store: LocalStore): OwnerEstimatePort
       current.acknowledged = input.acknowledged;
       current.revision++;
       store.event({ procurementId: current.procurementId, module: "PRICE_DEVIATION", type: "CONFIRMED", summary: `${current.name} disimpan dan dikonfirmasi` });
+      lifecycle.saved?.(current.id);
       store.emit();
       return toDocument(copy(current));
-    },
+    }),
   };
 }

@@ -4,6 +4,8 @@ import type { DocumentRecord } from "../domain/models";
 import type { UploadInput } from "../domain/models";
 import type { BinarySource } from "../../../shared/kernel/binary-source";
 
+export type ReviewWorkflow = "SEPARATE_CONFIRMATION" | "SAVE_CONFIRMS";
+
 export interface DocumentsGateway {
   removeVendorDocument(procurementId: string, documentId: string, expectedRevision: number): Promise<void>;
   removeOwnerEstimate(procurementId: string, documentId: string, expectedRevision: number): Promise<void>;

@@ -9,8 +9,8 @@ export function useOEReview(document: DocumentRecord) {
   const navigate = useNavigate();
   const location = useLocation();
   return useSpreadsheetReview({ document, stored: document.ownerEstimate?.reviewed ?? document.ownerEstimate?.candidate,
-    warnings: document.warnings, acknowledged: document.acknowledged,
-    save: commands.saveAndConfirmOwnerEstimate, successMessage: "OE disimpan dan terkonfirmasi.",
+    warnings: document.warnings, acknowledged: commands.reviewWorkflow === "SAVE_CONFIRMS" || document.acknowledged,
+    save: commands.saveAndConfirmOwnerEstimate, successMessage: commands.reviewWorkflow === "SAVE_CONFIRMS" ? "OE disimpan." : "OE disimpan dan terkonfirmasi.",
     onBack: () => { void navigate(spreadsheetReturnTo(document, location.state?.reviewReturnTo)); },
   });
 }

@@ -19,8 +19,8 @@ export function OfferSpreadsheetReview({ document }: { document: DocumentRecord 
   const path = `/pengadaan/${document.procurementId}`;
   const back = () => { void navigate(spreadsheetReturnTo(document, location.state?.reviewReturnTo)); };
   const model = useSpreadsheetReview({ document, stored: table?.reviewed ?? table?.candidate,
-    warnings: table?.candidate.warnings ?? [], acknowledged: table?.acknowledged ?? false,
-    save: commands.saveAndConfirmOfferSpreadsheet, onBack: back, successMessage: "Spreadsheet penawaran disimpan dan terkonfirmasi.",
+    warnings: table?.candidate.warnings ?? [], acknowledged: commands.reviewWorkflow === "SAVE_CONFIRMS" || (table?.acknowledged ?? false),
+    save: commands.saveAndConfirmOfferSpreadsheet, onBack: back, successMessage: commands.reviewWorkflow === "SAVE_CONFIRMS" ? "Spreadsheet penawaran disimpan." : "Spreadsheet penawaran disimpan dan terkonfirmasi.",
   });
   const latest = useRef(document);
   latest.current = document;
@@ -37,7 +37,7 @@ export function OfferSpreadsheetReview({ document }: { document: DocumentRecord 
     finally { setRemoving(false); }
   }
   return <>
-    <SpreadsheetReviewPage model={{ ...model, busy: model.busy || removing }} profile={offerProfile} name={document.name}
+    <SpreadsheetReviewPage model={{ ...model, busy: model.busy || removing }} profile={offerProfile} name={document.name} reviewWorkflow={commands.reviewWorkflow}
       label="Penawaran" editLabel="Edit Penawaran" confirmed={table?.status === "CONFIRMED"} warnings={table?.candidate.warnings ?? []} source={source?.path}
       headerActions={!model.archived && <button className="icon-button review-remove" aria-label="Hapus Penawaran Harga" title="Hapus dokumen" disabled={model.busy || removing}
         onClick={() => model.requestExit(() => { setRemovalFailure(""); setRemovalTarget(latest.current); })}><Trash size={20} aria-hidden="true" /></button>}

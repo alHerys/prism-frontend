@@ -157,30 +157,36 @@ export async function reviewDocument(store: LocalStore, id: string, values: A5Va
   return copy(d);
 }
 
-export async function removeOwnerEstimate(store: LocalStore, procurementId: string, documentId: string, expectedRevision: number) {
-  store.proc(procurementId);
-  const document = store.doc(documentId);
-  if (document.procurementId !== procurementId || document.kind !== "OE") {
-    throw new DomainError("WRONG_SCOPE", "Pilih dokumen OE milik pengadaan ini.");
-  }
-  ensureCurrentDocument(document);
-  store.check(document.revision, expectedRevision);
-  document.removedAt = new Date().toISOString();
-  store.event({ procurementId, module: "PRICE_DEVIATION", type: "REMOVED", summary: `${document.name} dihapus dari pengadaan` });
-  store.emit();
+export async function removeOwnerEstimate(store: LocalStore, procurementId: string, documentId: string, expectedRevision: number, afterRemove?: () => void) {
+  return store.transaction(() => {
+    store.proc(procurementId);
+    const document = store.doc(documentId);
+    if (document.procurementId !== procurementId || document.kind !== "OE") {
+      throw new DomainError("WRONG_SCOPE", "Pilih dokumen OE milik pengadaan ini.");
+    }
+    ensureCurrentDocument(document);
+    store.check(document.revision, expectedRevision);
+    document.removedAt = new Date().toISOString();
+    store.event({ procurementId, module: "PRICE_DEVIATION", type: "REMOVED", summary: `${document.name} dihapus dari pengadaan` });
+    afterRemove?.();
+    store.emit();
+  });
 }
-export async function removeVendorDocument(store: LocalStore, procurementId: string, documentId: string, expectedRevision: number) {
-  store.proc(procurementId);
-  const document = store.doc(documentId);
-  if (document.procurementId !== procurementId || !["FORM_A5", "OFFER"].includes(document.kind) ||
-    !store.state.vendors.some(vendor => vendor.id === document.vendorId && vendor.procurementId === procurementId)) {
-    throw new DomainError("WRONG_SCOPE", "Pilih Form A5 atau Penawaran Harga milik vendor pengadaan ini.");
-  }
-  ensureCurrentDocument(document);
-  store.check(document.revision, expectedRevision);
-  document.removedAt = new Date().toISOString();
-  store.event({ procurementId, module: document.kind === "FORM_A5" ? "HEA" : "PRICE_DEVIATION", type: "REMOVED", summary: `${document.name} dihapus dari vendor` });
-  store.emit();
+export async function removeVendorDocument(store: LocalStore, procurementId: string, documentId: string, expectedRevision: number, afterRemove?: () => void) {
+  return store.transaction(() => {
+    store.proc(procurementId);
+    const document = store.doc(documentId);
+    if (document.procurementId !== procurementId || !["FORM_A5", "OFFER"].includes(document.kind) ||
+      !store.state.vendors.some(vendor => vendor.id === document.vendorId && vendor.procurementId === procurementId)) {
+      throw new DomainError("WRONG_SCOPE", "Pilih Form A5 atau Penawaran Harga milik vendor pengadaan ini.");
+    }
+    ensureCurrentDocument(document);
+    store.check(document.revision, expectedRevision);
+    document.removedAt = new Date().toISOString();
+    store.event({ procurementId, module: document.kind === "FORM_A5" ? "HEA" : "PRICE_DEVIATION", type: "REMOVED", summary: `${document.name} dihapus dari vendor` });
+    afterRemove?.();
+    store.emit();
+  });
 }
 
 export async function confirmDocument(store: LocalStore, id: string, expectedRevision: number, acknowledged = false) {

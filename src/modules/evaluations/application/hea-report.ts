@@ -1,5 +1,6 @@
 import type { Snapshot } from "../domain/models";
 import type { ReportFormat } from "./report-format";
+import { rankLabel } from "./rank-label";
 
 export interface ReportCell {
   row: number; column: number; rowSpan?: number; columnSpan?: number;
@@ -68,7 +69,7 @@ export function buildHEAReport(snapshot: Snapshot, procurement: { name: string; 
     put(lowerRow, 5, calculation?.heCombined, { format: "money", fill: "gray" });
     put(lowerRow, 6, text(values.knb), { format: "money2", fill: "yellow" });
     put(lowerRow, 7, result.hea, { format: "money" });
-    put(lowerRow, 8, result.rank === undefined ? undefined : String(result.rank), { fill: "yellow" });
+    put(lowerRow, 8, result.rank === undefined ? undefined : rankLabel(result, snapshot.rows), { fill: "yellow" });
   });
   if (cells.some(cell => cell.value === undefined)) {
     rowHeights.push(15, 18);

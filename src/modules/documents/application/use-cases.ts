@@ -1,4 +1,4 @@
-import type { DocumentsGateway, DocumentProcessing } from "./ports";
+import type { DocumentsGateway, DocumentProcessing, ReviewWorkflow } from "./ports";
 import type { PriceDeviationGateway } from "../../price-deviation/application/ports";
 import type { BinarySource } from "../../../shared/kernel/binary-source";
 import type { A5Values, DocumentKind, DocumentRecord, UploadInput } from "../domain/models";
@@ -11,10 +11,11 @@ export interface SaveReviewInput {
   group?: string;
   pairs: PricePair[];
 }
-export function createDocumentsUseCases(gateway: DocumentsGateway, processing: DocumentProcessing, prices: Pick<PriceDeviationGateway, "selectGroup" | "reviewPairs" | "confirmPairs">, ownerEstimate?: OwnerEstimatePort, offerSpreadsheet?: OfferSpreadsheetPort) {
+export function createDocumentsUseCases(gateway: DocumentsGateway, processing: DocumentProcessing, prices: Pick<PriceDeviationGateway, "selectGroup" | "reviewPairs" | "confirmPairs">, ownerEstimate?: OwnerEstimatePort, offerSpreadsheet?: OfferSpreadsheetPort, reviewWorkflow: ReviewWorkflow = "SEPARATE_CONFIRMATION") {
   const oe = () => { if (!ownerEstimate) throw new Error("Pembacaan OE belum tersedia."); return ownerEstimate; };
   const offer = () => { if (!offerSpreadsheet) throw new Error("Pembacaan penawaran belum tersedia."); return offerSpreadsheet; };
   return {
+    reviewWorkflow,
     prepareOfferSpreadsheet: (...args: Parameters<OfferSpreadsheetPort["prepare"]>) => offer().prepare(...args),
     publishOfferSpreadsheet: (...args: Parameters<OfferSpreadsheetPort["publish"]>) => offer().publish(...args),
     releaseOfferSpreadsheet: (id: string) => offer().release(id),

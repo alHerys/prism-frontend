@@ -4,9 +4,10 @@ import { ToastProvider } from "../../shared/ui/toast-provider";
 
 import { AppShell } from "../layout/AppShell";
 
-import { application, preferencesStorage } from "../bootstrap/runtime";
+import { preferencesStorage } from "../bootstrap/runtime";
+import type { Application } from "../bootstrap/application";
 
-export const router = createBrowserRouter([
+export const createAppRouter = (application: Application) => createBrowserRouter([
   {
     path: "*",
     element: (

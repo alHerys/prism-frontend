@@ -21,7 +21,7 @@ export interface ResultRow {
 /** Decimal strings returned by the calculation adapter, never recomputed by reports. */
 export interface HEACalculation {
   total: string;
-  tkdnCombined: string;
+  tkdnCombined?: string;
   kpb: string;
   kpj: string;
   heGoods: string;

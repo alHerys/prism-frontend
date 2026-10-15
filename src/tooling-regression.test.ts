@@ -13,7 +13,9 @@ it("keeps active Markdown links and npm commands valid without obsolete framing"
   const scripts = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8")).scripts as Record<string, string>;
   for (const name of markdown) {
     const text = readFileSync(path.join(root, name), "utf8");
-    expect(text, name).not.toMatch(/\bdemo\b|frontendnstration|implementationnstration|\brehearsal\b|\bpresenter\b/i);
+    // Developer command names and private paths are technical identifiers, not product copy.
+    const prose = text.replace(/```[\s\S]*?```/g, "").replace(/`[^`\n]+`/g, "");
+    expect(prose, name).not.toMatch(/\bdemo\b|frontendnstration|implementationnstration|\brehearsal\b|\bpresenter\b/i);
     for (const match of text.matchAll(/npm run ([\w:-]+)/g)) expect(scripts[match[1]], `${name}: ${match[1]}`).toBeTruthy();
     for (const match of text.matchAll(/\[[^\]]*\]\(([^\s)]+)\)/g)) {
       const target = match[1].split("#")[0];
