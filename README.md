@@ -51,12 +51,17 @@ Petunjuk dan ukuran bundle di [pengujian](tests/README.md).
 
 ## Pengadaan Pertamina lokal
 
-`npm run demo:pertamina` memverifikasi empat sumber terdaftar dan referensi lokal,
+`npm run dev` otomatis memakai paket Pertamina jika register sumber lokal tersedia.
+Tanpa berkas lokal, perintah ini menjalankan runtime sintetis.
+`npm run dev:standard` selalu memilih runtime sintetis.
+
+`npm run demo:pertamina` juga memverifikasi empat sumber terdaftar dan referensi lokal,
 menyiapkan katalog privat di `../data-pertamina/demo/pertamina-v1/`, kemudian
-menjalankan aplikasi di `http://127.0.0.1:5178`. Sumber asli dibaca tanpa diubah.
+menjalankan aplikasi di `http://127.0.0.1:5173`. Sumber asli dibaca tanpa diubah.
 Python hanya diperlukan saat menyiapkan paket; runtime browser tidak memanggil
 backend, provider AI, atau layanan Python. `PRISM_PYTHON` dapat memilih executable
-Python dan `PRISM_DEMO_PORT` mengganti port lokal.
+Python dan `PRISM_DEMO_PORT` mengganti port lokal; jika port terpakai, Vite memilih port berikutnya.
+Anda juga dapat menggunakan `npm run dev -- --port 5180`.
 
 Tiga pengadaan memakai kode PGD-001 (unggah dari awal), PGD-002 (A5/OE tersedia),
 dan PGD-003 (sumber dan hasil lengkap). Form A5 dikenali berdasarkan SHA-256,
@@ -66,10 +71,47 @@ tetap immutable; penyimpanan identik tidak membuat hasil duplikat. Harga Timpang
 memakai hasil referensi yang disiapkan; koreksi tabel OE/penawaran tidak mengubah
 evaluasi. Data sesi hilang setelah reload.
 
-Mode ini khusus localhost. Katalog, PDF/XLSX asli dan hasil internal tidak masuk
-Git, `public/`, atau bundle standar. Server hanya menyajikan aset pada allowlist.
-`npm run dev`, build standar dan fixture sintetis tetap menggunakan runtime lama.
+Katalog, PDF/XLSX asli dan hasil internal tetap berada di luar Git. Server lokal
+hanya menyajikan aset pada allowlist. Build tanpa konfigurasi paket memakai
+runtime sintetis dan tidak menyertakan data Pertamina.
 Perhitungan lokal bukan implementasi wire contract backend atau persistensi.
+
+## Deployment Vercel dengan data terpisah dari GitHub
+
+Kode repository ini dapat diimpor sebagai proyek Vite di Vercel. Gunakan root
+repository frontend, Build Command `npm run build`, dan Output Directory `dist`.
+Konfigurasi SPA mendukung URL pengadaan langsung dan refresh halaman.
+
+Setelah menjalankan aplikasi lokal untuk menyiapkan katalog, buat paket:
+
+```sh
+npm run package:pertamina
+```
+
+Paket JSON ditulis ke `../data-pertamina/demo/pertamina-deployment.json`, di luar
+repository. Unggah paket tersebut ke penyimpanan HTTPS pilihan Anda. URL unduhan
+harus mengembalikan bytes berkas langsung, bukan halaman preview. URL bertanda
+tangan boleh digunakan jika masa berlakunya mencakup waktu build berikutnya.
+Jangan unggah paket ke GitHub.
+
+Pada pengaturan Environment Variables Vercel, isi untuk Preview/Production:
+
+- `PRISM_PERTAMINA_PACKAGE_URL`: URL HTTPS unduhan paket.
+- `PRISM_PERTAMINA_PACKAGE_SHA256`: hash yang dicetak oleh perintah pembuatan paket.
+
+Lakukan redeploy setelah mengubah konfigurasi. Build mengambil dan memverifikasi
+paket serta hash keempat sumber, kemudian menyertakan aset dalam hasil deployment.
+Python dan akses workspace lokal tidak diperlukan di Vercel. URL penyimpanan
+hanya digunakan saat build dan tidak disertakan dalam JavaScript browser.
+Jika unduhan/hash gagal, build gagal agar data yang salah tidak ditampilkan.
+Tanpa variabel paket, deployment memakai data sintetis.
+
+Data dan berkas sumber dalam deployment dapat diakses pengunjung situs. Menjaga
+paket di luar GitHub tidak membatasi akses ke data yang ditampilkan Vercel.
+Jika diperlukan, aktifkan pembatasan akses deployment sesuai konfigurasi akun.
+Penyimpanan aplikasi tetap in-memory; refresh mengembalikan tiga skenario awal.
+Kode ini tidak otomatis melakukan push atau deployment.
+Lihat [panduan Vite di Vercel](https://vercel.com/docs/frameworks/frontend/vite).
 
 ## Status integrasi
 

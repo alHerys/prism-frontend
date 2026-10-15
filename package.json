@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
+    "dev": "node scripts/dev.mjs",
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b",
     "test": "vitest run",
@@ -27,7 +27,9 @@
     "test:oe": "playwright test --config playwright.oe.config.ts",
     "test:intake": "playwright test --config playwright.intake.config.ts",
     "test:evaluation": "playwright test --config playwright.evaluation.config.ts",
-    "demo:pertamina": "node scripts/pertamina-demo.mjs"
+    "demo:pertamina": "node scripts/pertamina-demo.mjs",
+    "dev:standard": "vite --host 127.0.0.1",
+    "package:pertamina": "node scripts/pertamina-export.mjs"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",

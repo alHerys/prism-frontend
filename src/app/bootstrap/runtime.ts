@@ -2,7 +2,7 @@ import { createLocalRuntime, createBrowserPreferencesStorage, createPertaminaRun
 import { createApplication } from "./application";
 // One runtime, allocated outside React so route remounts and StrictMode share it.
 export async function loadApplication() {
-  const runtime = import.meta.env.MODE === "pertamina" ? await createPertaminaRuntime() : createLocalRuntime(true, true);
+  const runtime = import.meta.env.MODE === "pertamina" || import.meta.env.VITE_PERTAMINA_ENABLED === "true" ? await createPertaminaRuntime() : createLocalRuntime(true, true);
   return createApplication(runtime);
 }
 export const preferencesStorage = createBrowserPreferencesStorage();

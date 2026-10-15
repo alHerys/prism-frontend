@@ -11,3 +11,7 @@ playwright-report/
 debug-storybook.log
 fixture-kit/
 demo-kit/
+
+.env.*
+!.env.example
+.vercel/
