@@ -36,8 +36,8 @@ const generalLinks = [["/pengaturan", "Pengaturan", Gear], ["/bantuan", "Bantuan
 const descriptions: Record<string, string> = {
   "/": "Pantau pengadaan, pemeriksaan dokumen, dan pekerjaan yang perlu ditindaklanjuti.",
   "/pengadaan": "Kelola vendor, dokumen, dan hasil evaluasi dalam satu ruang kerja.",
-  "/bank": "Telusuri dokumen OE historis, bandingkan referensi, dan susun estimasi.",
-  "/riwayat": "Tinjau aktivitas, hasil tersimpan, dan jejak perubahan pengadaan.",
+  "/bank": "Susun estimasi dari seluruh referensi OE historis dengan satuan yang sama.",
+  "/riwayat": "Tinjau aktivitas dan jejak perubahan pengadaan.",
   "/pengaturan": "Atur profil, pemberitahuan, dan tampilan ruang kerja Anda.",
   "/bantuan": "Temukan panduan penggunaan PRISM dan pintasan untuk ruang kerja Anda.",
 };

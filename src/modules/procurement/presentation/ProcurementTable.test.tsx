@@ -43,15 +43,8 @@ describe("Kontrol tabel pengadaan", () => {
     expect(names()).toEqual([terminal, showcase, tank]);
     expect(screen.getByRole("columnheader", { name: "Vendor" })).toHaveAttribute("aria-sort", "descending");
 
-    await user.click(screen.getByRole("button", { name: "Dokumen" }));
-    expect(names()).toEqual([tank, showcase, terminal]);
-    await user.click(screen.getByRole("button", { name: "Dokumen" }));
-    expect(names()).toEqual([showcase, terminal, tank]);
-
-    await user.click(screen.getByRole("button", { name: "Kesiapan" }));
-    expect(names()).toEqual([terminal, tank, showcase]);
-    await user.click(screen.getByRole("button", { name: "Kesiapan" }));
-    expect(names()).toEqual([tank, showcase, terminal]);
+    expect(screen.queryByRole("columnheader", { name: "Dokumen" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("columnheader", { name: "Kesiapan" })).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Pengadaan" }));
     await user.click(screen.getByRole("button", { name: "Pengadaan" }));
@@ -104,7 +97,7 @@ describe("Kontrol tabel pengadaan", () => {
     await user.click(screen.getByRole("button", { name: "Selanjutnya" }));
     expect(screen.getByLabelText("Halaman 2 dari 2")).toBeInTheDocument();
     expect(names()).toHaveLength(1);
-    await user.click(screen.getByRole("button", { name: "Dokumen" }));
+    await user.click(screen.getByRole("button", { name: "Vendor" }));
     expect(screen.getByLabelText("Halaman 1 dari 2")).toBeInTheDocument();
     await user.type(screen.getByRole("textbox", { name: "Cari pengadaan" }), "Pengadaan tambahan 7");
     expect(names()).toEqual(["Pengadaan tambahan 7"]);

@@ -8,7 +8,8 @@
 .procurement-data-table .table-toolbar .search:focus-within { outline: 2px solid var(--accent, #155a37); outline-offset: 2px; }
 .procurement-data-table .table-toolbar .search input:focus-visible { outline: 0; }
 .procurement-data-table .table-wrap { position: relative; max-width: 100%; overflow-x: auto; }
-.procurement-data-table .procurement-table { min-width: 700px; }
+.procurement-data-table .procurement-table { min-width: 480px; }
+.procurement-data-table .procurement-table th:first-child { width: auto; }
 .procurement-data-table .procurement-table th { background: var(--surface); padding-block: 12px; border-bottom: 1px solid #bfc9c0; color: var(--muted); font-size: 12px; font-weight: 500; }
 .procurement-data-table .procurement-table td { padding-block: 21px; font-size: 13px; border-color: var(--border); }
 .procurement-data-table .procurement-table td:first-child, .procurement-data-table .procurement-table th:first-child { padding-left: 26px; }
@@ -34,11 +35,6 @@
 .procurement-filter-menu label:hover { background: var(--shell, #f5f6f5); }
 .procurement-filter-menu label:has(input:checked) { background: var(--accent-soft); color: var(--accent, #155a37); }
 .procurement-filter-menu input[type="radio"] { width: 14px; height: 14px; min-height: 0; flex-shrink: 0; padding: 0; margin: 0; accent-color: var(--accent, #155a37); }
-.procurement-data-table .readiness-badges .badge { font-size: 10px; font-weight: 500; padding: 4px 9px; }
-.procurement-readiness { display: block; margin-top: 10px; width: 126px; height: 4px; border: 0; border-radius: 3px; overflow: hidden; background: #e6eae6; accent-color: var(--accent, #155a37); }
-.procurement-readiness::-webkit-progress-bar { background: #e6eae6; border-radius: 3px; }
-.procurement-readiness::-webkit-progress-value { background: var(--accent, #155a37); border-radius: 3px; }
-.procurement-readiness::-moz-progress-bar { background: var(--accent, #155a37); border-radius: 3px; }
 .procurement-data-table .table-open { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--border); color: var(--ink); }
 .procurement-data-table .table-open:hover { text-decoration: none; color: var(--accent, #155a37); background: var(--accent-wash); }
 .procurement-data-table .table-pagination { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; padding: 20px 26px; margin-top: 0; border-top: 1px solid var(--border); font-size: 12px; }

@@ -1,3 +1,4 @@
+import { estimateMedian } from "../../modules/historical-prices/infrastructure/median-estimator";
 import { reviewedMetadata, assertPublishable } from "../../modules/historical-prices/domain/publication";
 import type { Estimate, HistoricalStatistics } from "../../modules/historical-prices/domain/models";
 import {
@@ -59,39 +60,18 @@ export function buildEstimate(store: LocalStore, input: {
   referenceIds: string[];
 }) {
   requireText(input.description, "Uraian kebutuhan");
-  const refs = input.referenceIds.map((id) =>
-    store.state.historicalItems.find((i) => i.id === id),
-  );
-  if (
-    refs.length !== 3 ||
-    refs.some((r) => !r || !r.comparable || r.unit !== input.unit) ||
-    new Set(refs.map((r) => r?.period)).size !== 3
-  )
-    throw new DomainError(
-      "INSUFFICIENT_DATA",
-      "Data referensi yang sebanding belum memadai untuk kebutuhan ini.",
-    );
-  if (
-    input.description.trim().toLowerCase() !== "pengecatan tangki" ||
-    !["1", "10", "100"].includes(input.quantity)
-  )
-    throw new DomainError(
-      "UNAVAILABLE",
-      "Estimasi belum tersedia untuk kebutuhan ini. Periksa uraian dan kuantitas.",
-    );
+  // Selection belongs to the application: callers cannot silently omit an available reference.
+  const refs = store.state.historicalItems.filter(item => item.unit === input.unit);
+  const values = estimateMedian(refs.map(item => item.price), input.quantity);
   const e: Estimate = {
     ...input,
+    referenceIds: refs.map(item => item.id),
     id: store.id("estimate"),
-    unitPrice: "90000",
-    total:
-      input.quantity === "1"
-        ? "90000"
-        : input.quantity === "10"
-          ? "900000"
-          : "9000000",
-    min: "85000",
-    max: "95000",
-    median: "90000",
+    unitPrice: values.unitPrice,
+    total: values.total,
+    min: values.min,
+    max: values.max,
+    median: values.median,
     createdAt: new Date().toISOString(),
   };
   store.state.estimates.unshift(e);

@@ -59,51 +59,10 @@ test('drawer motion, intermediate state and reduced motion preserve navigation',
   await expect(drawer).toHaveCount(0);
 });
 
-test('Bank overview collapses smoothly, reverses and respects reduced motion', async ({ page }) => {
-  await page.goto('/bank');
-  const overview = page.locator('.bank-overview-region');
-  const documents = page.getByRole('tab', { name: 'Dokumen Historis', exact: true });
-  const statistics = page.getByRole('tab', { name: 'Statistik Harga', exact: true });
-  await documents.click();
-  await expect(overview).toHaveAttribute('data-visible', 'true');
-  await expect.poll(() => overview.evaluate(element => element.getAnimations().length)).toBe(0);
-  const fullHeight = (await overview.boundingBox())!.height;
-  await statistics.click();
-  await expect(overview).toHaveAttribute('inert', '');
-  const sample = await overview.evaluate(element => {
-    const animations = element.getAnimations();
-    const timings = animations.map(animation => animation.effect!.getTiming().duration);
-    const easings = animations.map(animation => animation.effect!.getTiming().easing);
-    for (const animation of animations) {
-      animation.pause();
-      const timing = animation.effect!.getTiming();
-      animation.currentTime = Number(timing.duration) / 2;
-    }
-    const height = element.getBoundingClientRect().height;
-    const opacity = Number(getComputedStyle(element).opacity);
-    animations.forEach(animation => animation.play());
-    return { height, opacity, timings, easings };
-  });
-  expect(sample.timings).toContain(200);
-  expect(sample.timings).toContain(180);
-  expect(sample.easings).toContain('cubic-bezier(0.22, 1, 0.36, 1)');
-  expect(sample.easings).toContain('ease-out');
-  expect(sample.height).toBeGreaterThan(0);
-  expect(sample.height).toBeLessThan(fullHeight);
-  expect(sample.opacity).toBeGreaterThan(0);
-  expect(sample.opacity).toBeLessThan(1);
-  await expect.poll(() => overview.evaluate(element => element.getAnimations().length)).toBeGreaterThan(0);
-  // Keyboard activation remains possible while the tab moves with the collapsing
-  // overview. A pointer click waits for stability and would miss rapid reversal.
-  await documents.press('Enter');
-  await expect(overview).toHaveAttribute('aria-hidden', 'false');
-  await expect.poll(() => overview.evaluate(element => element.getAnimations().length)).toBe(0);
-  expect((await overview.boundingBox())!.height).toBeCloseTo(fullHeight, 0);
-  await page.getByRole('button', { name: 'Tinjau statistik referensi', exact: true }).click();
-  await expect(statistics).toBeFocused();
-  await expect.poll(() => overview.evaluate(element => element.getBoundingClientRect().height)).toBe(0);
+test('Bank estimation is immediately available with reduced motion', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await documents.click();
-  expect(await overview.evaluate(element => element.getAnimations().length)).toBe(0);
-  await expect(overview).not.toHaveAttribute('inert', '');
+  await page.goto('/bank');
+  await expect(page.getByRole('heading',{name:'Susun kebutuhan estimasi'})).toBeVisible();
+  await expect(page.locator('.bank-overview-region')).toHaveCount(0);
+  await expect(page.getByRole('tab')).toHaveCount(0);
 });

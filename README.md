@@ -113,6 +113,20 @@ Penyimpanan aplikasi tetap in-memory; refresh mengembalikan tiga skenario awal.
 Kode ini tidak otomatis melakukan push atau deployment.
 Lihat [panduan Vite di Vercel](https://vercel.com/docs/frameworks/frontend/vite).
 
+## Estimasi Bank Data OE
+
+Bank Data langsung menampilkan kebutuhan estimasi tanpa tab dokumen, pencarian,
+atau statistik harga. Seluruh referensi dengan satuan yang sama digunakan otomatis.
+Harga satuan estimasi adalah median semua harga tersebut; untuk jumlah genap,
+median adalah rata-rata dua nilai tengah. Total adalah median dikalikan kuantitas.
+Perhitungan lokal memakai string desimal dan konteks decimal.js terisolasi.
+Tidak ada referensi dengan satuan cocok akan menonaktifkan aksi estimasi.
+Unggah, review metadata, konfirmasi, dan publikasi dokumen tetap tersedia.
+
+Daftar Pengadaan menampilkan Pengadaan, Vendor, serta aksi buka. Riwayat hanya
+menampilkan Aktivitas dan Statistik Aktivitas; hasil HEA/Harga Timpang dan ekspornya
+tetap tersedia pada ruang kerja pengadaan. Snapshot tersimpan tidak dihapus.
+
 ## Status integrasi
 
 State masih dalam memori dan dimulai ulang saat reload. Adapter lokal mengenali

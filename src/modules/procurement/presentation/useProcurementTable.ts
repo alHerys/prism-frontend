@@ -47,9 +47,7 @@ export function useProcurementTable({
       const bFact = facts.get(b.id)!;
       const comparison = sortKey === "name"
         ? a.name.localeCompare(b.name, "id")
-        : sortKey === "readiness"
-          ? aFact.confirmed * Math.max(1, bFact.documents) - bFact.confirmed * Math.max(1, aFact.documents)
-          : aFact[sortKey] - bFact[sortKey];
+        : aFact.vendors - bFact.vendors;
       return comparison === 0
         ? a.name.localeCompare(b.name, "id")
         : comparison * (ascending ? 1 : -1);

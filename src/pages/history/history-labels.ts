@@ -19,11 +19,3 @@ export const eventLabel: Record<string, string> = {
   METADATA_UPDATED: "Metadata diperbarui",
   GROUP_SELECTED: "Kelompok harga dipilih",
 };
-export const categoryLabel: Record<string, string> = {
-  MATERIAL: "Material",
-  SERVICE: "Jasa",
-};
-export const classificationLabel: Record<string, string> = {
-  TIMPANG: "Timpang",
-  TIDAK_TIMPANG: "Tidak timpang",
-};

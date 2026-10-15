@@ -284,23 +284,14 @@ describe("historical references", () => {
     const partial = await s.createBankSnapshot([ids[0]]);
     expect(partial.inputs).not.toHaveProperty("statistics");
   });
-  it("requires comparable references and supports only prepared estimate inputs", async () => {
+  it("estimates from all matching-unit references even when caller selection is incomplete", async () => {
     const s = createTestSession();
-    const ids = s.getState().historicalItems.map((i) => i.id);
-    const input = {
-      description: "Pengecatan tangki",
-      unit: "m²",
-      quantity: "10",
-      referenceIds: ids,
-    };
-    await expect(s.estimate(input)).rejects.toMatchObject({
-      code: "INSUFFICIENT_DATA",
-    });
-    for (const id of ids) await s.setComparable(id, true);
-    const e = await s.estimate(input);
-    expect(e.total).toBe("900000");
-    await expect(
-      s.estimate({ ...input, quantity: "17" }),
-    ).rejects.toMatchObject({ code: "UNAVAILABLE" });
+    const before = structuredClone(s.getState().historicalItems);
+    const input = { description: "Kebutuhan baru", unit: "m²", quantity: "17", referenceIds: [] };
+    const result = await s.estimate(input);
+    expect(result).toMatchObject({ total: "1530000", referenceIds: before.map(item => item.id) });
+    expect(s.getState().historicalItems).toEqual(before);
+    await expect(s.estimate({ ...input, unit: "unit" })).rejects.toMatchObject({ code: "INSUFFICIENT_DATA" });
+    expect(s.getState().estimates).toHaveLength(1);
   });
 });

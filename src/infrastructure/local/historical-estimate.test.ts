@@ -1,0 +1,20 @@
+import { expect, it } from "vitest";
+import { LocalStore } from "./store";
+import { buildEstimate } from "./historical";
+it("includes all matching-unit prices once, excludes other units and preserves previous results", () => {
+  const store = new LocalStore(), base = store.state.historicalItems[0];
+  store.state.historicalItems = ["10", "20", "30", "40"].map((price, index) => ({ ...base, id: `price-${index}`, price, comparable: false }));
+  store.state.historicalItems.push({ ...base, id: "foreign", price: "1000", unit: "unit" });
+  const input = { description: "Pekerjaan baru", unit: "m²", quantity: "2.5", referenceIds: ["foreign"] };
+  const result = buildEstimate(store, input);
+  expect(result).toMatchObject({ total: "62.5", median: "25", referenceIds: ["price-0", "price-1", "price-2", "price-3"] });
+  expect(input.referenceIds).toEqual(["foreign"]);
+  store.state.historicalItems[0].price = "50";
+  const next = buildEstimate(store, input);
+  expect(next.total).toBe("87.5");
+  expect(store.state.estimates[1].total).toBe("62.5");
+  expect(result.total).toBe("62.5");
+  const previous = structuredClone(store.state.estimates);
+  expect(() => buildEstimate(store, { ...input, quantity: "-1" })).toThrow();
+  expect(store.state.estimates).toEqual(previous);
+});

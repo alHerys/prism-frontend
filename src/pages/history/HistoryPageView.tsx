@@ -3,13 +3,10 @@ import "../../shared/styles/bank.css";
 import { PageTabs } from "../../shared/ui/page-tabs";
 import { moduleLabel } from "./history-labels";
 import { HistoryActivity } from "./HistoryActivity";
-import { HistoryResults } from "./HistoryResults";
-import { HistorySnapshot } from "./HistorySnapshot";
 import { HistoryStatistics } from "./HistoryStatistics";
 
 import type { HistoryPageModel } from "./view-models";
 export function HistoryPageView({
-  onOpenResult,
   state,
   tab,
   setTab,
@@ -23,18 +20,12 @@ export function HistoryPageView({
   setStart,
   end,
   setEnd,
-  selected,
-  setSelected,
-  notice,
-  exportBusy,
-  noticeError,
   events,
   results,
   activityChart,
   maxCount,
   visibleDocuments,
   procurementName,
-  exportSelected,
 }: HistoryPageModel) {
 
   return (
@@ -43,13 +34,10 @@ export function HistoryPageView({
       <PageTabs
         ariaLabel="Bagian riwayat"
         value={tab}
-        items={["Aktivitas", "Hasil Evaluasi", "Statistik Aktivitas"].map(
+        items={["Aktivitas", "Statistik Aktivitas"].map(
           (label) => ({ label, value: label }),
         )}
-        onValueChange={(value) => {
-          setTab(value);
-          setSelected(undefined);
-        }}
+        onValueChange={setTab}
       >
         <section className="bank-filters" aria-label="Filter riwayat">
           <label className="field">
@@ -97,25 +85,15 @@ export function HistoryPageView({
           <label className="bank-search">
             <MagnifyingGlass size={17} />
             <input
-              aria-label="Cari aktivitas atau hasil"
+              aria-label="Cari aktivitas"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Cari aktivitas atau pengadaan…"
             />
           </label>
         </section>
-        {notice && (
-          <p
-            role={noticeError ? "alert" : "status"}
-            className={`bank-notice ${noticeError ? "bank-error" : ""}`}
-          >
-            {notice}
-          </p>
-        )}
         {<HistoryActivity tab={tab} events={events} procurementName={procurementName} />}
-        {<HistoryResults tab={tab} setSelected={setSelected} results={results} procurementName={procurementName} />}
         {<HistoryStatistics tab={tab} events={events} results={results} activityChart={activityChart} maxCount={maxCount} visibleDocuments={visibleDocuments} />}
-        {<HistorySnapshot onOpenResult={onOpenResult} selected={selected} setSelected={setSelected} exportBusy={exportBusy} procurementName={procurementName} exportSelected={exportSelected} />}
       </PageTabs>
     </div>
   );

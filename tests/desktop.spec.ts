@@ -160,22 +160,14 @@ test('confirmed HEA, read-only price results and Bank Data preserve XLSX traceab
   await expect(page.getByRole('heading', {name: 'Belum ada hasil Harga Timpang'})).toBeVisible();
   await page.getByRole('link', { name: 'Bank Data OE', exact: true }).click();
   await capture(page, 'bank-documents');
-  await tab(page, 'Pencarian Referensi');
-  for (const checkbox of await page.getByRole('checkbox').all()) await checkbox.check();
-  await capture(page, 'bank-references');
-  await click(page, 'Lihat statistik');
-  await capture(page, 'bank-statistics');
-  const bank = await exportWorkbook(page, info, 'bank');
-  expect(JSON.stringify(bank.getWorksheet('Ringkasan')!.getSheetValues())).toContain('90000');
-  await click(page, 'Lanjut ke bantuan estimasi');
+  await expect(page.getByRole('tab')).toHaveCount(0);
+  await expect(page.getByRole('checkbox')).toHaveCount(0);
   await page.getByLabel('Uraian pekerjaan').fill('Pengecatan tangki');
   await page.getByLabel('Kuantitas', { exact: true }).fill('10');
   await click(page, 'Buat estimasi');
   await expect(page.getByRole('heading', { name: /Hasil estimasi/ })).toBeVisible();
   await capture(page, 'bank-estimate');
   await page.getByRole('link', { name: 'Riwayat & Statistik', exact: true }).click();
-  await tab(page, 'Hasil Evaluasi');
-  await capture(page, 'history-results');
   await tab(page, 'Statistik Aktivitas');
   await capture(page, 'history-statistics');
   expect(errors).toEqual([]);
@@ -218,9 +210,8 @@ test('motion preference removes nonessential movement and active motion preserve
   await click(page, 'Ringkas navigasi');
   await page.getByRole('navigation', { name: 'Navigasi utama' }).getByRole('link', { name: 'Bank Data OE' }).click();
   await expect(page.getByRole('heading', { name: 'Bank Data OE', exact: true })).toBeVisible();
-  await tab(page, 'Pencarian Referensi');
-  await expect(page.getByRole('tab', { name: 'Pencarian Referensi' })).toBeFocused();
-  await expect(page.getByRole('tab', { name: 'Pencarian Referensi' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('heading',{name:'Susun kebutuhan estimasi'})).toBeVisible();
+  await expect(page.getByRole('tab')).toHaveCount(0);
 });
 
 test('historical XLSX upload requires metadata and confirmation before publication', async ({ page }) => {
@@ -235,7 +226,6 @@ test('historical XLSX upload requires metadata and confirmation before publicati
   await click(page, 'Konfirmasi');
   await click(page, 'Publikasikan');
   await expect(page.getByText('Dokumen telah ditambahkan ke Bank Data OE.')).toBeVisible();
-  await tab(page, 'Bantuan Estimasi');
   await page.getByLabel('Uraian pekerjaan').fill('Pengecatan tangki');
   await page.getByLabel('Kuantitas', { exact: true }).fill('10');
   await expect(page.getByRole('button', { name: 'Buat estimasi', exact: true })).toBeEnabled();
@@ -283,11 +273,8 @@ test('direct routes and navigation load the same styles and preserve tab drafts'
   }
   await page.goto('/');
   await page.getByRole('navigation', { name: 'Navigasi utama' }).getByRole('link', { name: 'Bank Data OE' }).click();
-  await compareStyles('/bank', 'Perkembangan harga referensi', ['.topbar', '.bank-page .panel', '.bank-chart']);
-  await tab(page, 'Bantuan Estimasi');
+  await compareStyles('/bank', 'Susun kebutuhan estimasi', ['.topbar', '.bank-page .panel', '.bank-estimate-layout']);
   await page.getByLabel('Kuantitas', { exact: true }).fill('100');
-  await tab(page, 'Statistik Harga');
-  await tab(page, 'Bantuan Estimasi');
   await expect(page.getByLabel('Kuantitas', { exact: true })).toHaveValue('100');
   await page.getByRole('navigation', { name: 'Navigasi utama' }).getByRole('link', { name: 'Riwayat & Statistik' }).click();
   await compareStyles('/riwayat', 'Catatan aktivitas', ['.topbar', '.bank-history .panel', '.bank-history .history-timeline']);

@@ -1,6 +1,6 @@
 import type * as React from "react";
 
-export type ProcurementSortKey = "name" | "vendors" | "documents" | "readiness";
+export type ProcurementSortKey = "name" | "vendors";
 
 export interface ProcurementTableModel {
   items: import("../domain/models").Procurement[];

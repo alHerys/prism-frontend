@@ -1,7 +1,6 @@
 import type { BankPageModel } from "./view-models";
 import { useState } from "react";
 import { useHistoricalPricesCommands, useHistoricalPricesData } from "./binding";
-import type { HistoricalItem } from "../domain/models";
 import { useWorkspacePreferences } from "../../../shared/ui/workspace-preferences";
 
 
@@ -10,12 +9,6 @@ export function useBankPage() : BankPageModel {
   const service = useHistoricalPricesCommands();
   const state = useHistoricalPricesData();
   const preparedEstimate = state.estimates[0];
-  const [tab, setTab] = useState(preparedEstimate ? "Statistik Harga" : "Dokumen Historis");
-  const [query, setQuery] = useState("");
-  const [year, setYear] = useState("");
-  const [functionFilter, setFunctionFilter] = useState("");
-  const [selectedIds, setSelectedIds] = useState<string[]>(() => preparedEstimate?.referenceIds ?? []);
-  const [detail, setDetail] = useState<HistoricalItem>();
   const [showUpload, setShowUpload] = useState(false);
   const [draftId, setDraftId] = useState("");
   const [functionName, setFunctionName] = useState("");
@@ -32,25 +25,9 @@ export function useBankPage() : BankPageModel {
   const [estimateId, setEstimateId] = useState(preparedEstimate?.id ?? "");
   const draft = state.documents.find((d) => d.id === draftId);
   const estimate = state.estimates.find((e) => e.id === estimateId);
-  const filtered = state.historicalItems.filter(
-    (item) =>
-      `${item.description} ${item.documentName}`
-        .toLocaleLowerCase("id")
-        .includes(query.toLocaleLowerCase("id")) &&
-      (!year || item.period === year) &&
-      (!functionFilter || item.functionName === functionFilter),
-  );
-  const selected = state.historicalItems.filter((item) =>
-    selectedIds.includes(item.id),
-  );
-  const statistics = service.getHistoricalStatistics(selectedIds);
-  const statsReady = !!statistics;
-  const years = [
-    ...new Set(state.historicalItems.map((item) => item.period)),
-  ].sort();
-  const functions = [
-    ...new Set(state.historicalItems.map((item) => item.functionName)),
-  ];
+  const selected = state.historicalItems.filter(item => item.unit === unit);
+  const selectedIds = selected.map(item => item.id);
+  const units = [...new Set(["m²", "m", "unit", ...state.historicalItems.map(item => item.unit)])];
   const run = async (label: string, fn: () => Promise<unknown>) => {
     setBusy(label);
     setError("");
@@ -67,10 +44,6 @@ export function useBankPage() : BankPageModel {
       setBusy("");
     }
   };
-  const toggle = (id: string) =>
-    setSelectedIds((ids) =>
-      ids.includes(id) ? ids.filter((item) => item !== id) : [...ids, id],
-    );
   const upload = async (file?: File) => {
     if (!file) return;
     await run("Membaca dokumen", async () => {
@@ -110,12 +83,6 @@ export function useBankPage() : BankPageModel {
       setDraftId("");
     });
   };
-  const exportStats = async () => {
-    await run("Menyiapkan laporan", async () => {
-      await service.exportReferences(selectedIds);
-      setNotice(shouldNotify("export") ? "Laporan referensi berhasil disiapkan." : "");
-    });
-  };
   const createEstimate = () => run("Menelaah referensi dan kebutuhan", async () => {
     const result = await service.estimate({
       description: need,
@@ -128,20 +95,8 @@ export function useBankPage() : BankPageModel {
       "Estimasi selesai. Tinjau sumber dan batas penggunaannya.",
     );
   });
-  const compareReference = (id: string, value: boolean) => run("Memperbarui kesebandingan", () => service.setComparable(id, value));
   return {
     state,
-    tab,
-    setTab,
-    query,
-    setQuery,
-    year,
-    setYear,
-    functionFilter,
-    setFunctionFilter,
-    selectedIds,
-    detail,
-    setDetail,
     showUpload,
     setShowUpload,
     setDraftId,
@@ -163,19 +118,12 @@ export function useBankPage() : BankPageModel {
     setQuantity,
     draft,
     estimate,
-    filtered,
     selected,
-    statistics,
-    statsReady,
-    years,
-    functions,
-    toggle,
+    units,
     upload,
     saveDraft,
     confirmDraft,
     publishDraft,
-    exportStats,
     createEstimate,
-    compareReference,
   };
 }

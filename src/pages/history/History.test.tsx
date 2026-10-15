@@ -1,25 +1,18 @@
-import { createTestSession } from "../../infrastructure/local/test-session";
-import { act, cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, expect, it, vi } from "vitest";
+import { afterEach, expect, it } from "vitest";
 import { createLocalRuntime } from "../../infrastructure/local/runtime";
 import { createApplication } from "../../app/bootstrap/application";
 import { ApplicationProviders } from "../../app/providers/ApplicationProviders";
 import HistoryPage from "./HistoryPage";
 afterEach(cleanup);
-it("keeps displayed and exported snapshot inputs after its source document is corrected", async () => {
-  const runtime = createLocalRuntime(true, true);
-  const service = createTestSession(true, false, runtime);
-  const snapshot = service.getState().snapshots.find(s => s.module === "HEA")!;
-  const doc = service.getState().documents.find(d => d.procurementId === snapshot.procurementId && d.kind === "FORM_A5")!;
-  const onExport = vi.fn();
-  render(<ApplicationProviders application={createApplication(runtime, { download: onExport })}><HistoryPage /></ApplicationProviders>);
-  await userEvent.click(screen.getByRole("tab", { name: "Hasil Evaluasi" }));
-  const row = screen.getByRole("cell", { name: /^HEA$/ }).closest("tr")!;
-  await userEvent.click(within(row).getByRole("button", { name: /Lihat hasil/ }));
-  await act(async () => { await service.reviewDocument(doc.id, { ...doc.reviewed!, hpb: "1" }, doc.revision); });
-  expect(screen.getByTitle("Rp 1.261.794.759,4224293029478248835170918485030216358352")).toHaveTextContent("Rp1.261.794.759");
-  await userEvent.click(screen.getByRole("button", { name: /Ekspor Excel/ }));
-  expect(onExport.mock.calls[0][0]).toEqual(snapshot);
-  expect(service.getState().snapshots.find(s => s.id === snapshot.id)).toEqual(snapshot);
+it("shows activity and its statistics without the removed result browser", async () => {
+  const application = createApplication(createLocalRuntime(true, true));
+  render(<ApplicationProviders application={application}><HistoryPage /></ApplicationProviders>);
+  expect(screen.getAllByRole("tab").map(tab => tab.textContent)).toEqual(["Aktivitas", "Statistik Aktivitas"]);
+  expect(screen.queryByRole("button", { name: /Lihat hasil|Ekspor Excel/ })).not.toBeInTheDocument();
+  expect(screen.queryByLabelText("Rincian snapshot")).not.toBeInTheDocument();
+  await userEvent.click(screen.getByRole("tab", { name: "Statistik Aktivitas" }));
+  expect(screen.getByRole("heading", { name: "Aktivitas per hari" })).toBeInTheDocument();
+  expect(screen.queryByRole("heading", { name: "Hasil evaluasi tersimpan" })).not.toBeInTheDocument();
 });

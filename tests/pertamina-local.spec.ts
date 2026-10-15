@@ -47,7 +47,7 @@ test.afterEach(async ({ page }) => {
   expect(browserChecks.get(page)?.unexpected).toEqual([]);
 });
 
-test("local HEA follows saved A5/preferences and history exports the old values", async ({ page }, info) => {
+test("local HEA follows saved A5/preferences and reports the saved values", async ({ page }, info) => {
   await page.goto(`${complete}?tab=hea`);
   const table = page.getByRole("table", { name: "Leaderboard HEA", exact: true });
   await expect(table.locator("tbody tr")).toHaveCount(2);
@@ -55,7 +55,7 @@ test("local HEA follows saved A5/preferences and history exports the old values"
   const oldRow = table.getByRole("row").filter({ hasText: vendor });
   const oldValue = await oldRow.locator("td.numeric").getAttribute("title");
   const initial = await exportExcel(page, info, "hea-initial.xlsx");
-  const initialHPB = initial.getWorksheet("Perhitungan HEA")!.getCell("E6").value;
+  expect(initial.getWorksheet("Perhitungan HEA")).toBeDefined();
   await oldRow.getByRole("link").click();
   await openFields(page);
   const edited = (BigInt(catalog!.a5[0].candidate.values.hpb) * 2n).toString();
@@ -77,11 +77,8 @@ test("local HEA follows saved A5/preferences and history exports the old values"
   const pdf = page.waitForEvent("download"); await page.getByRole("link", { name: "Unduh PDF", exact: true }).click(); await (await pdf).saveAs(info.outputPath("hea-local.pdf"));
   await page.getByRole("button", { name: "Tutup detail HEA", exact: true }).click();
   await openHistory(page);
-  await page.getByRole("tab", { name: "Hasil Evaluasi", exact: true }).click();
-  const old = page.getByRole("table", { name: "Hasil evaluasi tersimpan" }).getByRole("row").filter({ has: page.getByRole("cell", { name: "HEA", exact: true }) }).last();
-  await old.getByRole("button", { name: "Lihat hasil", exact: true }).click();
-  const history = await exportExcel(page, info, "hea-history.xlsx", page.getByRole("region", { name: "Rincian snapshot", exact: true }));
-  expect(history.getWorksheet("Perhitungan HEA")!.getCell("E6").value).toEqual(initialHPB);
+  await expect(page.getByRole("tab", { name: "Hasil Evaluasi", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("tab", { name: "Aktivitas", exact: true })).toBeVisible();
 });
 
 test("raw uploads save without confirmation and make HEA/price available", async ({ page }, info) => {
@@ -127,7 +124,7 @@ test("raw uploads save without confirmation and make HEA/price available", async
   await page.screenshot({ path: info.outputPath("price-upload.png"), fullPage: true });
 });
 
-test("spreadsheet edits leave evaluation unchanged and history downloads the same price snapshot", async ({ page }, info) => {
+test("spreadsheet edits leave evaluation unchanged", async ({ page }, info) => {
   await page.goto(`${complete}?tab=harga`);
   const original = await exportExcel(page, info, "price-before.xlsx");
   await page.getByRole("button", { name: "Kembali ke identitas & vendor", exact: true }).click();
@@ -143,9 +140,6 @@ test("spreadsheet edits leave evaluation unchanged and history downloads the sam
   const after = await exportExcel(page, info, "price-after.xlsx");
   expect(after.worksheets[0].getSheetValues()).toEqual(original.worksheets[0].getSheetValues());
   await openHistory(page);
-  await page.getByRole("tab", { name: "Hasil Evaluasi", exact: true }).click();
-  const row = page.getByRole("table", { name: "Hasil evaluasi tersimpan" }).getByRole("row").filter({ has: page.getByRole("cell", { name: "Harga Timpang", exact: true }) });
-  await expect(row).toHaveCount(1); await row.getByRole("button", { name: "Lihat hasil", exact: true }).click();
-  const history = await exportExcel(page, info, "price-history.xlsx", page.getByRole("region", { name: "Rincian snapshot", exact: true }));
-  expect(history.worksheets[0].getSheetValues()).toEqual(original.worksheets[0].getSheetValues());
+  await expect(page.getByRole("tab", { name: "Hasil Evaluasi", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("tab", { name: "Aktivitas", exact: true })).toBeVisible();
 });

@@ -153,19 +153,10 @@ test("price overview owns Excel export without an item detail panel", async ({ p
   await expect(page.getByRole("button", { name: "Ekspor Excel", exact: true })).toHaveCount(0);
 });
 
-test("history exports the selected price snapshot in the same single-sheet layout", async ({ page }, info) => {
+test("history keeps activity statistics without the removed evaluation browser", async ({ page }) => {
   await page.goto("/riwayat");
-  await page.getByRole("tab", { name: "Hasil Evaluasi", exact: true }).click();
-  const row = page.getByRole("table", { name: "Hasil evaluasi tersimpan", exact: true }).getByRole("row").filter({ has: page.getByRole("cell", { name: "Harga Timpang", exact: true }) });
-  await row.getByRole("button", { name: "Lihat hasil", exact: true }).click();
-  const pending = page.waitForEvent("download");
-  await page.getByRole("region", { name: "Rincian snapshot", exact: true }).getByRole("button", { name: "Ekspor Excel", exact: true }).click();
-  const filename = info.outputPath("harga-history.xlsx");
-  await (await pending).saveAs(filename);
-  const workbook = new ExcelJS.Workbook();
-  await workbook.xlsx.readFile(filename);
-  expect(workbook.worksheets.map(sheet => sheet.name)).toEqual(["Rekap File Harga Timpang"]);
-  expect(workbook.worksheets[0].getCell("Z10").value).toBe(1.25);
-  expect(workbook.worksheets[0].getCell("V10").value).toBe(125000);
-  expect(workbook.worksheets[0].getCell("X10").value).toBeNull();
+  await expect(page.getByRole("tab", { name: "Hasil Evaluasi", exact: true })).toHaveCount(0);
+  await page.getByRole("tab", { name: "Statistik Aktivitas", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Aktivitas per hari" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Ekspor Excel" })).toHaveCount(0);
 });

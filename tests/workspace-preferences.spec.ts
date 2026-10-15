@@ -106,8 +106,7 @@ test('muted evaluation, export and publication still perform real business actio
   await page.getByRole('tab',{name:'Notifikasi',exact:true}).click();
   for(const control of await page.getByRole('switch').all()) await control.click();
   await ready(page,'/riwayat');
-  await page.getByRole('tab',{name:'Hasil Evaluasi',exact:true}).click();
-  const count=await page.locator('.bank-history .table tbody tr').count();
+  const count=await page.locator('.history-event').count();
   await ready(page,'/pengadaan/proc-showcase?tab=hea');
   for(const checkbox of await page.getByRole('checkbox').all()) await checkbox.check();
   const evaluate=page.getByRole('button',{name:'Simpan',exact:true});
@@ -121,8 +120,7 @@ test('muted evaluation, export and publication still perform real business actio
   await expect(page.locator('.toast')).toHaveCount(0);
   await page.getByRole('heading',{name:/Penggantian Jalur Pipa/,level:1}).click();
   await page.keyboard.press('g'); await page.keyboard.press('r');
-  await page.getByRole('tab',{name:'Hasil Evaluasi',exact:true}).click();
-  await expect(page.locator('.bank-history .table tbody tr')).toHaveCount(count+1);
+  await expect(page.locator('.history-event')).toHaveCount(count+1);
   await ready(page,'/bank');
   await page.getByRole('button',{name:'Tambah dokumen historis',exact:true}).click();
   await page.getByLabel('Pilih OE historis').setInputFiles(path.resolve('public/files/OE-Historis-2024.xlsx'));

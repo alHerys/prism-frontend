@@ -117,7 +117,7 @@ test('workflow lengkap: unggah PDF/Excel, koreksi, HEA, Harga Timpang, snapshot 
   await expect(page.getByRole('heading', {name: 'Pengadaan tidak ditemukan'})).toBeVisible();
 });
 
-test('Bank Data: Excel historis, publikasi, statistik dan estimasi', async ({page}, info) => {
+test('Bank Data: Excel historis, publikasi dan estimasi otomatis', async ({page}) => {
   await page.goto('/bank');
   await button(page, 'Tambah dokumen historis').click();
   await page.getByLabel('Pilih OE historis').setInputFiles(file('OE-Historis-2024.xlsx'));
@@ -127,17 +127,33 @@ test('Bank Data: Excel historis, publikasi, statistik dan estimasi', async ({pag
   await button(page, 'Konfirmasi').click();
   await button(page, 'Publikasikan').click();
   await expect(page.getByText('Dokumen telah ditambahkan ke Bank Data OE.')).toBeVisible();
-  await page.getByRole('tab', {name: 'Pencarian Referensi'}).click();
-  for (const year of ['2024', '2025', '2026']) {
-    await page.getByRole('checkbox', {name: `Pilih OE-Historis-${year}.xlsx`, exact: true}).first().check();
-    await page.getByRole('checkbox', {name: `Sebanding OE-Historis-${year}.xlsx`, exact: true}).first().check();
-  }
-  await button(page, 'Lihat statistik').click();
-  expect(await exportRows(page, info, 'bank-oe')).toContain('90000');
-  await button(page, 'Lanjut ke bantuan estimasi').click();
+  await expect(page.getByRole('tab')).toHaveCount(0);
+  await expect(page.getByRole('checkbox')).toHaveCount(0);
   await page.getByLabel('Uraian pekerjaan').fill('Pengecatan tangki');
   await page.getByLabel('Kuantitas', {exact: true}).fill('10');
   await button(page, 'Buat estimasi').click();
   await expect(page.getByRole('heading', {name: /Hasil estimasi/})).toBeVisible();
-  await expect(page.getByText(/^Rp\s+900\.000$/)).toBeVisible();
+  await expect(page.getByText(/^Rp\s+875\.000$/)).toBeVisible();
+});
+
+test('annotation cleanup: procurement columns and history sections', async ({page}, info) => {
+  for (const width of [1366,390]) {
+    await page.setViewportSize({width,height:844});
+    await page.goto('/pengadaan');
+    const table = page.locator('.procurement-table');
+    await expect(table.getByRole('columnheader', {name:'Dokumen',exact:true})).toHaveCount(0);
+    await expect(table.getByRole('columnheader', {name:'Kesiapan',exact:true})).toHaveCount(0);
+    await expect(table.getByRole('columnheader')).toHaveCount(3);
+    await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+    await page.screenshot({path:info.outputPath(`procurement-${width}.png`),fullPage:true});
+    await page.goto('/bank');
+    await expect(page.getByRole('heading',{name:'Susun kebutuhan estimasi'})).toBeVisible();
+    await expect(page.getByRole('tab')).toHaveCount(0);
+    await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+    await page.screenshot({path:info.outputPath(`bank-${width}.png`),fullPage:true});
+    await page.goto('/riwayat');
+    await expect(page.getByRole('tab')).toHaveCount(2);
+    await expect(page.getByRole('tab',{name:'Hasil Evaluasi',exact:true})).toHaveCount(0);
+    await page.screenshot({path:info.outputPath(`history-${width}.png`),fullPage:true});
+  }
 });

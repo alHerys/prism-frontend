@@ -5,8 +5,6 @@
 @media (min-width: 640px) and (max-width: 1023px) {
   .bank-history .bank-filters { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .bank-history .bank-search { grid-column: 1/-1; }
-  .bank-overview-card { padding: 20px; }
-  .bank-overview-value { font-size: 36px; }
   .bank-stat-strip { grid-template-columns: repeat(3,minmax(0,1fr)); }
   .bank-price-stats { grid-template-columns: repeat(3,minmax(0,1fr)); }
   .bank-price-stats strong { font-size: 24px; }
@@ -14,15 +12,6 @@
 }
 @media (max-width: 639px) {
   .bank-page, .bank-page .page-tab-content { gap: 16px; }
-  .bank-overview-region { margin-bottom: -16px; }
-  .bank-overview { margin-bottom: 16px; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
-  .bank-overview-card:first-child { grid-column: 1/-1; }
-  .bank-overview-card { padding: 20px; }
-  .bank-overview-value { font-size: 36px; margin: 8px 0; }
-  .bank-overview-card:not(:first-child) { padding: 18px; }
-  .bank-overview-card:not(:first-child) .bank-overview-heading { align-items: start; gap: 8px; }
-  .bank-overview-card:not(:first-child) .bank-overview-heading h2 { font-size: 14px; }
-  .bank-overview-card:not(:first-child) .bank-overview-footer { flex-wrap: wrap; font-size: 12px; gap: 10px; }
   .bank-filters, .bank-history .bank-filters { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); padding: 18px; gap: 14px; }
   .bank-filters .bank-search { grid-column: 1/-1; min-width: 0; }
   .bank-filters .field { min-width: 0; }
@@ -52,7 +41,5 @@
   .bank-estimate-inputs > :first-child { grid-column: 1/-1; }
   .bank-comparability { white-space: normal; }
   .bank-input-details { margin: 20px; }
-  .bank-result-detail > p, .bank-result-detail > .toolbar, .bank-result-detail > .bank-notice { margin-left: 20px; margin-right: 20px; }
-  .bank-result-detail > .toolbar .btn { flex: 1 1 100%; }
   .history-event { column-gap: 12px; }
 }

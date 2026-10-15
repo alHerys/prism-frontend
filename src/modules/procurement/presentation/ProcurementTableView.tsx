@@ -19,8 +19,6 @@ import "./procurement.css";
 const sortColumns: { key: ProcurementSortKey; label: string; choice: string }[] = [
   { key: "name", label: "Pengadaan", choice: "Nama pengadaan" },
   { key: "vendors", label: "Vendor", choice: "Jumlah vendor" },
-  { key: "documents", label: "Dokumen", choice: "Jumlah dokumen" },
-  { key: "readiness", label: "Kesiapan", choice: "Kesiapan dokumen" },
 ];
 
 function ProcurementTableMenu({ sortKey, setSortKey, ascending, setAscending, status, setStatus, setPage }: Pick<ProcurementTableModel, "sortKey" | "setSortKey" | "ascending" | "setAscending" | "status" | "setStatus" | "setPage">) {
@@ -144,10 +142,6 @@ export function ProcurementTableView({
           </thead>
           <tbody>
             {shown.map((p) => {
-              const docs = state.documents.filter(
-                (d) => d.procurementId === p.id,
-              );
-              const ready = docs.filter((d) => d.status === "CONFIRMED").length;
               return (
                 <tr key={p.id}>
                   <td>
@@ -171,30 +165,6 @@ export function ProcurementTableView({
                         .length
                     }{" "}
                     vendor
-                  </td>
-                  <td>
-                    <strong>{docs.length} dokumen</strong>
-                  </td>
-                  <td>
-                    <div className="readiness-badges">
-                      {docs.length ? (
-                        <>
-                          {ready > 0 && (
-                            <span className="badge success">
-                              {ready} terkonfirmasi
-                            </span>
-                          )}
-                          {docs.length > ready && (
-                            <span className="badge warning">
-                              {docs.length - ready} perlu ditinjau
-                            </span>
-                          )}
-                        </>
-                      ) : (
-                        <span className="badge">Belum ada dokumen</span>
-                      )}
-                    </div>
-                    {docs.length > 0 && <progress className="procurement-readiness" value={ready} max={docs.length} aria-label={`Dokumen terkonfirmasi untuk ${p.name}`} />}
                   </td>
                   <td>
                     <Link

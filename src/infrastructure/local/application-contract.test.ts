@@ -28,7 +28,7 @@ it("keeps historical estimation delay before adapter validation and does not cre
     calls.push("estimate"); return runtime.historicalPrices.gateway.estimate(input);
   });
   const app = createApplication({ ...runtime, delay: async (ms) => { calls.push(`delay:${ms}`); }, historicalPrices: { ...runtime.historicalPrices, gateway: { ...runtime.historicalPrices.gateway, estimate } } }, { download: async () => {} });
-  await expect(app.historicalPrices.commands.estimate({ description: "Tank", quantity: "1", unit: "m²", referenceIds: [] })).rejects.toMatchObject({ code: "INSUFFICIENT_DATA" });
+  await expect(app.historicalPrices.commands.estimate({ description: "Tank", quantity: "1", unit: "unknown-unit", referenceIds: [] })).rejects.toMatchObject({ code: "INSUFFICIENT_DATA" });
   expect(calls).toEqual(["delay:800", "estimate"]);
   expect(runtime.historicalPrices.queries.getSnapshot().estimates).toEqual([]);
   expect(runtime.evaluations.queries.getSnapshot().events).toEqual([]);

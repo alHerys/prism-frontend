@@ -2,17 +2,6 @@ import type * as React from "react";
 
 export interface BankPageModel {
   state: import("../application/queries").HistoricalPricesData;
-  tab: string;
-  setTab: React.Dispatch<React.SetStateAction<string>>;
-  query: string;
-  setQuery: React.Dispatch<React.SetStateAction<string>>;
-  year: string;
-  setYear: React.Dispatch<React.SetStateAction<string>>;
-  functionFilter: string;
-  setFunctionFilter: React.Dispatch<React.SetStateAction<string>>;
-  selectedIds: string[];
-  detail: import("../domain/models").HistoricalItem | undefined;
-  setDetail: React.Dispatch<React.SetStateAction<import("../domain/models").HistoricalItem | undefined>>;
   showUpload: boolean;
   setShowUpload: React.Dispatch<React.SetStateAction<boolean>>;
   setDraftId: React.Dispatch<React.SetStateAction<string>>;
@@ -28,24 +17,17 @@ export interface BankPageModel {
   setError: React.Dispatch<React.SetStateAction<string>>;
   need: string;
   setNeed: React.Dispatch<React.SetStateAction<string>>;
+  units: string[];
   unit: string;
   setUnit: React.Dispatch<React.SetStateAction<string>>;
   quantity: string;
   setQuantity: React.Dispatch<React.SetStateAction<string>>;
   draft: import("../../documents/domain/models").DocumentRecord | undefined;
   estimate: import("../domain/models").Estimate | undefined;
-  filtered: import("../domain/models").HistoricalItem[];
   selected: import("../domain/models").HistoricalItem[];
-  statistics: import("../domain/models").HistoricalStatistics | undefined;
-  statsReady: boolean;
-  years: string[];
-  functions: string[];
-  toggle: (id: string) => void;
   upload: (file?: File | undefined) => Promise<void>;
   saveDraft: () => Promise<void>;
   confirmDraft: () => Promise<void>;
   publishDraft: () => Promise<void>;
-  exportStats: () => Promise<void>;
   createEstimate: () => Promise<void>;
-  compareReference: (id: string, value: boolean) => Promise<void>;
 }

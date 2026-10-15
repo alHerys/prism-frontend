@@ -1,18 +1,11 @@
 import type { HistoryPageModel } from "./view-models";
 import { useMemo, useState } from "react";
-import { useEvaluationsCommands, useEvaluationsData } from "../../modules/evaluations/presentation/binding";
+import { useEvaluationsData } from "../../modules/evaluations/presentation/binding";
 import { useDocumentsData } from "../../modules/documents/presentation/binding";
 import { localDay } from "../../shared/formatting/display";
-import type { Snapshot } from "../../modules/evaluations/domain/models";
 import { moduleLabel } from "./history-labels";
-import type { HistoryPageProps } from "./history-page.types.ts";
-import { useWorkspacePreferences } from "../../shared/ui/workspace-preferences";
 
-export function useHistoryPage({
-  onOpenResult,
-}: HistoryPageProps) : HistoryPageModel {
-  const { shouldNotify } = useWorkspacePreferences();
-  const service = useEvaluationsCommands();
+export function useHistoryPage() : HistoryPageModel {
   const state = { ...useEvaluationsData(), ...useDocumentsData() };
   const [tab, setTab] = useState("Aktivitas");
   const [query, setQuery] = useState("");
@@ -20,10 +13,6 @@ export function useHistoryPage({
   const [procurement, setProcurement] = useState("");
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
-  const [selected, setSelected] = useState<Snapshot>();
-  const [notice, setNotice] = useState("");
-  const [exportBusy, setExportBusy] = useState(false);
-  const [noticeError, setNoticeError] = useState(false);
   const matchesDate = (date: string) =>
     (!start || localDay(date) >= start) && (!end || localDay(date) <= end);
   const events = state.events.filter(
@@ -66,27 +55,7 @@ export function useHistoryPage({
   );
   const procurementName = (id?: string) =>
     state.procurements.find((p) => p.id === id)?.name ?? "Bank Data OE";
-  const exportSelected = async () => {
-    if (!selected || exportBusy) return;
-    setExportBusy(true);
-    setNoticeError(false);
-    setNotice("");
-    try {
-      await service.exportSnapshot(selected);
-      setNotice(shouldNotify("export") ? "Laporan berhasil disiapkan." : "");
-    } catch (error) {
-      setNoticeError(true);
-      setNotice(
-        error instanceof Error
-          ? error.message
-          : "Laporan belum dapat dibuat. Silakan coba kembali.",
-      );
-    } finally {
-      setExportBusy(false);
-    }
-  };
   return {
-    onOpenResult,
     state,
     tab,
     setTab,
@@ -100,17 +69,11 @@ export function useHistoryPage({
     setStart,
     end,
     setEnd,
-    selected,
-    setSelected,
-    notice,
-    exportBusy,
-    noticeError,
     events,
     results,
     activityChart,
     maxCount,
     visibleDocuments,
     procurementName,
-    exportSelected,
   };
 }

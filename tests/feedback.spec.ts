@@ -22,7 +22,7 @@ test('history summary sticks beside activity, returns on upward scroll and stays
     await expect(summary.locator('.history-context p')).toBeInViewport();
   }
   await page.evaluate(() => window.scrollTo(0, 0));
-  await page.getByRole('textbox', { name: 'Cari aktivitas atau hasil', exact: true }).fill('Estimasi Pengecatan');
+  await page.getByRole('textbox', { name: 'Cari aktivitas', exact: true }).fill('Estimasi Pengecatan');
   await expect(summary.locator('dd').first()).toHaveText('1');
   await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
@@ -112,18 +112,8 @@ test('table header sorting and filter menu work with existing procurement data',
 
 test('Bank and history filters remain functional in their new order', async ({ page }, info) => {
   await page.goto('/bank');
-  await page.getByRole('tab', { name: 'Dokumen Historis', exact: true }).click();
-  const filters = page.getByRole('region', { name: 'Filter referensi' });
-  const bankOrder = await filters.locator('label').evaluateAll(elements => elements.map(element => {
-    const first = [...element.childNodes].find(node => node.nodeType === Node.TEXT_NODE && node.textContent?.trim());
-    return first?.textContent?.trim() ?? '';
-  }));
-  expect(bankOrder).toEqual(['Fungsi', 'Periode', '']);
-  await expect(filters.locator('.bank-select > svg')).toHaveCount(2);
-  await filters.getByRole('combobox', { name: 'Periode', exact: true }).selectOption('2024');
-  await expect(page.getByRole('heading', { name: 'Dokumen terpublikasi', exact: true })).toBeVisible();
-  await expect(page.locator('.bank-reference-table tbody tr')).toHaveCount(1);
-  await expect(page.getByText('Lihat harga satuan dari dokumen OE historis yang sudah dipublikasikan beserta sumbernya.', { exact: true })).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Susun kebutuhan estimasi'})).toBeVisible();
+  await expect(page.getByRole('tab')).toHaveCount(0);
   await page.goto('/riwayat');
   const historyFilters = page.getByRole('region', { name: 'Filter riwayat' });
   await expect(historyFilters).toBeVisible();
@@ -135,7 +125,7 @@ test('Bank and history filters remain functional in their new order', async ({ p
   const icons = await page.locator('.history-event .bank-document-icon svg').evaluateAll(elements => elements.map(element => element.innerHTML));
   expect(new Set(icons).size).toBeGreaterThanOrEqual(4);
   await expect(page.locator('.history-context dl > div')).toHaveCount(3);
-  await historyFilters.getByRole('textbox', { name: 'Cari aktivitas atau hasil' }).fill('Estimasi Pengecatan');
+  await historyFilters.getByRole('textbox', { name: 'Cari aktivitas' }).fill('Estimasi Pengecatan');
   await expect(page.locator('.history-event')).toHaveCount(1);
   await expect(page.locator('.history-context dd').first()).toHaveText('1');
   await page.evaluate(() => document.fonts.ready);
